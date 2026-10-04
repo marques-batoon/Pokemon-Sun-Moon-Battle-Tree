@@ -187,6 +187,19 @@ describe('trainer-quotes.json', () => {
     expect(new Set(lines).size).toBe(lines.length);
   });
 
+  it('never names a Pokémon or a type', async () => {
+    const { TRAINER_QUOTES } = await import('./index');
+    const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
+    const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?!\\w)`);
+    const types = new RegExp(`\\b(${[...Dex.types.all()].map(t => t.name).join('|')})(-| )types?\\b`, 'i');
+    for (const q of Object.values(TRAINER_QUOTES).flat()) {
+      for (const text of [q.greeting, q.trainerWins, q.trainerLoses]) {
+        expect(text).not.toMatch(pokemon);
+        expect(text).not.toMatch(types);
+      }
+    }
+  });
+
   it('picks one set per battle, the same every time for that battle, and uses all three', async () => {
     const { trainerQuotes } = await import('./index');
     const florian = TRAINERS[0];

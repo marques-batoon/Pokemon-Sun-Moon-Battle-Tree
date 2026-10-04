@@ -1,37 +1,37 @@
 {
-  "source": "Written for this app (not the games' dialogue). Every trainer has three sets of lines; one set is picked per battle. Each greeting fits the trainer's class, look (their sprite) and Alola (places, food, customs), and mentions their team's theme where it has one (all Eeveelutions, all Electric, legendary Pokémon, rain or sun teams...); both closing remarks call back to their greeting. Special trainers and Battle Legends speak in character.",
+  "source": "Written for this app (not the games' dialogue). Every trainer has three sets of lines; one set is picked per battle. Lines never name Pokémon or types or hint at a trainer's team: each trainer has their own personality, drawn from their class, their look (sprite) and life in Alola (places, food, customs). Both closing remarks call back to their greeting. Special trainers and Battle Legends speak in character.",
   "quotes": {
     "Florian": [
       {
-        "greeting": "These board shorts have been through every tide pool on Melemele. Ready to get soaked?",
+        "greeting": "These board shorts have explored every tide pool on Melemele. Ready to get soaked?",
         "trainerWins": "Soaked you! The tide pools taught me well.",
         "trainerLoses": "I'm the one who got soaked... I'll go dry off on Route 1."
       },
       {
-        "greeting": "I caught my first Bug-type on Route 1 with a net and a malasada for bait!",
-        "trainerWins": "Sweet malasada luck strikes again!",
-        "trainerLoses": "Guess my bugs want a bigger malasada next time."
+        "greeting": "I've got a shell from every beach in Alola. A win from up here would be the shiniest one yet!",
+        "trainerWins": "Shiniest prize in my whole collection!",
+        "trainerLoses": "No shell for me today... just sand in my shorts."
       },
       {
-        "greeting": "Arms wide like a Pelipper! That's my Battle Tree pose. You like it?",
-        "trainerWins": "The Pelipper pose wins! I'm keeping it forever.",
-        "trainerLoses": "Okay... maybe the Pelipper pose needs some work."
+        "greeting": "Arms out wide like I'm catching a wave! That's my battle stance. Cool, right?",
+        "trainerWins": "Caught the wave and rode it all the way in!",
+        "trainerLoses": "Wiped out... I'll practice my stance at Hau'oli Beach."
       }
     ],
     "Robin": [
       {
-        "greeting": "Every morning I race Yungoos down Hau'oli Beach. I'm fast, and so's my team!",
-        "trainerWins": "Faster than a Yungoos on hot sand!",
-        "trainerLoses": "You ran me down like a Gumshoos chasing lunch..."
+        "greeting": "I race the ferry from Hau'oli to Heahea every weekend. On foot. Along the shore. I'm fast!",
+        "trainerWins": "First place again! Nobody beats me to the finish!",
+        "trainerLoses": "Second place?! That's the first loser!"
       },
       {
-        "greeting": "My Vikavolt hums like a beehive! Bugs are the best, and I'll prove it.",
-        "trainerWins": "Bzzz! Told you Bug-types are the best!",
-        "trainerLoses": "My bugs buzzed... then fizzled. Back to the meadow."
+        "greeting": "Bet I can win before you finish saying 'Alola'!",
+        "trainerWins": "Ha! You didn't even get to the 'la'!",
+        "trainerLoses": "You said the whole thing... and I still lost."
       },
       {
-        "greeting": "Mom says these shorts are too loud. I say they're lucky! Wanna test 'em?",
-        "trainerWins": "Lucky shorts strike again!",
+        "greeting": "Mom says these shorts are too loud. I say they're racing stripes!",
+        "trainerWins": "Racing stripes win again!",
         "trainerLoses": "Maybe Mom was right about these shorts..."
       }
     ],
@@ -47,26 +47,26 @@
         "trainerLoses": "My pose was perfect. My battling... not so much."
       },
       {
-        "greeting": "My Beedrill could beat a Totem Pokémon. Probably. Maybe. Let's find out!",
-        "trainerWins": "See? Totem-level stuff!",
-        "trainerLoses": "Okay, maybe not Totem-level yet..."
+        "greeting": "MAXIMUM VOLUME! MAXIMUM POWER! MAXIMUM... uh, battling! Let's go!",
+        "trainerWins": "MAXIMUM VICTORY! I'm gonna lose my voice!",
+        "trainerLoses": "minimum... victory... I need to sit down."
       }
     ],
     "Bert": [
       {
-        "greeting": "I spent all summer catching bugs in Melemele Meadow. Look at this sunburn!",
-        "trainerWins": "Worth every bit of sunburn!",
-        "trainerLoses": "Sunburned AND beaten. Some summer, huh?"
-      },
-      {
-        "greeting": "Golisopod's my hero. It's a bug that lives in the ocean! Coolest thing ever!",
-        "trainerWins": "Golisopod power! Ocean bugs rule!",
-        "trainerLoses": "Even Golisopod has to retreat sometimes..."
-      },
-      {
         "greeting": "My big brother finished his island challenge. Now it's my turn to get famous!",
         "trainerWins": "Wait till my brother hears about this!",
         "trainerLoses": "Don't tell my brother. He'll never let me forget it."
+      },
+      {
+        "greeting": "These are my brother's old shorts. They're lucky! And a little big. But lucky!",
+        "trainerWins": "Lucky AND they stayed up the whole battle!",
+        "trainerLoses": "My brother's shorts... my brother's luck... gone."
+      },
+      {
+        "greeting": "I spent all summer training on Melemele while my brother was away. Look at this sunburn!",
+        "trainerWins": "Worth every bit of sunburn!",
+        "trainerLoses": "Sunburned AND beaten. Some summer, huh?"
       }
     ],
     "Sophia": [
@@ -76,14 +76,14 @@
         "trainerLoses": "My hibiscus is wilting... and so am I."
       },
       {
-        "greeting": "I come straight here after the Trainers' School lets out. Homework can wait!",
-        "trainerWins": "Best after-school activity ever!",
-        "trainerLoses": "Maybe I should've done my homework instead..."
+        "greeting": "Every morning I water the flowers in Malie Garden before school. Today, I'll grow a win!",
+        "trainerWins": "My win bloomed beautifully!",
+        "trainerLoses": "Maybe I need to water it a little more..."
       },
       {
-        "greeting": "My Sylveon and I match: both pretty, both dangerous!",
-        "trainerWins": "Pretty and dangerous, as promised!",
-        "trainerLoses": "Too pretty to win today, I suppose..."
+        "greeting": "Flowers look soft, but they grow through rocks. So do I!",
+        "trainerWins": "Right through the rocks, just like I said!",
+        "trainerLoses": "This rock was too tough to grow through..."
       }
     ],
     "Shanta": [
@@ -93,9 +93,9 @@
         "trainerLoses": "Back to the boutique for a luckier color..."
       },
       {
-        "greeting": "Oricorio taught me how to dance. Now my whole team moves with style!",
-        "trainerWins": "And that's how we dance to victory!",
-        "trainerLoses": "We tripped over our own feet..."
+        "greeting": "I matched my hair clip to my skirt AND my shoes. Battling in style is half the fun!",
+        "trainerWins": "Stylish AND victorious. Fabulous!",
+        "trainerLoses": "My outfit was perfect. My battle wasn't."
       },
       {
         "greeting": "Let's make this quick. My shave ice is melting in the lobby!",
@@ -115,9 +115,9 @@
         "trainerLoses": "Guess I'll be quiet at the café today."
       },
       {
-        "greeting": "My Pelipper walks me to the beach every morning. The Wingull are so jealous!",
-        "trainerWins": "Pelipper and I strike again!",
-        "trainerLoses": "Even Pelipper looks disappointed in me."
+        "greeting": "Everyone at school says I talk too much. Let's see if my battling talks louder!",
+        "trainerWins": "My battling said it all!",
+        "trainerLoses": "Okay... I'm speechless. For once."
       }
     ],
     "Chan": [
@@ -127,21 +127,21 @@
         "trainerLoses": "I'll be checking out more books from Malie..."
       },
       {
-        "greeting": "My flower clip came from Malie Garden. It's my lucky charm!",
+        "greeting": "My flower clip came from Malie Garden. I wear it on library days for luck!",
         "trainerWins": "My lucky charm never fails!",
         "trainerLoses": "Maybe I need a new lucky charm..."
       },
       {
-        "greeting": "Whimsicott and I love windy days on the Hano Beach cliffs. Ready to get blown away?",
-        "trainerWins": "Blown away, just like I said!",
-        "trainerLoses": "I'm the one who got blown away..."
+        "greeting": "Battling is just like reading. You have to know how the story ends before it does!",
+        "trainerWins": "And they all lived happily ever after. Especially me!",
+        "trainerLoses": "I didn't see that plot twist coming..."
       }
     ],
     "Ferdinand": [
       {
-        "greeting": "My sun hat keeps the sunshine off, so I can battle all day long!",
-        "trainerWins": "My sun hat never lets me down!",
-        "trainerLoses": "My hat fell off... and so did my winning."
+        "greeting": "My sun hat is my knight's helmet! I'm the bravest knight in Hau'oli!",
+        "trainerWins": "The brave knight wins!",
+        "trainerLoses": "My helmet fell off... and so did my winning."
       },
       {
         "greeting": "Mommy gave me a malasada for being brave. I'm SO brave!",
@@ -149,9 +149,9 @@
         "trainerLoses": "I'm still brave. Just a little sad."
       },
       {
-        "greeting": "Togedemaru is round and spiky, like me when I'm grumpy! Let's battle!",
-        "trainerWins": "Spiky and round and happy now!",
-        "trainerLoses": "Now I'm grumpy like a Togedemaru..."
+        "greeting": "Knights never run away! Not even from the big waves at Hau'oli Beach!",
+        "trainerWins": "Knights never run, and knights always win!",
+        "trainerLoses": "I didn't run away... I just lost. That's okay, right?"
       }
     ],
     "Rico": [
@@ -161,65 +161,65 @@
         "trainerLoses": "Maybe I'm still a little bit small..."
       },
       {
+        "greeting": "I tied my own shoes today! Battling is easy after that!",
+        "trainerWins": "Easier than tying shoes!",
+        "trainerLoses": "I think my shoe came untied..."
+      },
+      {
+        "greeting": "I don't need help from grown-ups! I can do this all by myself!",
+        "trainerWins": "All by myself! See?",
+        "trainerLoses": "Maybe... just a little help next time."
+      }
+    ],
+    "Rocky": [
+      {
         "greeting": "I built a sandcastle at Hau'oli Beach this morning! Now I'm gonna build a win!",
         "trainerWins": "Win built! Taller than my sandcastle!",
         "trainerLoses": "My win got knocked down like my sandcastle..."
       },
       {
-        "greeting": "Bewear gives the BEST hugs. Too strong, though. Ouchie!",
-        "trainerWins": "Bewear hug for the winner! That's me!",
-        "trainerLoses": "I need a Bewear hug right now..."
-      }
-    ],
-    "Rocky": [
-      {
-        "greeting": "My team is fire and leaves, like a campfire in the Lush Jungle!",
-        "trainerWins": "Campfire win! Toasty!",
-        "trainerLoses": "My campfire went out... pfft."
+        "greeting": "When I grow up, I'm gonna drive the big trucks that build roads! Vroom vroom!",
+        "trainerWins": "Vroom vroom! Winner coming through!",
+        "trainerLoses": "Beep beep... backing up... I lost."
       },
       {
-        "greeting": "Grandpa took me to see Wela Volcano. Now all my Pokémon are hot hot hot!",
-        "trainerWins": "Hot like the volcano!",
-        "trainerLoses": "Ow, ow, ow. I got burned instead."
-      },
-      {
-        "greeting": "My white hat keeps the sun on my Pokémon. They LOVE sunshine!",
-        "trainerWins": "Sunshine power! My hat was right!",
-        "trainerLoses": "Clouds came out... no more sunshine."
+        "greeting": "I dug a hole all the way to the other side of the sandbox! I'm super strong!",
+        "trainerWins": "Super strong, like I said!",
+        "trainerLoses": "Maybe I dug myself into a hole..."
       }
     ],
     "Jasper": [
       {
-        "greeting": "I stayed up past bedtime watching Battle Royals on TV. Now it's my turn!",
+        "greeting": "I stayed up past bedtime watching the Battle Royal on TV. Now it's my turn!",
         "trainerWins": "Best bedtime story ever!",
         "trainerLoses": "Yawn... I should've gone to bed."
+      },
+      {
+        "greeting": "I'm not sleepy! I'm... yawn... totally awake! Let's battle!",
+        "trainerWins": "See? Totally awake! And a winner!",
+        "trainerLoses": "Okay... maybe I'm a little sleepy... zzz..."
       },
       {
         "greeting": "My cousin works at the Hano Grand Resort. He says I can beat anybody!",
         "trainerWins": "My cousin was right!",
         "trainerLoses": "My cousin was wrong..."
-      },
-      {
-        "greeting": "Audino says I'm healthy enough to battle. Doctor's orders!",
-        "trainerWins": "Doctor Audino was right!",
-        "trainerLoses": "I think I need a checkup from Audino..."
       }
     ],
     "Kendra": [
       {
-        "greeting": "I'm gonna draw my Pokémon with my orange and green crayons. Fire and leaves!",
-        "trainerWins": "Fire and leaves win! Drawing time!",
+        "greeting": "I'm gonna draw a picture of this battle with ALL my crayons!",
+        "trainerWins": "Now I know exactly what to draw!",
         "trainerLoses": "I'll draw you instead. You were really good."
       },
       {
-        "greeting": "Ninetales makes the sun come out! Sunny days are my favorite days!",
-        "trainerWins": "Sunny day, happy day!",
-        "trainerLoses": "Rainy day... sad day."
+        "greeting": "I drew a rainbow over Hau'oli Beach yesterday! Today I'll draw a winner: me!",
+        "trainerWins": "The winner picture is me!",
+        "trainerLoses": "I'll need to erase that winner picture..."
       },
       {
-        "greeting": "My cap is white like a cloud, but my Pokémon are hot like beach sand!",
-        "trainerWins": "Hot sand, hot Pokémon, hot win! Ouch, ouch, yay!",
-        "trainerLoses": "Brr... I got cooled off."
+        "greeting": "My cap has crayon on it. That's how you know I'm an artist!",
+        "trainerWins": "An artist AND a winner!",
+        "trainerLoses": "Artists have sad days too..."
       }
     ],
     "Mercy": [
@@ -229,21 +229,21 @@
         "trainerLoses": "Don't tell my big sister, okay?"
       },
       {
-        "greeting": "I made a plumeria lei for my Comfey. Now we're both pretty!",
-        "trainerWins": "Pretty lei, pretty win!",
-        "trainerLoses": "Our lei got all squished..."
+        "greeting": "I'm four and three-quarters! That's almost five! I'm practically grown up!",
+        "trainerWins": "Almost-five-year-olds are the best!",
+        "trainerLoses": "Maybe I need to be five first..."
       },
       {
-        "greeting": "This is my battle dress! It has little Pokémon on it!",
-        "trainerWins": "My battle dress works!",
-        "trainerLoses": "My battle dress is all dirty now..."
+        "greeting": "My sister has a cooler dress, but I have a cooler team! Let's go!",
+        "trainerWins": "Cooler team, like I said!",
+        "trainerLoses": "Okay... maybe her dress AND her battling are cooler."
       }
     ],
     "Helen": [
       {
-        "greeting": "Lopunny has the softest ears in all of Alola! Wanna see them win?",
-        "trainerWins": "Soft ears, strong hops!",
-        "trainerLoses": "Lopunny's ears are all droopy now..."
+        "greeting": "I give everybody hugs! After I win, you can have one too!",
+        "trainerWins": "Hug time! You can have one!",
+        "trainerLoses": "Can I still have a hug? I'm sad..."
       },
       {
         "greeting": "We had a luau at my house last night! I'm still full of energy!",
@@ -251,7 +251,7 @@
         "trainerLoses": "I think the luau energy wore off..."
       },
       {
-        "greeting": "My cap keeps the sun out of my eyes, so I can see you lose!",
+        "greeting": "My cap keeps the sun out of my eyes so I can see you lose!",
         "trainerWins": "I saw it all! You lost!",
         "trainerLoses": "I saw it all... I lost."
       }
@@ -263,9 +263,9 @@
         "trainerLoses": "I'll get a sour malasada... to match my mood."
       },
       {
-        "greeting": "Kangaskhan carries her baby in a pouch. I wish my mommy had a pouch!",
-        "trainerWins": "Kangaskhan mommy power!",
-        "trainerLoses": "I wanna go back to my mommy now..."
+        "greeting": "Grandpa says I'm the strongest girl on Melemele. Grandpa's always right!",
+        "trainerWins": "Grandpa is ALWAYS right!",
+        "trainerLoses": "Grandpa was a little bit wrong today..."
       },
       {
         "greeting": "I wore my best dress to the Battle Tree! Do I look like a champion?",
@@ -275,53 +275,53 @@
     ],
     "Darla": [
       {
-        "greeting": "This backpack has been to every island in Alola. It's heavier than a Mudsdale!",
-        "trainerWins": "Heavy pack, light work!",
-        "trainerLoses": "Now my backpack feels even heavier..."
-      },
-      {
-        "greeting": "Thumbs up! I hitched a Tauros ride from Paniola Ranch just for this!",
-        "trainerWins": "Worth the bumpy ride!",
-        "trainerLoses": "Thumbs... down. Long Tauros ride home."
-      },
-      {
-        "greeting": "I mark every battle I win on my map. Let's put a star on Poni Island!",
+        "greeting": "I mark every battle on my map of Alola. Let's put a gold star on Poni Island!",
         "trainerWins": "Gold star on the map for Poni Island!",
         "trainerLoses": "This spot gets a little frowny face."
+      },
+      {
+        "greeting": "I've drawn every trail on all four islands. This tree's the last blank spot on my map!",
+        "trainerWins": "Map complete! What a journey!",
+        "trainerLoses": "Still one blank spot left on my map..."
+      },
+      {
+        "greeting": "Thumbs up! My compass, my pencil and my backpack never let me down!",
+        "trainerWins": "Compass true, pencil sharp, win secured!",
+        "trainerLoses": "Compass must be broken... I'm lost."
       }
     ],
     "Tammy": [
       {
-        "greeting": "My Pokémon are slow, heavy and proud of it. Ever heard of Trick Room?",
-        "trainerWins": "Slow and steady wins up here!",
-        "trainerLoses": "Too slow even for Trick Room..."
-      },
-      {
-        "greeting": "I packed Slowking, Hippowdon and a whole lot of patience. Let's take our time!",
-        "trainerWins": "Patience pays off! Slowking would nod if it weren't so slow.",
-        "trainerLoses": "We took our time... and ran out of it."
-      },
-      {
         "greeting": "Thumbs up! I walked here from Seafolk Village. Slowly. Very slowly.",
         "trainerWins": "Slow walk, quick win!",
         "trainerLoses": "Long, slow walk back to Seafolk..."
+      },
+      {
+        "greeting": "It's not about the destination, it's about the journey. But the destination is winning.",
+        "trainerWins": "What a destination!",
+        "trainerLoses": "The journey continues... without a win."
+      },
+      {
+        "greeting": "I stop to smell every flower on every route. It takes forever. I'm very patient.",
+        "trainerWins": "Patience pays off! Smell that victory!",
+        "trainerLoses": "Smells like... defeat. Patiently, though."
       }
     ],
     "Reese": [
       {
-        "greeting": "Everything I carry is heavy: my bag AND my team. Let's twist some dimensions!",
-        "trainerWins": "Trick Room works every time!",
-        "trainerLoses": "The dimensions twisted right back on me..."
-      },
-      {
         "greeting": "I collect a souvenir from every town. Malie has the best ones. Today: a win!",
-        "trainerWins": "Best souvenir yet! Way better than a Malie key chain.",
+        "trainerWins": "Best souvenir yet! Way better than a key chain.",
         "trainerLoses": "A loss... not the souvenir I wanted."
       },
       {
-        "greeting": "My Walrein and I nap on the Poni coast between battles. We're well rested!",
-        "trainerWins": "Naps are the secret weapon!",
-        "trainerLoses": "Time for another nap, I think..."
+        "greeting": "My backpack is ninety percent souvenirs and ten percent snacks. Let's go!",
+        "trainerWins": "Souvenir secured! Snack time!",
+        "trainerLoses": "Ninety percent souvenirs, zero percent wins..."
+      },
+      {
+        "greeting": "I bought this backpack at the Royal Avenue Megamart. It fits a hundred souvenirs!",
+        "trainerWins": "Room for one more souvenir: victory!",
+        "trainerLoses": "Guess I'll just carry my disappointment home."
       }
     ],
     "Kayla": [
@@ -331,14 +331,14 @@
         "trainerLoses": "This trail beat me..."
       },
       {
+        "greeting": "I tell spooky stories around the campfire every night. Want to hear one? It's about you losing!",
+        "trainerWins": "And THAT'S how the story ends! Boo!",
+        "trainerLoses": "Spooky... I'm the one who's scared now."
+      },
+      {
         "greeting": "Thumbs up, straps tight! I'm ready for anything you throw at me!",
         "trainerWins": "Ready for anything, and anything included you!",
         "trainerLoses": "Wasn't ready for THAT..."
-      },
-      {
-        "greeting": "Manectric lights up my campsite at night. It's got plenty of charge left for you!",
-        "trainerWins": "Fully charged! Manectric could light the whole campsite now.",
-        "trainerLoses": "Manectric's out of juice. Lights out at camp."
       }
     ],
     "Cleavant": [
@@ -348,9 +348,9 @@
         "trainerLoses": "This tree is steeper than Lanakila ever was..."
       },
       {
-        "greeting": "I dig for fossils in the Ten Carat Hill caves. Ancient power, coming through!",
-        "trainerWins": "Ancient power wins! These fossils still have it!",
-        "trainerLoses": "Back to digging, I suppose."
+        "greeting": "Every summit in Alola, I've stood on it. This tree is the last peak on my list!",
+        "trainerWins": "Peak conquered! List complete!",
+        "trainerLoses": "One peak left on the list... for now."
       },
       {
         "greeting": "My bandana's soaked with the sweat of a thousand climbs. Let's add one more!",
@@ -360,31 +360,31 @@
     ],
     "Buster": [
       {
-        "greeting": "Hohoho! My rock-solid team crushes opponents like Ten Carat Hill gravel!",
-        "trainerWins": "Gravel, just like I promised! Hohoho!",
-        "trainerLoses": "Hohoho... I'm the gravel now."
+        "greeting": "Hohoho! A strapping young Trainer! You'll make a fine warm-up!",
+        "trainerWins": "Hohoho! A fine warm-up indeed!",
+        "trainerLoses": "Hohoho... I'm the one who got warmed up!"
       },
       {
-        "greeting": "Alolan Golem is magnetic! It practically pulled me up this tree!",
-        "trainerWins": "A magnetic victory! Golem pulled that one right in! Hohoho!",
-        "trainerLoses": "Golem's magnet pulled me down, too..."
+        "greeting": "Hohoho! My belly laugh echoes off every cliff in Alola!",
+        "trainerWins": "Hear that echo? That's victory! Hohoho!",
+        "trainerLoses": "Hohoho... ho... the echo sounds sad today."
       },
       {
-        "greeting": "Rock and Ground, solid as the earth beneath my boots! Hohoho!",
-        "trainerWins": "Solid as the earth! Nothing moves this mountain! Hohoho!",
-        "trainerLoses": "The earth shook... right under me."
+        "greeting": "I eat a whole plate lunch before every climb! Hohoho, I'm full of energy!",
+        "trainerWins": "Plate lunch power! Hohoho!",
+        "trainerLoses": "Hohoho... I think I need another plate lunch."
       }
     ],
     "Arlo": [
       {
-        "greeting": "I trained in Haina Desert sandstorms. My team loves sand as much as I do!",
-        "trainerWins": "Sand in your eyes? Sorry about that!",
-        "trainerLoses": "The sand settled... and so did my streak."
+        "greeting": "Out on the trail, you learn to never give up. Let's see if you've learned that too!",
+        "trainerWins": "The trail teaches patience. You'll get there someday.",
+        "trainerLoses": "You've clearly walked a harder trail than I have."
       },
       {
-        "greeting": "Tyranitar kicks up the storm, and Excadrill digs right through it. Ready?",
-        "trainerWins": "Storm and drill! Perfect combo!",
-        "trainerLoses": "Even my sandstorm couldn't hide me."
+        "greeting": "Every step teaches you something. This battle will teach one of us something too.",
+        "trainerWins": "Lesson for you today. Keep walking.",
+        "trainerLoses": "Lesson learned. I'll walk it off."
       },
       {
         "greeting": "This beard has seen every trail on Ula'ula. It's never seen me lose!",
@@ -394,19 +394,19 @@
     ],
     "Levine": [
       {
-        "greeting": "Rock, Steel and Ground. My team is as tough as the cliffs of Vast Poni Canyon!",
-        "trainerWins": "Tough as the canyon!",
-        "trainerLoses": "Cracked like a canyon wall..."
-      },
-      {
         "greeting": "I carry boulders up Mount Hokulani for training. A battle is a nice break!",
         "trainerWins": "Lighter than a boulder, that battle!",
         "trainerLoses": "That loss weighs more than any boulder."
       },
       {
-        "greeting": "Let the sandstorm roll in! My Pokémon won't even blink.",
-        "trainerWins": "Didn't blink once! My team's eyes are tougher than sandpaper.",
-        "trainerLoses": "Something got in my eye... it's sand. And tears."
+        "greeting": "See these arms? I carried my pack AND a friend's pack up the Ancient Poni Path!",
+        "trainerWins": "Strong arms, strong win!",
+        "trainerLoses": "My arms are fine. My pride is sore."
+      },
+      {
+        "greeting": "Lift with your legs, battle with your heart! That's my motto!",
+        "trainerWins": "Legs and heart, both delivered!",
+        "trainerLoses": "I must have lifted with my back..."
       }
     ],
     "Percy": [
@@ -421,9 +421,9 @@
         "trainerLoses": "Back to Hau'oli traffic tomorrow..."
       },
       {
-        "greeting": "Steel-types never call in sick! My team runs like well-oiled office machines!",
-        "trainerWins": "Efficiency at its finest!",
-        "trainerLoses": "Machine malfunction... somebody call IT."
+        "greeting": "I used up a vacation day for this. Make it worth the paperwork!",
+        "trainerWins": "Worth every form I filled out!",
+        "trainerLoses": "Now I have to explain this to my boss..."
       }
     ],
     "Conley": [
@@ -438,9 +438,9 @@
         "trainerLoses": "Worst pau hana ever..."
       },
       {
-        "greeting": "Electivire keeps the office lights on during blackouts. Shocking, isn't it?",
-        "trainerWins": "Fully charged and fully victorious!",
-        "trainerLoses": "Power outage on my end..."
+        "greeting": "My watch is set two minutes fast so I'm never late. I won't be late to winning either!",
+        "trainerWins": "Right on time, as always!",
+        "trainerLoses": "Late to the victory... it left without me."
       }
     ],
     "Emery": [
@@ -455,9 +455,9 @@
         "trainerLoses": "Is that... a stain? Ugh, what a day."
       },
       {
-        "greeting": "I take my lunch at the Hau'oli Marina. Today it's a battle break!",
-        "trainerWins": "Best lunch break ever!",
-        "trainerLoses": "Lunch break's over. Back to my desk."
+        "greeting": "I'm investing in a winning streak. High risk, high reward!",
+        "trainerWins": "High reward! What a return!",
+        "trainerLoses": "High risk... and I paid for it."
       }
     ],
     "Winnie": [
@@ -467,9 +467,9 @@
         "trainerLoses": "Now I'm wound up tighter than before..."
       },
       {
-        "greeting": "I keep a Comfey on my desk. Its flowers make the whole office smell like Alola!",
-        "trainerWins": "Fresh flowers, fresh win!",
-        "trainerLoses": "My Comfey's flowers drooped..."
+        "greeting": "I keep a stress ball on my desk. Today, you're my stress ball!",
+        "trainerWins": "Squeezed! I feel so much better.",
+        "trainerLoses": "I think I'm the stress ball now..."
       },
       {
         "greeting": "These slacks are office-ready AND battle-ready. Let's go!",
@@ -484,9 +484,9 @@
         "trainerLoses": "Back to slide one... all of them, really."
       },
       {
-        "greeting": "Sylveon and Florges are our office mascots. Cute, but don't underestimate them!",
-        "trainerWins": "Cute and fierce! Our mascots earned their treats today.",
-        "trainerLoses": "Too cute to win today..."
+        "greeting": "I color-code everything: my calendar, my notes, my battle plans. This one's red for victory!",
+        "trainerWins": "Red for victory, as color-coded!",
+        "trainerLoses": "I'll need a new color for this... gray, maybe."
       },
       {
         "greeting": "I took the ferry from Akala just for this. It had better be worth it!",
@@ -501,9 +501,9 @@
         "trainerLoses": "I'll leave this one off the résumé..."
       },
       {
-        "greeting": "My Whimsicott is my fluffy stress ball. Wanna see it go wild?",
-        "trainerWins": "Fluffy and fierce! Best stress ball ever.",
-        "trainerLoses": "Whimsicott's all deflated..."
+        "greeting": "My boss is watching the Battle Tree broadcast today. No pressure!",
+        "trainerWins": "Boss, if you're watching: promotion, please!",
+        "trainerLoses": "Boss, if you're watching... please stop watching."
       },
       {
         "greeting": "I brought a poke bowl for lunch. I'll bring home a win too!",
@@ -518,12 +518,12 @@
         "trainerLoses": "Yo... I think I just got schooled."
       },
       {
-        "greeting": "Dark and Poison, that's my style. Like a back alley at midnight!",
-        "trainerWins": "Midnight alley rules!",
-        "trainerLoses": "The sun came up on me..."
+        "greeting": "Class is in session, yo! Professor Kass, teaching the streets!",
+        "trainerWins": "Class dismissed! You failed, yo!",
+        "trainerLoses": "Professor Kass... got held back a year."
       },
       {
-        "greeting": "These wristbands are just for show. My Pokémon are for real!",
+        "greeting": "These wristbands are just for show. My battling is for real!",
         "trainerWins": "The real deal, yo! Wristbands just make it look good.",
         "trainerLoses": "Guess the wristbands were all I had..."
       }
@@ -535,9 +535,9 @@
         "trainerLoses": "Word's gonna spread... that I lost."
       },
       {
-        "greeting": "My Sharpedo bites harder than the waves off Seafolk Village!",
-        "trainerWins": "Chomp! Told ya Sharpedo bites harder than the waves!",
-        "trainerLoses": "Sharpedo lost its bite..."
+        "greeting": "I hear everything that goes down in Po Town. Today, the news is you losing!",
+        "trainerWins": "Breaking news: I won! Spread the word!",
+        "trainerLoses": "Breaking news... please don't spread it."
       },
       {
         "greeting": "I wore my best tank top up here. Don't make me sweat.",
@@ -547,7 +547,7 @@
     ],
     "Dylan": [
       {
-        "greeting": "My crew's got the loudest Pokémon in Alola! Exploud, crank it up!",
+        "greeting": "My crew's got the loudest boombox in Alola! Let's crank it up!",
         "trainerWins": "Loud and proud! They heard that all the way in Po Town!",
         "trainerLoses": "...Turn it down. Way down."
       },
@@ -557,16 +557,16 @@
         "trainerLoses": "I'm the one who wiped out..."
       },
       {
-        "greeting": "Spiritomb holds 108 spirits, and every one of 'em hates you already.",
-        "trainerWins": "108 spirits, one win!",
-        "trainerLoses": "Even 108 spirits couldn't pull it off..."
+        "greeting": "Every battle's got a soundtrack. Mine's heavy on the bass!",
+        "trainerWins": "Drop the bass! Victory!",
+        "trainerLoses": "Record scratch... that's my soundtrack ending."
       }
     ],
     "Evander": [
       {
-        "greeting": "Toxapex and Weezing don't play nice. Neither do I.",
-        "trainerWins": "Poisoned and finished!",
-        "trainerLoses": "Guess the poison wore off..."
+        "greeting": "Don't let the tough act fool ya. I'm tough on the inside, too!",
+        "trainerWins": "Tough all the way through!",
+        "trainerLoses": "Okay... maybe a little soft on the inside."
       },
       {
         "greeting": "I hang around the Malie City docks. Tough place, tougher Trainers.",
@@ -574,9 +574,9 @@
         "trainerLoses": "Guess I'm not that tough after all..."
       },
       {
-        "greeting": "See the stripe on my shirt? Racing stripe. 'Cause I'm fast at winning.",
-        "trainerWins": "Racing stripe wins again!",
-        "trainerLoses": "Racing stripe... more like losing stripe."
+        "greeting": "I don't cry at sad movies. That was rain. In the theater. Shut up and battle!",
+        "trainerWins": "No tears here! Just victory!",
+        "trainerLoses": "...It's raining again. In here. Don't look."
       }
     ],
     "Myrna": [
@@ -586,9 +586,9 @@
         "trainerLoses": "Fine, I've got a problem now. It's you."
       },
       {
-        "greeting": "Weezing and I came straight from the Po Town rain. We're soaked and cranky!",
-        "trainerWins": "Cranky wins! Weezing's in a better mood now. Kinda.",
-        "trainerLoses": "Now I'm soaked, cranky AND beaten."
+        "greeting": "Oh wow, another Trainer. How totally thrilling. Let's get this over with.",
+        "trainerWins": "Wow. Thrilling. I won. Bye.",
+        "trainerLoses": "Okay, THAT was actually thrilling. Ugh."
       },
       {
         "greeting": "This is my lucky cap. Touch it and you lose.",
@@ -598,19 +598,19 @@
     ],
     "Eva": [
       {
-        "greeting": "Pink hair, black top, sharp teeth on my Sharpedo. All edge!",
+        "greeting": "Pink hair, black top, sharp style. Everything about me has an edge!",
         "trainerWins": "Sliced right through you! Told you I was all edge.",
-        "trainerLoses": "Lost my edge... and Sharpedo lost its bite."
+        "trainerLoses": "Lost my edge... and my style points."
       },
       {
-        "greeting": "Scrafty taught me two things: pull your pants up, then throw down!",
-        "trainerWins": "Scrafty style! Pants up, opponent down!",
-        "trainerLoses": "Scrafty's pants fell down..."
+        "greeting": "I design my own outfits. This one's called 'Your Defeat.' Like it?",
+        "trainerWins": "'Your Defeat' is a hit! New collection coming soon.",
+        "trainerLoses": "Back to the drawing board for my new collection..."
       },
       {
-        "greeting": "I hang out at the Hau'oli Marina scaring Wingull. You're next.",
-        "trainerWins": "Shoo, shoo! Just like the Wingull!",
-        "trainerLoses": "Even the Wingull are laughing at me."
+        "greeting": "I hang out at the Hau'oli Marina scaring tourists. You're next.",
+        "trainerWins": "Shoo, shoo! Just like the tourists!",
+        "trainerLoses": "Even the tourists are laughing at me."
       }
     ],
     "Agrata": [
@@ -620,9 +620,9 @@
         "trainerLoses": "Okay... maybe rules aren't so bad."
       },
       {
-        "greeting": "Toxicroak's Poison Jab is a bad mood with a fist. Wanna try it?",
-        "trainerWins": "Jabbed! Toxicroak's bad mood is all yours now.",
-        "trainerLoses": "Got jabbed right back..."
+        "greeting": "I've been kicked out of three malasada shops. Don't ask why.",
+        "trainerWins": "Four shops! Kidding. Kind of. I won!",
+        "trainerLoses": "Maybe I'll behave at the next malasada shop..."
       },
       {
         "greeting": "My skirt's short, my temper's shorter. Let's go!",
@@ -632,9 +632,9 @@
     ],
     "Abby": [
       {
-        "greeting": "Exploud and I are gonna make enough noise to shake Poni Island!",
-        "trainerWins": "Poni Island shook! Did you feel it? I felt it!",
-        "trainerLoses": "...Shh. Just let me sulk quietly."
+        "greeting": "I drum on everything. Trash cans, railings, your team. Let's make some noise!",
+        "trainerWins": "Ba-dum-tss! Victory!",
+        "trainerLoses": "...My drumsticks broke. Don't look at me."
       },
       {
         "greeting": "I painted my nails black for this battle. Like my mood.",
@@ -642,26 +642,26 @@
         "trainerLoses": "Chipped a nail. And my pride."
       },
       {
-        "greeting": "Absol shows up when disaster's coming. Guess who brought Absol?",
-        "trainerWins": "Disaster delivered, right on schedule!",
-        "trainerLoses": "Disaster struck... me."
+        "greeting": "I'm gonna make enough noise to shake Poni Island!",
+        "trainerWins": "Poni Island shook! Did you feel it? I felt it!",
+        "trainerLoses": "...Shh. Just let me sulk quietly."
       }
     ],
     "Parker": [
       {
         "greeting": "See this bat? I hit homers at the Hau'oli ball field. Now I'm swinging for you!",
-        "trainerWins": "Home run! That one's going over the Hau'oli outfield fence!",
+        "trainerWins": "Home run! That one's going over the outfield fence!",
         "trainerLoses": "Strike three... I'm out."
       },
       {
-        "greeting": "I ran laps around Iki Town this morning. Warmed up and ready!",
-        "trainerWins": "Workout complete! Those Iki Town laps paid off!",
-        "trainerLoses": "More laps for me tomorrow..."
+        "greeting": "I've hit a ball clean into Hau'oli Bay. Twice! Want to see a third?",
+        "trainerWins": "Splash! Third one's in the bay!",
+        "trainerLoses": "That one didn't even reach the infield..."
       },
       {
-        "greeting": "Talonflame is the fastest pitcher I know! Fastball coming your way!",
-        "trainerWins": "Fastball, strike three! Talonflame's got a cannon!",
-        "trainerLoses": "You knocked it out of the park..."
+        "greeting": "I ran laps around Iki Town this morning. Warmed up and ready!",
+        "trainerWins": "Workout complete! Those laps paid off!",
+        "trainerLoses": "More laps for me tomorrow..."
       }
     ],
     "Isaac": [
@@ -671,9 +671,9 @@
         "trainerLoses": "Didn't quit. Just got outplayed."
       },
       {
-        "greeting": "Hawlucha and I practice wrestling moves on the beach. Ready for the top rope?",
-        "trainerWins": "From the top rope! Pinned!",
-        "trainerLoses": "Got pinned instead..."
+        "greeting": "Coach makes us shout 'hustle!' before every game. HUSTLE!",
+        "trainerWins": "HUSTLE PAYS OFF!",
+        "trainerLoses": "...hustle..."
       },
       {
         "greeting": "This bat's signed by my whole team. It's my lucky charm!",
@@ -688,14 +688,14 @@
         "trainerLoses": "Three outs... I'm the one who's done."
       },
       {
+        "greeting": "I study every pitcher in the Alola league. I know exactly what's coming!",
+        "trainerWins": "Read it like a curveball!",
+        "trainerLoses": "Didn't see that pitch coming..."
+      },
+      {
         "greeting": "I run sprints on Big Wave Beach. Sand training makes me unstoppable!",
         "trainerWins": "Unstoppable! All that sand training paid off!",
         "trainerLoses": "Stopped cold, right in the sand..."
-      },
-      {
-        "greeting": "Pidgeot and Staraptor! My outfield is all fliers. Nothing gets past them!",
-        "trainerWins": "Caught it! Nothing gets past my outfield!",
-        "trainerLoses": "Dropped the ball... my outfielders are gonna hear about this."
       }
     ],
     "Alwyn": [
@@ -710,106 +710,106 @@
         "trainerLoses": "I need more hill sprints..."
       },
       {
-        "greeting": "Blaziken kicks harder than I serve! Let's play!",
-        "trainerWins": "Game, set, match! Blaziken kicks harder than any serve!",
-        "trainerLoses": "Love-forty... I lost."
+        "greeting": "I practice my serve against the Trainers' School wall. The wall's never won!",
+        "trainerWins": "Still undefeated, just like against the wall!",
+        "trainerLoses": "Lost to someone who isn't a wall..."
       }
     ],
     "Mardea": [
       {
-        "greeting": "Racket ready, shoes laced, Pokémon pumped. Let's play a set!",
+        "greeting": "Racket ready, shoes laced, water bottle full. Let's play a set!",
         "trainerWins": "Set point, match point, win!",
         "trainerLoses": "Lost the set... and the match. Rematch?"
+      },
+      {
+        "greeting": "Stretching, check. Sunscreen, check. Victory... coming right up!",
+        "trainerWins": "And victory, check!",
+        "trainerLoses": "I forgot to check one thing: how strong you are."
       },
       {
         "greeting": "I trained on the Akala courts in the afternoon heat. A battle is nothing!",
         "trainerWins": "Heat-tested victory!",
         "trainerLoses": "I think I've got heatstroke..."
-      },
-      {
-        "greeting": "Hawlucha and Staraptor are my doubles partners in the sky!",
-        "trainerWins": "Doubles champs! Hawlucha and Staraptor ruled the sky!",
-        "trainerLoses": "Our doubles game fell apart..."
       }
     ],
     "Gabriella": [
       {
-        "greeting": "I play beach volleyball at Hano Beach. Ready for a spike?",
+        "greeting": "I play beach volleyball at Hano Beach every weekend. Ready for a spike?",
         "trainerWins": "Spiked it! Straight into the sand!",
         "trainerLoses": "You blocked every spike I sent..."
       },
       {
-        "greeting": "My racket has brand-new strings. Let's test them on your team!",
+        "greeting": "My racket has brand-new strings. Let's test them out!",
         "trainerWins": "The strings held up!",
         "trainerLoses": "Snapped a string... and my winning streak."
       },
       {
-        "greeting": "Tauros and Mudsdale are my workout buddies. We run Paniola Ranch every morning!",
-        "trainerWins": "Ranch-tough! Those morning runs paid off!",
-        "trainerLoses": "Back to the ranch to train..."
+        "greeting": "Sand in my shoes, sun on my shoulders. Best way to battle!",
+        "trainerWins": "Sun, sand and a win!",
+        "trainerLoses": "Sand in my shoes, and a loss on my record..."
       }
     ],
     "Ryder": [
-      {
-        "greeting": "I raised the strongest starters from every region. Decidueye included!",
-        "trainerWins": "Starters for the win!",
-        "trainerLoses": "My starters need more training..."
-      },
       {
         "greeting": "I'm the next big thing in Alola. Lucky you, battling me before I'm famous!",
         "trainerWins": "Remember this day! You'll be telling people about it someday.",
         "trainerLoses": "Next big thing... someday."
       },
       {
-        "greeting": "Top marks in starter care at the Trainers' School in Hau'oli!",
-        "trainerWins": "Top marks again! My Trainers' School teachers would be proud.",
-        "trainerLoses": "Failing grade today..."
+        "greeting": "I've already practiced my autograph. Want to see it?",
+        "trainerWins": "Here you go! It'll be worth a lot someday!",
+        "trainerLoses": "Maybe I'll practice battling instead of autographs..."
+      },
+      {
+        "greeting": "Green polo, big smile, bright future. That's the Ryder brand!",
+        "trainerWins": "The Ryder brand is going places!",
+        "trainerLoses": "Rebranding... after this."
       }
     ],
     "Christopher": [
       {
-        "greeting": "I trained at the top of Mount Lanakila. My whole team is ice-cold!",
-        "trainerWins": "Frozen solid, just like the top of Lanakila!",
-        "trainerLoses": "Thawed out... Alola's too warm for me."
+        "greeting": "Top of my class at the Trainers' School. This is my first real test.",
+        "trainerWins": "Passed with flying colors!",
+        "trainerLoses": "Failed my first real test... I have a lot to study."
       },
       {
-        "greeting": "Top of my class at the Trainers' School. Ice-types are my specialty.",
-        "trainerWins": "A+ in Ice-types! Top of the class again.",
-        "trainerLoses": "My ice melted under pressure..."
+        "greeting": "I've never gotten anything lower than an A. Grade me!",
+        "trainerWins": "A+! Top marks again.",
+        "trainerLoses": "That's... my first B. Maybe C."
       },
       {
-        "greeting": "Alola's hot, but my team is cold. Want some shave ice?",
-        "trainerWins": "Brain freeze! Want some shave ice to go with it?",
-        "trainerLoses": "Melted like shave ice in the sun..."
+        "greeting": "I took notes on every Trainer who climbed this tree. You're on page forty-two.",
+        "trainerWins": "Page forty-two: defeated, as predicted.",
+        "trainerLoses": "I'll need to rewrite page forty-two..."
       }
     ],
     "Sorley": [
       {
-        "greeting": "Politoed brings the rain, and my Water-types love it!",
-        "trainerWins": "Rain, rain, victory!",
-        "trainerLoses": "The rain stopped... and so did my luck."
-      },
-      {
-        "greeting": "My mentor says I'm a rising star, like the tide at Kala'e Bay!",
+        "greeting": "My mentor says I'm a rising star, like the tide rising at Kala'e Bay!",
         "trainerWins": "High tide! I keep rising, just like Kala'e Bay!",
         "trainerLoses": "Low tide for me... the bay's empty."
       },
       {
-        "greeting": "Wishiwashi alone is tiny, but in a school it's huge. Just like my potential!",
-        "trainerWins": "School's in session!",
-        "trainerLoses": "School's out... my Wishiwashi scattered."
+        "greeting": "My mentor watches every battle I fight. Better make this one count!",
+        "trainerWins": "Mentor, did you see that?!",
+        "trainerLoses": "Mentor, please look away..."
+      },
+      {
+        "greeting": "I bow to every opponent, just like my mentor taught me. Then I win!",
+        "trainerWins": "Bow, battle, win. Mentor's way!",
+        "trainerLoses": "Bow... battle... lose. Not quite the way."
       }
     ],
     "Beatrice": [
       {
-        "greeting": "Primarina sings, Decidueye snipes, Incineroar wrestles. Alola's finest starters!",
-        "trainerWins": "Alolan starters forever!",
-        "trainerLoses": "Even Alola's finest have off days..."
-      },
-      {
         "greeting": "I've watched every match at the Battle Royal Dome. I know all the tricks!",
         "trainerWins": "Studied and solved! The Battle Royal Dome taught me well.",
         "trainerLoses": "You had tricks I've never seen!"
+      },
+      {
+        "greeting": "I take notes on everything. Your first move is already in my notebook.",
+        "trainerWins": "Exactly as written in my notebook!",
+        "trainerLoses": "I'll need a bigger notebook..."
       },
       {
         "greeting": "My hair's up for battle! Down is for sunsets at Hano Beach.",
@@ -819,36 +819,36 @@
     ],
     "Brandi": [
       {
-        "greeting": "Today's my Battle Tree debut! And my team's ice-cold.",
+        "greeting": "Today's my Battle Tree debut! I'm so nervous... but so ready!",
         "trainerWins": "What a debut! I'll remember this one forever.",
         "trainerLoses": "Not the debut I imagined..."
       },
       {
-        "greeting": "Glaceon and Froslass! Frosty, right? Perfect for a hot Alolan day.",
-        "trainerWins": "Frostbitten! Glaceon and Froslass say hi.",
-        "trainerLoses": "My frost melted in the Alolan heat..."
+        "greeting": "My hands are shaking, but my heart is steady. Let's go!",
+        "trainerWins": "Steady heart, steady win!",
+        "trainerLoses": "My hands were shaking for a reason..."
       },
       {
-        "greeting": "I got snowed in on Lanakila once. Now my whole team is made of snow!",
-        "trainerWins": "Snowed you in! Just like Lanakila!",
-        "trainerLoses": "Avalanche... right on top of me."
+        "greeting": "I practiced this moment in my head a hundred times. This is take one hundred and one!",
+        "trainerWins": "Take one hundred and one: perfect!",
+        "trainerLoses": "Cut! Let's try that again..."
       }
     ],
     "Marsha": [
+      {
+        "greeting": "I grew up on the boats of Seafolk Village. The sea taught me to never give up!",
+        "trainerWins": "Seafolk pride! The sea always takes care of us!",
+        "trainerLoses": "The sea is calm, and so am I. Sad, but calm."
+      },
       {
         "greeting": "Everyone says I'm a rising star. Like the tide, I keep rising!",
         "trainerWins": "Higher and higher! The tide keeps rising!",
         "trainerLoses": "More rising to do..."
       },
       {
-        "greeting": "Pelipper calls the rain, and my Water team rides the waves!",
-        "trainerWins": "Surf's up! Pelipper's rain made perfect waves!",
-        "trainerLoses": "Wiped out... not even the rain could save me."
-      },
-      {
-        "greeting": "I grew up in Seafolk Village. Water is my home, and my team agrees!",
-        "trainerWins": "Seafolk pride! The sea always takes care of us!",
-        "trainerLoses": "The sea is calm, and so am I. Sad, but calm."
+        "greeting": "My grandma fishes off the Seafolk docks every morning. She says I'm her best catch!",
+        "trainerWins": "Grandma's best catch, reeling in a win!",
+        "trainerLoses": "Grandma's going to throw me back..."
       }
     ],
     "Cooper": [
@@ -858,9 +858,9 @@
         "trainerLoses": "This attraction was a bit too thrilling for me..."
       },
       {
-        "greeting": "My Poké Finder is ready! Smile for your loss!",
-        "trainerWins": "Perfect shot! That one's going on the fridge.",
-        "trainerLoses": "Blurry photo... just like my strategy."
+        "greeting": "I've ridden every tour boat around Akala. This tree beats all of them!",
+        "trainerWins": "Five-star attraction!",
+        "trainerLoses": "One-star review... for my battling."
       },
       {
         "greeting": "Yellow shirt, orange cap... I dress like a sunset over Hano Beach!",
@@ -870,19 +870,19 @@
     ],
     "Darien": [
       {
-        "greeting": "I've photographed every Totem Pokémon den on the islands. You're my next subject!",
+        "greeting": "Smile! I'm taking a photo of my victory before it even happens!",
+        "trainerWins": "Perfect shot! That one's going on the fridge.",
+        "trainerLoses": "Blurry photo... just like my strategy."
+      },
+      {
+        "greeting": "I've photographed every waterfall on Akala. You're my next subject!",
         "trainerWins": "Great subject! Five stars!",
         "trainerLoses": "Out of focus. Just like me today."
       },
       {
-        "greeting": "I ate my first Alolan malasada this morning. Now I'm on a sugar rush!",
-        "trainerWins": "Sugar-rush victory! I need another malasada!",
-        "trainerLoses": "And here comes the sugar crash..."
-      },
-      {
-        "greeting": "My vacation itinerary says 'battle at the Battle Tree' right here. Check!",
-        "trainerWins": "Checked off the itinerary!",
-        "trainerLoses": "Moving this one to next year's trip..."
+        "greeting": "My camera roll has ten thousand photos of Alola. Ten thousand and one, coming up!",
+        "trainerWins": "Ten thousand and one: the winning shot!",
+        "trainerLoses": "Deleting that last one..."
       }
     ],
     "Hart": [
@@ -892,9 +892,9 @@
         "trainerLoses": "The sun's in my eyes. Yeah, that's it."
       },
       {
-        "greeting": "Gyarados and Salamence make for great vacation photos. Scary ones.",
-        "trainerWins": "Scary good photos AND a win!",
-        "trainerLoses": "The scariest photo is the scoreboard..."
+        "greeting": "Bonjour! I mean... Alola! Still learning the local greeting.",
+        "trainerWins": "Alola! See, I'm practically a local now!",
+        "trainerLoses": "Au revoir... I mean... I lost."
       },
       {
         "greeting": "I booked the Hano Grand Resort for a whole week. Plenty of time to win!",
@@ -914,9 +914,9 @@
         "trainerLoses": "My lei is wilting..."
       },
       {
-        "greeting": "Oricorio danced for me on Royal Avenue. My team loves to dance too!",
-        "trainerWins": "A dance of victory, just like Oricorio taught me!",
-        "trainerLoses": "We missed a step... Oricorio would be disappointed."
+        "greeting": "Hano Beach in the morning, Big Wave Beach at noon, the Battle Tree by sunset!",
+        "trainerWins": "A perfect beach day, perfectly finished!",
+        "trainerLoses": "Should've stayed at the beach..."
       }
     ],
     "Charlene": [
@@ -931,9 +931,9 @@
         "trainerLoses": "Should've worn sneakers..."
       },
       {
-        "greeting": "A Decidueye stared right through me in the Lush Jungle once. Now it's mine!",
-        "trainerWins": "Bull's-eye! Decidueye never misses!",
-        "trainerLoses": "Missed the mark... even Decidueye looks surprised."
+        "greeting": "My guidebook has a list of the top ten things to do in Alola. Number one: win here!",
+        "trainerWins": "Number one, checked off!",
+        "trainerLoses": "Number one... still unchecked."
       }
     ],
     "Odessa": [
@@ -943,12 +943,12 @@
         "trainerLoses": "Missed the boat... literally."
       },
       {
-        "greeting": "Arcanine and Salamence are my vacation bodyguards. Scary, aren't they?",
-        "trainerWins": "Best bodyguards in Alola!",
-        "trainerLoses": "My bodyguards went off duty..."
+        "greeting": "The cruise director said 'don't battle at the Battle Tree.' I never listen!",
+        "trainerWins": "Glad I didn't listen!",
+        "trainerLoses": "Should've listened to the cruise director..."
       },
       {
-        "greeting": "This orange bag holds sunscreen, snacks and six Poké Balls. I'm ready!",
+        "greeting": "This orange bag holds sunscreen, snacks and my ship's boarding pass. Ready!",
         "trainerWins": "Packed for victory! Sunscreen, snacks and a win!",
         "trainerLoses": "Forgot to pack a win..."
       }
@@ -960,9 +960,9 @@
         "trainerLoses": "Looks like I'm the one who got mopped..."
       },
       {
-        "greeting": "Weezing and Toxapex keep the pipes clean. Kind of. Let's battle!",
-        "trainerWins": "Squeaky clean! The pipes and the battle.",
-        "trainerLoses": "Clogged up... I'll need a bigger plunger."
+        "greeting": "Every tile in this lobby sparkles. I count them. Four thousand and twelve.",
+        "trainerWins": "Four thousand and twelve tiles, one win!",
+        "trainerLoses": "Lost count... and lost the battle."
       },
       {
         "greeting": "These coveralls have seen every spill on Poni Island. Nothing fazes me!",
@@ -972,19 +972,19 @@
     ],
     "Xaden": [
       {
-        "greeting": "I sweep sand off the Battle Tree steps all day. My team brings it right back!",
-        "trainerWins": "Sandstorm swept you away!",
-        "trainerLoses": "I'm the one who got swept away..."
-      },
-      {
-        "greeting": "Excadrill and Steelix dig holes faster than I can fill them. Let's see what they dig up!",
-        "trainerWins": "Struck gold! Excadrill and Steelix dug up a win!",
-        "trainerLoses": "Dug my own hole... and fell right in."
-      },
-      {
         "greeting": "Gray hair, blue coveralls, forty years on the job. Nobody outworks me.",
         "trainerWins": "Forty years strong, and still outworking everyone!",
         "trainerLoses": "Maybe it's time to retire..."
+      },
+      {
+        "greeting": "I've cleaned up after every Battle Legend who's climbed this tree. I've learned a thing or two.",
+        "trainerWins": "Learned from the best!",
+        "trainerLoses": "Still learning, after all these years..."
+      },
+      {
+        "greeting": "I sweep sand off the Battle Tree steps all day. Sweeping you will be easy!",
+        "trainerWins": "Swept away, like sand off the steps!",
+        "trainerLoses": "I'm the one who got swept away..."
       }
     ],
     "Giles": [
@@ -994,14 +994,14 @@
         "trainerLoses": "Back to my broom, I suppose."
       },
       {
-        "greeting": "Hippowdon kicks up Haina Desert sand, and I sweep it up after. Teamwork!",
-        "trainerWins": "Teamwork makes the dream work!",
-        "trainerLoses": "Now I've got twice the sweeping to do..."
+        "greeting": "Nobody notices the janitor. That's how I learned all their secrets.",
+        "trainerWins": "Secrets come in handy!",
+        "trainerLoses": "You had a secret I didn't know..."
       },
       {
-        "greeting": "Rock-solid team, rock-solid work ethic. Shall we?",
-        "trainerWins": "Solid as ever! Hard work never lets me down.",
-        "trainerLoses": "Cracked right down the middle..."
+        "greeting": "Quiet hands, sharp eyes. That's how you clean a lobby and win a battle.",
+        "trainerWins": "Sharp eyes, clean win!",
+        "trainerLoses": "My eyes must be getting old..."
       }
     ],
     "Skip": [
@@ -1011,48 +1011,48 @@
         "trainerLoses": "Lunch break wasted..."
       },
       {
-        "greeting": "Hard hat on! My Ground and Electric crew strings power lines across Ula'ula!",
-        "trainerWins": "Power on! The lines are humming all across Ula'ula!",
-        "trainerLoses": "Blackout... the whole site's gone dark."
+        "greeting": "I eat my plate lunch in four minutes flat. Let's see how fast I win!",
+        "trainerWins": "Faster than lunch!",
+        "trainerLoses": "Slower than lunch... and less filling."
       },
       {
-        "greeting": "Alolan Golem is magnetic, perfect for lifting steel beams!",
-        "trainerWins": "Lifted with ease! Golem's magnet never slips.",
-        "trainerLoses": "Dropped the beam... on my foot."
+        "greeting": "Hard hat on, sleeves up! Thirty minutes till the whistle blows!",
+        "trainerWins": "Done before the whistle!",
+        "trainerLoses": "There's the whistle... and I lost."
       }
     ],
     "JT": [
       {
-        "greeting": "I work the ice plant up on Mount Lanakila. Every Pokémon I've got is Ice-type!",
-        "trainerWins": "Frozen solid, like the ice plant on a busy day!",
-        "trainerLoses": "Total meltdown... the ice plant's gonna hear about this."
+        "greeting": "I run the tallest crane on Ula'ula. Heights don't scare me!",
+        "trainerWins": "On top of the world!",
+        "trainerLoses": "Long way down from up here..."
       },
       {
-        "greeting": "Hard hat, ice pick and an all-Ice team. Let's chill!",
-        "trainerWins": "Chilled to the bone!",
-        "trainerLoses": "Thawed... my ice pick's gone dull."
+        "greeting": "From my crane, I can see all of Malie. From here, I can see my win!",
+        "trainerWins": "Saw it coming from a mile away!",
+        "trainerLoses": "Didn't see that coming, even from up high..."
       },
       {
-        "greeting": "Alolan Ninetales makes it snow, then the rest of my crew gets to work!",
-        "trainerWins": "Snowed in! Ninetales did all the hard work.",
-        "trainerLoses": "The snow melted... and so did my crew."
+        "greeting": "Hard hat, harness, steady hands. Let's lift this battle up!",
+        "trainerWins": "Lifted to the top!",
+        "trainerLoses": "Dropped the load..."
       }
     ],
     "Benjamin": [
       {
-        "greeting": "Safety first! My Ice-types keep the Lanakila tunnels frozen solid.",
-        "trainerWins": "No accidents, just a cold, clean win!",
+        "greeting": "Safety first! Hard hat on, boots laced, battle ready!",
+        "trainerWins": "No accidents, just a clean win!",
         "trainerLoses": "Good thing I wore my hard hat. That hit hard."
       },
       {
-        "greeting": "Abomasnow calls the hail, and the whole crew gets to work!",
-        "trainerWins": "Hailstorm success! The crew did great work today.",
-        "trainerLoses": "The hail stopped... and so did my crew."
+        "greeting": "I've worked six hundred days without an accident. Let's keep the streak going!",
+        "trainerWins": "Six hundred and one days! Safe and sound!",
+        "trainerLoses": "Accident on the job site... my record's ruined."
       },
       {
-        "greeting": "I carve ice sculptures for the Malie festival! Today I'm sculpting a win!",
-        "trainerWins": "A frozen masterpiece!",
-        "trainerLoses": "My sculpture melted..."
+        "greeting": "Always check your surroundings before you swing. I've checked. You're going down.",
+        "trainerWins": "Checked, swung, won!",
+        "trainerLoses": "Should've checked twice..."
       }
     ],
     "Henry": [
@@ -1062,30 +1062,30 @@
         "trainerLoses": "You battle with more grace than I. Bravo."
       },
       {
+        "greeting": "Manners first, battling second. After you, young Trainer.",
+        "trainerWins": "Thank you for your fine manners. And the win.",
+        "trainerLoses": "Your manners AND your battling are impeccable."
+      },
+      {
         "greeting": "I summer at the Hano Grand Resort and winter in Malie. Battles are my year-round pleasure.",
         "trainerWins": "A pleasure, as always.",
         "trainerLoses": "Not so pleasant this time, I'm afraid."
-      },
-      {
-        "greeting": "Honchkrow and Toucannon: a refined aviary, if I may say so.",
-        "trainerWins": "A splendid flight! My aviary soars.",
-        "trainerLoses": "My aviary has been grounded..."
       }
     ],
     "Ikram": [
       {
-        "greeting": "I left my Tapu Cocoa steaming on the lanai. Let's not let it cool, shall we?",
+        "greeting": "I left my cocoa steaming on the lanai. Let's not let it cool, shall we?",
         "trainerWins": "Still warm. Splendid!",
         "trainerLoses": "My cocoa has gone cold. As have I."
       },
       {
-        "greeting": "Sunshine, flame and flower. My team flourishes in the Alolan sun!",
-        "trainerWins": "Flourishing beautifully!",
-        "trainerLoses": "Wilted in the heat..."
+        "greeting": "A gentleman never rushes. Except when his cocoa is getting cold.",
+        "trainerWins": "Rushed, but refined!",
+        "trainerLoses": "Rushed, and regretful..."
       },
       {
-        "greeting": "My beard is as white as Hano Beach sand. My Pokémon are hotter than it at noon!",
-        "trainerWins": "Scorching! Hotter than the Hano sand at noon!",
+        "greeting": "My beard is as white as Hano Beach sand. My spirit is as warm as its sun!",
+        "trainerWins": "Warm and victorious!",
         "trainerLoses": "Cooled right off, like the beach at sunset..."
       }
     ],
@@ -1096,14 +1096,14 @@
         "trainerLoses": "Manners I have. Victory, it seems, I lack."
       },
       {
-        "greeting": "Charizard and Venusaur in the summer sun. Classic, like me.",
-        "trainerWins": "Timeless! Classics never go out of style.",
-        "trainerLoses": "Perhaps I'm outdated after all..."
-      },
-      {
         "greeting": "I attended the luau in Iki Town last night. I'm still full of energy!",
         "trainerWins": "Luau power! I may have to attend another.",
         "trainerLoses": "Too much luau, perhaps..."
+      },
+      {
+        "greeting": "I danced the hula at my own wedding, forty years ago. I've still got the moves!",
+        "trainerWins": "Still got the moves!",
+        "trainerLoses": "Perhaps my moves are a bit rusty..."
       }
     ],
     "Cheryl": [
@@ -1113,65 +1113,65 @@
         "trainerLoses": "Oh my... I'll wear a different dress next time."
       },
       {
-        "greeting": "My villa overlooks Hano Beach. I watch the sunset every evening with my Pokémon.",
-        "trainerWins": "Another lovely evening!",
-        "trainerLoses": "The sunset will look sad tonight..."
+        "greeting": "Oh my, oh my! Such a serious face. Shall I make you a malasada after?",
+        "trainerWins": "Oh my, here's your malasada, dear.",
+        "trainerLoses": "Oh my... I need a malasada now."
       },
       {
-        "greeting": "Primarina sings at all my parties. Today, she sings of your defeat!",
-        "trainerWins": "Encore, Primarina! Encore!",
-        "trainerLoses": "Primarina's a little off-key today..."
+        "greeting": "My villa overlooks Hano Beach. I watch the sunset every evening, darling.",
+        "trainerWins": "Another lovely evening!",
+        "trainerLoses": "The sunset will look sad tonight..."
       }
     ],
     "Christy": [
       {
-        "greeting": "Only the finest Water-types for me, darling. Pearls of the sea!",
+        "greeting": "I collect pearls from the Konikoni jewelers, darling. And victories.",
+        "trainerWins": "Another pearl for my collection!",
+        "trainerLoses": "My pearls have lost their luster..."
+      },
+      {
+        "greeting": "Only the finest for me, darling. The finest pearls, the finest tea, the finest win.",
         "trainerWins": "Elegance always prevails!",
         "trainerLoses": "Darling, that was dreadfully inelegant of me."
       },
       {
-        "greeting": "Politoed brings the rain to my garden. Then my team swims right through you!",
-        "trainerWins": "Splash! Right through you, darling.",
-        "trainerLoses": "Thoroughly drenched..."
-      },
-      {
-        "greeting": "I collect pearls from the Konikoni jewelers, darling. And victories.",
-        "trainerWins": "Another pearl for my collection!",
-        "trainerLoses": "My pearls have lost their luster..."
+        "greeting": "This necklace has one hundred pearls. I'll add one more today!",
+        "trainerWins": "One hundred and one!",
+        "trainerLoses": "Still one hundred..."
       }
     ],
     "Verna": [
       {
-        "greeting": "My jewels came from Konikoni City, but my Lapras came from the sea itself.",
-        "trainerWins": "Majestic! Lapras outshines every jewel I own.",
-        "trainerLoses": "Poor Lapras sank like a stone..."
+        "greeting": "These jewels are from Konikoni City, darling. Prepare to be dazzled!",
+        "trainerWins": "Dazzling, wasn't it?",
+        "trainerLoses": "My jewels have lost their sparkle..."
       },
       {
-        "greeting": "Rain on my lanai means Ludicolo dances. Shall we dance too?",
-        "trainerWins": "A splendid dance! Ludicolo was magnificent.",
-        "trainerLoses": "Rained out... even Ludicolo stopped dancing."
+        "greeting": "Rain or shine, I wear my diamonds. A lady must sparkle!",
+        "trainerWins": "Sparkling, as always!",
+        "trainerLoses": "Not a single sparkle left..."
       },
       {
-        "greeting": "This dress has flowers, my team has waves. Darling, you're in for a storm.",
-        "trainerWins": "Stormy weather, darling!",
-        "trainerLoses": "Calm seas... for you."
+        "greeting": "This dress has flowers, my rings have rubies. Darling, you're outmatched.",
+        "trainerWins": "Outmatched, as I said, darling!",
+        "trainerLoses": "Darling, you outshone my rubies..."
       }
     ],
     "Duncan": [
-      {
-        "greeting": "Fossils from Ten Carat Hill, rarities from every region. My collection is legendary!",
-        "trainerWins": "Another rare piece for the collection!",
-        "trainerLoses": "A loss... the one item I never wanted."
-      },
       {
         "greeting": "Arms crossed means I'm confident. And I'm VERY confident.",
         "trainerWins": "Confidence justified!",
         "trainerLoses": "Uncrossing my arms now..."
       },
       {
-        "greeting": "Tyrantrum and Aurorus were revived from fossils. Ancient power, modern victory!",
-        "trainerWins": "Prehistoric power! These fossils still bite!",
-        "trainerLoses": "Extinct... back to the fossil display."
+        "greeting": "My collection is legendary. Every piece is one of a kind!",
+        "trainerWins": "Another rare piece for the collection!",
+        "trainerLoses": "A loss... the one item I never wanted."
+      },
+      {
+        "greeting": "I've hunted treasures from Ten Carat Hill to Vast Poni Canyon. You're my next find!",
+        "trainerWins": "Treasure found!",
+        "trainerLoses": "Fool's gold..."
       }
     ],
     "Nobunaga": [
@@ -1181,13 +1181,13 @@
         "trainerLoses": "Still one piece missing..."
       },
       {
-        "greeting": "I traded for Kangaskhan and Tauros at the Festival Plaza. Rare finds!",
-        "trainerWins": "Rare and ready! Best trades I ever made.",
-        "trainerLoses": "Should've traded them away..."
+        "greeting": "I trade at the Festival Plaza every day. I always get the better deal!",
+        "trainerWins": "Better deal, as always!",
+        "trainerLoses": "First bad trade of my life..."
       },
       {
-        "greeting": "I keep my rarest Poké Balls in these pouches. Want to see what's inside?",
-        "trainerWins": "Surprise! Bet you didn't see that coming out of my pouches.",
+        "greeting": "I keep my rarest treasures in these pouches. Want to see what's inside?",
+        "trainerWins": "Surprise! Bet you didn't see that coming.",
         "trainerLoses": "Should've kept them in there..."
       }
     ],
@@ -1198,9 +1198,9 @@
         "trainerLoses": "Bogey... maybe even a double bogey."
       },
       {
-        "greeting": "I play eighteen holes on Melemele every Sunday. My Grass-types love a good fairway!",
-        "trainerWins": "Right down the fairway!",
-        "trainerLoses": "Stuck in the rough..."
+        "greeting": "I yell 'Fore!' even when nobody's around. It's good luck!",
+        "trainerWins": "FORE! Lucky as always!",
+        "trainerLoses": "Fore... I mean, sorry."
       },
       {
         "greeting": "Red visor, red polo... the sharpest dresser on the green!",
@@ -1215,9 +1215,9 @@
         "trainerLoses": "My precision was off today. You were spot-on."
       },
       {
-        "greeting": "My team grew up on the fairways of Akala. Grass-types love a well-kept lawn!",
-        "trainerWins": "A perfectly kept win!",
-        "trainerLoses": "Mowed down... like the Akala fairways."
+        "greeting": "I measure every putt three times. I've measured this battle too.",
+        "trainerWins": "Measured perfectly!",
+        "trainerLoses": "Measured wrong..."
       },
       {
         "greeting": "The trade winds off Poni are tricky, but my swing adjusts!",
@@ -1227,36 +1227,36 @@
     ],
     "Zeno": [
       {
-        "greeting": "All of my Pokémon evolved from Eevee! A different club for every shot!",
-        "trainerWins": "Hole in one, Eevee-style!",
-        "trainerLoses": "Wrong club... I should've picked Vaporeon."
-      },
-      {
-        "greeting": "Sylveon, Vaporeon, Jolteon, Flareon... my Eevee family never misses a putt!",
-        "trainerWins": "Sunk it! My Eevee family never misses!",
-        "trainerLoses": "Lipped out... even Sylveon couldn't sink that one."
-      },
-      {
         "greeting": "I usually play eighteen holes. This battle will be a quick nine.",
         "trainerWins": "Under par, as expected!",
         "trainerLoses": "Way over par... time to head to the clubhouse."
+      },
+      {
+        "greeting": "Tee time's in twenty minutes! Let's speed this up!",
+        "trainerWins": "Made my tee time!",
+        "trainerLoses": "Missed my tee time..."
+      },
+      {
+        "greeting": "I play fast, think fast and win fast. Ready, set, swing!",
+        "trainerWins": "Fast win! Back to the tee!",
+        "trainerLoses": "Too fast... I should've slowed down."
       }
     ],
     "Anisa": [
       {
-        "greeting": "My swing is perfect, and so is my team. Let's tee off!",
+        "greeting": "My swing is perfect, and my battling is too. Let's tee off!",
         "trainerWins": "Perfect swing, perfect win!",
         "trainerLoses": "I sliced it right into the rough..."
       },
       {
-        "greeting": "Grass-types make the best caddies. They know the fairway by heart!",
-        "trainerWins": "Fairway expertise! My caddies never get lost.",
-        "trainerLoses": "Lost in the rough..."
+        "greeting": "I practice my swing a thousand times a day at the Hau'oli range. Perfection takes work!",
+        "trainerWins": "Perfection achieved!",
+        "trainerLoses": "Nine hundred ninety-nine wasn't enough..."
       },
       {
-        "greeting": "I played a dawn round near Paniola Ranch. A Mudsdale kept stepping on my ball.",
-        "trainerWins": "Still made par! Even with a Mudsdale on the course!",
-        "trainerLoses": "I'm blaming the Mudsdale..."
+        "greeting": "I played a dawn round near Paniola Ranch. The cattle kept stepping on my ball.",
+        "trainerWins": "Still made par, even with the cattle on the course!",
+        "trainerLoses": "I'm blaming the cattle..."
       }
     ],
     "Calliope": [
@@ -1266,9 +1266,9 @@
         "trainerLoses": "Three out of four is still a good season."
       },
       {
-        "greeting": "Lurantis and Decidueye are my favorite partners on the Akala greens!",
-        "trainerWins": "A victory on the greens!",
-        "trainerLoses": "Off the green and into the trees..."
+        "greeting": "Trophies on my mantel, trophies in my closet, trophies in my car. Room for one more!",
+        "trainerWins": "Room for one more trophy!",
+        "trainerLoses": "No trophy today..."
       },
       {
         "greeting": "My visor keeps the Alolan sun out of my eyes. I see the win clearly!",
@@ -1283,14 +1283,14 @@
         "trainerLoses": "The wind must have shifted on me..."
       },
       {
-        "greeting": "Eight Eeveelutions, one bag of clubs. Pick your poison!",
-        "trainerWins": "Good choice... for me!",
-        "trainerLoses": "Wrong pick... I should've gone with Umbreon."
+        "greeting": "I can tell which way the wind blows just by licking my finger. Let's see!",
+        "trainerWins": "Wind's on my side!",
+        "trainerLoses": "The wind turned against me..."
       },
       {
-        "greeting": "I named all my Eeveelutions after golf courses on Melemele!",
-        "trainerWins": "Course record! Named after the best course on Melemele!",
-        "trainerLoses": "Rain delay... and Vaporeon's the only one enjoying it."
+        "greeting": "I named all my clubs after golf courses on Melemele!",
+        "trainerWins": "Course record!",
+        "trainerLoses": "Rain delay... on my winning streak."
       }
     ],
     "Nedry": [
@@ -1300,9 +1300,9 @@
         "trainerLoses": "Back to the ranch for more training..."
       },
       {
-        "greeting": "Poké Beans for good behavior, lots of petting for good battling!",
-        "trainerWins": "Beans for everyone! Good behavior AND good battling!",
-        "trainerLoses": "Extra beans tonight, for comfort..."
+        "greeting": "Up at dawn, feed the herd, brush the coats, then battle! That's ranch life!",
+        "trainerWins": "Ranch life wins!",
+        "trainerLoses": "Ranch life... needs more training."
       },
       {
         "greeting": "These overalls have pockets full of treats. My team knows it!",
@@ -1317,9 +1317,9 @@
         "trainerLoses": "I'd better feed them an extra treat tonight..."
       },
       {
-        "greeting": "I tend my Pokémon on Poké Pelago every morning. They're bursting with energy!",
-        "trainerWins": "Pelago power! Bursting with energy, like I said!",
-        "trainerLoses": "Back to the Pelago for a rest..."
+        "greeting": "I cook three meals a day for my team. Four on battle days!",
+        "trainerWins": "The fourth meal pays off!",
+        "trainerLoses": "Better make it five meals..."
       },
       {
         "greeting": "My hat keeps the sun off, and my overalls keep the mud off. Let's go!",
@@ -1329,19 +1329,19 @@
     ],
     "Kiernan": [
       {
-        "greeting": "I raise Fire- and Grass-types under the Paniola sun. They grow up strong!",
-        "trainerWins": "Sun-grown strength! The Paniola sun never fails.",
-        "trainerLoses": "Too much sun, maybe?"
-      },
-      {
-        "greeting": "Arcanine and Venusaur are my pride. Patience grows champions!",
-        "trainerWins": "Patience, rewarded! Arcanine and Venusaur did me proud.",
+        "greeting": "Raising Pokémon takes patience. Battling them takes courage!",
+        "trainerWins": "Patience and courage, rewarded!",
         "trainerLoses": "I'll need a bit more patience..."
       },
       {
-        "greeting": "I've got an Egg hatching in my overalls right now. Gotta win quick!",
+        "greeting": "I've got an Egg in my overalls right now, keeping it warm. Gotta win quick!",
         "trainerWins": "Hatched a win! And the Egg's still warm!",
         "trainerLoses": "Hatching a plan for next time..."
+      },
+      {
+        "greeting": "I sat with an Egg for thirty days straight once. Waiting is my specialty.",
+        "trainerWins": "Worth the wait!",
+        "trainerLoses": "Still waiting... for a win."
       }
     ],
     "Dara": [
@@ -1351,13 +1351,13 @@
         "trainerLoses": "My poor babies... come here, let me hug you all."
       },
       {
-        "greeting": "I braid Mudsdale's mane every morning on the ranch. Today, braids for battle!",
-        "trainerWins": "Braided and brilliant!",
-        "trainerLoses": "The braids came undone..."
+        "greeting": "I tuck in every one of my babies at night and sing them a lullaby. They're so well rested!",
+        "trainerWins": "Lullabies work wonders!",
+        "trainerLoses": "Time for a sad lullaby..."
       },
       {
-        "greeting": "I feed my team Pinap Berries from my own garden. So ono!",
-        "trainerWins": "An ono victory! The Pinap Berries worked!",
+        "greeting": "I feed my team Berries from my own garden. So ono!",
+        "trainerWins": "An ono victory! The Berries worked!",
         "trainerLoses": "Bitter Berries today..."
       }
     ],
@@ -1368,31 +1368,31 @@
         "trainerLoses": "Time for an extra checkup, I think."
       },
       {
-        "greeting": "Mimikyu wears a costume, and I wear a cowboy hat. We're both dressed for success!",
-        "trainerWins": "Dressed for success!",
-        "trainerLoses": "Costume torn... Mimikyu's going to be upset."
+        "greeting": "Temperature, appetite, energy: all perfect this morning! Let's battle!",
+        "trainerWins": "Checkup passed, battle won!",
+        "trainerLoses": "Checkup passed, battle failed..."
       },
       {
-        "greeting": "Pikipek wakes me at sunrise on Route 5. The early bird wins!",
+        "greeting": "Up with the sunrise on Route 5. The early bird gets the win!",
         "trainerWins": "The early bird wins!",
         "trainerLoses": "Should've slept in..."
       }
     ],
     "Gertrude": [
       {
-        "greeting": "I've bred Pokémon for years. Let's see if your team measures up.",
+        "greeting": "I've bred Pokémon for forty years. Let's see if your team measures up.",
         "trainerWins": "Measured up and came up short. Keep training!",
         "trainerLoses": "Your team measures up just fine. More than fine."
-      },
-      {
-        "greeting": "Fire and grass, sun and soil. My Pokémon grow like crops in the Paniola sun!",
-        "trainerWins": "A bumper crop! The Paniola sun never fails.",
-        "trainerLoses": "Crop failure... the soil must be tired."
       },
       {
         "greeting": "My braids are older than your Pokédex. So's my experience!",
         "trainerWins": "Experience wins! My braids have seen it all.",
         "trainerLoses": "Experience wasn't enough..."
+      },
+      {
+        "greeting": "Raised on Paniola Ranch, grown in the Alolan sun. Strong as the soil!",
+        "trainerWins": "A bumper crop of wins!",
+        "trainerLoses": "Crop failure... the soil must be tired."
       }
     ],
     "Dyson": [
@@ -1402,29 +1402,29 @@
         "trainerLoses": "I'm afraid I've been checked out..."
       },
       {
-        "greeting": "I work at the Hano Grand Resort. Hauling luggage makes Fighting-types strong!",
-        "trainerWins": "Heavy lifting, light work!",
-        "trainerLoses": "Dropped the bags... and the battle."
+        "greeting": "Your room is ready: the Losers' Suite, ocean view!",
+        "trainerWins": "Enjoy the suite! Room service is complimentary.",
+        "trainerLoses": "I'll be staying in the suite myself, it seems."
       },
       {
-        "greeting": "A bow for my guest! Now then, Bewear, Throh, Sawk... front desk, please!",
+        "greeting": "A bow for my guest! Five-star service, five-star battle!",
         "trainerWins": "Service complete! Thank you for choosing the Battle Tree.",
-        "trainerLoses": "Room service is closed for the night..."
+        "trainerLoses": "One-star review... I deserve it."
       }
     ],
     "Chip": [
       {
-        "greeting": "I carry luggage all day. Carrying my team to victory is easy!",
+        "greeting": "I carry luggage all day at the Tide Song Hotel. Carrying a win is easy!",
         "trainerWins": "Delivered right to the top!",
         "trainerLoses": "Dropped the luggage... and the battle."
       },
       {
-        "greeting": "Bewear could carry every suitcase in the Tide Song Hotel! Ready?",
-        "trainerWins": "Strong arms win! Bewear could carry you back down, too.",
-        "trainerLoses": "Even Bewear's arms are tired..."
+        "greeting": "Twelve suitcases up four flights of stairs. Every morning. Ready!",
+        "trainerWins": "Strong arms win!",
+        "trainerLoses": "Strong arms, weak finish..."
       },
       {
-        "greeting": "Uniform pressed, bow perfected, Pokémon throwing punches!",
+        "greeting": "Uniform pressed, bow perfected, game face on!",
         "trainerWins": "Perfect service, perfect bow, perfect win!",
         "trainerLoses": "My uniform's all wrinkled now..."
       }
@@ -1436,14 +1436,14 @@
         "trainerLoses": "...Still smiling. Just barely."
       },
       {
-        "greeting": "I park cars at the Hano Grand Resort. Watch me park your whole team!",
+        "greeting": "I park cars at the Hano Grand Resort. Watch me park you in the loser's spot!",
         "trainerWins": "Parked! Right in the loser's spot.",
         "trainerLoses": "Towed away... and I didn't even get a ticket."
       },
       {
-        "greeting": "Gyarados and Salamence: the scariest room service in Alola!",
-        "trainerWins": "Order up! Room service delivered.",
-        "trainerLoses": "Order canceled... the kitchen's closed."
+        "greeting": "I've never stopped smiling, not once, in ten years. Try to wipe it off!",
+        "trainerWins": "Smile intact! Ten years and counting!",
+        "trainerLoses": "...Smile slipping. Smile slipping!"
       }
     ],
     "Julien": [
@@ -1453,9 +1453,9 @@
         "trainerLoses": "Burned my own batch..."
       },
       {
-        "greeting": "Fire for grilling, Water for boiling, Ice for shave ice. My team is a full kitchen!",
-        "trainerWins": "A five-star meal! The whole kitchen did its part.",
-        "trainerLoses": "Kitchen fire! Somebody grab Froslass!"
+        "greeting": "A pinch of chili, a dash of sugar, and a whole lot of attitude. That's my recipe!",
+        "trainerWins": "Recipe perfected!",
+        "trainerLoses": "Too much attitude, not enough sugar..."
       },
       {
         "greeting": "Apron on, ladle ready! Let's get cooking!",
@@ -1475,9 +1475,9 @@
         "trainerLoses": "Spoiled... the fish AND the strategy."
       },
       {
-        "greeting": "Turtonator keeps my stove hot, Froslass keeps my fridge cold. Perfect balance!",
-        "trainerWins": "A balanced meal! Hot, cold and perfectly done.",
-        "trainerLoses": "Unbalanced... the stove's too hot and the fridge's too cold."
+        "greeting": "I'll never tell you my sauce recipe. Or my battle plan!",
+        "trainerWins": "Secret sauce wins again!",
+        "trainerLoses": "You must have figured out my recipe..."
       }
     ],
     "Noah": [
@@ -1499,36 +1499,36 @@
     ],
     "Brantley": [
       {
-        "greeting": "I put out fires for a living. My Water-types are my hoses!",
-        "trainerWins": "Fire's out! My Water-types never let me down.",
-        "trainerLoses": "You put out my fire completely..."
-      },
-      {
-        "greeting": "Wela Volcano Park is my beat. If it can survive lava, it can survive you!",
-        "trainerWins": "Lava-tested and victorious!",
-        "trainerLoses": "Melted... and I thought we could survive lava."
-      },
-      {
-        "greeting": "Hands together for focus. Firefighters always stay calm!",
+        "greeting": "Hands together, deep breath. Firefighters always stay calm!",
         "trainerWins": "Calm and collected, like a true firefighter!",
         "trainerLoses": "Okay, NOW I'm panicking."
+      },
+      {
+        "greeting": "I've stayed calm through every emergency on Akala. A battle is nothing!",
+        "trainerWins": "Steady as ever!",
+        "trainerLoses": "My first real emergency..."
+      },
+      {
+        "greeting": "Wela Volcano Park is my beat. If I can handle lava, I can handle you!",
+        "trainerWins": "Lava-tested and victorious!",
+        "trainerLoses": "Melted... and I thought I could handle lava."
       }
     ],
     "Camber": [
       {
-        "greeting": "Training at the Heahea fire station keeps my team in top shape!",
+        "greeting": "Training at the Heahea fire station keeps me in top shape!",
         "trainerWins": "Top shape, top results!",
         "trainerLoses": "Back to the station for more training."
       },
       {
-        "greeting": "Politoed makes it rain. The easiest fire I ever put out!",
-        "trainerWins": "Rained out! Politoed did all the work.",
-        "trainerLoses": "Drought... not a drop of rain in sight."
+        "greeting": "I just passed my fire academy exam! Today's my first real test!",
+        "trainerWins": "First test, first win!",
+        "trainerLoses": "First test, first fail..."
       },
       {
-        "greeting": "My uniform is fireproof. Is your team?",
-        "trainerWins": "Doused! Your team wasn't fireproof after all.",
-        "trainerLoses": "Burned right through..."
+        "greeting": "I slide down the fire pole faster than anyone at the station. Watch me go!",
+        "trainerWins": "Fastest slide, fastest win!",
+        "trainerLoses": "Slid right into a loss..."
       }
     ],
     "Rendor": [
@@ -1543,21 +1543,21 @@
         "trainerLoses": "Well, you got by me. Carry on, citizen."
       },
       {
-        "greeting": "My mustache is regulation length. My Pokémon are regulation strong!",
+        "greeting": "My mustache is regulation length. My battling is regulation strong!",
         "trainerWins": "By the book, mustache and all!",
         "trainerLoses": "Off the books... and my mustache is drooping."
       }
     ],
     "Lou": [
       {
-        "greeting": "A sandstorm on Route 13? That's my cue! My team loves the dust.",
-        "trainerWins": "Dusted! The sandstorm sends its regards.",
-        "trainerLoses": "Blown away in my own sandstorm..."
+        "greeting": "I patrol the Haina Desert alone. Heat, sand, silence. I'm tough!",
+        "trainerWins": "Tough as the desert!",
+        "trainerLoses": "Lost in the desert..."
       },
       {
-        "greeting": "I patrol the Haina Desert on Mudsdale-back. Ground-types are my partners!",
-        "trainerWins": "Partners in justice!",
-        "trainerLoses": "Lost in the desert..."
+        "greeting": "A dust storm on Route 13? Just another day on patrol.",
+        "trainerWins": "Another day, another win!",
+        "trainerLoses": "Blown away in my own patrol..."
       },
       {
         "greeting": "Cap straight, badge shined. Ready to enforce some rules!",
@@ -1567,31 +1567,31 @@
     ],
     "Benji": [
       {
-        "greeting": "Justice is swift, and so are my Pokémon in a sandstorm!",
+        "greeting": "Justice is swift, and so am I!",
         "trainerWins": "Swift justice, served!",
         "trainerLoses": "Justice was a little slow today..."
-      },
-      {
-        "greeting": "Tyranitar and Garchomp guard the Malie police station. Try to get past!",
-        "trainerWins": "Nobody gets past the Malie station!",
-        "trainerLoses": "Somebody got past..."
       },
       {
         "greeting": "I salute every challenger. Then I arrest their streak.",
         "trainerWins": "Arrested! Your streak's going to jail.",
         "trainerLoses": "Released... your streak's free to go."
+      },
+      {
+        "greeting": "I stand guard outside the Malie police station all day. Try to get past me!",
+        "trainerWins": "Nobody gets past the Malie station!",
+        "trainerLoses": "Somebody got past..."
       }
     ],
     "Cal": [
       {
-        "greeting": "My hypothesis: my team defeats yours. Let's run the experiment!",
+        "greeting": "My hypothesis: I defeat you. Let's run the experiment!",
         "trainerWins": "Hypothesis confirmed!",
         "trainerLoses": "Hypothesis rejected. Fascinating data, though."
       },
       {
-        "greeting": "I study Trick Room at the Dimensional Research Lab in Heahea. Slow is the new fast!",
-        "trainerWins": "Dimensions twisted! Slow really is the new fast.",
-        "trainerLoses": "Dimensions restored..."
+        "greeting": "I research strange phenomena at the Dimensional Research Lab in Heahea. You're one of them!",
+        "trainerWins": "Phenomenon explained!",
+        "trainerLoses": "Phenomenon... unexplained."
       },
       {
         "greeting": "Lab coat buttoned, glasses polished. The experiment begins!",
@@ -1606,9 +1606,9 @@
         "trainerLoses": "I must have misplaced a decimal point..."
       },
       {
-        "greeting": "Reuniclus and Slowking: the slower they are, the sooner they move in Trick Room!",
-        "trainerWins": "Paradox solved! Slower is faster, as calculated.",
-        "trainerLoses": "Paradox unsolved... my calculations are in shambles."
+        "greeting": "Every outcome is a probability. Yours is... unfortunate.",
+        "trainerWins": "Probability confirmed!",
+        "trainerLoses": "The improbable happened..."
       },
       {
         "greeting": "I came straight from Hokulani Observatory. The stars predicted your defeat!",
@@ -1623,12 +1623,12 @@
         "trainerLoses": "This data will require further analysis... a lot of it."
       },
       {
-        "greeting": "Bronzong and Cofagrigus are my lab assistants. Very heavy lab assistants.",
-        "trainerWins": "Heavyweight results!",
-        "trainerLoses": "Dropped my assistants..."
+        "greeting": "I've recorded three hundred battles this month. You're number three hundred and one.",
+        "trainerWins": "Data point three hundred and one: victory.",
+        "trainerLoses": "Outlier detected... it's me."
       },
       {
-        "greeting": "My glasses help me spot every weakness on your team. Fogged up yet?",
+        "greeting": "My glasses help me spot every weakness. Fogged up yet?",
         "trainerWins": "Every weakness, spotted! These glasses never lie.",
         "trainerLoses": "Glasses fogged... I didn't see that coming."
       }
@@ -1640,12 +1640,12 @@
         "trainerLoses": "Kahuna Hala would scold me..."
       },
       {
-        "greeting": "Red headband, black belt, fighting spirit! Prepare yourself!",
-        "trainerWins": "Fighting spirit! The red headband never loses!",
+        "greeting": "Red headband, black belt, unbreakable spirit! Prepare yourself!",
+        "trainerWins": "My spirit holds! The red headband never loses!",
         "trainerLoses": "My spirit... broken. I'll tie my headband tighter."
       },
       {
-        "greeting": "Hariyama and Medicham train with me on the Melemele shore. Every wave is a punch!",
+        "greeting": "I train on the Melemele shore every dawn. Every wave is a punch!",
         "trainerWins": "A wave of punches! The Melemele shore taught me well!",
         "trainerLoses": "Washed out by the tide..."
       }
@@ -1657,9 +1657,9 @@
         "trainerLoses": "Frozen feet... back to Lanakila."
       },
       {
-        "greeting": "Ice and fists! Mamoswine, Beartic and my own two hands!",
-        "trainerWins": "Ice Punch! My hands and my team, frozen solid!",
-        "trainerLoses": "Thawed... my hands are cold for nothing."
+        "greeting": "Shoes are a weakness. Feel the ground, feel the battle!",
+        "trainerWins": "Grounded and victorious!",
+        "trainerLoses": "My feet feel... defeated."
       },
       {
         "greeting": "My headband's still wet from the Brooklet Hill waterfalls. Ready!",
@@ -1674,9 +1674,9 @@
         "trainerLoses": "I must refocus my discipline..."
       },
       {
-        "greeting": "Training in a gi in the snow keeps me tough. My Ice-types keep me company!",
-        "trainerWins": "Cold discipline! My gi and my Ice-types held strong!",
-        "trainerLoses": "A cold loss... even colder than Lanakila."
+        "greeting": "Five hundred push-ups before breakfast! Five hundred more after! HUP!",
+        "trainerWins": "HUP! Victory!",
+        "trainerLoses": "...hup."
       },
       {
         "greeting": "I break boards on Big Wave Beach every morning. Today, I break your streak!",
@@ -1686,14 +1686,14 @@
     ],
     "Carrie": [
       {
-        "greeting": "Let's dance! My Pokémon sway like hula at the Iki Town festival!",
+        "greeting": "Let's dance! I sway like hula at the Iki Town festival!",
         "trainerWins": "And that's the final pose!",
         "trainerLoses": "I missed a step... I lost the rhythm."
       },
       {
-        "greeting": "Oricorio taught me every dance style on the islands. Which one will beat you?",
-        "trainerWins": "That one! The Pom-Pom style never misses!",
-        "trainerLoses": "None of them, apparently..."
+        "greeting": "I've danced at every festival in Alola since I was five!",
+        "trainerWins": "Another festival, another win!",
+        "trainerLoses": "No festival tonight..."
       },
       {
         "greeting": "My flower crown is fresh from Malie Garden. Smell that sweet victory!",
@@ -1703,36 +1703,36 @@
     ],
     "Variel": [
       {
-        "greeting": "Hula tells stories! Today's story is a Rain Dance that washes you away!",
+        "greeting": "Hula tells stories! Today's story ends with me winning!",
         "trainerWins": "What a beautiful story we told!",
         "trainerLoses": "This story didn't end the way I choreographed it."
       },
       {
-        "greeting": "Politoed and Pelipper call the rain, and my Water-types dance right through it!",
-        "trainerWins": "Rain dance! My Water-types never miss a step!",
-        "trainerLoses": "Drought... the rain wouldn't come."
+        "greeting": "My grandmother taught me every hula from Melemele to Poni. Every one tells a legend!",
+        "trainerWins": "Another legend told!",
+        "trainerLoses": "A sad legend..."
       },
       {
-        "greeting": "My teal dress flows like the waves of Kala'e Bay!",
+        "greeting": "My dress flows like the waves of Kala'e Bay!",
         "trainerWins": "A flowing victory, like the waves of Kala'e Bay!",
         "trainerLoses": "The wave crashed... right on my dress."
       }
     ],
     "Atalanta": [
       {
-        "greeting": "Feel the beat! My team never misses a step, especially in the rain!",
+        "greeting": "Feel the beat! I never miss a step!",
         "trainerWins": "On beat, every time!",
-        "trainerLoses": "Off beat... the rain threw off our rhythm."
+        "trainerLoses": "Off beat... I lost the rhythm."
       },
       {
-        "greeting": "Ludicolo and I dance at every luau in Heahea City! Hana hou!",
+        "greeting": "I dance at every luau in Heahea City! Hana hou!",
         "trainerWins": "Hana hou! One more time!",
         "trainerLoses": "No encore tonight..."
       },
       {
-        "greeting": "Kingdra and Swampert love a downpour. Let's make it rain!",
-        "trainerWins": "A downpour of victory!",
-        "trainerLoses": "Just a drizzle... my downpour never came."
+        "greeting": "Five, six, seven, eight! Let's go!",
+        "trainerWins": "And... hold the pose!",
+        "trainerLoses": "Five, six, seven... I forgot eight."
       }
     ],
     "Harvey": [
@@ -1742,14 +1742,14 @@
         "trainerLoses": "Your Pokémon are clearly well cared for. Well done."
       },
       {
+        "greeting": "I rescue injured Pokémon from Alola's storms. I'm braver than I look!",
+        "trainerWins": "Brave and victorious!",
+        "trainerLoses": "Brave... and beaten."
+      },
+      {
         "greeting": "My all-white uniform stays spotless, even in battle. Aether standards!",
         "trainerWins": "Spotless! Aether standards upheld!",
         "trainerLoses": "Stained... Aether's laundry service will be busy."
-      },
-      {
-        "greeting": "I rescued these Pokémon from the Po Town rain. They're stronger than ever now!",
-        "trainerWins": "Rescued and stronger!",
-        "trainerLoses": "Back to Aether Paradise to rest..."
       }
     ],
     "Luke": [
@@ -1759,14 +1759,14 @@
         "trainerLoses": "Maybe they need a rest back at Aether Paradise."
       },
       {
+        "greeting": "I sing to the Pokémon in the conservation area every night. They love it!",
+        "trainerWins": "They love the singing AND the winning!",
+        "trainerLoses": "Time for a sad song..."
+      },
+      {
         "greeting": "White from head to toe. Aether Paradise style!",
         "trainerWins": "Paradise-perfect! Not a speck on me.",
         "trainerLoses": "Paradise lost... and my uniform's a mess."
-      },
-      {
-        "greeting": "Turtonator and Bruxish were rescued from Alola's shores. Now they protect me!",
-        "trainerWins": "Protected! Turtonator and Bruxish repay the favor!",
-        "trainerLoses": "Now I need protecting..."
       }
     ],
     "Granville": [
@@ -1776,9 +1776,9 @@
         "trainerLoses": "You're tougher than any Trial Captain I've faced."
       },
       {
-        "greeting": "Speed is everything. Talonflame and Weavile move before you can blink!",
-        "trainerWins": "Too fast! You blinked, and it was over.",
-        "trainerLoses": "Out-sped... I blinked, and it was over."
+        "greeting": "I finished my island challenge in record time. Now I'm here for more!",
+        "trainerWins": "More wins on the record!",
+        "trainerLoses": "Record broken... the wrong way."
       },
       {
         "greeting": "Spiky hair, sharp mind. Let's go!",
@@ -1793,14 +1793,14 @@
         "trainerLoses": "Your strategy was a step ahead of mine."
       },
       {
-        "greeting": "Crobat, Jolteon, Aerodactyl. Strike first, strike hard!",
-        "trainerWins": "First strike, last word!",
-        "trainerLoses": "Struck back... first isn't always best."
+        "greeting": "I've planned out every possible move you could make. All of them.",
+        "trainerWins": "All of them, accounted for!",
+        "trainerLoses": "Not all of them, apparently..."
       },
       {
-        "greeting": "I finished the island challenge in record time. I'm fast at everything!",
-        "trainerWins": "Record time! Fastest win yet!",
-        "trainerLoses": "Slowed down... my record's in danger."
+        "greeting": "Gloves on, plan ready. Strike first, strike hard!",
+        "trainerWins": "First strike, last word!",
+        "trainerLoses": "Struck back... first isn't always best."
       }
     ],
     "Heidi": [
@@ -1827,9 +1827,9 @@
         "trainerLoses": "Your Pokémon behaved in ways my studies never covered!"
       },
       {
-        "greeting": "Comfey and Ribombee come from Melemele's meadows. Rescued and thriving!",
-        "trainerWins": "Thriving! Comfey and Ribombee are in full bloom!",
-        "trainerLoses": "Wilting... Comfey and Ribombee need a rest."
+        "greeting": "I've catalogued every meadow on Melemele. Next up: your weaknesses!",
+        "trainerWins": "Catalogued and conquered!",
+        "trainerLoses": "Uncatalogued... you're one of a kind."
       },
       {
         "greeting": "White cap, white coat, white boots. Even my tablet is white!",
@@ -1844,9 +1844,9 @@
         "trainerLoses": "I came to win... maybe I should learn to have fun too."
       },
       {
-        "greeting": "The sun's out on Poni Island. Fire and Grass are ready to bloom and burn!",
-        "trainerWins": "Bloom and burn! The Poni sun is on my side.",
-        "trainerLoses": "Clouded over... no sun, no win."
+        "greeting": "Fun is for after. Right now, it's business.",
+        "trainerWins": "Business concluded.",
+        "trainerLoses": "Business... bankrupt."
       },
       {
         "greeting": "My visor keeps my eyes on the prize. That's you.",
@@ -1856,14 +1856,14 @@
     ],
     "Sylvia": [
       {
-        "greeting": "I've analyzed every type matchup there is. You can't surprise me!",
+        "greeting": "I've analyzed every kind of Trainer there is. You can't surprise me!",
         "trainerWins": "No surprises at all.",
         "trainerLoses": "Well... you surprised me."
       },
       {
-        "greeting": "Ninetales calls the sun, Exeggutor stands tall. Classic Alola!",
-        "trainerWins": "Classic Alola! Sun up, Exeggutor tall!",
-        "trainerLoses": "Cut down... even Exeggutor isn't tall enough today."
+        "greeting": "Classic Alolan Trainer: big smile, bigger confidence. I've seen it all.",
+        "trainerWins": "Classic Alola!",
+        "trainerLoses": "Okay, I haven't seen THAT."
       },
       {
         "greeting": "Pointing is rude, but I'm pointing at the winner: me!",
@@ -1873,17 +1873,17 @@
     ],
     "Stein": [
       {
-        "greeting": "My latest invention is a team optimized for this exact battle!",
+        "greeting": "My latest invention is a battle plan optimized for this exact moment!",
         "trainerWins": "The invention works perfectly!",
         "trainerLoses": "Back to the lab for some adjustments..."
       },
       {
-        "greeting": "Cresselia and Slowbro: one dreams, one forgets. Perfect test subjects!",
-        "trainerWins": "Perfect results! One dreamed of winning, the other forgot to lose.",
-        "trainerLoses": "Forgot the results..."
+        "greeting": "I invented a self-stirring cocoa mug. Next invention: victory!",
+        "trainerWins": "Invention complete: victory!",
+        "trainerLoses": "Prototype failed..."
       },
       {
-        "greeting": "I've read Aether Paradise's research. Your team's stats are already in my notes.",
+        "greeting": "I've read every paper Aether Paradise ever published. Your moves are in my notes already.",
         "trainerWins": "Exactly as noted! My research is flawless.",
         "trainerLoses": "My notes were wrong..."
       }
@@ -1895,9 +1895,9 @@
         "trainerLoses": "Science cannot explain how you did that..."
       },
       {
-        "greeting": "Dusknoir and Jellicent in Trick Room. Slow, spooky and scientific!",
-        "trainerWins": "Spooky science! Trick Room never fails.",
-        "trainerLoses": "Science, scared... Dusknoir's hiding behind me."
+        "greeting": "Gravity, magnetism, thermodynamics... and now, battle science!",
+        "trainerWins": "Battle science works!",
+        "trainerLoses": "Back to basic science..."
       },
       {
         "greeting": "Lab coat, tie, clipboard. I'm dressed for a breakthrough!",
@@ -1912,13 +1912,13 @@
         "trainerLoses": "I should try twenty thousand tomorrow..."
       },
       {
-        "greeting": "Blaziken and Infernape: kicks of fire, fists of flame!",
-        "trainerWins": "Fiery fists! Blaziken and Infernape never miss!",
-        "trainerLoses": "Burned out... my fists need a rest."
+        "greeting": "My fists are as hard as the cliffs of Ula'ula!",
+        "trainerWins": "Hard as stone!",
+        "trainerLoses": "My fists... cracked."
       },
       {
         "greeting": "I train on the ridge at Wela Volcano Park. Heat forges discipline!",
-        "trainerWins": "Forged in fire! Wela's heat made us unbreakable!",
+        "trainerWins": "Forged in fire! The heat made me unbreakable!",
         "trainerLoses": "Melted in the heat..."
       }
     ],
@@ -1929,26 +1929,26 @@
         "trainerLoses": "My mind is cloudy now... I must meditate again."
       },
       {
-        "greeting": "Swampert and Feraligatr train with me in the Melemele Sea. Water builds strength!",
-        "trainerWins": "Tidal power! The Melemele Sea made us strong!",
-        "trainerLoses": "Pulled under by the current..."
+        "greeting": "Breathe in. Breathe out. Strike.",
+        "trainerWins": "Strike! Bowing first, winning second.",
+        "trainerLoses": "Breathe in... breathe out... lose."
       },
       {
-        "greeting": "Barefoot, belted, bowing. And then I strike!",
-        "trainerWins": "Strike! Bowing first, winning second.",
-        "trainerLoses": "Missed... I bowed too long."
+        "greeting": "Barefoot, belted, bowing. Silence before the storm.",
+        "trainerWins": "The storm has passed. I stand.",
+        "trainerLoses": "The storm swept me away..."
       }
     ],
     "Jo": [
       {
         "greeting": "I've danced on every stage in Alola. This is my grandest yet!",
-        "trainerWins": "A standing ovation for my team!",
+        "trainerWins": "A standing ovation!",
         "trainerLoses": "No encore for me tonight..."
       },
       {
-        "greeting": "Dragonite, Salamence, Garchomp... my backup dancers are dragons!",
-        "trainerWins": "Dragon Dance! My backup dancers stole the show!",
-        "trainerLoses": "The dragons stumbled..."
+        "greeting": "Spotlight on me, please! I'm ready for my big moment!",
+        "trainerWins": "Spotlight stolen!",
+        "trainerLoses": "Spotlight moved... to you."
       },
       {
         "greeting": "My flower crown came from Akala's meadows. Every petal is a dance step!",
@@ -1963,9 +1963,9 @@
         "trainerLoses": "The show's over... and you stole it."
       },
       {
-        "greeting": "Milotic and Lapras glide like hula dancers on the water. Watch!",
-        "trainerWins": "Graceful! Milotic and Lapras never miss a step!",
-        "trainerLoses": "Sank... my water dancers lost their footing."
+        "greeting": "Sequins, feathers and flowers. I never perform without all three!",
+        "trainerWins": "A dazzling performance!",
+        "trainerLoses": "Lost a feather... and the show."
       },
       {
         "greeting": "I perform at the Hano Grand Resort luau every night. Tonight, I perform for you!",
@@ -1980,14 +1980,14 @@
         "trainerLoses": "I'll have to start counting from zero again."
       },
       {
-        "greeting": "I trained my Fire-types in Wela Volcano Park. Feel the heat!",
-        "trainerWins": "Too hot to handle! Wela Volcano training pays off!",
-        "trainerLoses": "Cooled down... the volcano's dormant."
+        "greeting": "Climb number... five hundred and something. Who's counting? Me. I'm counting.",
+        "trainerWins": "Five hundred and something wins!",
+        "trainerLoses": "Back to zero..."
       },
       {
-        "greeting": "My gloves are fireproof for a reason. Charizard gets excited!",
-        "trainerWins": "Fired up! Charizard's practically dancing!",
-        "trainerLoses": "Burned out... even my fireproof gloves are smoking."
+        "greeting": "My gloves are worn out from all these climbs. Still got a grip on victory!",
+        "trainerWins": "Firm grip on victory!",
+        "trainerLoses": "Lost my grip..."
       }
     ],
     "Hashim": [
@@ -1997,14 +1997,14 @@
         "trainerLoses": "One mistake... that's all it took."
       },
       {
-        "greeting": "Kommo-o and Golisopod: armor from Alola's mountains and seas!",
-        "trainerWins": "Armor holds! Mountain and sea, unbroken!",
-        "trainerLoses": "Armor cracked... Kommo-o and Golisopod need repairs."
-      },
-      {
-        "greeting": "This jacket has seen Vast Poni Canyon and Exeggutor Island. I've seen everything.",
+        "greeting": "My jacket has seen Vast Poni Canyon and the peak of Lanakila. I've seen everything.",
         "trainerWins": "Seen it all, and won it all!",
         "trainerLoses": "Never seen THAT before..."
+      },
+      {
+        "greeting": "Perfection is a habit. So is winning.",
+        "trainerWins": "Habit maintained.",
+        "trainerLoses": "Bad habit... losing."
       }
     ],
     "Munin": [
@@ -2014,9 +2014,9 @@
         "trainerLoses": "I didn't see that coming at all..."
       },
       {
-        "greeting": "Vikavolt, Decidueye, Goodra... I caught the toughest Pokémon in Alola's jungles!",
-        "trainerWins": "Jungle tough! The Lush Jungle raised them right!",
-        "trainerLoses": "Lost in the jungle..."
+        "greeting": "I study every challenger before they reach the top. You're no different.",
+        "trainerWins": "Studied and solved.",
+        "trainerLoses": "You're different. Very different."
       },
       {
         "greeting": "Gloves on, focus sharp. Let's settle this.",
@@ -2031,43 +2031,43 @@
         "trainerLoses": "You helped me grow a lot today. Thank you!"
       },
       {
-        "greeting": "Honchkrow and Mandibuzz circle the Poni Wilds at dusk. Ominous, right?",
-        "trainerWins": "Swooped! Honchkrow and Mandibuzz never miss.",
-        "trainerLoses": "Grounded... even my fliers came down."
+        "greeting": "I write down one thing I learn from every opponent. What will you teach me?",
+        "trainerWins": "Lesson for you today!",
+        "trainerLoses": "Lesson for me today... a big one."
       },
       {
-        "greeting": "Light-blue visor, dark team. I like contrast!",
-        "trainerWins": "A striking contrast!",
-        "trainerLoses": "The contrast is... me losing."
+        "greeting": "Light-blue visor, bright smile. I like to keep things positive!",
+        "trainerWins": "Positive vibes win!",
+        "trainerLoses": "Still positive... mostly."
       }
     ],
     "Tamah": [
+      {
+        "greeting": "I jog to the Battle Tree from Seafolk Village every morning. Endurance is everything!",
+        "trainerWins": "Endurance wins! Those Seafolk jogs pay off!",
+        "trainerLoses": "Out of breath... I'll jog twice tomorrow."
+      },
       {
         "greeting": "I've trained day and night to reach this height. I won't fall now!",
         "trainerWins": "Still standing tall!",
         "trainerLoses": "I've fallen... but I'll climb right back up."
       },
       {
-        "greeting": "Snorlax, Blissey and Slaking. Heavyweights, all of them!",
-        "trainerWins": "Heavyweight champ! Nobody moves Snorlax!",
-        "trainerLoses": "Knocked out... and Snorlax wasn't even asleep."
-      },
-      {
-        "greeting": "I jog to the Battle Tree from Seafolk Village every morning. Endurance is everything!",
-        "trainerWins": "Endurance wins! Those Seafolk jogs pay off!",
-        "trainerLoses": "Out of breath... I'll jog twice tomorrow."
+        "greeting": "Marathons on Melemele, hill runs on Akala. I never stop moving!",
+        "trainerWins": "Still moving forward!",
+        "trainerLoses": "Stopped... for now."
       }
     ],
     "Bette": [
       {
-        "greeting": "My team is built for one thing only: crushing win streaks.",
+        "greeting": "I'm here for one thing only: crushing win streaks.",
         "trainerWins": "Another streak crushed.",
         "trainerLoses": "Your streak survived... impressive."
       },
       {
-        "greeting": "Gengar, Crobat, Nidoking... poison runs through my team like lava under Wela!",
-        "trainerWins": "Poisoned! Like lava under Wela.",
-        "trainerLoses": "Antidote applied... on your side."
+        "greeting": "I keep a list of every streak I've ended. Yours is next.",
+        "trainerWins": "Added to the list.",
+        "trainerLoses": "The list stays one short..."
       },
       {
         "greeting": "Sharp visor, sharper tactics. Ready?",
@@ -2077,19 +2077,19 @@
     ],
     "Kikujiro": [
       {
-        "greeting": "Every Pokémon I've got is Electric-type. Forty years of lightning, kid!",
-        "trainerWins": "Shocking, isn't it? Forty years of lightning!",
-        "trainerLoses": "Grounded... forty years of lightning, and I'm grounded."
+        "greeting": "I've been battling since before you were born. Let me teach you a thing or two.",
+        "trainerWins": "That's lesson one. Come back for lesson two.",
+        "trainerLoses": "Heh. Seems you've got a thing or two to teach me."
       },
       {
-        "greeting": "Zapdos, Raikou, Thundurus. I chased storms across the world to catch them!",
-        "trainerWins": "The storm chaser wins!",
-        "trainerLoses": "The storm passed me by..."
+        "greeting": "This jacket has seen forty years of battles. Not a single tear in it.",
+        "trainerWins": "Still no tears!",
+        "trainerLoses": "First tear... in forty years."
       },
       {
-        "greeting": "This jacket has watched lightning strike Mount Hokulani. Twice.",
-        "trainerWins": "Third strike! Hokulani's got nothing on me.",
-        "trainerLoses": "Struck down... like lightning on Hokulani."
+        "greeting": "Back in my day, we climbed the Battle Tree uphill. Both ways.",
+        "trainerWins": "Uphill both ways, and still winning!",
+        "trainerLoses": "Downhill from here, I suppose..."
       }
     ],
     "Xenophon": [
@@ -2099,13 +2099,13 @@
         "trainerLoses": "And still I underestimated you. Remarkable."
       },
       {
-        "greeting": "Tsareena, Virizion, Alolan Exeggutor... my garden fights back!",
-        "trainerWins": "The garden grows! Nothing beats Alolan soil.",
-        "trainerLoses": "Weeded out... my garden needs tending."
+        "greeting": "I respect every opponent, young or old. Show me your respect, too.",
+        "trainerWins": "Respect earned, battle won.",
+        "trainerLoses": "Respect earned... by you."
       },
       {
-        "greeting": "My hair hangs long like jungle vines. My team comes from the Lush Jungle, too.",
-        "trainerWins": "Jungle law! The vines always win.",
+        "greeting": "My hair hangs long like jungle vines. I've lived in the Lush Jungle for twenty years.",
+        "trainerWins": "The law of the jungle!",
         "trainerLoses": "Lost in the vines..."
       }
     ],
@@ -2116,14 +2116,14 @@
         "trainerLoses": "Perhaps our fight is winding down after all..."
       },
       {
-        "greeting": "Legends from every corner of the world. I've earned each one!",
-        "trainerWins": "Earned! Every legend, every win.",
-        "trainerLoses": "You earned that win..."
-      },
-      {
-        "greeting": "Articuno, Moltres... I've traveled far in this jacket. Farther than you'd think.",
+        "greeting": "I've traveled far in this jacket. Farther than you'd think.",
         "trainerWins": "Far traveled, and still winning!",
         "trainerLoses": "A long way home in this old jacket..."
+      },
+      {
+        "greeting": "Old age is just experience with a few more wrinkles!",
+        "trainerWins": "Experience wins!",
+        "trainerLoses": "More wrinkles, less winning..."
       }
     ],
     "Ignacio": [
@@ -2133,9 +2133,9 @@
         "trainerLoses": "Yes, the toughest yet. You've proven it."
       },
       {
-        "greeting": "Latias and Latios carried me across the sea to Poni Island. They're ready.",
-        "trainerWins": "Soaring! Latias and Latios carry me to victory.",
-        "trainerLoses": "Landed... back on Poni's shore."
+        "greeting": "I've sailed across every sea to reach this island. The journey was worth it.",
+        "trainerWins": "Worth the journey!",
+        "trainerLoses": "Long journey home..."
       },
       {
         "greeting": "My beard went gray from a lifetime of battles. One more won't hurt.",
@@ -2150,14 +2150,14 @@
         "trainerLoses": "You have experience beyond your years."
       },
       {
-        "greeting": "Gardevoir and Gallade read your moves before you make them. Psychic power!",
-        "trainerWins": "Read like a book! Psychic power never lies.",
-        "trainerLoses": "Unreadable... even Gardevoir couldn't read you."
+        "greeting": "I meditate at the Ruins of Life on Akala. My mind is calm, my will is strong.",
+        "trainerWins": "Calm and victorious!",
+        "trainerLoses": "Calm... but beaten."
       },
       {
-        "greeting": "I meditate at the Ruins of Life on Akala. Tapu Lele's power is with me!",
-        "trainerWins": "Blessed! Tapu Lele smiles on me today.",
-        "trainerLoses": "The blessing faded..."
+        "greeting": "I read people like books. You're an easy read.",
+        "trainerWins": "Read like a book!",
+        "trainerLoses": "Unreadable... you're a mystery."
       }
     ],
     "Xio": [
@@ -2167,14 +2167,14 @@
         "trainerLoses": "You're rising. I can see it clearly now."
       },
       {
-        "greeting": "Every Pokémon I have is Fairy-type. Don't let the sparkles fool you!",
-        "trainerWins": "Sparkling! Fairy-types never fail me.",
-        "trainerLoses": "The sparkles faded..."
+        "greeting": "Every Trainer is a story. Let's see how yours ends.",
+        "trainerWins": "A short story, this one.",
+        "trainerLoses": "An epic, this one!"
       },
       {
-        "greeting": "Mimikyu, Togekiss and Primarina. Fairy tales come true at the Battle Tree!",
-        "trainerWins": "Happily ever after! Fairy tales do come true.",
-        "trainerLoses": "A sad ending... not every fairy tale ends happily."
+        "greeting": "My gloves have held a thousand Poké Balls. Let's see what yours can do.",
+        "trainerWins": "One more for the gloves!",
+        "trainerLoses": "My gloves feel heavy today..."
       }
     ],
     "Priya": [
@@ -2184,196 +2184,196 @@
         "trainerLoses": "Now that's a heart worth seeing."
       },
       {
-        "greeting": "Suicune and Raikou roamed free until they met me. Now they roam with me!",
-        "trainerWins": "Roaming free, and winning free!",
-        "trainerLoses": "They ran away... back to roaming."
-      },
-      {
-        "greeting": "Short hair, sturdy gloves, legendary team. I'm practical.",
+        "greeting": "Short hair, sturdy gloves, no nonsense. I'm practical.",
         "trainerWins": "Practical and victorious!",
         "trainerLoses": "Impractical... my gloves didn't help."
+      },
+      {
+        "greeting": "Heart, grit and good boots. That's all a Trainer needs.",
+        "trainerWins": "Heart and grit win!",
+        "trainerLoses": "My boots gave out..."
       }
     ],
     "Candy": [
       {
-        "greeting": "My Pokémon are seasoned like a fine dish. Ready for a taste?",
+        "greeting": "I treat battles like cooking: season well and serve hot. Ready for a taste?",
         "trainerWins": "Seasoned to perfection!",
         "trainerLoses": "It seems your seasoning was even better."
       },
       {
-        "greeting": "The Swords of Justice answer to me. Cobalion, Terrakion, Virizion, ready!",
-        "trainerWins": "Justice! The Swords never falter.",
-        "trainerLoses": "Unjust... the Swords have been sheathed."
+        "greeting": "I've hiked Lanakila in these boots and gloves. A battle won't wear them out!",
+        "trainerWins": "Durable! My boots and my will, still standing.",
+        "trainerLoses": "Worn out... even these boots have their limits."
       },
       {
-        "greeting": "I've hiked Lanakila in these boots and gloves. A battle won't wear them out!",
-        "trainerWins": "Durable! My boots and my team, still standing.",
-        "trainerLoses": "Worn out... even these boots have their limits."
+        "greeting": "A pinch of patience, a dash of daring. That's my secret recipe!",
+        "trainerWins": "Secret recipe works!",
+        "trainerLoses": "Too much daring, not enough patience..."
       }
     ],
     "Napoleon": [
       {
-        "greeting": "Laugh at my shorts all you want. My team is full of legendary Pokémon!",
-        "trainerWins": "Not so funny now, huh? Legends don't lose!",
-        "trainerLoses": "Even legends lose to the right Trainer... I guess that's you."
+        "greeting": "Attention! General Napoleon has arrived! I've planned this battle down to the last step!",
+        "trainerWins": "Victory, precisely as the general planned!",
+        "trainerLoses": "Retreat! The general must reconsider his strategy..."
       },
       {
-        "greeting": "I may be small, but I plan battles like a general. And my soldiers are legends!",
-        "trainerWins": "Victory, exactly as the general planned!",
-        "trainerLoses": "Retreat! My grand strategy needs a rethink..."
+        "greeting": "Laugh at my shorts all you like. Great generals come in small sizes!",
+        "trainerWins": "Not so funny now, is it? Small general, big win!",
+        "trainerLoses": "Even great generals lose a battle. I'll win the war!"
       },
       {
-        "greeting": "I saw Tapu Koko at the Ruins of Conflict once. I've been chasing legends ever since!",
-        "trainerWins": "Tapu Koko would be proud of me!",
-        "trainerLoses": "Guess I've still got a lot of chasing to do..."
+        "greeting": "I drew a map of this whole tree in crayon. Every branch is part of my plan!",
+        "trainerWins": "The crayon map never lies!",
+        "trainerLoses": "My map didn't have YOU on it..."
       }
     ],
     "Brady": [
       {
-        "greeting": "A kid in board shorts with a team of legends. Pretty cool, huh?",
-        "trainerWins": "Kid in shorts: one. You: zero!",
-        "trainerLoses": "Okay, the kid in shorts is going home now..."
+        "greeting": "You know who I am, right? Everyone on Poni Island knows Brady!",
+        "trainerWins": "Now you'll remember the name! Brady!",
+        "trainerLoses": "Okay, now everyone will know me as the kid who lost..."
       },
       {
-        "greeting": "Uxie, Mesprit and Azelf: knowledge, emotion and willpower. I've got all three!",
-        "trainerWins": "Willpower wins the day!",
-        "trainerLoses": "Guess my knowledge wasn't enough this time."
+        "greeting": "I've signed autographs at the Pokémon Center café. Want one before or after I win?",
+        "trainerWins": "After, then! Here you go: To my biggest fan!",
+        "trainerLoses": "Can I... have YOUR autograph?"
       },
       {
-        "greeting": "Regigigas starts slow, just like me in the morning. But once we get going, look out!",
-        "trainerWins": "Told you! Once we get going, nobody stops us!",
-        "trainerLoses": "We never got going... back to bed for us."
+        "greeting": "A kid in board shorts this famous? Pretty cool, huh?",
+        "trainerWins": "Famous AND undefeated! Well, today, anyway.",
+        "trainerLoses": "Famous for losing... that's not the kind I wanted."
       }
     ],
     "Samantha": [
       {
-        "greeting": "My flower clip says sweet. My team of legendary Pokémon says otherwise!",
-        "trainerWins": "Sweet look, legendary bite!",
-        "trainerLoses": "Even my legends couldn't save me..."
+        "greeting": "I may look sweet, but my battle record is anything but!",
+        "trainerWins": "Sweet look, sour result for you!",
+        "trainerLoses": "That one tasted bitter..."
       },
       {
-        "greeting": "Raikou, Suicune, Zapdos... every legend I meet ends up joining my team!",
-        "trainerWins": "Another win for the legendary squad!",
-        "trainerLoses": "Maybe those legends should've joined you instead."
+        "greeting": "People see my flower clip and think I'm harmless. Their mistake!",
+        "trainerWins": "Another mistake, another win!",
+        "trainerLoses": "I guess I'm the one who made the mistake today."
       },
       {
-        "greeting": "I'm the toughest Lass on all four islands. My Regigigas agrees!",
+        "greeting": "I'm the toughest Lass on all four islands. Ask anyone in Konikoni!",
         "trainerWins": "Toughest Lass in Alola, confirmed!",
         "trainerLoses": "Okay... second toughest. Maybe third."
       }
     ],
     "Inez": [
       {
-        "greeting": "Everyone thinks a Lass in a skirt is easy. My legends would like a word!",
+        "greeting": "Everyone thinks a Lass in a skirt is easy. I'd like a word with everyone!",
         "trainerWins": "Underestimated again. Thanks for the win!",
         "trainerLoses": "This time I'm the one who underestimated you."
       },
       {
-        "greeting": "I've chased legends from Lanakila's peak to the Poni coast. Ready to meet them?",
-        "trainerWins": "Worth every step of the chase!",
-        "trainerLoses": "Back to chasing. I need a stronger legend."
+        "greeting": "My twin sister always beats me at everything. Not today!",
+        "trainerWins": "Twin rivalry: one for me!",
+        "trainerLoses": "Please don't tell my twin about this..."
       },
       {
-        "greeting": "Latias and Latios are twins, just like me and my sister. We never lose!",
-        "trainerWins": "Twin power wins! Wait till my sister hears!",
-        "trainerLoses": "Please don't tell my twin about this..."
+        "greeting": "I chased my sister up Lanakila once. Now I'm chasing wins up this tree!",
+        "trainerWins": "Worth every step of the chase!",
+        "trainerLoses": "Back to chasing... I need longer legs."
       }
     ],
     "Niara": [
       {
-        "greeting": "I have starter Pokémon from every region! All grown up, just like me!",
-        "trainerWins": "Starters are the best Pokémon ever!",
-        "trainerLoses": "My starters need more training... and so do I."
+        "greeting": "Professor Kukui let me hold a Poké Ball once! I'm basically a professor now!",
+        "trainerWins": "Professor Niara, undefeated!",
+        "trainerLoses": "Professor Niara needs to study more..."
+      },
+      {
+        "greeting": "Why is the sky blue? Why is the sea salty? Why are you about to lose? I know everything!",
+        "trainerWins": "I knew it! I know everything!",
+        "trainerLoses": "Why... did I lose? I don't know everything..."
       },
       {
         "greeting": "When I'm eleven, I'm doing the island challenge! This is practice!",
         "trainerWins": "Island challenge, here I come!",
         "trainerLoses": "Maybe I'll wait a few more years..."
-      },
-      {
-        "greeting": "Professor Kukui let me hold a Poké Ball once! I'm basically a professor now!",
-        "trainerWins": "Professor Niara, undefeated!",
-        "trainerLoses": "Professor Niara needs to study more..."
       }
     ],
     "Victor": [
       {
-        "greeting": "My name means 'winner'! And my Pokémon are dragons! Rawr!",
-        "trainerWins": "Rawr! Winner, just like my name!",
-        "trainerLoses": "Rawr... my dragons are sleepy."
+        "greeting": "My name means 'winner'! It's my superhero name AND my real name!",
+        "trainerWins": "Winner, just like my name says!",
+        "trainerLoses": "Maybe I need a new superhero name..."
       },
       {
-        "greeting": "My sun hat is white like Latios! That makes me super fast too!",
-        "trainerWins": "Fast like Latios! Zoom!",
-        "trainerLoses": "Not fast enough... my hat flew off."
+        "greeting": "My sun hat is my superhero mask! Okay, it's a hat. But it's super!",
+        "trainerWins": "Super hat, super win!",
+        "trainerLoses": "My super hat lost its powers..."
       },
       {
-        "greeting": "I'm little, but my Dragonite is SO big. Big Dragonite hugs win battles!",
-        "trainerWins": "Big Dragonite hugs for everyone!",
-        "trainerLoses": "Dragonite, I need a hug..."
+        "greeting": "Superheroes always win in the end! Watch me save the day!",
+        "trainerWins": "The day is saved! Thank you, citizens!",
+        "trainerLoses": "Even superheroes have bad days..."
       }
     ],
     "Reina": [
       {
-        "greeting": "My best friends are Primarina, Decidueye and Incineroar! Starters forever!",
-        "trainerWins": "Starter friends forever!",
-        "trainerLoses": "We lose together and get stronger together!"
+        "greeting": "My Pokémon are my best friends! Best friends always win together!",
+        "trainerWins": "Best friends forever!",
+        "trainerLoses": "It's okay. Best friends lose together too."
+      },
+      {
+        "greeting": "I made friendship bracelets for my whole team! Want one after I win?",
+        "trainerWins": "Here's your bracelet! We're friends now!",
+        "trainerLoses": "Can I still give you a bracelet? You won it."
       },
       {
         "greeting": "I'm gonna be the first Alola League Champion from my preschool!",
         "trainerWins": "Champion practice is going great!",
         "trainerLoses": "Champions practice even when they lose!"
-      },
-      {
-        "greeting": "I have starters from Kanto, Johto, Hoenn... I can't count that high yet!",
-        "trainerWins": "One, two, three... that's how many I beat!",
-        "trainerLoses": "I need to learn to count higher. And battle better."
       }
     ],
     "Naya": [
       {
-        "greeting": "Dragons are the coolest! I wanna ride one over Poni Island someday!",
-        "trainerWins": "Dragon ride, here I come!",
-        "trainerLoses": "No dragon ride today..."
-      },
-      {
-        "greeting": "Cresselia gives me good dreams. Last night I dreamed I won!",
-        "trainerWins": "My dream came true! Cresselia, you're the best!",
+        "greeting": "Last night I dreamed I won a battle up here! Dreams come true, right?",
+        "trainerWins": "My dream came true!",
         "trainerLoses": "Maybe it was a different dream..."
       },
       {
-        "greeting": "Garchomp is SO fast. Faster than a Tauros at Paniola Ranch!",
-        "trainerWins": "Zoom zoom! Garchomp wins!",
-        "trainerLoses": "Garchomp, we got left in the dust!"
+        "greeting": "I wanna fly over Poni Island someday, way up in the clouds!",
+        "trainerWins": "I'm flying! Well, my heart is!",
+        "trainerLoses": "Back down to the ground... for now."
+      },
+      {
+        "greeting": "Mommy reads me stories about heroes every night. Tonight, the story is about me!",
+        "trainerWins": "Tonight's story: the hero won!",
+        "trainerLoses": "Tonight's story has a sad part..."
       }
     ],
     "Gwenny": [
       {
-        "greeting": "I've backpacked across every region chasing legends. Look who came along!",
-        "trainerWins": "The legends and I keep on trekking!",
-        "trainerLoses": "Guess my trek isn't over yet."
+        "greeting": "I've backpacked across every region. Alola's the last stop on my list!",
+        "trainerWins": "What a way to finish the journey!",
+        "trainerLoses": "Looks like my journey isn't over just yet."
       },
       {
-        "greeting": "Heatran keeps my tent warm on Lanakila. Handy, right? It's terrifying in battle, too.",
-        "trainerWins": "Toasty and triumphant!",
-        "trainerLoses": "Even Heatran couldn't warm up this loss."
+        "greeting": "My backpack has patches from every region I've visited. Alola's patch goes on today!",
+        "trainerWins": "Sewing on the Alola patch tonight!",
+        "trainerLoses": "No patch yet... I'll have to stay a while."
       },
       {
-        "greeting": "My backpack's full of trail mix and Poké Balls. The Poké Balls hold legends.",
+        "greeting": "My backpack's full of trail mix and maps from every region. All I need now is a win.",
         "trainerWins": "Trail mix for the winner!",
         "trainerLoses": "I'll just eat my trail mix sadly..."
       }
     ],
     "Fernanda": [
       {
-        "greeting": "I camp under the stars on the Poni Plains. My legendary Pokémon keep watch!",
-        "trainerWins": "Sleep tight, legends!",
-        "trainerLoses": "No sleep tonight. Just thinking about that loss."
+        "greeting": "I camp under the stars on the Poni Plains every night. They're brighter than anywhere!",
+        "trainerWins": "The stars are smiling on me tonight!",
+        "trainerLoses": "No stars for me tonight. Just clouds."
       },
       {
-        "greeting": "Tornadus and Landorus crossed the sea with me. Wind and earth, at your service!",
-        "trainerWins": "Storm and quake! Victory!",
-        "trainerLoses": "The storm passed... without me."
+        "greeting": "I've named a star after every battle I've won. I'm running out of names!",
+        "trainerWins": "Another star in the sky for me!",
+        "trainerLoses": "No new star tonight..."
       },
       {
         "greeting": "Thumbs up! My boots have walked from the Haina Desert to Seafolk Village!",
@@ -2383,31 +2383,31 @@
     ],
     "Vivek": [
       {
-        "greeting": "Forty years of hiking Poni's trails. This tree is just another trail to me!",
+        "greeting": "Forty years guiding hikers through Poni's trails. This tree is just another trail to me!",
         "trainerWins": "Another trail, another win!",
         "trainerLoses": "This trail sent me tumbling down a cliff..."
       },
       {
-        "greeting": "Gigalith and Shuckle are as hard as the stones of Ten Carat Hill!",
-        "trainerWins": "Stone-solid victory!",
-        "trainerLoses": "Even stones crumble eventually..."
+        "greeting": "Stay on the path, drink plenty of water, and don't underestimate the old guide!",
+        "trainerWins": "Rule three: don't underestimate the old guide!",
+        "trainerLoses": "Looks like I broke my own rule three..."
       },
       {
-        "greeting": "See this pack? It's full of rocks, for training. My Pokémon carry even more!",
-        "trainerWins": "Heavy training, heavy hitters!",
-        "trainerLoses": "Time to add more rocks to my pack."
+        "greeting": "I've led a thousand hikers up Vast Poni Canyon. None of them beat me in battle!",
+        "trainerWins": "Still none! Keep climbing, kid.",
+        "trainerLoses": "Well, now one of them has."
       }
     ],
     "Stellan": [
       {
         "greeting": "I've survived Lanakila blizzards in a tank top. A little battle won't faze me!",
-        "trainerWins": "Not even a chill! Still comfy in my tank top.",
+        "trainerWins": "Not even a chill!",
         "trainerLoses": "Now THAT gave me chills..."
       },
       {
-        "greeting": "Hippowdon and Tyranitar keep the sand swirling. Hope you brought goggles!",
-        "trainerWins": "Should've brought goggles!",
-        "trainerLoses": "My sandstorm blew right past you."
+        "greeting": "Jackets are for quitters! I climb in a tank top all year round!",
+        "trainerWins": "No jacket needed for this win!",
+        "trainerLoses": "Maybe I should've brought a jacket..."
       },
       {
         "greeting": "My boots are worn from the Ancient Poni Path. They'll carry me through this too!",
@@ -2427,9 +2427,9 @@
         "trainerLoses": "My pen's out of ink. My team's out of steam."
       },
       {
-        "greeting": "Scizor, Excadrill and Steelix: a steel portfolio with zero risk!",
-        "trainerWins": "Zero risk, full return!",
-        "trainerLoses": "Turns out steel can rust."
+        "greeting": "Corner office by the Malie waterfront, here I come. Right after this battle.",
+        "trainerWins": "One step closer to that corner office!",
+        "trainerLoses": "Back to my cubicle..."
       }
     ],
     "Harding": [
@@ -2444,9 +2444,9 @@
         "trainerLoses": "Unprofessional of me to lose like that."
       },
       {
-        "greeting": "Bronzong and Bisharp: steel nerves for steel deals. Shall we?",
-        "trainerWins": "Steel nerves pay off!",
-        "trainerLoses": "My nerves are thoroughly rattled."
+        "greeting": "Firm handshake, strong eye contact. That's how you close a deal. And a battle.",
+        "trainerWins": "Deal closed. Firm handshake?",
+        "trainerLoses": "Weak handshake today. Very weak."
       }
     ],
     "Darrel": [
@@ -2456,9 +2456,9 @@
         "trainerLoses": "I'll need to call a team meeting about this..."
       },
       {
-        "greeting": "Florges and Aromatisse make my whole floor smell like a garden. Breathe it in!",
-        "trainerWins": "Smells like victory!",
-        "trainerLoses": "Smells like... defeat."
+        "greeting": "Let's circle back after I win. I'll send a summary email.",
+        "trainerWins": "Summary: I won. Email to follow.",
+        "trainerLoses": "Summary: I lost. No email necessary."
       },
       {
         "greeting": "I keep my hair short so it never gets in the way of a good battle!",
@@ -2473,21 +2473,21 @@
         "trainerLoses": "Should've spent that time at the office..."
       },
       {
-        "greeting": "I did my shopping at the Thrifty Megamart on Royal Avenue. Last item on my list: a win!",
+        "greeting": "I did my shopping at the Royal Avenue Megamart. Last item on my list: a win!",
         "trainerWins": "Check! Everything on my list!",
         "trainerLoses": "Out of stock on wins today..."
       },
       {
-        "greeting": "Ludicolo dances on my desk when deadlines get close. Want to see it dance?",
-        "trainerWins": "Ludicolo's victory dance!",
-        "trainerLoses": "Ludicolo stopped dancing..."
+        "greeting": "Errands, meetings, battles: I juggle it all and never drop a thing!",
+        "trainerWins": "Juggled it perfectly!",
+        "trainerLoses": "Dropped everything... all at once."
       }
     ],
     "Etta": [
       {
-        "greeting": "My Pokémon glare so hard, your team will shake before the first move!",
-        "trainerWins": "Scared you stiff! Didn't even need the first move.",
-        "trainerLoses": "You didn't even flinch..."
+        "greeting": "I can stare down anybody. I won a staring contest against a statue once!",
+        "trainerWins": "Stared you down! You blinked first!",
+        "trainerLoses": "You didn't even blink..."
       },
       {
         "greeting": "I've beaten every punk on Ula'ula Island. You're just small fry!",
@@ -2495,19 +2495,19 @@
         "trainerLoses": "...Maybe I'm the small fry here."
       },
       {
-        "greeting": "Gyarados, Salamence, Arcanine... one look and you'll wanna run!",
+        "greeting": "One look from me and you'll wanna run home to your mom!",
         "trainerWins": "Shoulda run when you had the chance!",
         "trainerLoses": "You stood your ground. Respect."
       }
     ],
     "Dustin": [
       {
-        "greeting": "Respect's earned on Ula'ula, kid. My crew stares down Gyarados for fun.",
-        "trainerWins": "Stared you down! Ula'ula respect stays with my crew.",
+        "greeting": "Respect's earned on Ula'ula, kid. Let's see if you've got what it takes.",
+        "trainerWins": "Didn't earn it today. Ula'ula respect stays with my crew.",
         "trainerLoses": "...Aight. You got my respect."
       },
       {
-        "greeting": "Incineroar and Scrafty: heels with attitude, just like me.",
+        "greeting": "I watch every Battle Royal from the cheap seats. Time to step into the ring!",
         "trainerWins": "Heel turn complete! The crowd goes wild... or boos. Same thing.",
         "trainerLoses": "Got pinned... three count."
       },
@@ -2524,9 +2524,9 @@
         "trainerLoses": "Fine. Take the turf. I'll find another."
       },
       {
-        "greeting": "Alolan Muk eats garbage and spits venom. Kinda like my comebacks.",
-        "trainerWins": "Venom-coated victory!",
-        "trainerLoses": "My comebacks ran out..."
+        "greeting": "Everybody in Po Town knows not to mess with Zed. Now you'll know too.",
+        "trainerWins": "Now you know! Spread the word.",
+        "trainerLoses": "Okay, YOU can mess with Zed. Just you."
       },
       {
         "greeting": "Pink hair, don't care! Let's make this loud!",
@@ -2541,21 +2541,21 @@
         "trainerLoses": "Guess I'll be adding another scar..."
       },
       {
-        "greeting": "Gengar and I hang out in the abandoned Megamart. Nothing scares us.",
-        "trainerWins": "Spooked ya! Gengar's been practicing in the Megamart.",
+        "greeting": "I hang out in the abandoned Megamart after dark. Nothing scares me.",
+        "trainerWins": "Spooked ya! The Megamart's got nothing on me.",
         "trainerLoses": "Okay, YOU scare me now."
       },
       {
-        "greeting": "Black top, white cap, poison team. Everything about me says 'stay back'!",
+        "greeting": "Black top, white cap, cold stare. Everything about me says 'stay back'!",
         "trainerWins": "Should've stayed back!",
         "trainerLoses": "You didn't stay back. Respect."
       }
     ],
     "Leena": [
       {
-        "greeting": "Speed is everything! My team's faster than a Sharpedo jet ride!",
-        "trainerWins": "Too fast for you! Faster than any Sharpedo jet ride!",
-        "trainerLoses": "You were faster... and that never happens."
+        "greeting": "Speed is everything! I'm the fastest base runner in Hau'oli!",
+        "trainerWins": "Too fast for you! Safe at home!",
+        "trainerLoses": "Thrown out at home... you were faster."
       },
       {
         "greeting": "I'm training for the big island games. You're my last warm-up!",
@@ -2563,8 +2563,8 @@
         "trainerLoses": "Guess I'm not ready for the games yet..."
       },
       {
-        "greeting": "Weavile, Crobat, Talonflame... hitting first is my whole strategy!",
-        "trainerWins": "First hit wins! Speed is everything!",
+        "greeting": "Swing first, think later! That's my whole strategy!",
+        "trainerWins": "Swung first, won first!",
         "trainerLoses": "Swung first... and missed."
       }
     ],
@@ -2575,9 +2575,9 @@
         "trainerLoses": "Coach is gonna make me run extra laps..."
       },
       {
-        "greeting": "Aerodactyl flies faster than a Charizard Glide over Poni! Catch us if you can!",
-        "trainerWins": "Couldn't catch us! Aerodactyl's still the fastest flier!",
-        "trainerLoses": "You caught us... Aerodactyl's gonna sulk all day."
+        "greeting": "Team first, me second! But today it's just me, so me first!",
+        "trainerWins": "Me first! Team would be proud!",
+        "trainerLoses": "Should've brought the team..."
       },
       {
         "greeting": "I swing this bat a hundred times every morning in Hau'oli. Batter up!",
@@ -2587,47 +2587,47 @@
     ],
     "Hilario": [
       {
-        "greeting": "I never skip leg day, and my team never skips speed training!",
+        "greeting": "I never skip leg day. Never. Ever.",
         "trainerWins": "Leg day pays off! Never skip it!",
-        "trainerLoses": "Maybe my Pokémon need a leg day too."
+        "trainerLoses": "Maybe I need an extra leg day..."
       },
       {
-        "greeting": "Lycanroc and I race the sunset on Route 1. We haven't lost yet!",
-        "trainerWins": "Still undefeated! The sunset can't catch us!",
+        "greeting": "I race the sunset on Route 1 every evening. I haven't lost yet!",
+        "trainerWins": "Still undefeated! The sunset can't catch me!",
         "trainerLoses": "First loss... the sunset wins."
       },
       {
-        "greeting": "My serve and my team are both lightning fast. Raikou fast!",
-        "trainerWins": "Lightning ace! Raikou fast, like I said!",
-        "trainerLoses": "Thunder, but no lightning..."
+        "greeting": "Squats at dawn, sprints at noon, battles at sunset. That's my schedule!",
+        "trainerWins": "Right on schedule!",
+        "trainerLoses": "Schedule's off... back to squats."
       }
     ],
     "Thamina": [
       {
-        "greeting": "I swim out to the Melemele Sea buoys every morning. My team swims even faster!",
+        "greeting": "I swim out to the Melemele Sea buoys every morning. Can you keep up?",
         "trainerWins": "First to the finish!",
         "trainerLoses": "Out-swum... and I thought I was fast in the water."
       },
       {
-        "greeting": "Greninja and Starmie are my relay team. Pass the baton!",
-        "trainerWins": "New relay record! Greninja and Starmie, perfect handoff!",
-        "trainerLoses": "Dropped the baton..."
+        "greeting": "Gold medal in swimming last year. This year, I'm going for gold in battling!",
+        "trainerWins": "Gold medal performance!",
+        "trainerLoses": "Silver isn't so bad... right?"
       },
       {
-        "greeting": "Tennis racket in hand, Pokémon at my side. Let's rally!",
+        "greeting": "Tennis racket in one hand, goggles in the other. I'm ready for anything!",
         "trainerWins": "Won the rally! You couldn't return a single shot!",
         "trainerLoses": "Lost the rally... you hit back every time."
       }
     ],
     "Dolly": [
       {
-        "greeting": "My fans love it when it rains! Kingdra and Ludicolo get so fast!",
-        "trainerWins": "Fans, that was for you!",
+        "greeting": "My fans are watching! I can't disappoint them!",
+        "trainerWins": "Thank you, thank you! My fans are the best!",
         "trainerLoses": "Sorry, fans... I'll make it up to you."
       },
       {
-        "greeting": "Suicune runs across water, and I run across stages! Showtime!",
-        "trainerWins": "Standing ovation! Suicune and I take a bow!",
+        "greeting": "I sing on the Malie City stage every weekend! Battling is just another performance!",
+        "trainerWins": "Standing ovation!",
         "trainerLoses": "Curtain call... for me."
       },
       {
@@ -2638,65 +2638,65 @@
     ],
     "Erix": [
       {
-        "greeting": "A prodigy since age six! My team loves sunshine: fire and leaf!",
-        "trainerWins": "Prodigy confirmed! Sunshine never fails me.",
-        "trainerLoses": "Prodigies need practice too."
+        "greeting": "I've been called a prodigy since I was six. Let's see if it's true!",
+        "trainerWins": "Prodigy confirmed!",
+        "trainerLoses": "Maybe prodigies need practice too."
       },
       {
-        "greeting": "Ninetales turns up the sun, then Venusaur and Charizard turn up the heat!",
-        "trainerWins": "A sunny victory! Not a cloud in the sky!",
-        "trainerLoses": "Cloudy, with a chance of losing..."
+        "greeting": "I learned to read at three, battle at five, and win at six. Ready?",
+        "trainerWins": "Still winning, just like at six!",
+        "trainerLoses": "Even prodigies have off days..."
       },
       {
-        "greeting": "I trained on Exeggutor Island. Exeggutor and I both grew tall there!",
-        "trainerWins": "Standing tall, just like Alolan Exeggutor!",
-        "trainerLoses": "Cut down to size... even Exeggutor would be embarrassed."
+        "greeting": "I've skipped two grades at the Trainers' School. Let's skip to the part where I win!",
+        "trainerWins": "Skipped right to the win!",
+        "trainerLoses": "Should've stayed for the lesson..."
       }
     ],
     "Joaquin": [
       {
-        "greeting": "My star's rising faster than the rain clouds over Malie!",
-        "trainerWins": "Still rising! Malie's clouds can't keep up!",
-        "trainerLoses": "You're rising even faster than me..."
-      },
-      {
-        "greeting": "Swampert, Kingdra, Ludicolo. In the rain, nothing can catch them!",
-        "trainerWins": "Rain dance! Swampert, Kingdra and Ludicolo, too fast!",
-        "trainerLoses": "The rain cleared up..."
-      },
-      {
         "greeting": "I braid my hair before every battle for luck. Today it's extra tight!",
         "trainerWins": "Lucky braids strike again!",
         "trainerLoses": "My braids came loose..."
+      },
+      {
+        "greeting": "Everyone's my rival. You're my rival now too. Get ready!",
+        "trainerWins": "Rival defeated! Next!",
+        "trainerLoses": "Okay, you're my TOP rival now."
+      },
+      {
+        "greeting": "My star's rising faster than the clouds over Malie!",
+        "trainerWins": "Still rising! Malie's clouds can't keep up!",
+        "trainerLoses": "You're rising even faster than me..."
       }
     ],
     "Marianne": [
       {
-        "greeting": "Youngest Battle Legend ever. Starting now!",
+        "greeting": "I'm going to be the youngest Battle Legend ever. Starting now!",
         "trainerWins": "One step closer to Legend!",
         "trainerLoses": "Legends need patience. I'll get there."
       },
       {
-        "greeting": "Moltres and Heatran! When the sun's out, my team burns like Wela Volcano!",
-        "trainerWins": "Volcanic! Wela Volcano would be jealous!",
-        "trainerLoses": "Erupted on my own side..."
+        "greeting": "I've written my Battle Legend acceptance speech. Want to hear it after I win?",
+        "trainerWins": "'I'd like to thank... me!' Speech time!",
+        "trainerLoses": "I'll save the speech for later..."
       },
       {
-        "greeting": "Lilligant and Leafeon love the sunlight in Malie Garden. So do I!",
-        "trainerWins": "Blooming victory! Just like Malie Garden in spring!",
-        "trainerLoses": "Wilted... I need more sunlight."
+        "greeting": "Battle Legends never look nervous. See? Calm. Totally calm.",
+        "trainerWins": "Calm, cool and victorious!",
+        "trainerLoses": "Okay, NOW I look nervous."
       }
     ],
     "Alice": [
       {
-        "greeting": "I watched Wela Volcano smolder from up close. My team's raw power is even bigger!",
-        "trainerWins": "Eruption! Told you my team's power was bigger!",
-        "trainerLoses": "My power fizzled out like old lava..."
+        "greeting": "I watched Wela Volcano smoke from up close. I live for thrills!",
+        "trainerWins": "What a thrill! My heart's still racing!",
+        "trainerLoses": "Too thrilling... I need to lie down."
       },
       {
-        "greeting": "Regigigas, Slaking, Archeops... slow starters, but huge finishers!",
-        "trainerWins": "What a huge finish! Worth the slow start!",
-        "trainerLoses": "We never even got started..."
+        "greeting": "Skydiving over Melemele, cliff jumping on Akala... and now, the Battle Tree!",
+        "trainerWins": "Best thrill yet!",
+        "trainerLoses": "This thrill bit back..."
       },
       {
         "greeting": "Camera charged, cap on, and my sightseeing day ends with a win!",
@@ -2711,31 +2711,31 @@
         "trainerLoses": "Yes, definitely the best one here. What a trip!"
       },
       {
-        "greeting": "Rampardos and Rhyperior hit harder than the surf on Big Wave Beach!",
-        "trainerWins": "Wipeout! Bigger than any wave at Big Wave Beach!",
-        "trainerLoses": "I'm the one who got wiped out..."
+        "greeting": "Each country, one battle, one souvenir photo. Smile!",
+        "trainerWins": "Souvenir photo of a win!",
+        "trainerLoses": "Souvenir photo of a loss... still a memory."
       },
       {
-        "greeting": "Snap! I photograph my Pokémon before every battle. They look strong today!",
-        "trainerWins": "Strong AND photogenic!",
-        "trainerLoses": "A photo of a loss. I'll crop that out."
+        "greeting": "I've battled on every continent. Alola has the best view by far!",
+        "trainerWins": "Best view, best win!",
+        "trainerLoses": "Best view... worst result."
       }
     ],
     "Christian": [
       {
-        "greeting": "The view from Poni's cliffs is gorgeous, but my team's special attacks are prettier!",
-        "trainerWins": "Dazzling, wasn't it?",
+        "greeting": "I paint the view from every island. Today I'll paint my own victory!",
+        "trainerWins": "A masterpiece!",
+        "trainerLoses": "My painting needs a sadder color..."
+      },
+      {
+        "greeting": "The view from Poni's cliffs is gorgeous. Let's make this battle just as beautiful!",
+        "trainerWins": "Dazzling, just like the view!",
         "trainerLoses": "The view's still lovely, at least."
       },
       {
-        "greeting": "Chandelure and Volcarona light up the night like Hokulani Observatory!",
-        "trainerWins": "A starry victory! Brighter than the Observatory!",
-        "trainerLoses": "Lights out... for me."
-      },
-      {
-        "greeting": "My sun hat's wide enough to shade my whole team. Not that they need it!",
-        "trainerWins": "Cool in the shade, hot in battle!",
-        "trainerLoses": "Sunburned by defeat..."
+        "greeting": "My sun hat's wide enough to shade my easel AND me. Let's paint!",
+        "trainerWins": "A picture-perfect win!",
+        "trainerLoses": "Smudged the whole canvas..."
       }
     ],
     "Ezra": [
@@ -2745,14 +2745,14 @@
         "trainerLoses": "Yes! You're exactly the strong Trainer I was looking for!"
       },
       {
-        "greeting": "Alakazam and Espeon can read minds. They already know I'm going to win.",
-        "trainerWins": "Called it! Alakazam and Espeon knew all along.",
-        "trainerLoses": "They read your mind... and panicked."
-      },
-      {
-        "greeting": "I watched the sunset from Mount Hokulani last night. Today I watch you fall!",
+        "greeting": "I watched the sunset from Mount Hokulani last night. Today, I'll watch you fall!",
         "trainerWins": "Beautiful sunset, beautiful win!",
         "trainerLoses": "The sun set on me this time..."
+      },
+      {
+        "greeting": "I keep a journal of every strong Trainer I meet. Make your entry a good one!",
+        "trainerWins": "Entry written: 'Promising, but not yet.'",
+        "trainerLoses": "Entry written: 'Strongest yet!' Underlined twice."
       }
     ],
     "Sika": [
@@ -2762,13 +2762,13 @@
         "trainerLoses": "You know this place better than I do..."
       },
       {
-        "greeting": "Alolan Muk eats the trash in Hau'oli. Mine gets extra helpings. It's hungry today!",
-        "trainerWins": "Gobbled up! Muk says thanks for the meal.",
-        "trainerLoses": "Muk's full... of defeat."
+        "greeting": "Third step from the top creaks. Fifth window sticks. I know this tree like family.",
+        "trainerWins": "Family always wins at home!",
+        "trainerLoses": "Even family loses sometimes..."
       },
       {
-        "greeting": "These coveralls are stain-proof AND poison-proof. Let's get messy!",
-        "trainerWins": "Still spotless! Not one drop of poison on me.",
+        "greeting": "These coveralls are stain-proof, sun-proof and loss-proof. Let's get messy!",
+        "trainerWins": "Still spotless! Not one drop on me.",
         "trainerLoses": "There's a stain I'll never get out..."
       }
     ],
@@ -2779,9 +2779,9 @@
         "trainerLoses": "This is one stain I can't scrub out..."
       },
       {
-        "greeting": "Salazzle and Toxicroak are my poison cleaning crew!",
-        "trainerWins": "Disinfected! My poison crew does a thorough job.",
-        "trainerLoses": "Contaminated... I'll need a stronger cleaner."
+        "greeting": "I wash my hands twenty times a day. Clean hands, clean win!",
+        "trainerWins": "Clean hands, clean win!",
+        "trainerLoses": "Time to wash my hands of this..."
       },
       {
         "greeting": "I clean the Pokémon Center here, too. Your team will need it after this!",
@@ -2796,9 +2796,9 @@
         "trainerLoses": "This bridge collapsed..."
       },
       {
-        "greeting": "Ampharos lights up the work site at night. Bright enough to beat you!",
-        "trainerWins": "Lights on, winner! Ampharos never dims.",
-        "trainerLoses": "Lights out at the site..."
+        "greeting": "Every bridge I build lasts a hundred years. So will this win!",
+        "trainerWins": "Built to last a hundred years!",
+        "trainerLoses": "This one didn't last a minute..."
       },
       {
         "greeting": "Knee pads, hard hat, gloves. I'm geared up!",
@@ -2818,9 +2818,9 @@
         "trainerLoses": "Back to construction for me..."
       },
       {
-        "greeting": "Nidoking and Nidoqueen dig my foundations. Strongest workers on the site!",
-        "trainerWins": "Foundation laid! Nidoking and Nidoqueen never quit.",
-        "trainerLoses": "Cracked foundation..."
+        "greeting": "Up at four, work till six, battle till sundown. That's my day!",
+        "trainerWins": "Another good day's work!",
+        "trainerLoses": "Long day... longer loss."
       }
     ],
     "Mechabob": [
@@ -2830,9 +2830,9 @@
         "trainerLoses": "I would tip my hat to you, if I wore one."
       },
       {
-        "greeting": "Regirock, Regice and Registeel. I collect titans the way others collect seashells.",
-        "trainerWins": "Titanic! My seashell collection holds strong.",
-        "trainerLoses": "Even titans fall... I'll stick to seashells."
+        "greeting": "I collect seashells from every beach in Alola. Each one tells a story. So will this battle.",
+        "trainerWins": "A story with a happy ending!",
+        "trainerLoses": "A story with a twist... for me."
       },
       {
         "greeting": "This shirt has hibiscus on it. Lovely flowers. Lovely battles.",
@@ -2847,31 +2847,31 @@
         "trainerLoses": "Charming tree, charming defeat. Most memorable."
       },
       {
-        "greeting": "Cobalion, Terrakion, Virizion... the Swords of Justice serve a gentleman well.",
-        "trainerWins": "Justice served, as a gentleman should serve it!",
-        "trainerLoses": "Justice served... to me."
+        "greeting": "My passport has stamps from forty countries. Alola has the finest sunsets of them all.",
+        "trainerWins": "A fine sunset for a fine win!",
+        "trainerLoses": "Even the finest sunset can't brighten this..."
       },
       {
-        "greeting": "My beard took forty years to grow. My team took fifty to assemble.",
+        "greeting": "My beard took forty years to grow. My battling took fifty to perfect.",
         "trainerWins": "Worth the fifty-year wait!",
         "trainerLoses": "Another fifty years, then."
       }
     ],
     "Donny": [
       {
-        "greeting": "Darling, my Pokémon are dressed for a victory party.",
+        "greeting": "Darling, I'm throwing a victory party tonight. You're invited... to watch.",
         "trainerWins": "Let the party begin!",
         "trainerLoses": "Cancel the party, darling..."
       },
       {
-        "greeting": "Latias and Latios fly me home to my estate in Malie. Such dears!",
-        "trainerWins": "Such dears, both of them!",
-        "trainerLoses": "My dears, we've lost..."
+        "greeting": "My parties at my Malie estate are legendary. So is my battling, darling.",
+        "trainerWins": "Another legendary night!",
+        "trainerLoses": "Not my most legendary evening, I'm afraid."
       },
       {
-        "greeting": "Uxie, Mesprit and Azelf: knowledge, emotion and willpower, darling. I have them all.",
-        "trainerWins": "All three, as promised!",
-        "trainerLoses": "I seem to have lost my willpower..."
+        "greeting": "Champagne on ice, music on the lanai. All I need now is a win, darling.",
+        "trainerWins": "Pop the champagne!",
+        "trainerLoses": "Put the champagne back on ice..."
       }
     ],
     "Gracie": [
@@ -2881,13 +2881,13 @@
         "trainerLoses": "Not delightful at all... for me, anyway."
       },
       {
-        "greeting": "Cresselia gives me the sweetest dreams in my Hano suite. Tonight, I'll dream of your loss.",
-        "trainerWins": "Sweet dreams indeed!",
-        "trainerLoses": "Nightmares tonight, I'm afraid..."
+        "greeting": "I adore the beach, I adore the sunsets, and I simply adore winning!",
+        "trainerWins": "Adorable victory!",
+        "trainerLoses": "I don't adore this at all..."
       },
       {
-        "greeting": "My green dress matches the jungle, darling. Kommo-o matches my temper.",
-        "trainerWins": "Ferocious! Kommo-o and I are in a lovely mood now.",
+        "greeting": "My green dress matches the jungle, darling. My temper matches the volcano.",
+        "trainerWins": "Ferocious! I'm in a lovely mood now.",
         "trainerLoses": "Temper, temper... I'm afraid I've lost mine."
       }
     ],
@@ -2898,9 +2898,9 @@
         "trainerLoses": "It seems you're the one who served me."
       },
       {
-        "greeting": "Hariyama carries the heaviest bags at the resort. One shove and you're out!",
-        "trainerWins": "Shoved right out! Hariyama's the strongest porter around.",
-        "trainerLoses": "Pushed back instead..."
+        "greeting": "Fresh towels, chilled drinks and a battle, served promptly!",
+        "trainerWins": "Served promptly!",
+        "trainerLoses": "Service delayed... indefinitely."
       },
       {
         "greeting": "I bow to every guest. Please bow back after you lose!",
@@ -2915,12 +2915,12 @@
         "trainerLoses": "I think I mixed up the order..."
       },
       {
-        "greeting": "My slicked-back hair survives the Poni winds. My team survives anything!",
+        "greeting": "My slicked-back hair survives the Poni winds. Nothing ruffles me!",
         "trainerWins": "Unshaken! Not a hair out of place.",
-        "trainerLoses": "My hair's a mess. So's my team."
+        "trainerLoses": "My hair's a mess. So's my battle."
       },
       {
-        "greeting": "Scrafty and Toxicroak handle check-in. Pushy, but effective!",
+        "greeting": "Check-in at three, battle at four, victory by five. Right on schedule!",
         "trainerWins": "Checked in! Enjoy your stay in the loser's suite.",
         "trainerLoses": "Check-out time... for me."
       }
@@ -2932,43 +2932,43 @@
         "trainerLoses": "My handicap just went way up..."
       },
       {
-        "greeting": "Charizard and Salamence carry my bag around the course. Strong caddies!",
-        "trainerWins": "Great caddies! Charizard didn't even singe the bag.",
-        "trainerLoses": "My caddies quit on me..."
+        "greeting": "Did I mention my handicap? It's very low. Extremely low.",
+        "trainerWins": "Low handicap, high victory!",
+        "trainerLoses": "My handicap... is now high."
       },
       {
-        "greeting": "Mid-swing is my best pose. Keep your eye on the ball... it's heading for your team!",
+        "greeting": "Mid-swing is my best pose. Keep your eye on the ball!",
         "trainerWins": "Right on target! Fore!",
         "trainerLoses": "Shanked it... right into the ocean."
       }
     ],
     "Moe": [
       {
-        "greeting": "One swing. That's all I need. That, and seven Eeveelutions.",
-        "trainerWins": "One swing, one win. Seven Eeveelutions, zero misses.",
+        "greeting": "One swing. That's all I need.",
+        "trainerWins": "One swing, one win.",
         "trainerLoses": "One swing... one miss."
       },
       {
-        "greeting": "Espeon in the day, Umbreon at night. I golf around the clock!",
-        "trainerWins": "Round-the-clock champion!",
-        "trainerLoses": "Time to call it a night..."
+        "greeting": "...",
+        "trainerWins": "...Good game.",
+        "trainerLoses": "...Hm. Well played."
       },
       {
-        "greeting": "My red polo's lucky. Leafeon, Glaceon and Flareon are lucky too!",
-        "trainerWins": "Lucky polo, lucky Pokémon, lucky me!",
-        "trainerLoses": "Luck ran out... maybe I need a new polo."
+        "greeting": "Talk less. Swing more.",
+        "trainerWins": "Swung. Won.",
+        "trainerLoses": "Should've talked more..."
       }
     ],
     "Bruce": [
       {
-        "greeting": "I hit the green every time. Seven Eeveelutions, seven perfect shots!",
-        "trainerWins": "On the green again! Seven for seven!",
+        "greeting": "I hit the green every time. Every. Single. Time.",
+        "trainerWins": "On the green again! Never misses!",
         "trainerLoses": "Straight into the sand trap..."
       },
       {
-        "greeting": "Glaceon for cold days, Flareon for hot ones. Every condition is covered!",
-        "trainerWins": "Perfect conditions, every time!",
-        "trainerLoses": "Weather delay... even with every Eeveelution ready."
+        "greeting": "I haven't missed a fairway since I was twelve. Not starting now!",
+        "trainerWins": "Still never missed!",
+        "trainerLoses": "First miss since I was twelve..."
       },
       {
         "greeting": "Red polo, red visor, red-hot swing! Fore!",
@@ -2983,43 +2983,43 @@
         "trainerLoses": "I'll stick to gentle sports for a while..."
       },
       {
-        "greeting": "Volcarona's wings light up the course at dusk. I golf until the stars come out.",
-        "trainerWins": "A starlit win! Volcarona lit the way.",
-        "trainerLoses": "The stars came out... on my loss."
-      },
-      {
         "greeting": "I teach golf at the Hano Grand Resort. Lesson one: never underestimate me.",
         "trainerWins": "Lesson learned! Never underestimate the instructor.",
         "trainerLoses": "Lesson taught... to me."
+      },
+      {
+        "greeting": "Keep your head down, follow through, and never give up. That's my lesson for today!",
+        "trainerWins": "Followed through!",
+        "trainerLoses": "I forgot to follow my own advice..."
       }
     ],
     "Lori": [
       {
-        "greeting": "My Pokémon have perfect stats, especially their low Speed. Trick Room loves that!",
-        "trainerWins": "Perfect stats, perfect battle!",
-        "trainerLoses": "Maybe stats aren't everything..."
+        "greeting": "My Pokémon are raised perfectly. I made sure of it.",
+        "trainerWins": "Perfect raising, perfect battle!",
+        "trainerLoses": "Maybe perfection isn't everything..."
       },
       {
-        "greeting": "Snorlax, Slowbro, Steelix... slow and steady, raised with love on the ranch.",
-        "trainerWins": "Slow and steady, just like we practiced on the ranch!",
-        "trainerLoses": "Too slow, even for us..."
+        "greeting": "I keep a notebook on every meal, every nap and every training session. Perfection!",
+        "trainerWins": "Notebook says: victory!",
+        "trainerLoses": "Notebook says: needs work..."
       },
       {
-        "greeting": "I brush every Pokémon at dawn, before the Paniola Tauros wake up.",
+        "greeting": "I brush every Pokémon at dawn, before the Paniola cattle wake up.",
         "trainerWins": "Dawn training pays off!",
         "trainerLoses": "I'll get up even earlier..."
       }
     ],
     "Colby": [
       {
-        "greeting": "Raising Pokémon is an art. My masterpiece just happens to be a slow one!",
-        "trainerWins": "A true masterpiece, slow and beautiful!",
+        "greeting": "Raising Pokémon is an art. Let me show you my masterpiece!",
+        "trainerWins": "A true masterpiece!",
         "trainerLoses": "My masterpiece needs a few more brushstrokes..."
       },
       {
-        "greeting": "Reuniclus twists the room, and my heavyweights take over!",
-        "trainerWins": "Twisted! My heavyweights took over, as planned.",
-        "trainerLoses": "Untwisted... my heavyweights got left behind."
+        "greeting": "Every Pokémon I raise is a work of art. This team is my gallery!",
+        "trainerWins": "The gallery is a hit!",
+        "trainerLoses": "The gallery's closed for repairs..."
       },
       {
         "greeting": "This glove has handled a thousand Eggs. Every one hatched a winner!",
@@ -3029,13 +3029,13 @@
     ],
     "Danby": [
       {
-        "greeting": "Toxapex, Golisopod, Mudsdale: born and raised in Alola, just like me!",
+        "greeting": "Born and raised on Paniola Ranch! Alola's in my bones!",
         "trainerWins": "Alolan pride! Born and raised strong!",
         "trainerLoses": "Alola's still proud... I hope."
       },
       {
-        "greeting": "Slow and steady wins the race. Turtonator agrees!",
-        "trainerWins": "Steady win! Turtonator never rushes.",
+        "greeting": "Slow and steady wins the race. That's what the ranch taught me!",
+        "trainerWins": "Steady win, ranch-style!",
         "trainerLoses": "A little too steady..."
       },
       {
@@ -3051,14 +3051,14 @@
         "trainerLoses": "Perhaps not my finest after all..."
       },
       {
-        "greeting": "Palossand was just a sandcastle on Hano Beach once. Now it's a champion!",
-        "trainerWins": "Sandcastle champion!",
-        "trainerLoses": "Washed away by the tide..."
+        "greeting": "Three of my Pokémon won ribbons at the Hau'oli fair. This one will win you!",
+        "trainerWins": "Blue ribbon, just like the Hau'oli fair!",
+        "trainerLoses": "Honorable mention..."
       },
       {
-        "greeting": "Wishiwashi alone is tiny, but raised with care, it forms a mighty school!",
-        "trainerWins": "The school stands strong!",
-        "trainerLoses": "The school scattered..."
+        "greeting": "Raised with care, trained with love. That's the Izel way!",
+        "trainerWins": "The Izel way, victorious!",
+        "trainerLoses": "The Izel way needs a new chapter..."
       }
     ],
     "Presta": [
@@ -3068,9 +3068,9 @@
         "trainerLoses": "False alarm... for my victory, anyway."
       },
       {
-        "greeting": "Wailord holds more water than any fire truck in Alola!",
-        "trainerWins": "Flooded! Wailord's tank never runs out.",
-        "trainerLoses": "Ran dry... even Wailord's tank has limits."
+        "greeting": "I sleep in my boots. You never know when the call will come!",
+        "trainerWins": "Ready in a flash!",
+        "trainerLoses": "Should've taken my boots off and rested..."
       },
       {
         "greeting": "Yellow stripes, so you can see me through the smoke. You'll see me win, too.",
@@ -3080,14 +3080,14 @@
     ],
     "Calder": [
       {
-        "greeting": "I've walked through flames to save Pokémon. This battle is nothing!",
+        "greeting": "I've walked through flames to rescue Pokémon. This battle is nothing!",
         "trainerWins": "Through the flames and out the other side!",
         "trainerLoses": "Those were flames I couldn't walk through..."
       },
       {
-        "greeting": "Gastrodon and Slowbro: the slowest hoses in Alola, but the strongest!",
-        "trainerWins": "A steady stream! Slow, but unstoppable.",
-        "trainerLoses": "Kinked hose... nothing's coming out."
+        "greeting": "I've carried hikers down Vast Poni Canyon on my back. I don't give up!",
+        "trainerWins": "Never giving up!",
+        "trainerLoses": "Okay... I'll give up. Just this once."
       },
       {
         "greeting": "I watch Akala's dry hills for brush fires. Today, I'm putting out your streak!",
@@ -3097,14 +3097,14 @@
     ],
     "Larry": [
       {
-        "greeting": "My recipes have won awards. So have my Pokémon!",
+        "greeting": "My recipes have won awards all over Alola. Time for another!",
         "trainerWins": "Another award-winning performance!",
         "trainerLoses": "Not every recipe can be a winner..."
       },
       {
-        "greeting": "Kalua pig needs a good fire pit. Camerupt makes the best one!",
-        "trainerWins": "Perfectly roasted! Camerupt's fire pit never fails.",
-        "trainerLoses": "Undercooked... Camerupt's fire pit went out."
+        "greeting": "Kalua pig needs a good fire pit and twelve hours of patience. I have both!",
+        "trainerWins": "Perfectly roasted!",
+        "trainerLoses": "Undercooked... I rushed it."
       },
       {
         "greeting": "My apron's clean, but not for long. Let's make a mess!",
@@ -3119,46 +3119,46 @@
         "trainerLoses": "I couldn't even get past the appetizer..."
       },
       {
-        "greeting": "Haupia for dessert, but first, the main course: your team!",
+        "greeting": "Haupia for dessert, but first, the main course: you!",
         "trainerWins": "Main course, done! Haupia time!",
         "trainerLoses": "Looks like I'm the dessert..."
       },
       {
-        "greeting": "Houndoom grills, Glalie freezes. My kitchen runs hot and cold!",
-        "trainerWins": "Perfect temperature!",
-        "trainerLoses": "Lukewarm at best... my kitchen's lost its edge."
+        "greeting": "Every plate is a work of art. Every battle, too!",
+        "trainerWins": "A masterpiece on a plate!",
+        "trainerLoses": "A messy plate..."
       }
     ],
     "Sam": [
       {
-        "greeting": "Only the best Pokémon from every corner of the world made my team!",
+        "greeting": "I've collected treasures from every corner of the world. Only the best made it to Alola!",
         "trainerWins": "Only the best, as I said!",
         "trainerLoses": "Perhaps I'll add you to my collection of rivals."
       },
       {
-        "greeting": "Archeops, Armaldo, Cradily... my fossils are older than Alola's oldest ruins!",
-        "trainerWins": "An ancient victory! Older than history itself.",
-        "trainerLoses": "Back to the museum display case..."
+        "greeting": "My collection has its own room in my house. Two rooms, actually. Three.",
+        "trainerWins": "Room four, here I come!",
+        "trainerLoses": "Maybe I'll sell a room..."
       },
       {
-        "greeting": "Porygon2 and Porygon-Z are digital rarities. Upgraded and ready!",
-        "trainerWins": "Upgraded and victorious! Version 2.0 works perfectly.",
-        "trainerLoses": "Looks like I need a patch..."
+        "greeting": "I appraise everything I see. You? Rare, but not priceless.",
+        "trainerWins": "Appraised correctly!",
+        "trainerLoses": "I underappraised you. Priceless!"
       }
     ],
     "Dennis": [
       {
-        "greeting": "My collection holds the rarest Pokémon around. Prepare to be amazed!",
-        "trainerWins": "Amazed, weren't you?",
-        "trainerLoses": "You're even rarer than my Pokémon..."
-      },
-      {
-        "greeting": "Spiritomb's Odd Keystone took me a year to find. Worth it!",
+        "greeting": "I spent a whole year searching Alola for one rare treasure. Worth it!",
         "trainerWins": "Worth every day of searching!",
         "trainerLoses": "A whole year... for this?"
       },
       {
-        "greeting": "I keep my hair neat and my Pokémon polished. A collector's habit.",
+        "greeting": "My collection holds the rarest treasures around. Prepare to be amazed!",
+        "trainerWins": "Amazed, weren't you?",
+        "trainerLoses": "You're even rarer than my treasures..."
+      },
+      {
+        "greeting": "I keep my hair neat and my treasures polished. A collector's habit.",
         "trainerWins": "A polished win, as always!",
         "trainerLoses": "Scratched and scuffed..."
       }
@@ -3170,14 +3170,14 @@
         "trainerLoses": "Maybe it's time for someone new at the top."
       },
       {
-        "greeting": "Regirock, Regice and Registeel: ancient titans guard my summit!",
-        "trainerWins": "The titans stand! My summit remains mine.",
-        "trainerLoses": "The titans have toppled..."
+        "greeting": "The view from the top never gets old. Neither does winning.",
+        "trainerWins": "Still the best view!",
+        "trainerLoses": "The view looks different from down here..."
       },
       {
-        "greeting": "I traveled to Sinnoh's lakes for Uxie, Mesprit and Azelf. Worth every mile!",
-        "trainerWins": "Worth the trip to Sinnoh! Every mile!",
-        "trainerLoses": "A long trip home to think about this..."
+        "greeting": "I've turned away a thousand challengers. You'll be a thousand and one.",
+        "trainerWins": "A thousand and one!",
+        "trainerLoses": "The thousand-and-first got through..."
       }
     ],
     "Perri": [
@@ -3187,14 +3187,14 @@
         "trainerLoses": "Now my own team needs healing. Come back anytime!"
       },
       {
-        "greeting": "Blissey and Audino are my nursing staff. Healthy team, happy Trainer!",
-        "trainerWins": "Happy and healthy, as always!",
-        "trainerLoses": "Nurse! Oh, wait, that's me..."
-      },
-      {
-        "greeting": "Pink dress, white apron, and a team ready to battle. Surprised?",
+        "greeting": "Pink dress, white apron, and a battle face. Surprised?",
         "trainerWins": "Surprise! Even nurses can battle!",
         "trainerLoses": "I'll stick to healing..."
+      },
+      {
+        "greeting": "Rest well, eat well, battle well! That's the Pokémon Center way!",
+        "trainerWins": "The Pokémon Center way wins!",
+        "trainerLoses": "Time to take my own advice and rest..."
       }
     ],
     "Dooley": [
@@ -3204,9 +3204,9 @@
         "trainerLoses": "Something special indeed. The future's in good hands."
       },
       {
-        "greeting": "Dragonite, Tyranitar, Metagross, Garchomp: the toughest team in Alola!",
-        "trainerWins": "Toughest in Alola, like I said!",
-        "trainerLoses": "Toughened up by you..."
+        "greeting": "I've stood across from Champions in every region. You don't scare me.",
+        "trainerWins": "Not scared. Not beaten.",
+        "trainerLoses": "Okay... a little scared now."
       },
       {
         "greeting": "This leather jacket is older than the Alola League. So is my experience.",
@@ -3221,14 +3221,14 @@
         "trainerLoses": "I'll be sure to remember your name, too."
       },
       {
-        "greeting": "Latias, Latios, Azelf, Uxie, Mesprit... I collect psychic legends like seashells.",
-        "trainerWins": "Collection complete!",
-        "trainerLoses": "Lost a seashell... my collection feels smaller."
-      },
-      {
         "greeting": "I watched the Alola League open from the front row. Now I'm making history here.",
         "trainerWins": "History made! Front row to my own victory!",
         "trainerLoses": "History... made by you."
+      },
+      {
+        "greeting": "Demiathena. Remember it. Everyone does.",
+        "trainerWins": "And now you will too.",
+        "trainerLoses": "And now I'll remember yours."
       }
     ],
     "Red": [
@@ -3238,9 +3238,9 @@
         "trainerLoses": "… (Red smiles faintly and gives you a nod.)"
       },
       {
-        "greeting": "… (Red glances at Charizard's, Venusaur's and Blastoise's Poké Balls. Old friends, ready again.)",
-        "trainerWins": "… (Red recalls his Pokémon one by one, thanking each with a quiet nod.)",
-        "trainerLoses": "… (Red pats Charizard's Poké Ball, then tips his cap to you.)"
+        "greeting": "… (Red pulls his cap low. His eyes don't leave you, not even for a second.)",
+        "trainerWins": "… (Red lifts his cap just enough to meet your eyes, then looks away.)",
+        "trainerLoses": "… (Red pushes his cap back and, for the first time, looks impressed.)"
       },
       {
         "greeting": "… (The sea breeze off Poni Island tugs at Red's cap. He doesn't notice. He's watching you.)",
@@ -3277,9 +3277,9 @@
         "trainerLoses": "You were dealt the better hand. I fold, gracefully."
       },
       {
-        "greeting": "Dark-types and dice both reward the bold. Show me how bold you are.",
-        "trainerWins": "Bold, but not bold enough. Fortune favors me today.",
-        "trainerLoses": "Bold indeed. I'd wager you'll go far."
+        "greeting": "I wager everything on every battle: my pride, my reputation... and my lunch money.",
+        "trainerWins": "The wager pays out handsomely. Lunch is on me today.",
+        "trainerLoses": "Lost the wager... and my lunch money. Worth it."
       }
     ],
     "Anabel": [
@@ -3289,7 +3289,7 @@
         "trainerLoses": "Your bond is even stronger than I sensed. Remarkable."
       },
       {
-        "greeting": "Looker sends his regards. Hunting Ultra Beasts is tiring, so a battle makes a nice change of pace.",
+        "greeting": "Looker sends his regards. International Police work is tiring, so a battle makes a nice change of pace.",
         "trainerWins": "A refreshing change. I'll tell Looker you put up a good fight.",
         "trainerLoses": "Looker will be surprised I lost. Don't tell him I enjoyed it."
       },
@@ -3306,9 +3306,9 @@
         "trainerLoses": "Still so much further to go... but I'll keep climbing!"
       },
       {
-        "greeting": "Gallade and I trained all the way from Hoenn for this. I'm not that shy kid anymore!",
+        "greeting": "I trained all the way from Hoenn for this. I'm not that shy kid anymore!",
         "trainerWins": "See? Not the shy kid anymore. Thank you for battling me!",
-        "trainerLoses": "Still not shy... just beaten. Gallade and I will keep training!"
+        "trainerLoses": "Still not shy... just beaten. I'll keep training!"
       },
       {
         "greeting": "The ocean air in Alola is so good for my health. I feel strong enough to win!",
@@ -3328,9 +3328,9 @@
         "trainerLoses": "Remarkable readings! Your bond overloaded my instruments!"
       },
       {
-        "greeting": "Magnezone, Klinklang, Porygon-Z: machines and Pokémon, both tools for discovery. Shall we discover something?",
-        "trainerWins": "We discovered something: you have room to grow!",
-        "trainerLoses": "We discovered something: I underestimated you. Fascinating!"
+        "greeting": "My goggles record everything. Let's see what discoveries this battle holds!",
+        "trainerWins": "Recorded: you have room to grow!",
+        "trainerLoses": "Recorded: I underestimated you. Fascinating!"
       }
     ],
     "Cynthia": [
@@ -3340,14 +3340,14 @@
         "trainerLoses": "That was a legendary battle. I'll remember it alongside the old stories."
       },
       {
-        "greeting": "Sinnoh has its legends; Alola has its guardian Tapus. Let's battle like legends would.",
-        "trainerWins": "A battle worthy of the Tapus' attention, if not quite legendary yet.",
-        "trainerLoses": "Even the Tapus would have watched that battle closely. Wonderful."
+        "greeting": "Alola's shave ice might be the best dessert I've ever had. Let's battle before it melts!",
+        "trainerWins": "Just in time. My shave ice is still cold.",
+        "trainerLoses": "It melted while we battled... but it was worth it."
       },
       {
-        "greeting": "Garchomp loves the warm sand here. It's itching to battle. Are you ready?",
-        "trainerWins": "Garchomp enjoyed that. Come back when your team can match its speed.",
-        "trainerLoses": "Garchomp has never been outpaced like that. A splendid battle."
+        "greeting": "My coat is a bit warm for Alola, but I'd never battle without it.",
+        "trainerWins": "Worth the heat. Come back when you're ready for more.",
+        "trainerLoses": "I may need a lighter coat... and a lesson from you."
       }
     ],
     "Plumeria": [
@@ -3362,7 +3362,7 @@
         "trainerLoses": "Ugh. Back to the rain in Po Town, I guess."
       },
       {
-        "greeting": "Salazzle and I don't play nice. Big sister Plumeria's gonna teach you a lesson.",
+        "greeting": "Big sister Plumeria's gonna teach you a lesson, kid. Pay attention.",
         "trainerWins": "Class dismissed, kid. Big sis wins.",
         "trainerLoses": "Okay, kid. Big sis learned a lesson today."
       }
@@ -3374,9 +3374,9 @@
         "trainerLoses": "Wrecked... AGAIN?! Why does this keep happening to me?!"
       },
       {
-        "greeting": "Golisopod and me, we're the strongest bugs on these islands! Ain't nobody squashing us!",
-        "trainerWins": "Told ya! Nobody squashes Guzma and Golisopod!",
-        "trainerLoses": "Squashed... flat. Like a bug. UGH, just like a bug!"
+        "greeting": "Guzma's the strongest Trainer on these islands! Ain't nobody squashing me!",
+        "trainerWins": "Told ya! Nobody squashes Guzma!",
+        "trainerLoses": "Squashed... flat. Guzma got squashed! UGH!"
       },
       {
         "greeting": "Team Skull's boss don't need a Z-Ring. I got pure destruction right here!",
@@ -3386,7 +3386,7 @@
     ],
     "Kiawe": [
       {
-        "greeting": "My Fire-type Pokémon burn with the passion of Wela Volcano! Feel the heat!",
+        "greeting": "My spirit burns with the passion of Wela Volcano! Feel the heat!",
         "trainerWins": "Was the heat too much? Train hard and face the volcano again!",
         "trainerLoses": "Your spirit burned even hotter than the volcano. I salute you!"
       },
@@ -3396,9 +3396,9 @@
         "trainerLoses": "My fire dance fell flat... I'll practice until dawn!"
       },
       {
-        "greeting": "Alolan Marowak and I guard the volcano together. Feel its blazing spirit!",
-        "trainerWins": "Marowak's flame shines brightest! Come back stronger!",
-        "trainerLoses": "Your spirit outshone even Marowak's flame. Truly impressive!"
+        "greeting": "Trial Captains never back down! I'll show you what a captain is made of!",
+        "trainerWins": "That's a Trial Captain's strength! Train hard and return!",
+        "trainerLoses": "You've shown me what a true challenger is made of. Truly impressive!"
       }
     ],
     "Mallow": [
@@ -3408,14 +3408,14 @@
         "trainerLoses": "You devoured my whole menu! I'll have to cook up something new."
       },
       {
-        "greeting": "I picked these ingredients fresh from the Lush Jungle! Today's special: a Grass-type feast!",
+        "greeting": "I picked these ingredients fresh from the Lush Jungle! Today's special: a jungle feast!",
         "trainerWins": "Fresh from the jungle and served to perfection!",
         "trainerLoses": "My jungle feast got eaten up! I'll forage for better ingredients!"
       },
       {
-        "greeting": "Tsareena kicks as hard as my secret recipe is spicy! Ready for a taste?",
-        "trainerWins": "Spicy, right? Tsareena seasoned it just right!",
-        "trainerLoses": "Too much spice even for Tsareena... back to the kitchen!"
+        "greeting": "My secret recipe is so spicy it makes grown-ups cry! Ready for a taste?",
+        "trainerWins": "Spicy, right? Nobody's ever finished a full bowl!",
+        "trainerLoses": "Too much spice even for me... back to the kitchen!"
       }
     ],
     "Sina": [
@@ -3425,9 +3425,9 @@
         "trainerLoses": "I'll have to report this loss to Dexio... he'll never let me hear the end of it!"
       },
       {
-        "greeting": "Alolan Sandslash and Glaceon love the snow on Lanakila! Can your team take the chill?",
-        "trainerWins": "Brrr-illiant! I can't wait to tell Dexio!",
-        "trainerLoses": "We got frozen out... Dexio's going to tease me forever!"
+        "greeting": "Kalos is lovely, but Alola's beaches are something else! Let's battle by the sea!",
+        "trainerWins": "Beach battle victory! I can't wait to tell Dexio!",
+        "trainerLoses": "We got washed away... Dexio's going to tease me forever!"
       },
       {
         "greeting": "Dexio thinks I'm too cheerful for serious battles. Let's prove him wrong together!",
@@ -3442,9 +3442,9 @@
         "trainerLoses": "Quite the lesson. Sina will laugh when she hears about this one."
       },
       {
-        "greeting": "We're searching Alola for Zygarde Cells. A battle makes a pleasant break from the hunt.",
-        "trainerWins": "A pleasant break indeed. Back to the search, then.",
-        "trainerLoses": "That break turned into a lesson. The cells can wait a moment."
+        "greeting": "Professor Sycamore asked me to report on Alola's Trainers. Let's give him something to read.",
+        "trainerWins": "Report: Alolan Trainers have potential. Most of them.",
+        "trainerLoses": "Report: one Alolan Trainer is exceptional. That's you."
       },
       {
         "greeting": "These sunglasses aren't just fashion. Alola's sun is truly fierce, and so is my team.",
