@@ -6,6 +6,9 @@ import { SettingsPage } from './ui/settings/SettingsPage';
 import { applyTheme } from './ui/theme';
 import { TreePage } from './ui/tree/TreePage';
 import { useHashRoute } from './ui/useHashRoute';
+import { useBattleFocus } from './ui/battleFocus';
+import { Footer } from './ui/components/Footer';
+import { SiteHeader } from './ui/components/SiteHeader';
 
 const ROUTES = ['tree', 'builder', 'battle', 'settings'] as const;
 const TITLES: Record<(typeof ROUTES)[number], string> = {
@@ -19,6 +22,8 @@ export default function App() {
   const route = useHashRoute(ROUTES, 'tree');
   const settingsStore = getSettingsStore();
   const settings = useSyncExternalStore(settingsStore.subscribe, settingsStore.getSettings);
+  // While a battle is on screen the header slides away (scroll up or reach for the top to get it back).
+  const battleFocus = useBattleFocus();
 
   useEffect(() => applyTheme(settings.theme), [settings.theme]);
   useEffect(() => { document.title = `${TITLES[route]} · Battle Tree Simulator`; }, [route]);
@@ -30,8 +35,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app">
-      <header className="app-header">
+    <div className={`app ${battleFocus ? 'battle-focus' : ''}`}>
+      <SiteHeader autoHide={battleFocus}>
         <div className="brand">
           <h1>Battle Tree Simulator</h1>
           <span className="muted small">Sun &amp; Moon · Single &amp; Double Battles</span>
@@ -41,13 +46,14 @@ export default function App() {
             <a key={r} href={`#/${r}`} aria-current={route === r ? 'page' : undefined}>{TITLES[r]}</a>
           ))}
         </nav>
-      </header>
+      </SiteHeader>
       <main>
         {route === 'tree' && <TreePage controller={getRunController()} teamStore={getTeamStore()} />}
         {route === 'builder' && <BuilderPage store={getTeamStore()} />}
         {route === 'battle' && <TestBattlePage client={getBattleClient()} store={getTeamStore()} />}
         {route === 'settings' && <SettingsPage />}
       </main>
+      <Footer />
     </div>
   );
 }

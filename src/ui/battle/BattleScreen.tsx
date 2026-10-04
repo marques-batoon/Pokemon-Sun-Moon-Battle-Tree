@@ -2,6 +2,7 @@ import type { BattleClient } from '../../client/battle-client';
 import { isTeamPreview } from '../../engine/sim-types';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { useAppSettings } from '../useAppSettings';
+import { useBattleFocusWhile } from '../battleFocus';
 import { useBattleSnapshot } from '../useBattleClient';
 import { BattleLog } from './BattleLog';
 import { Controls } from './Controls';
@@ -20,6 +21,8 @@ interface Props {
 export function BattleScreen({ client, onContinue, continueLabel = 'Continue' }: Props) {
   const s = useBattleSnapshot(client);
   const settings = useAppSettings();
+  // Battle focus mode (the site header hides) while a battle is on screen.
+  useBattleFocusWhile(s.phase === 'starting' || s.phase === 'active' || s.phase === 'ended');
 
   if (s.phase === 'idle') return null;
   if (s.phase === 'starting') return <p className="muted" role="status">Starting battle…</p>;

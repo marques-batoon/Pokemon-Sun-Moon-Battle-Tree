@@ -46,3 +46,8 @@ coverage
 .vitest
 *.tsbuildinfo
 .eslintcache
+
+# Personal notes (and Office's temporary lock files)
+selfnotes.txt
+selfnotes.docx
+~$*
