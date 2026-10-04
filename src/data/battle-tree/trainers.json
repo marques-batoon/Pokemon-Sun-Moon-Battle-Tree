@@ -1,0 +1,3333 @@
+{
+  "source": {
+    "rosters": "tre-sm (cross-checked vs sadisticmystic-sheet USUM rosters + its SM deltas: 1 omission in that sheet, Kendra/Heat Rotom-1, resolved in favour of tre-sm by tree-sets-app pool data)",
+    "identities": "bulbapedia-trainers (number, class, name, order: 190/190 match)",
+    "ivs": "atsync-iv-post (APPROXIMATION: tested, not datamined; matches sadisticmystic-sheet IV tiers)"
+  },
+  "count": 205,
+  "trainers": [
+    {
+      "id": 0,
+      "number": 1,
+      "name": "Florian",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 2, 19, 20, 21, 22, 24, 25, 26, 28, 29, 32, 34, 37, 39, 40, 215, 216, 223, 227, 229, 237, 238, 246, 248, 260, 267, 268, 284, 285, 290, 291, 296, 300, 301, 302, 303, 308, 311, 314, 319, 320, 331, 337, 373],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 1,
+      "number": 2,
+      "name": "Robin",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 2, 19, 20, 21, 22, 24, 25, 26, 28, 29, 32, 34, 37, 39, 40, 215, 216, 223, 227, 229, 237, 238, 246, 248, 260, 267, 268, 284, 285, 290, 291, 296, 300, 301, 302, 303, 308, 311, 314, 319, 320, 331, 337, 373],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 2,
+      "number": 3,
+      "name": "Max",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 2, 19, 20, 21, 22, 24, 25, 26, 28, 29, 32, 34, 37, 39, 40, 215, 216, 223, 227, 229, 237, 238, 246, 248, 260, 267, 268, 284, 285, 290, 291, 296, 300, 301, 302, 303, 308, 311, 314, 319, 320, 331, 337, 373],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 3,
+      "number": 4,
+      "name": "Bert",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 2, 19, 20, 21, 22, 24, 25, 26, 28, 29, 32, 34, 37, 39, 40, 215, 216, 223, 227, 229, 237, 238, 246, 248, 260, 267, 268, 284, 285, 290, 291, 296, 300, 301, 302, 303, 308, 311, 314, 319, 320, 331, 337, 373],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 4,
+      "number": 5,
+      "name": "Sophia",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 8, 12, 20, 22, 23, 28, 33, 35, 48, 208, 211, 221, 224, 230, 236, 247, 250, 252, 257, 262, 264, 267, 272, 273, 278, 283, 293, 294, 304, 313, 315, 317, 320, 322, 326, 332, 340, 341, 346, 349, 350, 357, 358, 360, 372, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 5,
+      "number": 6,
+      "name": "Shanta",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 8, 12, 20, 22, 23, 28, 33, 35, 48, 208, 211, 221, 224, 230, 236, 247, 250, 252, 257, 262, 264, 267, 272, 273, 278, 283, 293, 294, 304, 313, 315, 317, 320, 322, 326, 332, 340, 341, 346, 349, 350, 357, 358, 360, 372, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 6,
+      "number": 7,
+      "name": "Rachel",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 8, 12, 20, 22, 23, 28, 33, 35, 48, 208, 211, 221, 224, 230, 236, 247, 250, 252, 257, 262, 264, 267, 272, 273, 278, 283, 293, 294, 304, 313, 315, 317, 320, 322, 326, 332, 340, 341, 346, 349, 350, 357, 358, 360, 372, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 7,
+      "number": 8,
+      "name": "Chan",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [1, 8, 12, 20, 22, 23, 28, 33, 35, 48, 208, 211, 221, 224, 230, 236, 247, 250, 252, 257, 262, 264, 267, 272, 273, 278, 283, 293, 294, 304, 313, 315, 317, 320, 322, 326, 332, 340, 341, 346, 349, 350, 357, 358, 360, 372, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 8,
+      "number": 9,
+      "name": "Ferdinand",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 20, 21, 24, 26, 28, 35, 36, 39, 40, 47, 210, 214, 218, 220, 222, 227, 231, 232, 238, 252, 253, 256, 257, 261, 267, 275, 287, 288, 293, 296, 304, 307, 315, 320, 329, 331, 339, 342, 343, 345, 347, 348, 351, 361, 362, 367, 376],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 9,
+      "number": 10,
+      "name": "Rico",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 20, 21, 24, 26, 28, 35, 36, 39, 40, 47, 210, 214, 218, 220, 222, 227, 231, 232, 238, 252, 253, 256, 257, 261, 267, 275, 287, 288, 293, 296, 304, 307, 315, 320, 329, 331, 339, 342, 343, 345, 347, 348, 351, 361, 362, 367, 376],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 10,
+      "number": 11,
+      "name": "Rocky",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [27, 45, 51, 208, 209, 212, 218, 251, 267, 292, 312, 338, 373, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 11,
+      "number": 12,
+      "name": "Jasper",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 18, 20, 21, 24, 26, 28, 35, 36, 39, 40, 210, 214, 218, 220, 222, 227, 231, 232, 238, 252, 253, 256, 257, 261, 267, 275, 287, 288, 293, 296, 304, 307, 315, 320, 329, 331, 339, 342, 343, 345, 347, 348, 351, 361, 362, 367, 376],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 12,
+      "number": 13,
+      "name": "Kendra",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [27, 45, 51, 208, 209, 212, 218, 251, 267, 292, 312, 338, 373, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 13,
+      "number": 14,
+      "name": "Mercy",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 12, 18, 20, 21, 24, 28, 35, 40, 47, 217, 219, 227, 228, 232, 238, 252, 253, 256, 257, 264, 267, 275, 280, 287, 288, 293, 294, 295, 296, 304, 315, 320, 329, 339, 342, 343, 344, 345, 347, 348, 351, 361, 362, 367],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 14,
+      "number": 15,
+      "name": "Helen",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 12, 18, 20, 21, 24, 28, 35, 40, 47, 217, 219, 227, 228, 232, 238, 252, 253, 256, 257, 264, 267, 275, 280, 287, 288, 293, 294, 295, 296, 304, 315, 320, 329, 339, 342, 343, 344, 345, 347, 348, 351, 361, 362, 367],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 15,
+      "number": 16,
+      "name": "Gladys",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 12, 18, 20, 21, 24, 28, 35, 40, 47, 217, 219, 227, 228, 232, 238, 252, 253, 256, 257, 264, 267, 275, 280, 287, 288, 293, 294, 295, 296, 304, 315, 320, 329, 339, 342, 343, 344, 345, 347, 348, 351, 361, 362, 367],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 16,
+      "number": 17,
+      "name": "Darla",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [3, 8, 18, 21, 23, 24, 27, 30, 38, 40, 49, 213, 232, 234, 238, 240, 244, 245, 253, 257, 259, 260, 270, 276, 305, 306, 307, 312, 315, 319, 320, 339, 340, 341, 342, 343, 344, 345, 346, 348, 350, 361, 370, 376],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 17,
+      "number": 18,
+      "name": "Tammy",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [74, 258, 269, 271, 273, 274, 278, 290, 309, 347, 354],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 18,
+      "number": 19,
+      "name": "Reese",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [74, 258, 269, 271, 273, 274, 278, 290, 309, 347, 354],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 19,
+      "number": 20,
+      "name": "Kayla",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [3, 8, 18, 21, 23, 24, 27, 30, 38, 40, 49, 50, 213, 232, 234, 238, 240, 244, 245, 253, 257, 259, 260, 270, 276, 305, 306, 307, 312, 315, 319, 320, 339, 340, 341, 342, 343, 344, 345, 346, 348, 350, 361, 370, 376],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 20,
+      "number": 21,
+      "name": "Cleavant",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [0, 5, 6, 38, 50, 51, 74, 225, 233, 244, 245, 255, 264, 265, 266, 269, 281, 282, 283, 284, 285, 286, 289, 299, 301, 302, 309, 328, 329, 330, 335, 341, 356, 361, 363, 365, 367, 368, 371, 372, 373, 375, 376, 377, 378, 379, 380, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 21,
+      "number": 22,
+      "name": "Buster",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [0, 2, 5, 6, 17, 21, 23, 30, 31, 34, 37, 73, 223, 224, 225, 228, 242, 243, 244, 245, 259, 261, 281, 282, 283, 284, 285, 286, 289, 314, 317, 319, 321, 323, 328, 330, 336, 347, 353, 355, 359, 370, 375, 377, 379, 380],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 22,
+      "number": 23,
+      "name": "Arlo",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [0, 5, 23, 73, 223, 227, 271, 284, 285, 286, 302, 317, 319, 321, 323, 330, 347, 353, 359, 370, 377, 379, 380],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 23,
+      "number": 24,
+      "name": "Levine",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [0, 5, 23, 73, 223, 227, 271, 284, 285, 286, 302, 317, 319, 321, 323, 330, 347, 353, 359, 370, 377, 379, 380],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 24,
+      "number": 25,
+      "name": "Percy",
+      "class": "Office Worker",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [16, 29, 31, 36, 45, 50, 209, 218, 225, 227, 233, 238, 240, 247, 249, 256, 260, 265, 271, 272, 277, 279, 286, 290, 299, 302, 309, 314, 318, 319, 321, 325, 329, 332, 333, 334, 337, 346, 349, 353, 358, 360, 361, 363, 366, 379],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 25,
+      "number": 26,
+      "name": "Conley",
+      "class": "Office Worker",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [16, 29, 31, 36, 45, 50, 209, 218, 225, 227, 233, 238, 240, 247, 249, 256, 260, 265, 271, 272, 277, 279, 286, 290, 299, 302, 309, 314, 318, 319, 321, 325, 329, 332, 333, 334, 337, 346, 349, 353, 358, 360, 361, 363, 366, 379],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 26,
+      "number": 27,
+      "name": "Emery",
+      "class": "Office Worker",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [16, 29, 31, 36, 45, 50, 209, 218, 225, 227, 233, 238, 240, 247, 249, 256, 260, 265, 271, 272, 277, 279, 286, 290, 299, 302, 309, 314, 318, 319, 321, 325, 329, 332, 333, 334, 337, 346, 349, 353, 358, 360, 361, 363, 366, 379],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 27,
+      "number": 28,
+      "name": "Winnie",
+      "class": "Office Worker",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 8, 10, 14, 15, 20, 24, 27, 28, 35, 40, 46, 74, 227, 230, 231, 247, 250, 254, 255, 257, 259, 267, 269, 275, 278, 287, 288, 293, 296, 300, 306, 312, 315, 332, 350, 352, 356, 362, 365, 367, 368, 372, 378],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 28,
+      "number": 29,
+      "name": "Prudence",
+      "class": "Office Worker",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 8, 10, 14, 15, 20, 24, 27, 28, 35, 40, 46, 74, 227, 230, 231, 247, 250, 254, 255, 257, 259, 267, 269, 275, 278, 287, 288, 293, 296, 300, 306, 312, 315, 332, 350, 352, 356, 362, 365, 367, 368, 372, 378],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 29,
+      "number": 30,
+      "name": "Dominica",
+      "class": "Office Worker",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10"],
+      "roster": [2, 8, 10, 14, 15, 20, 24, 27, 28, 35, 40, 46, 74, 227, 230, 231, 247, 250, 254, 255, 257, 259, 267, 269, 275, 278, 287, 288, 293, 296, 300, 306, 312, 315, 332, 350, 352, 356, 362, 365, 367, 368, 372, 378],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 30,
+      "number": 31,
+      "name": "Kass",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 4, 11, 13, 16, 19, 25, 49, 229, 234, 235, 239, 241, 244, 245, 248, 251, 252, 263, 266, 270, 272, 274, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 316, 322, 324, 325, 327, 334, 336, 343, 348, 357, 359, 364, 369, 371, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 31,
+      "number": 32,
+      "name": "Scoop",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 4, 11, 13, 16, 19, 25, 49, 229, 234, 235, 239, 241, 244, 245, 248, 251, 252, 263, 266, 270, 272, 274, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 316, 322, 324, 325, 327, 334, 336, 343, 348, 357, 359, 364, 369, 371, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 32,
+      "number": 33,
+      "name": "Dylan",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 4, 11, 13, 16, 19, 25, 73, 229, 234, 235, 239, 241, 244, 245, 248, 251, 252, 263, 266, 270, 272, 274, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 316, 322, 324, 325, 327, 334, 336, 343, 348, 357, 359, 364, 369, 371, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 33,
+      "number": 34,
+      "name": "Evander",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 4, 11, 13, 16, 19, 25, 73, 229, 234, 235, 239, 241, 244, 245, 248, 251, 252, 263, 266, 270, 272, 274, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 316, 322, 324, 325, 327, 334, 336, 343, 348, 357, 359, 364, 369, 371, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 34,
+      "number": 35,
+      "name": "Myrna",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 13, 15, 17, 19, 25, 229, 233, 234, 235, 239, 242, 243, 248, 251, 252, 258, 263, 266, 270, 271, 272, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 311, 316, 322, 324, 325, 327, 338, 343, 348, 354, 357, 364, 365, 369, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 35,
+      "number": 36,
+      "name": "Eva",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 13, 15, 17, 19, 25, 229, 233, 234, 235, 239, 242, 243, 248, 251, 252, 258, 263, 266, 270, 271, 272, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 311, 316, 322, 324, 325, 327, 338, 343, 348, 354, 357, 364, 365, 369, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 36,
+      "number": 37,
+      "name": "Agrata",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 13, 15, 17, 19, 25, 49, 229, 233, 234, 235, 239, 242, 243, 248, 251, 252, 258, 263, 266, 270, 271, 272, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 311, 316, 322, 324, 325, 327, 338, 343, 348, 354, 357, 364, 365, 369, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 37,
+      "number": 38,
+      "name": "Abby",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [0, 13, 15, 17, 19, 25, 49, 229, 233, 234, 235, 239, 242, 243, 248, 251, 252, 258, 263, 266, 270, 271, 272, 276, 277, 279, 281, 282, 292, 297, 298, 305, 310, 311, 316, 322, 324, 325, 327, 338, 343, 348, 354, 357, 364, 365, 369, 377, 381, 382],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 38,
+      "number": 39,
+      "name": "Parker",
+      "class": "Youth Athlete",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 13, 23, 38, 51, 209, 212, 213, 223, 224, 226, 236, 240, 241, 249, 250, 254, 255, 265, 268, 274, 279, 291, 292, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 39,
+      "number": 40,
+      "name": "Isaac",
+      "class": "Youth Athlete",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 13, 23, 38, 209, 212, 213, 223, 224, 226, 236, 240, 241, 249, 250, 254, 255, 265, 268, 274, 279, 291, 292, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 40,
+      "number": 41,
+      "name": "Ayden",
+      "class": "Youth Athlete",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 13, 23, 38, 51, 209, 212, 213, 223, 224, 226, 236, 240, 241, 249, 250, 254, 255, 265, 268, 274, 279, 291, 292, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 41,
+      "number": 42,
+      "name": "Alwyn",
+      "class": "Youth Athlete",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 9, 13, 14, 23, 30, 215, 223, 224, 226, 236, 240, 241, 242, 249, 250, 254, 265, 268, 279, 290, 291, 292, 295, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 42,
+      "number": 43,
+      "name": "Mardea",
+      "class": "Youth Athlete",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 9, 13, 14, 23, 30, 215, 223, 224, 226, 236, 240, 241, 242, 249, 250, 254, 265, 268, 279, 290, 291, 292, 295, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 43,
+      "number": 44,
+      "name": "Gabriella",
+      "class": "Youth Athlete",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [1, 3, 5, 7, 9, 13, 14, 23, 30, 215, 223, 224, 226, 236, 240, 241, 242, 249, 250, 254, 265, 268, 279, 290, 291, 292, 295, 298, 303, 308, 313, 326, 328, 333, 335, 340, 342, 346, 352, 357, 371, 372, 375],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 44,
+      "number": 45,
+      "name": "Ryder",
+      "class": "Rising Star",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [9, 10, 11, 19, 31, 32, 33, 34, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 226, 229, 232, 235, 239, 243, 253, 261, 262, 275, 280, 301, 321, 323, 329, 333, 354, 365, 366, 378],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 45,
+      "number": 46,
+      "name": "Christopher",
+      "class": "Rising Star",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [4, 6, 37, 48, 239, 254, 280, 311, 322, 329, 345, 351, 354, 355, 362],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 46,
+      "number": 47,
+      "name": "Sorley",
+      "class": "Rising Star",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [15, 26, 33, 34, 37, 46, 210, 242, 247, 250, 274, 276, 284, 287, 289, 291, 300, 309, 320, 327, 339, 351, 356, 366, 368],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 47,
+      "number": 48,
+      "name": "Beatrice",
+      "class": "Rising Star",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [9, 10, 11, 19, 26, 31, 32, 33, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 226, 229, 232, 235, 239, 243, 253, 262, 273, 275, 289, 300, 307, 318, 321, 329, 333, 355, 356, 364, 368, 374],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 48,
+      "number": 49,
+      "name": "Brandi",
+      "class": "Rising Star",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [4, 6, 37, 48, 239, 254, 280, 311, 322, 329, 345, 351, 354, 355, 362],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 49,
+      "number": 50,
+      "name": "Marsha",
+      "class": "Rising Star",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 19,
+      "bulbapediaBrackets": ["1-10", "11-19"],
+      "roster": [15, 26, 33, 34, 37, 46, 210, 242, 247, 250, 274, 276, 284, 287, 289, 291, 300, 309, 320, 327, 339, 351, 356, 366, 368],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 50,
+      "number": 51,
+      "name": "Cooper",
+      "class": "Sightseer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [3, 6, 14, 17, 18, 46, 52, 53, 61, 64, 65, 69, 71, 72, 74, 78, 82, 100, 128, 224, 228, 231, 237, 245, 259, 269, 271, 280, 297, 312, 323, 334, 363, 366, 370, 387, 389, 392, 398, 401, 402, 406, 413, 415, 418, 419, 421, 425, 426, 427, 432, 436, 438, 441, 443, 444, 446, 451, 453, 454, 457, 459, 465, 468, 469, 478, 494, 496, 499, 507, 527, 535, 544, 548],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 51,
+      "number": 52,
+      "name": "Darien",
+      "class": "Sightseer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [3, 6, 14, 17, 18, 46, 52, 53, 55, 61, 64, 65, 69, 71, 72, 73, 74, 78, 82, 100, 127, 128, 224, 228, 231, 237, 245, 259, 269, 271, 280, 297, 312, 323, 334, 363, 366, 370, 389, 392, 398, 401, 402, 406, 413, 415, 418, 419, 421, 425, 426, 427, 432, 436, 438, 441, 443, 444, 446, 451, 453, 454, 457, 459, 465, 468, 469, 478, 494, 496, 499, 507, 527, 535, 544, 548],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 52,
+      "number": 53,
+      "name": "Hart",
+      "class": "Sightseer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [22, 26, 32, 47, 60, 86, 94, 101, 227, 234, 237, 241, 265, 270, 293, 322, 349, 350, 364, 374, 378, 402, 409, 412, 416, 435, 440, 445, 497, 498, 524, 539, 549, 553],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 53,
+      "number": 54,
+      "name": "Kaula",
+      "class": "Sightseer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [4, 12, 45, 50, 57, 66, 68, 73, 74, 76, 78, 81, 82, 85, 89, 93, 99, 125, 127, 128, 224, 244, 246, 258, 274, 278, 297, 299, 309, 312, 318, 331, 334, 338, 354, 355, 359, 360, 370, 386, 398, 407, 413, 416, 420, 423, 424, 428, 431, 435, 436, 445, 450, 452, 456, 466, 469, 470, 471, 479, 480, 481, 483, 485, 489, 491, 501, 508, 509, 512, 522, 523, 525, 526, 528, 543, 546, 547, 551, 552, 556, 557],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 54,
+      "number": 55,
+      "name": "Charlene",
+      "class": "Sightseer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [4, 12, 45, 50, 57, 66, 68, 74, 76, 78, 81, 82, 85, 89, 93, 99, 125, 128, 224, 244, 246, 258, 274, 278, 297, 299, 309, 312, 318, 331, 334, 338, 354, 355, 359, 360, 370, 386, 398, 407, 413, 416, 420, 423, 424, 428, 431, 435, 436, 445, 450, 452, 456, 466, 469, 470, 471, 479, 480, 481, 483, 485, 489, 491, 501, 508, 509, 512, 522, 523, 525, 526, 528, 543, 546, 547, 551, 552, 556, 557],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 55,
+      "number": 56,
+      "name": "Odessa",
+      "class": "Sightseer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [22, 26, 32, 47, 60, 86, 94, 101, 227, 234, 237, 241, 265, 270, 293, 322, 349, 350, 364, 374, 378, 402, 409, 412, 416, 435, 440, 445, 497, 498, 524, 539, 549, 553],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 56,
+      "number": 57,
+      "name": "Jairo",
+      "class": "Janitor",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [4, 18, 25, 36, 37, 39, 45, 54, 56, 64, 67, 69, 71, 75, 83, 99, 233, 244, 248, 258, 261, 263, 292, 298, 310, 311, 317, 321, 327, 330, 347, 351, 353, 360, 379, 380, 385, 389, 390, 392, 403, 404, 406, 408, 417, 421, 423, 424, 438, 444, 446, 449, 451, 453, 463, 467, 472, 475, 476, 489, 490, 510, 514, 522, 529, 532, 533, 535, 537, 538, 540, 541, 557],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 57,
+      "number": 58,
+      "name": "Xaden",
+      "class": "Janitor",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [21, 23, 30, 47, 54, 57, 73, 75, 77, 84, 101, 127, 223, 242, 271, 283, 285, 286, 317, 319, 321, 323, 328, 330, 336, 347, 359, 370, 377, 380, 398, 408, 417, 434, 436, 458, 460, 461, 492, 494, 496, 498, 503, 505, 511, 522, 533, 534, 552, 555],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 58,
+      "number": 59,
+      "name": "Giles",
+      "class": "Janitor",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [21, 23, 30, 47, 54, 57, 73, 75, 77, 84, 101, 127, 223, 242, 271, 283, 285, 286, 317, 319, 321, 323, 328, 330, 336, 347, 359, 370, 377, 380, 398, 408, 417, 434, 436, 458, 460, 461, 492, 494, 496, 498, 503, 505, 511, 522, 533, 534, 552, 555],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 59,
+      "number": 60,
+      "name": "Skip",
+      "class": "Worker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [6, 15, 29, 46, 50, 52, 68, 73, 77, 81, 83, 84, 85, 89, 93, 94, 100, 125, 127, 223, 225, 230, 245, 249, 261, 271, 278, 284, 285, 286, 289, 299, 318, 319, 321, 330, 336, 337, 347, 353, 358, 359, 363, 370, 386, 387, 391, 400, 413, 415, 417, 422, 427, 434, 456, 457, 463, 465, 470, 471, 472, 476, 481, 483, 484, 488, 491, 493, 498, 501, 504, 509, 512, 515, 525, 528, 530, 534, 536, 543, 551],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 60,
+      "number": 61,
+      "name": "JT",
+      "class": "Worker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [4, 6, 48, 56, 58, 102, 239, 254, 280, 311, 322, 345, 351, 354, 355, 362, 414, 429, 455, 486, 487, 497, 520, 526, 529, 530, 537, 545],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 61,
+      "number": 62,
+      "name": "Benjamin",
+      "class": "Worker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [4, 6, 48, 56, 58, 102, 239, 254, 280, 311, 322, 345, 351, 354, 355, 362, 414, 429, 455, 486, 487, 497, 520, 526, 529, 530, 537, 545],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 62,
+      "number": 63,
+      "name": "Henry",
+      "class": "Gentleman",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [3, 7, 9, 49, 53, 61, 63, 65, 66, 70, 80, 88, 92, 234, 251, 258, 269, 274, 294, 295, 302, 305, 316, 323, 324, 326, 338, 350, 356, 366, 369, 373, 374, 376, 378, 380, 381, 383, 384, 387, 393, 394, 396, 397, 400, 401, 402, 404, 407, 409, 411, 419, 420, 432, 433, 439, 441, 443, 447, 450, 452, 454, 455, 463, 474, 478, 479, 486, 497, 500, 506, 507, 508, 511, 517, 518, 523, 524, 527, 532, 540, 544, 546, 554, 555],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 63,
+      "number": 64,
+      "name": "Ikram",
+      "class": "Gentleman",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [27, 45, 51, 55, 59, 90, 99, 126, 212, 312, 334, 374, 383, 384, 390, 418, 426, 430, 431, 442, 467, 480, 513, 516, 519, 548],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 64,
+      "number": 65,
+      "name": "Jerry",
+      "class": "Gentleman",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [27, 45, 51, 55, 59, 90, 99, 126, 212, 312, 334, 374, 383, 384, 390, 400, 411, 418, 426, 430, 431, 442, 467, 480, 513, 516, 519, 548],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 65,
+      "number": 66,
+      "name": "Cheryl",
+      "class": "Madame",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [7, 8, 10, 14, 17, 22, 27, 47, 51, 54, 58, 59, 60, 62, 67, 72, 75, 76, 78, 79, 80, 83, 86, 87, 90, 91, 101, 126, 225, 237, 246, 254, 255, 273, 275, 277, 306, 309, 332, 335, 344, 345, 352, 354, 355, 368, 374, 395, 399, 404, 405, 410, 411, 412, 428, 429, 430, 437, 439, 440, 442, 448, 458, 462, 463, 468, 469, 473, 476, 477, 482, 485, 487, 492, 495, 502, 513, 515, 516, 519, 520, 521, 523, 525, 531, 532, 539, 542, 545, 549, 550, 553, 554],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 66,
+      "number": 67,
+      "name": "Christy",
+      "class": "Madame",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [46, 52, 63, 79, 87, 88, 100, 242, 247, 251, 274, 300, 309, 320, 356, 385, 388, 391, 394, 397, 399, 405, 410, 414, 417, 422, 425, 437, 448, 449, 451, 459, 462, 464, 466, 475, 482, 484, 495, 502, 510, 514, 515, 526, 529, 531, 541],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 67,
+      "number": 68,
+      "name": "Verna",
+      "class": "Madame",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [46, 52, 63, 79, 87, 88, 100, 242, 247, 251, 274, 300, 309, 320, 356, 385, 388, 391, 394, 397, 399, 405, 410, 414, 417, 422, 425, 437, 448, 449, 451, 459, 462, 464, 466, 475, 482, 484, 495, 502, 510, 514, 515, 526, 529, 531, 541],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 68,
+      "number": 69,
+      "name": "Duncan",
+      "class": "Collector",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [11, 16, 31, 38, 49, 50, 51, 52, 56, 57, 58, 62, 67, 70, 74, 91, 92, 103, 125, 126, 128, 212, 233, 255, 264, 265, 266, 285, 289, 301, 341, 365, 368, 371, 373, 376, 378, 379, 380, 382, 388, 393, 395, 396, 403, 433, 439, 447, 456, 457, 458, 459, 460, 461, 464, 472, 473, 474, 477, 488, 490, 493, 498, 499, 500, 503, 504, 505, 506, 517, 518, 521, 530, 536, 538, 540, 542, 547, 550, 552, 554, 556],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 69,
+      "number": 70,
+      "name": "Nobunaga",
+      "class": "Collector",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 23,
+      "bulbapediaBrackets": ["11-19", "21-29"],
+      "roster": [11, 16, 31, 38, 49, 50, 51, 52, 56, 57, 58, 62, 67, 70, 74, 91, 92, 103, 125, 126, 128, 212, 233, 255, 264, 265, 266, 285, 289, 301, 341, 365, 368, 371, 373, 376, 378, 379, 380, 382, 388, 393, 395, 396, 403, 433, 439, 447, 456, 457, 458, 459, 460, 461, 464, 472, 473, 474, 477, 488, 490, 493, 498, 499, 500, 503, 504, 505, 506, 517, 518, 521, 530, 536, 538, 540, 542, 547, 550, 552, 554, 556],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 70,
+      "number": 71,
+      "name": "Arnon",
+      "class": "Golfer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [55, 62, 64, 65, 68, 77, 81, 93, 101, 106, 109, 110, 113, 117, 118, 119, 120, 122, 123, 125, 128, 129, 139, 145, 146, 155, 179, 182, 403, 406, 421, 430, 433, 440, 446, 453, 455, 462, 470, 471, 481, 483, 491, 498, 509, 519, 535, 543, 551, 570, 576, 582, 591, 596, 598, 601, 603, 608, 616, 633, 641, 654, 672, 676, 681, 693, 698, 699, 702, 704, 717, 720, 721, 723, 725, 726, 727, 729, 730, 731],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 71,
+      "number": 72,
+      "name": "Alim",
+      "class": "Golfer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [55, 62, 64, 65, 68, 77, 81, 93, 101, 106, 109, 110, 113, 117, 118, 119, 120, 122, 123, 125, 129, 139, 145, 146, 155, 179, 403, 406, 421, 430, 433, 440, 446, 453, 455, 462, 470, 471, 481, 483, 491, 498, 509, 519, 535, 543, 551, 570, 582, 591, 596, 598, 600, 601, 603, 608, 616, 617, 633, 641, 654, 672, 676, 681, 693, 698, 699, 702, 704, 717, 720, 721, 723, 725, 726, 727, 729, 730, 731],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 72,
+      "number": 73,
+      "name": "Zeno",
+      "class": "Golfer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [60, 112, 514, 515, 516, 517, 518, 519, 520, 689, 690, 691, 692, 693, 694, 695],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 73,
+      "number": 74,
+      "name": "Anisa",
+      "class": "Golfer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [55, 56, 63, 64, 68, 69, 77, 81, 85, 93, 101, 115, 116, 126, 127, 132, 133, 134, 137, 143, 145, 147, 155, 180, 181, 383, 406, 412, 421, 430, 440, 446, 455, 462, 471, 474, 481, 483, 491, 503, 505, 509, 519, 530, 535, 543, 553, 558, 561, 563, 564, 569, 576, 582, 591, 598, 601, 603, 624, 633, 649, 654, 672, 676, 693, 698, 702, 717, 720, 721, 723, 725, 727, 729, 730, 731],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 74,
+      "number": 75,
+      "name": "Calliope",
+      "class": "Golfer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [55, 56, 63, 64, 68, 69, 77, 81, 85, 93, 101, 115, 116, 127, 128, 132, 133, 134, 137, 143, 145, 147, 155, 181, 182, 383, 406, 412, 421, 430, 440, 446, 455, 462, 471, 474, 481, 483, 491, 503, 505, 509, 519, 530, 535, 543, 553, 558, 561, 563, 564, 569, 582, 591, 598, 600, 601, 603, 617, 624, 633, 649, 654, 672, 676, 693, 698, 702, 717, 720, 721, 723, 725, 727, 729, 730, 731],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 75,
+      "number": 76,
+      "name": "Christina",
+      "class": "Golfer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [60, 112, 514, 515, 516, 517, 518, 519, 520, 689, 690, 691, 692, 693, 694, 695],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 76,
+      "number": 77,
+      "name": "Nedry",
+      "class": "Pokémon Breeder",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [59, 60, 69, 85, 90, 100, 107, 125, 127, 128, 130, 135, 138, 139, 148, 154, 179, 181, 182, 401, 407, 414, 416, 421, 428, 432, 444, 480, 490, 501, 502, 516, 518, 520, 523, 534, 542, 545, 549, 560, 567, 570, 573, 574, 575, 577, 578, 579, 580, 583, 584, 585, 588, 589, 590, 592, 593, 594, 595, 597, 605, 614, 615, 628, 631, 632, 645, 646, 657, 662, 675, 684, 688, 689, 690, 692, 694, 696, 697, 700, 701, 703, 707, 708, 711, 712, 715, 716, 718, 719, 722, 732],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 77,
+      "number": 78,
+      "name": "Sheridan",
+      "class": "Pokémon Breeder",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [59, 60, 69, 85, 90, 100, 128, 130, 131, 135, 138, 139, 148, 154, 182, 401, 407, 414, 416, 421, 428, 432, 444, 480, 490, 501, 502, 516, 518, 520, 523, 534, 542, 545, 549, 560, 567, 570, 573, 574, 575, 578, 579, 580, 581, 583, 584, 585, 588, 589, 590, 592, 593, 594, 595, 597, 605, 614, 615, 628, 631, 632, 636, 645, 646, 657, 662, 675, 684, 688, 689, 690, 692, 694, 696, 697, 701, 703, 707, 708, 711, 712, 715, 716, 718, 719, 722, 732],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 78,
+      "number": 79,
+      "name": "Kiernan",
+      "class": "Pokémon Breeder",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [27, 55, 59, 62, 90, 99, 114, 126, 135, 140, 153, 180, 212, 312, 374, 387, 393, 396, 418, 559, 565, 568, 571, 601, 605, 606, 656, 662, 684, 694, 710, 724],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 79,
+      "number": 80,
+      "name": "Dara",
+      "class": "Pokémon Breeder",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [59, 60, 69, 87, 102, 107, 114, 125, 127, 128, 130, 135, 138, 141, 148, 177, 179, 181, 182, 397, 401, 407, 416, 421, 429, 432, 444, 480, 490, 500, 501, 506, 516, 518, 520, 523, 542, 549, 562, 572, 577, 578, 579, 580, 584, 588, 590, 593, 597, 599, 602, 604, 605, 607, 608, 609, 610, 611, 612, 613, 614, 615, 618, 628, 631, 632, 646, 657, 662, 670, 671, 673, 675, 677, 678, 679, 680, 684, 685, 687, 689, 690, 692, 694, 700, 701, 707, 709, 715, 718, 722, 732],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 80,
+      "number": 81,
+      "name": "Rada",
+      "class": "Pokémon Breeder",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [59, 60, 69, 87, 102, 114, 128, 130, 131, 135, 138, 141, 148, 177, 182, 397, 401, 407, 416, 421, 429, 432, 444, 480, 490, 500, 501, 506, 516, 518, 520, 523, 542, 549, 562, 572, 578, 579, 580, 581, 584, 588, 590, 593, 597, 599, 602, 604, 605, 607, 608, 609, 610, 611, 612, 613, 614, 615, 618, 628, 631, 632, 636, 646, 657, 662, 670, 671, 673, 675, 677, 678, 679, 680, 684, 685, 687, 689, 690, 692, 694, 701, 707, 709, 715, 718, 722, 732],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 81,
+      "number": 82,
+      "name": "Gertrude",
+      "class": "Pokémon Breeder",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [27, 55, 59, 62, 90, 99, 114, 126, 135, 140, 153, 180, 212, 312, 374, 387, 393, 396, 418, 559, 565, 568, 571, 601, 605, 606, 656, 662, 684, 694, 710, 724],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 82,
+      "number": 83,
+      "name": "Dyson",
+      "class": "Bellhop",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [53, 64, 80, 83, 84, 89, 103, 104, 105, 125, 142, 178, 179, 389, 392, 400, 406, 419, 420, 425, 426, 440, 447, 461, 476, 477, 478, 479, 482, 488, 493, 521, 524, 526, 527, 550, 551, 564, 567, 586, 597, 603, 619, 620, 621, 622, 623, 625, 626, 627, 629, 630, 634, 635, 649, 650, 653, 658, 659, 660, 661, 663, 664, 665, 666, 667, 668, 669, 674, 682, 683, 705, 706, 726],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 83,
+      "number": 84,
+      "name": "Chip",
+      "class": "Bellhop",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [53, 64, 80, 83, 84, 89, 103, 104, 105, 127, 142, 178, 181, 389, 392, 400, 406, 419, 420, 425, 426, 440, 447, 461, 476, 477, 478, 479, 482, 488, 493, 521, 524, 526, 527, 550, 551, 564, 567, 586, 597, 603, 619, 620, 621, 622, 623, 625, 626, 627, 629, 630, 634, 635, 649, 650, 653, 658, 659, 660, 661, 663, 664, 665, 666, 667, 668, 669, 674, 682, 683, 705, 706, 726],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 84,
+      "number": 85,
+      "name": "Zero",
+      "class": "Bellhop",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [26, 86, 94, 115, 122, 123, 140, 402, 416, 440, 445, 539, 549, 553, 577, 584, 587, 591, 596, 615, 616, 620, 641, 652, 672, 699, 714, 724, 728],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 85,
+      "number": 86,
+      "name": "Julien",
+      "class": "Cook",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [70, 86, 90, 91, 99, 107, 108, 111, 114, 121, 124, 126, 136, 144, 146, 153, 180, 384, 389, 392, 399, 405, 410, 411, 414, 418, 429, 431, 453, 470, 486, 487, 495, 506, 513, 537, 539, 544, 553, 562, 566, 581, 587, 598, 606, 624, 629, 637, 638, 639, 640, 642, 643, 644, 647, 648, 651, 652, 655, 684, 686, 691, 695, 704, 709, 710, 713, 714, 728],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 86,
+      "number": 87,
+      "name": "Sly",
+      "class": "Cook",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [70, 86, 90, 91, 99, 108, 111, 114, 121, 124, 126, 136, 144, 146, 153, 180, 384, 389, 392, 399, 405, 410, 411, 414, 418, 429, 431, 453, 470, 486, 487, 495, 506, 513, 537, 539, 544, 553, 562, 566, 581, 587, 598, 606, 624, 629, 637, 638, 639, 640, 642, 643, 644, 647, 648, 651, 652, 655, 684, 686, 691, 695, 704, 709, 710, 713, 714, 728],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 87,
+      "number": 88,
+      "name": "Noah",
+      "class": "Cook",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [26, 86, 94, 102, 115, 122, 123, 140, 177, 402, 416, 440, 445, 539, 549, 553, 577, 584, 587, 591, 596, 615, 616, 620, 641, 652, 672, 699, 714, 724, 728],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 88,
+      "number": 89,
+      "name": "Brantley",
+      "class": "Firefighter",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [63, 67, 100, 119, 145, 154, 242, 247, 250, 274, 300, 309, 320, 356, 385, 399, 414, 422, 425, 451, 459, 462, 464, 475, 484, 502, 515, 526, 541, 560, 566, 597, 600, 626, 634, 637, 639, 650, 677, 690, 701, 716],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 89,
+      "number": 90,
+      "name": "Camber",
+      "class": "Firefighter",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 27,
+      "bulbapediaBrackets": ["21-29", "31-39"],
+      "roster": [63, 67, 100, 119, 145, 154, 242, 247, 250, 274, 300, 309, 320, 356, 385, 399, 414, 422, 425, 451, 459, 462, 464, 475, 484, 502, 515, 526, 541, 560, 566, 597, 600, 626, 634, 637, 639, 650, 677, 690, 701, 716],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 90,
+      "number": 91,
+      "name": "Rendor",
+      "class": "Police Officer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [154, 157, 160, 164, 170, 179, 186, 187, 188, 191, 198, 201, 735, 745, 749, 750, 752, 755, 758, 759, 760, 761, 763, 764, 767, 769, 770, 785, 786, 800, 809, 810, 811, 812, 815, 817, 823, 824, 826, 827, 828, 831, 832, 833, 837, 838, 840, 841, 850, 851, 852, 857, 858, 860, 862, 864, 866, 867, 868, 871, 883, 897, 899, 900, 901, 903, 988, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 91,
+      "number": 92,
+      "name": "Lou",
+      "class": "Police Officer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [131, 155, 181, 185, 192, 317, 347, 377, 492, 522, 552, 573, 592, 611, 633, 667, 669, 673, 680, 697, 720, 727, 730, 748, 839, 842, 844, 846, 848, 855, 861, 872, 902, 905, 989, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 92,
+      "number": 93,
+      "name": "Benji",
+      "class": "Police Officer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [131, 155, 181, 185, 192, 317, 347, 377, 492, 522, 552, 573, 592, 611, 633, 667, 669, 673, 680, 697, 720, 727, 730, 748, 839, 842, 844, 846, 848, 855, 861, 872, 902, 905, 989, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 93,
+      "number": 94,
+      "name": "Cal",
+      "class": "Scientist",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [106, 158, 172, 176, 177, 582, 608, 612, 624, 628, 645, 668, 670, 671, 703, 742, 757, 783, 787, 796, 798, 799, 802, 803, 808, 820, 821, 834, 836, 843, 845, 846, 863, 874, 878, 885, 888, 990],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 94,
+      "number": 95,
+      "name": "Tivon",
+      "class": "Scientist",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [106, 158, 172, 176, 177, 182, 582, 608, 612, 624, 628, 645, 668, 670, 671, 703, 742, 757, 783, 787, 796, 798, 799, 802, 803, 808, 820, 821, 834, 836, 843, 845, 846, 863, 874, 878, 885, 888, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 95,
+      "number": 96,
+      "name": "Robyn",
+      "class": "Scientist",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [106, 158, 172, 176, 177, 182, 582, 608, 612, 624, 628, 645, 668, 670, 671, 703, 742, 757, 783, 787, 796, 798, 799, 802, 803, 808, 820, 821, 834, 836, 843, 845, 846, 863, 874, 878, 885, 888, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 96,
+      "number": 97,
+      "name": "Chucky",
+      "class": "Black Belt",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [156, 157, 161, 165, 171, 178, 180, 181, 182, 184, 188, 191, 193, 196, 197, 200, 201, 747, 749, 750, 752, 756, 759, 761, 769, 770, 778, 782, 784, 789, 793, 795, 800, 801, 806, 810, 817, 824, 827, 828, 829, 831, 833, 838, 840, 858, 871, 881, 889, 896, 899, 991, 993, 994, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 97,
+      "number": 98,
+      "name": "Iniko",
+      "class": "Black Belt",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [58, 156, 161, 162, 165, 168, 173, 175, 178, 179, 429, 455, 520, 526, 530, 537, 545, 736, 751, 753, 756, 762, 765, 766, 768, 771, 773, 778, 779, 782, 784, 785, 788, 791, 793, 794, 795, 801, 804, 805, 806, 807, 815, 835, 849, 870, 873, 875, 877, 880, 887, 895, 897, 898, 906, 991, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 98,
+      "number": 99,
+      "name": "Arnold",
+      "class": "Black Belt",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [58, 156, 161, 162, 165, 168, 173, 175, 178, 179, 429, 455, 520, 526, 530, 537, 545, 736, 751, 753, 756, 762, 765, 766, 768, 771, 773, 778, 779, 782, 784, 785, 788, 791, 793, 794, 795, 801, 804, 805, 806, 807, 815, 835, 849, 870, 873, 875, 877, 880, 887, 895, 897, 898, 906, 991, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 99,
+      "number": 100,
+      "name": "Carrie",
+      "class": "Dancer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [164, 170, 184, 186, 200, 736, 746, 749, 750, 751, 752, 753, 759, 761, 762, 765, 766, 768, 769, 770, 771, 772, 773, 775, 776, 779, 780, 781, 788, 791, 792, 794, 797, 800, 804, 805, 807, 810, 814, 816, 817, 824, 825, 827, 828, 830, 831, 833, 835, 838, 839, 840, 842, 849, 857, 877, 881, 889, 896, 898, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 100,
+      "number": 101,
+      "name": "Variel",
+      "class": "Dancer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [63, 119, 145, 154, 167, 195, 247, 300, 399, 414, 422, 475, 484, 515, 563, 566, 597, 600, 634, 639, 650, 690, 701, 716, 735, 738, 741, 744, 772, 774, 775, 809, 814, 825, 876, 891, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 101,
+      "number": 102,
+      "name": "Atalanta",
+      "class": "Dancer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [63, 119, 145, 154, 167, 195, 247, 300, 399, 414, 422, 475, 484, 515, 563, 566, 597, 600, 634, 639, 650, 690, 701, 716, 735, 738, 741, 744, 772, 774, 775, 809, 814, 825, 876, 891, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 102,
+      "number": 103,
+      "name": "Harvey",
+      "class": "Aether Foundation",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [159, 160, 162, 171, 174, 177, 179, 182, 183, 187, 197, 198, 199, 202, 745, 754, 755, 758, 760, 763, 764, 767, 777, 786, 789, 790, 811, 812, 813, 818, 819, 822, 823, 826, 829, 832, 837, 841, 850, 851, 852, 854, 856, 860, 862, 864, 866, 867, 868, 879, 883, 884, 886, 890, 892, 893, 894, 900, 901, 903, 904, 907, 990, 992, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 103,
+      "number": 104,
+      "name": "Luke",
+      "class": "Aether Foundation",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [159, 160, 162, 171, 174, 177, 180, 181, 183, 187, 197, 198, 199, 202, 745, 754, 755, 758, 760, 763, 764, 767, 777, 786, 789, 790, 811, 812, 813, 818, 819, 822, 823, 826, 829, 832, 837, 841, 850, 851, 852, 854, 856, 860, 862, 864, 866, 867, 868, 879, 883, 884, 886, 890, 892, 893, 894, 900, 901, 903, 904, 907, 990, 993, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 104,
+      "number": 105,
+      "name": "Granville",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [111, 115, 117, 136, 163, 167, 169, 190, 207, 564, 573, 599, 622, 641, 672, 678, 690, 707, 739, 748, 774, 797, 816, 847, 853, 865, 882],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 105,
+      "number": 106,
+      "name": "Raz",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [111, 115, 117, 136, 163, 167, 169, 190, 207, 564, 573, 599, 622, 641, 672, 678, 690, 707, 739, 748, 774, 797, 816, 847, 853, 865, 882],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 106,
+      "number": 107,
+      "name": "Heidi",
+      "class": "Aether Foundation",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [154, 159, 160, 162, 171, 174, 179, 182, 183, 193, 196, 197, 199, 202, 747, 754, 758, 777, 789, 790, 811, 813, 818, 819, 822, 829, 844, 847, 848, 853, 854, 855, 856, 857, 858, 859, 861, 862, 865, 869, 870, 871, 872, 873, 875, 876, 879, 880, 881, 882, 883, 884, 886, 887, 889, 890, 891, 892, 893, 894, 895, 896, 899, 902, 904, 905, 906, 907, 988, 992, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 107,
+      "number": 108,
+      "name": "Haley",
+      "class": "Aether Foundation",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [154, 157, 159, 160, 162, 163, 164, 166, 168, 169, 170, 171, 173, 174, 175, 180, 181, 183, 184, 185, 186, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 199, 200, 201, 202, 733, 734, 737, 738, 739, 740, 741, 743, 744, 747, 754, 758, 777, 789, 790, 811, 813, 818, 819, 822, 829, 854, 862, 879, 880, 883, 886, 890, 892, 893, 894, 904, 907, 988, 993, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 108,
+      "number": 109,
+      "name": "Lea",
+      "class": "Ace Trainer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [114, 140, 153, 166, 180, 189, 194, 207, 312, 558, 559, 565, 568, 571, 601, 605, 617, 662, 684, 688, 694, 710, 724, 733, 734, 737, 740, 743, 746, 776, 780, 781, 792, 830, 859, 863, 869, 885, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 109,
+      "number": 110,
+      "name": "Sylvia",
+      "class": "Ace Trainer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["31-39", "41-49", "51+"],
+      "roster": [114, 140, 153, 166, 180, 189, 194, 207, 312, 558, 559, 565, 568, 571, 601, 605, 617, 662, 684, 688, 694, 710, 724, 733, 734, 737, 740, 743, 746, 776, 780, 781, 792, 830, 859, 863, 869, 885, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 110,
+      "number": 111,
+      "name": "Stein",
+      "class": "Scientist",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [106, 108, 142, 144, 146, 147, 160, 172, 176, 177, 182, 196, 198, 200, 201, 592, 608, 624, 637, 645, 659, 709, 757, 767, 787, 798, 812, 834, 874, 884, 985, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 111,
+      "number": 112,
+      "name": "Cadel",
+      "class": "Scientist",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [106, 108, 142, 144, 146, 147, 160, 172, 176, 177, 182, 196, 198, 200, 201, 592, 608, 624, 637, 645, 659, 709, 757, 767, 787, 798, 812, 834, 874, 884, 985, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 112,
+      "number": 113,
+      "name": "Boris",
+      "class": "Black Belt",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [113, 114, 115, 116, 117, 118, 153, 165, 166, 167, 168, 169, 170, 180, 207, 559, 560, 562, 563, 564, 565, 566, 568, 569, 703, 704, 705, 709, 710, 716, 721, 722, 723, 727, 731, 732, 734, 735, 737, 738, 739, 740, 741, 743, 744, 878, 879, 880, 884, 885, 891, 896, 897, 898, 902, 906, 907, 917, 918, 919, 924, 927, 937, 938, 939, 944, 947, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 113,
+      "number": 114,
+      "name": "Bryson",
+      "class": "Black Belt",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [113, 114, 115, 116, 117, 118, 153, 165, 166, 167, 168, 169, 170, 180, 207, 559, 560, 562, 563, 564, 565, 566, 568, 569, 703, 704, 705, 709, 710, 716, 721, 722, 723, 727, 731, 732, 734, 735, 737, 738, 739, 740, 741, 743, 744, 878, 879, 880, 884, 885, 891, 896, 897, 898, 902, 906, 907, 914, 915, 916, 920, 921, 926, 934, 935, 936, 940, 941, 946, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 114,
+      "number": 115,
+      "name": "Jo",
+      "class": "Dancer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [119, 134, 139, 140, 141, 151, 155, 171, 188, 193, 194, 195, 205, 670, 684, 706, 707, 708, 711, 712, 714, 715, 717, 718, 724, 725, 726, 728, 729, 730, 845, 859, 881, 882, 883, 886, 887, 889, 890, 892, 893, 899, 900, 901, 903, 904, 905, 908, 909, 910, 922, 923, 928, 929, 930, 942, 943, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 115,
+      "number": 116,
+      "name": "Tasanee",
+      "class": "Dancer",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [44, 98, 119, 134, 139, 140, 141, 152, 155, 171, 188, 193, 194, 195, 206, 670, 684, 706, 707, 708, 711, 712, 714, 715, 717, 718, 724, 725, 726, 728, 729, 730, 845, 859, 881, 882, 883, 886, 887, 889, 890, 892, 893, 899, 900, 901, 903, 904, 905, 911, 912, 913, 925, 931, 932, 933, 945, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 116,
+      "number": 117,
+      "name": "Levi",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [114, 140, 154, 166, 180, 194, 559, 562, 565, 568, 571, 684, 685, 692, 704, 705, 723, 724, 729, 734, 737, 740, 743, 746, 859, 860, 867, 879, 880, 898, 899, 904, 988, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 117,
+      "number": 118,
+      "name": "Hashim",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [42, 96, 106, 115, 134, 137, 141, 158, 167, 178, 181, 188, 191, 195, 560, 563, 566, 569, 572, 651, 652, 653, 664, 667, 670, 678, 681, 703, 704, 706, 714, 716, 718, 723, 725, 735, 738, 741, 744, 747, 826, 827, 828, 839, 842, 845, 853, 856, 878, 879, 881, 889, 891, 893, 898, 900, 991, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 118,
+      "number": 119,
+      "name": "Munin",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [109, 113, 116, 117, 119, 137, 139, 155, 161, 165, 168, 169, 171, 179, 191, 193, 558, 561, 564, 567, 570, 649, 684, 686, 690, 694, 708, 710, 713, 716, 721, 726, 728, 730, 731, 733, 736, 739, 742, 745, 824, 859, 861, 865, 869, 883, 885, 888, 891, 896, 901, 903, 905, 906, 989, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 119,
+      "number": 120,
+      "name": "Poppy",
+      "class": "Ace Trainer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [42, 96, 115, 117, 140, 155, 167, 169, 181, 194, 569, 666, 672, 674, 675, 687, 693, 696, 703, 707, 708, 714, 722, 725, 726, 727, 728, 729, 731, 744, 841, 847, 849, 850, 862, 868, 871, 878, 882, 883, 889, 897, 900, 901, 902, 903, 904, 906, 989, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 120,
+      "number": 121,
+      "name": "Tamah",
+      "class": "Ace Trainer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [112, 118, 141, 164, 170, 178, 182, 195, 566, 567, 679, 682, 686, 697, 705, 709, 711, 715, 717, 722, 730, 732, 741, 742, 854, 857, 861, 872, 880, 884, 886, 890, 892, 897, 905, 907, 991, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 121,
+      "number": 122,
+      "name": "Bette",
+      "class": "Ace Trainer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [113, 139, 147, 154, 165, 180, 193, 201, 558, 565, 568, 571, 631, 632, 647, 648, 660, 677, 683, 688, 696, 699, 707, 733, 740, 743, 746, 806, 807, 822, 823, 835, 852, 858, 863, 871, 874, 882, 988, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 122,
+      "number": 123,
+      "name": "Kikujiro",
+      "class": "Veteran",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [94, 153, 179, 207, 588, 590, 649, 690, 763, 765, 824, 865, 909, 911, 921, 929, 931, 941, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 123,
+      "number": 124,
+      "name": "Xenophon",
+      "class": "Veteran",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [66, 132, 147, 155, 201, 558, 581, 617, 656, 684, 733, 756, 792, 831, 859, 919, 939, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 124,
+      "number": 125,
+      "name": "Placido",
+      "class": "Veteran",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [41, 95, 908, 910, 912, 914, 916, 918, 920, 922, 924, 926, 928, 930, 932, 934, 936, 938, 940, 942, 944, 946],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 125,
+      "number": 126,
+      "name": "Ignacio",
+      "class": "Veteran",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [149, 150, 203, 204, 951, 957, 958, 959, 960, 961, 962, 963, 971, 977, 978, 979, 980, 981, 982, 983],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 126,
+      "number": 127,
+      "name": "Aino",
+      "class": "Veteran",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [43, 97, 154, 470, 575, 619, 623, 682, 683, 729, 750, 794, 798, 857, 858, 904, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 127,
+      "number": 128,
+      "name": "Xio",
+      "class": "Veteran",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [8, 66, 112, 118, 124, 141, 164, 170, 176, 195, 577, 617, 637, 665, 682, 722, 752, 792, 812, 840, 857, 897],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 128,
+      "number": 129,
+      "name": "Priya",
+      "class": "Veteran",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [41, 95, 909, 911, 913, 915, 917, 919, 921, 923, 925, 927, 929, 931, 933, 935, 937, 939, 941, 943, 945, 947],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 129,
+      "number": 130,
+      "name": "Candy",
+      "class": "Veteran",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["41-49", "51+"],
+      "roster": [149, 150, 203, 204, 951, 957, 958, 959, 960, 961, 962, 963, 971, 977, 978, 979, 980, 981, 982, 983],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 130,
+      "number": 131,
+      "name": "Napoleon",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 95, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 131,
+      "number": 132,
+      "name": "Brady",
+      "class": "Youngster",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 43, 44, 95, 97, 98, 908, 924, 925, 926, 927, 928, 944, 945, 946, 947],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 132,
+      "number": 133,
+      "name": "Samantha",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [151, 205, 949, 951, 953, 955, 957, 959, 961, 963, 965, 967, 969, 971, 973, 975, 977, 979, 981, 983, 985, 987],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 133,
+      "number": 134,
+      "name": "Inez",
+      "class": "Lass",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [43, 97, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 134,
+      "number": 135,
+      "name": "Niara",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [113, 114, 115, 139, 140, 141, 165, 166, 167, 193, 194, 195, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 135,
+      "number": 136,
+      "name": "Victor",
+      "class": "Preschooler",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [42, 96, 119, 149, 150, 151, 152, 171, 203, 204, 205, 206, 726, 727, 728, 729, 730, 731, 901, 902, 903, 904, 905, 906, 962, 963, 964, 965, 966, 982, 983, 984, 985, 986],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 136,
+      "number": 137,
+      "name": "Reina",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [113, 114, 115, 139, 140, 141, 165, 166, 167, 193, 194, 195, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 137,
+      "number": 138,
+      "name": "Naya",
+      "class": "Preschooler",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [42, 96, 119, 149, 150, 151, 152, 171, 203, 204, 205, 206, 726, 727, 728, 729, 730, 731, 901, 902, 903, 904, 905, 906, 962, 963, 964, 965, 966, 982, 983, 984, 985, 986],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 138,
+      "number": 139,
+      "name": "Gwenny",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 43, 44, 95, 97, 98, 908, 924, 925, 926, 927, 928, 944, 945, 946, 947],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 139,
+      "number": 140,
+      "name": "Fernanda",
+      "class": "Backpacker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [948, 950, 952, 954, 956, 958, 960, 962, 964, 966, 968, 970, 972, 974, 976, 978, 980, 982, 984, 986],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 140,
+      "number": 141,
+      "name": "Vivek",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 172, 176, 181, 192, 492, 522, 552, 573, 592, 608, 611, 624, 633, 645, 664, 667, 669, 697, 703, 709, 720, 727, 757, 786, 787, 798, 834, 839, 842, 846, 872, 874, 878, 884, 902, 905, 914, 918, 934, 938, 954, 958, 966, 974, 978, 985, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 141,
+      "number": 142,
+      "name": "Stellan",
+      "class": "Hiker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 172, 176, 181, 192, 492, 522, 552, 573, 592, 608, 611, 624, 633, 645, 664, 667, 669, 697, 703, 709, 720, 727, 757, 786, 787, 798, 834, 839, 842, 846, 872, 874, 878, 884, 902, 905, 914, 918, 934, 938, 954, 958, 966, 974, 978, 985, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 142,
+      "number": 143,
+      "name": "Savir",
+      "class": "Office Worker",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [137, 155, 179, 191, 575, 577, 583, 588, 590, 599, 610, 618, 621, 622, 627, 629, 630, 636, 640, 649, 652, 659, 664, 669, 671, 679, 682, 683, 687, 696, 703, 708, 711, 713, 729, 750, 752, 758, 763, 765, 774, 785, 796, 797, 802, 804, 811, 815, 824, 827, 834, 839, 844, 846, 854, 857, 858, 862, 871, 878, 883, 886, 888, 904, 989, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 143,
+      "number": 144,
+      "name": "Harding",
+      "class": "Office Worker",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [137, 155, 179, 191, 575, 583, 588, 590, 599, 610, 618, 621, 622, 627, 629, 630, 636, 640, 649, 652, 659, 664, 669, 671, 679, 682, 683, 687, 696, 703, 708, 711, 713, 729, 750, 758, 763, 765, 774, 785, 796, 797, 802, 804, 811, 815, 824, 827, 834, 839, 844, 846, 854, 857, 858, 862, 871, 878, 883, 886, 888, 904, 989, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 144,
+      "number": 145,
+      "name": "Darrel",
+      "class": "Office Worker",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 112, 118, 119, 124, 132, 135, 136, 143, 148, 158, 164, 170, 171, 176, 177, 182, 186, 189, 190, 197, 202, 573, 576, 577, 580, 581, 597, 600, 604, 605, 607, 617, 619, 625, 628, 637, 638, 643, 644, 646, 650, 656, 662, 665, 682, 700, 706, 712, 715, 717, 718, 722, 748, 752, 755, 756, 772, 775, 779, 780, 782, 792, 794, 800, 803, 812, 813, 818, 821, 825, 831, 837, 840, 857, 875, 881, 887, 890, 892, 893, 897, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 145,
+      "number": 146,
+      "name": "Jana",
+      "class": "Office Worker",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 112, 118, 119, 124, 132, 135, 136, 143, 148, 158, 164, 170, 171, 176, 177, 182, 186, 189, 190, 197, 202, 573, 576, 580, 581, 597, 600, 604, 605, 607, 617, 619, 625, 628, 637, 638, 643, 644, 646, 650, 656, 662, 665, 682, 700, 706, 712, 715, 717, 718, 722, 748, 755, 756, 772, 775, 779, 780, 782, 792, 794, 800, 803, 812, 813, 818, 821, 825, 831, 837, 840, 857, 875, 881, 887, 890, 892, 893, 897, 990, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 146,
+      "number": 147,
+      "name": "Etta",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [140, 178, 194, 577, 590, 591, 615, 620, 714, 724, 728, 752, 766, 790, 795, 889, 899, 903, 991],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 147,
+      "number": 148,
+      "name": "Dustin",
+      "class": "Punk Guy",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [140, 178, 194, 577, 590, 591, 615, 620, 714, 724, 728, 752, 766, 790, 795, 889, 899, 903, 991],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 148,
+      "number": 149,
+      "name": "Zed",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 117, 123, 133, 155, 156, 169, 175, 187, 579, 584, 585, 589, 598, 601, 602, 613, 616, 620, 622, 626, 627, 629, 631, 632, 642, 647, 648, 655, 660, 666, 672, 674, 675, 677, 693, 698, 707, 714, 719, 727, 731, 732, 754, 759, 760, 764, 773, 776, 777, 788, 791, 795, 797, 801, 802, 804, 806, 807, 817, 822, 823, 830, 835, 841, 847, 849, 850, 852, 868, 873, 882, 889, 894, 902, 906, 907, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 149,
+      "number": 150,
+      "name": "Edda",
+      "class": "Punk Girl",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 117, 123, 133, 155, 156, 169, 175, 187, 579, 584, 585, 589, 598, 601, 602, 613, 616, 620, 622, 626, 627, 629, 631, 632, 642, 647, 648, 655, 660, 666, 672, 674, 675, 677, 693, 698, 707, 714, 719, 727, 731, 732, 754, 759, 760, 764, 773, 776, 777, 788, 791, 795, 797, 801, 802, 804, 806, 807, 817, 822, 823, 830, 835, 841, 847, 849, 850, 852, 868, 873, 882, 889, 894, 902, 906, 907, 989],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 150,
+      "number": 151,
+      "name": "Leena",
+      "class": "Youth Athlete",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [111, 115, 117, 136, 163, 167, 169, 190, 599, 641, 672, 678, 690, 707, 774, 816, 847, 853, 865, 882],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 151,
+      "number": 152,
+      "name": "Buddy",
+      "class": "Youth Athlete",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [111, 115, 117, 136, 163, 167, 169, 190, 599, 641, 672, 678, 690, 707, 774, 816, 847, 853, 865, 882],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 152,
+      "number": 153,
+      "name": "Hilario",
+      "class": "Youth Athlete",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [105, 115, 131, 157, 167, 185, 564, 570, 573, 607, 617, 622, 642, 685, 739, 745, 748, 782, 792, 797, 817, 860, 911, 931, 951, 971],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 153,
+      "number": 154,
+      "name": "Thamina",
+      "class": "Youth Athlete",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [105, 115, 131, 157, 167, 185, 564, 570, 573, 607, 617, 622, 642, 685, 739, 745, 748, 782, 792, 797, 817, 860, 911, 931, 951, 971],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 154,
+      "number": 155,
+      "name": "Dolly",
+      "class": "Rising Star",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [119, 145, 154, 180, 422, 475, 566, 597, 600, 634, 639, 650, 690, 701, 716, 772, 774, 775, 809, 814, 825, 852, 876, 891, 913, 933, 949, 953, 973, 980, 988, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 155,
+      "number": 156,
+      "name": "Erix",
+      "class": "Rising Star",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [114, 153, 189, 207, 312, 558, 559, 601, 605, 606, 617, 662, 684, 694, 710, 724, 733, 776, 780, 781, 792, 830, 859, 869, 885, 910, 924, 930, 944, 950, 964, 970],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 156,
+      "number": 157,
+      "name": "Joaquin",
+      "class": "Rising Star",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [119, 145, 154, 180, 422, 475, 566, 597, 600, 634, 639, 650, 690, 701, 716, 772, 774, 775, 809, 814, 825, 852, 876, 891, 913, 933, 949, 953, 973, 980, 988, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 157,
+      "number": 158,
+      "name": "Marianne",
+      "class": "Rising Star",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [114, 153, 189, 207, 312, 558, 559, 601, 605, 606, 617, 662, 684, 694, 710, 724, 733, 776, 780, 781, 792, 830, 859, 869, 885, 910, 924, 930, 944, 950, 964, 970],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 158,
+      "number": 159,
+      "name": "Alice",
+      "class": "Sightseer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [606, 635, 668, 709, 721, 725, 732, 781, 810, 843, 884, 896, 900, 907, 927, 947, 967, 987],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 159,
+      "number": 160,
+      "name": "Chen",
+      "class": "Sightseer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [606, 635, 668, 709, 721, 725, 732, 781, 810, 843, 884, 896, 900, 907, 927, 947, 967, 987],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 160,
+      "number": 161,
+      "name": "Christian",
+      "class": "Sightseer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [137, 146, 191, 200, 622, 648, 688, 692, 695, 708, 711, 723, 797, 823, 863, 867, 870, 883, 886, 898, 923, 924, 943, 944, 963, 964, 983, 984],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 161,
+      "number": 162,
+      "name": "Ezra",
+      "class": "Sightseer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [137, 146, 191, 200, 622, 648, 688, 692, 695, 708, 711, 723, 797, 823, 863, 867, 870, 883, 886, 898, 923, 924, 943, 944, 963, 964, 983, 984],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 162,
+      "number": 163,
+      "name": "Sika",
+      "class": "Janitor",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 119, 120, 122, 123, 129, 133, 144, 145, 147, 155, 158, 171, 172, 174, 175, 181, 183, 187, 198, 199, 201, 592, 598, 599, 611, 613, 626, 642, 647, 648, 650, 660, 661, 664, 665, 667, 671, 677, 680, 685, 689, 697, 703, 707, 712, 713, 715, 716, 767, 773, 774, 786, 788, 801, 817, 822, 823, 825, 835, 836, 839, 840, 842, 846, 852, 855, 860, 864, 872, 878, 882, 887, 888, 890, 891, 989, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 163,
+      "number": 164,
+      "name": "Paulo",
+      "class": "Janitor",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [106, 119, 120, 122, 123, 129, 133, 144, 145, 147, 155, 158, 171, 172, 174, 175, 181, 183, 187, 198, 199, 201, 592, 598, 599, 611, 613, 626, 642, 647, 648, 650, 660, 661, 664, 665, 667, 671, 677, 680, 685, 689, 697, 703, 707, 712, 713, 715, 716, 767, 773, 774, 786, 788, 801, 817, 822, 823, 825, 835, 836, 839, 840, 842, 846, 852, 855, 860, 864, 872, 878, 882, 887, 888, 890, 891, 989, 994],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 164,
+      "number": 165,
+      "name": "Dan",
+      "class": "Worker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 110, 137, 138, 148, 156, 162, 177, 179, 191, 192, 202, 573, 580, 588, 590, 592, 599, 609, 611, 621, 631, 632, 633, 634, 635, 636, 639, 649, 663, 668, 669, 671, 673, 680, 686, 687, 690, 697, 700, 703, 705, 708, 709, 713, 720, 748, 755, 763, 765, 767, 774, 784, 786, 796, 806, 807, 808, 809, 810, 811, 814, 824, 838, 843, 844, 846, 848, 855, 861, 862, 865, 872, 875, 878, 880, 883, 884, 888, 895, 990, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 165,
+      "number": 166,
+      "name": "Omar",
+      "class": "Worker",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 110, 137, 138, 148, 156, 162, 177, 179, 191, 192, 202, 573, 580, 588, 590, 592, 599, 609, 611, 621, 631, 632, 633, 634, 635, 636, 639, 649, 663, 668, 669, 671, 673, 680, 686, 687, 690, 697, 700, 703, 705, 708, 709, 713, 720, 748, 755, 763, 765, 767, 774, 784, 786, 796, 806, 807, 808, 809, 810, 811, 814, 824, 838, 843, 844, 846, 848, 855, 861, 862, 865, 872, 875, 878, 880, 883, 884, 888, 895, 990, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 166,
+      "number": 167,
+      "name": "Mechabob",
+      "class": "Gentleman",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [179, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 926, 927, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 946, 947, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 966, 967, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 986, 987, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 167,
+      "number": 168,
+      "name": "Abel",
+      "class": "Gentleman",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [179, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 926, 927, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 946, 947, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 966, 967, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 986, 987, 992],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 168,
+      "number": 169,
+      "name": "Donny",
+      "class": "Madame",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 42, 43, 44, 95, 96, 97, 98, 149, 150, 151, 152, 203, 204, 205, 206, 908, 909, 910, 922, 923, 924, 925, 928, 929, 930, 942, 943, 944, 945, 948, 949, 950, 962, 963, 964, 965, 968, 969, 970, 982, 983, 984, 985],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 169,
+      "number": 170,
+      "name": "Gracie",
+      "class": "Madame",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 42, 43, 44, 95, 96, 97, 98, 149, 150, 151, 152, 203, 204, 205, 206, 908, 909, 910, 922, 923, 924, 925, 928, 929, 930, 942, 943, 944, 945, 948, 949, 950, 962, 963, 964, 965, 968, 969, 970, 982, 983, 984, 985],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 170,
+      "number": 171,
+      "name": "Donna",
+      "class": "Bellhop",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 105, 116, 134, 138, 143, 156, 157, 168, 178, 182, 188, 192, 197, 575, 581, 586, 594, 595, 597, 600, 601, 603, 607, 615, 620, 622, 626, 629, 636, 652, 653, 654, 658, 663, 668, 669, 674, 682, 683, 696, 699, 701, 702, 705, 706, 750, 756, 761, 769, 770, 772, 775, 776, 778, 782, 790, 795, 797, 801, 804, 811, 827, 828, 829, 833, 838, 843, 844, 849, 857, 858, 871, 874, 876, 877, 880, 881, 991, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 171,
+      "number": 172,
+      "name": "Gilroy",
+      "class": "Bellhop",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 105, 116, 134, 138, 143, 156, 157, 168, 178, 182, 188, 192, 197, 575, 581, 586, 594, 595, 597, 600, 601, 603, 607, 615, 620, 622, 626, 629, 636, 652, 653, 654, 658, 663, 668, 669, 674, 682, 683, 696, 699, 701, 702, 705, 706, 750, 756, 761, 769, 770, 772, 775, 776, 778, 782, 790, 795, 797, 801, 804, 811, 827, 828, 829, 833, 838, 843, 844, 849, 857, 858, 871, 874, 876, 877, 880, 881, 991, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 172,
+      "number": 173,
+      "name": "Patrick",
+      "class": "Golfer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [132, 186, 559, 562, 591, 662, 677, 686, 723, 728, 732, 734, 737, 766, 837, 852, 861, 898, 903, 907, 909, 912, 927, 929, 932, 947, 949, 952, 967, 969, 972, 987],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 173,
+      "number": 174,
+      "name": "Moe",
+      "class": "Golfer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [689, 690, 691, 692, 693, 694, 695, 864, 865, 866, 867, 868, 869, 870],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 174,
+      "number": 175,
+      "name": "Bruce",
+      "class": "Golfer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [689, 690, 691, 692, 693, 694, 695, 864, 865, 866, 867, 868, 869, 870],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 175,
+      "number": 176,
+      "name": "Susanna",
+      "class": "Golfer",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [559, 562, 591, 662, 677, 686, 723, 728, 732, 734, 737, 766, 837, 852, 861, 898, 903, 907, 909, 912, 927, 929, 932, 947, 949, 952, 967, 969, 972, 987],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 176,
+      "number": 177,
+      "name": "Lori",
+      "class": "Pokémon Breeder",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [108, 124, 160, 176, 598, 608, 612, 619, 621, 623, 628, 636, 637, 640, 664, 667, 671, 715, 773, 783, 787, 794, 796, 798, 803, 811, 812, 815, 839, 842, 846, 890],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 177,
+      "number": 178,
+      "name": "Colby",
+      "class": "Pokémon Breeder",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [108, 124, 160, 176, 598, 608, 612, 619, 621, 623, 628, 636, 637, 640, 664, 667, 671, 715, 773, 783, 787, 794, 796, 798, 803, 811, 812, 815, 839, 842, 846, 890],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 178,
+      "number": 179,
+      "name": "Danby",
+      "class": "Pokémon Breeder",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [133, 134, 138, 144, 146, 147, 187, 188, 192, 198, 200, 201, 587, 592, 593, 616, 639, 659, 670, 680, 709, 762, 767, 768, 791, 814, 834, 845, 855, 884],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 179,
+      "number": 180,
+      "name": "Izel",
+      "class": "Pokémon Breeder",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [133, 134, 138, 144, 146, 147, 187, 188, 192, 198, 200, 201, 587, 592, 593, 616, 639, 659, 670, 680, 709, 762, 767, 768, 791, 814, 834, 845, 855, 884],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 180,
+      "number": 181,
+      "name": "Presta",
+      "class": "Firefighter",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 107, 119, 122, 131, 133, 134, 142, 145, 154, 156, 159, 171, 174, 185, 187, 188, 196, 199, 580, 585, 592, 597, 600, 612, 623, 624, 639, 642, 650, 657, 662, 663, 668, 670, 677, 678, 680, 685, 689, 691, 697, 704, 706, 714, 716, 718, 725, 728, 755, 760, 767, 772, 775, 787, 798, 799, 814, 817, 825, 832, 837, 838, 843, 845, 852, 853, 855, 860, 864, 866, 872, 879, 881, 889, 891, 893, 900, 903, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 181,
+      "number": 182,
+      "name": "Calder",
+      "class": "Firefighter",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 107, 119, 122, 131, 133, 134, 142, 145, 154, 156, 159, 171, 174, 185, 187, 188, 196, 199, 580, 585, 592, 597, 600, 612, 623, 624, 639, 642, 650, 657, 662, 663, 668, 670, 677, 678, 680, 685, 689, 691, 697, 704, 706, 714, 716, 718, 725, 728, 755, 760, 767, 772, 775, 787, 798, 799, 814, 817, 825, 832, 837, 838, 843, 845, 852, 853, 855, 860, 864, 866, 872, 879, 881, 889, 891, 893, 900, 903, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 182,
+      "number": 183,
+      "name": "Larry",
+      "class": "Cook",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [107, 111, 121, 122, 124, 136, 144, 145, 153, 159, 163, 173, 174, 176, 180, 190, 198, 199, 207, 574, 580, 581, 585, 586, 587, 589, 593, 598, 604, 606, 629, 637, 655, 661, 662, 670, 684, 686, 688, 691, 695, 710, 712, 713, 714, 719, 749, 755, 756, 760, 761, 762, 764, 768, 773, 779, 781, 804, 812, 830, 836, 837, 845, 859, 861, 863, 866, 870, 885, 887, 888, 889, 894, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 183,
+      "number": 184,
+      "name": "Tony",
+      "class": "Cook",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [107, 111, 121, 122, 124, 136, 144, 145, 153, 159, 163, 173, 174, 176, 180, 190, 198, 199, 207, 574, 580, 581, 585, 586, 587, 589, 593, 598, 604, 606, 629, 637, 655, 661, 662, 670, 684, 686, 688, 691, 695, 710, 712, 713, 714, 719, 749, 755, 756, 760, 761, 762, 764, 768, 773, 779, 781, 804, 812, 830, 836, 837, 845, 859, 861, 863, 866, 870, 885, 887, 888, 889, 894, 993],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 184,
+      "number": 185,
+      "name": "Sam",
+      "class": "Collector",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 109, 110, 146, 156, 161, 162, 180, 182, 200, 583, 614, 615, 616, 631, 632, 633, 634, 635, 636, 639, 651, 652, 678, 679, 711, 713, 715, 717, 718, 721, 722, 723, 725, 726, 727, 728, 729, 730, 731, 758, 789, 790, 791, 806, 807, 808, 809, 810, 811, 814, 826, 827, 853, 854, 886, 888, 890, 892, 893, 896, 897, 898, 900, 901, 902, 903, 904, 905, 906, 993, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 185,
+      "number": 186,
+      "name": "Dennis",
+      "class": "Collector",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [104, 109, 110, 146, 156, 161, 162, 180, 182, 200, 583, 614, 615, 616, 631, 632, 633, 634, 635, 636, 639, 651, 652, 678, 679, 711, 713, 715, 717, 718, 721, 722, 723, 725, 726, 727, 728, 729, 730, 731, 758, 789, 790, 791, 806, 807, 808, 809, 810, 811, 814, 826, 827, 853, 854, 886, 888, 890, 892, 893, 896, 897, 898, 900, 901, 902, 903, 904, 905, 906, 993, 995],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 186,
+      "number": 187,
+      "name": "Horace",
+      "class": "Ace Trainer",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [41, 42, 43, 44, 95, 96, 97, 98, 149, 150, 151, 152, 203, 204, 205, 206, 914, 915, 916, 934, 935, 936, 954, 955, 956, 974, 975, 976],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 187,
+      "number": 188,
+      "name": "Perri",
+      "class": "Pokémon Center Lady",
+      "classGender": null,
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [60, 66, 72, 76, 89, 94, 112, 118, 124, 143, 148, 164, 170, 176, 197, 202, 407, 430, 437, 444, 448, 507, 542, 547, 582, 605, 612, 619, 623, 682, 717, 722, 757, 780, 787, 794, 798, 857, 892, 897],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 188,
+      "number": 189,
+      "name": "Dooley",
+      "class": "Veteran",
+      "classGender": "M",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [112, 150, 154, 164, 204, 559, 577, 614, 726, 727, 728, 729, 730, 734, 752, 789, 901, 902, 903, 904, 905, 948, 949, 951, 952, 953, 958, 960, 961, 963, 964, 965, 966, 968, 969, 971, 972, 973, 978, 980, 981, 983, 984, 985, 986, 988],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 189,
+      "number": 190,
+      "name": "Demiathena",
+      "class": "Veteran",
+      "classGender": "F",
+      "kind": "regular",
+      "iv": 31,
+      "bulbapediaBrackets": ["51+"],
+      "roster": [149, 151, 152, 203, 205, 206, 949, 951, 953, 959, 961, 962, 963, 965, 969, 971, 973, 979, 981, 982, 983, 985],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 190,
+      "number": null,
+      "name": "Red",
+      "class": "Battle Legend",
+      "classGender": "M",
+      "kind": "legend",
+      "bossKey": "red-super",
+      "format": "singles",
+      "course": "super",
+      "iv": 31,
+      "roster": [558, 559, 560, 706, 715, 733, 734, 735, 881, 890],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 191,
+      "number": null,
+      "name": "Blue",
+      "class": "Battle Legend",
+      "classGender": "M",
+      "kind": "legend",
+      "bossKey": "blue-super",
+      "format": "doubles",
+      "course": "super",
+      "iv": 31,
+      "roster": [576, 622, 663, 678, 684, 709, 714, 724, 727, 751, 797, 838, 853, 884, 889, 899, 902],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 192,
+      "number": null,
+      "name": "Grimsley",
+      "class": "Pokémon Trainer",
+      "versions": ["sun", "moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [584, 585, 620, 629, 655, 660, 666, 698, 727, 759, 760, 795, 804, 830, 835, 873, 902],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 193,
+      "number": null,
+      "name": "Anabel",
+      "class": "Pokémon Trainer",
+      "versions": ["sun", "moon"],
+      "weight": 1,
+      "requires": "lookerGuzzlordChapter",
+      "requiresNote": "Only after the player has reached Guzzlord's chapter of the Looker episode; otherwise an ordinary Trainer battles instead (Bulbapedia).",
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [622, 696, 715, 797, 871, 890, 911, 912, 923, 931, 932, 943, 951, 952, 963, 971, 972, 983],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 194,
+      "number": null,
+      "name": "Wally",
+      "class": "Pokémon Trainer",
+      "versions": ["sun", "moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [625, 683, 708, 730, 800, 858, 883, 905],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 195,
+      "number": null,
+      "name": "Colress",
+      "class": "Pokémon Trainer",
+      "versions": ["sun", "moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [472, 599, 647, 679, 687, 708, 711, 729, 774, 854, 862, 883, 886, 904],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 196,
+      "number": null,
+      "name": "Cynthia",
+      "class": "Pokémon Trainer",
+      "versions": ["sun", "moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [616, 696, 718, 722, 730, 791, 871, 893, 897, 905],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 197,
+      "number": null,
+      "name": "Plumeria",
+      "class": "Pokémon Trainer",
+      "versions": ["sun"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [133, 135, 187, 189, 642, 648, 707, 817, 823, 882],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 198,
+      "number": null,
+      "name": "Guzma",
+      "class": "Pokémon Trainer",
+      "versions": ["moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [133, 134, 187, 188, 626, 629, 651, 666, 698, 801, 804, 826, 841, 873],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 199,
+      "number": null,
+      "name": "Kiawe",
+      "class": "Captain",
+      "versions": ["sun"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [111, 163, 614, 642, 724, 749, 789, 817, 899],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 200,
+      "number": null,
+      "name": "Mallow",
+      "class": "Captain",
+      "versions": ["moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [111, 120, 132, 135, 163, 172, 186, 189, 564, 644, 656, 739, 819, 831],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 201,
+      "number": null,
+      "name": "Sina",
+      "class": "Pokémon Trainer",
+      "versions": ["sun"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [146, 200, 605, 630, 645, 675, 695, 780, 805, 820, 850, 870, 895],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 202,
+      "number": null,
+      "name": "Dexio",
+      "class": "Pokémon Trainer",
+      "versions": ["moon"],
+      "weight": 7,
+      "classGender": null,
+      "kind": "special",
+      "iv": 31,
+      "roster": [144, 198, 612, 617, 658, 676, 692, 787, 792, 833, 837, 851, 867],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "class": "sadisticmystic-sheet + tree-sets-app",
+        "weight": "bulbapedia-trainers",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 203,
+      "number": null,
+      "name": "Red",
+      "class": "Battle Legend",
+      "classGender": "M",
+      "kind": "legend",
+      "bossKey": "red-normal",
+      "format": "singles",
+      "course": "normal",
+      "iv": 31,
+      "roster": [208, 209, 210, 356, 365, 383, 384, 385, 531, 540],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "iv": "atsync-iv-post"
+      }
+    },
+    {
+      "id": 204,
+      "number": null,
+      "name": "Blue",
+      "class": "Battle Legend",
+      "classGender": "M",
+      "kind": "legend",
+      "bossKey": "blue-normal",
+      "format": "doubles",
+      "course": "normal",
+      "iv": 31,
+      "roster": [226, 272, 313, 328, 334, 359, 364, 374, 377, 401, 447, 488, 503, 534, 539, 549, 552],
+      "source": {
+        "roster": "tre-sm",
+        "identity": "bulbapedia-battle-tree",
+        "iv": "atsync-iv-post"
+      }
+    }
+  ]
+}

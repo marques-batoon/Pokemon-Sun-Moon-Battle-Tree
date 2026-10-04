@@ -1,0 +1,157 @@
+{
+  "source": {
+    "restrictions": "bulbapedia-battle-tree (Restrictions > Pokémon Sun and Moon; Special Pokémon list)",
+    "bp": "bulbapedia-battle-tree (Battle Points table); consistent with smogon-guide",
+    "itemClauseScope": "smogon-guide (\"the Item Clause applies to the entire team box submitted\")",
+    "levels": "smogon-guide (\"temporarily downleveled to 50 ... not leveled up to 50\")",
+    "opponentGeneration": "bulbapedia-battle-tree + smogon-guide"
+  },
+  "game": "sun-moon",
+  "level": {
+    "max": 50,
+    "scaleDownAbove": true,
+    "scaleUpBelow": false
+  },
+  "clauses": {
+    "species": {
+      "scope": "registered-team",
+      "source": "bulbapedia-battle-tree"
+    },
+    "item": {
+      "scope": "registered-team",
+      "source": "bulbapedia-battle-tree + smogon-guide"
+    }
+  },
+  "teamSize": {
+    "singles": {
+      "registeredMax": 6,
+      "registeredMin": 3,
+      "bring": 3
+    },
+    "doubles": {
+      "registeredMax": 6,
+      "registeredMin": 4,
+      "bring": 4
+    },
+    "multi": {
+      "bring": 2,
+      "future": true
+    }
+  },
+  "bannedSpecies": {
+    "includeAllForms": true,
+    "species": ["Mewtwo", "Mew", "Lugia", "Ho-Oh", "Celebi", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Dialga", "Palkia", "Giratina", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini", "Reshiram", "Zekrom", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Xerneas", "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion", "Cosmog", "Cosmoem", "Solgaleo", "Lunala", "Necrozma", "Magearna", "Marshadow", "Zeraora"]
+  },
+  "battlePoints": {
+    "normal": [
+      {
+        "battles": [1, 10],
+        "bp": 1
+      },
+      {
+        "battles": [11, 19],
+        "bp": 2
+      },
+      {
+        "battles": [20, 20],
+        "bp": 20,
+        "note": "Battle Legend"
+      }
+    ],
+    "super": [
+      {
+        "battles": [1, 10],
+        "bp": 2
+      },
+      {
+        "battles": [11, 20],
+        "bp": 3
+      },
+      {
+        "battles": [21, 30],
+        "bp": 4
+      },
+      {
+        "battles": [31, 40],
+        "bp": 5
+      },
+      {
+        "battles": [41, 49],
+        "bp": 6
+      },
+      {
+        "battles": [50, 50],
+        "bp": 50,
+        "note": "Battle Legend"
+      },
+      {
+        "battles": [51, null],
+        "bp": 7
+      }
+    ]
+  },
+  "betweenBattles": {
+    "fullHeal": true,
+    "restoreItems": true,
+    "resetPp": true,
+    "clearStatus": true,
+    "note": "Each battle is a fresh battle (facility replicates link-battle rules; consumed items are not lost). Source: smogon-guide."
+  },
+  "opponentGeneration": {
+    "level": 50,
+    "ivs": "per-trainer, equal in all six stats (see trainers.json `iv`)",
+    "teamPick": {
+      "rule": "Pick roster sets uniformly at random one at a time, rejecting picks that would duplicate a species or a held item, until the team is full.",
+      "source": "smogon-guide (\"picks the required amount of Pokemon from its team one by one making sure that the Clauses are respected\")",
+      "approximation": "Rule described by the community guide, not taken from disassembled code. Uniform weighting is assumed."
+    },
+    "ability": {
+      "rule": "Uniform over the three ability slots [ability1, ability2, hidden]; an empty slot repeats ability1 (so 1 normal + HA = 2/3 normal, 1/3 HA).",
+      "source": "smogon-guide",
+      "approximation": "Community-documented, not datamined."
+    },
+    "gender": {
+      "rule": "random",
+      "source": "bulbapedia-battle-tree",
+      "approximation": "Ratio not documented; app uses the species gender ratio."
+    }
+  },
+  "streakPrizes": {
+    "source": "bulbapedia-battle-tree (Items table; awarded by the receptionist after a streak ends)",
+    "displayOnly": true,
+    "prizes": [
+      {
+        "wins": 5,
+        "item": "Moomoo Milk"
+      },
+      {
+        "wins": 10,
+        "item": "PP Up"
+      },
+      {
+        "wins": 20,
+        "item": "Rare Candy"
+      },
+      {
+        "wins": 30,
+        "item": "Bottle Cap"
+      },
+      {
+        "wins": 40,
+        "item": "PP Max"
+      },
+      {
+        "wins": 50,
+        "item": "Ability Capsule"
+      },
+      {
+        "wins": 100,
+        "item": "Lansat Berry"
+      },
+      {
+        "wins": 200,
+        "item": "Starf Berry"
+      }
+    ]
+  }
+}

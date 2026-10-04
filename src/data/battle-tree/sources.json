@@ -1,0 +1,63 @@
+{
+  "tre-sm": {
+    "title": "Team Rocket Elite, \"SM full trainer and moveset data\" (datamined from Pokémon Sun/Moon v1.1), tabs \"Tree Pokemon\" and \"Tree Trainers\"",
+    "url": "https://docs.google.com/spreadsheets/d/1D7T0jCHBkDppjTB0_rJyK0houk8zE3wLmZ1DlVXEkXg/edit#gid=0",
+    "linkedFrom": "https://www.smogon.com/forums/threads/battle-tree-discussion-and-records.3587215/",
+    "kind": "datamine",
+    "retrieved": "2026-10-03"
+  },
+  "bulbapedia-trainers": {
+    "title": "Bulbapedia, \"List of Battle Tree Trainers\" (bracket table + special trainer notes)",
+    "url": "https://web.archive.org/web/20260817222050/https://bulbapedia.bulbagarden.net/wiki/List_of_Battle_Tree_Trainers",
+    "kind": "wiki",
+    "retrieved": "2026-10-03"
+  },
+  "bulbapedia-battle-tree": {
+    "title": "Bulbapedia, \"Battle Tree\" (courses, restrictions, BP table, Battle Legends, special trainers)",
+    "url": "https://bulbapedia.bulbagarden.net/wiki/Battle_Tree",
+    "kind": "wiki",
+    "retrieved": "2026-10-03"
+  },
+  "bulbapedia-pokemon": {
+    "title": "Bulbapedia, \"List of Battle Tree Pokémon\" (SM-tagged rows)",
+    "url": "https://web.archive.org/web/20260218191326/https://bulbapedia.bulbagarden.net/wiki/List_of_Battle_Tree_Pok%C3%A9mon",
+    "kind": "wiki",
+    "retrieved": "2026-10-03"
+  },
+  "informant-sm": {
+    "title": "Level 51, \"SM Battle Tree Informant\" (built on the Team Rocket Elite dump)",
+    "url": "https://docs.google.com/spreadsheets/d/1FFsMrmL9WPVRsbWTE7mvKZ9mz_J4_E_aDCWguGLrKV0/edit",
+    "kind": "community-sheet",
+    "retrieved": "2026-10-03"
+  },
+  "sadisticmystic-sheet": {
+    "title": "SadisticMystic, \"Trainer + Pokémon lookup spreadsheet\" (USUM-based, with SM roster deltas, trainer ranges, IV tiers, special trainer notes)",
+    "url": "https://docs.google.com/spreadsheets/d/1w-xYTGS9SW8np4Qxg9KjB99QkSxfPDhmjTzHk8GOT04/edit",
+    "kind": "community-sheet",
+    "retrieved": "2026-10-03"
+  },
+  "tree-sets-app": {
+    "title": "cristiannomartins/Tree-Sets (SM Battle Tree catalogue app data: trainer pools, classes)",
+    "url": "https://github.com/cristiannomartins/Tree-Sets",
+    "kind": "community-dataset",
+    "retrieved": "2026-10-03"
+  },
+  "atsync-iv-post": {
+    "title": "atsync, Smogon Battle Tree Discussion thread, post #7392593 (opponent IV testing; \"educated guess\", not datamined)",
+    "url": "https://www.smogon.com/forums/threads/battle-tree-discussion-and-records.3587215/page-83#post-7392593",
+    "kind": "community-testing",
+    "retrieved": "2026-10-03"
+  },
+  "smogon-guide": {
+    "title": "Smogon, \"Battle Tree Mechanics and Guide\" (team generation, ability odds, BP, banlist, AI behaviour)",
+    "url": "https://www.smogon.com/forums/threads/battle-tree-mechanics-and-guide-gp-0-2.3613222/",
+    "kind": "community-guide",
+    "retrieved": "2026-10-03"
+  },
+  "kaphotics-usum-diff": {
+    "title": "Pastebin listing SM→USUM Battle Tree set changes (confirms SM had 996 sets)",
+    "url": "https://pastebin.com/jt9TQEdP",
+    "kind": "community-diff",
+    "retrieved": "2026-10-03"
+  }
+}

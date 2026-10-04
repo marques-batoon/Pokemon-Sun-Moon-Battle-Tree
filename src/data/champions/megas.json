@@ -1,0 +1,724 @@
+{
+  "source": {
+    "serebii-champions-megas": "https://www.serebii.net/pokemonchampions/megaabilities.shtml (list of Mega Evolutions in Pokémon Champions and their Abilities; retrieved 2026-10-03)",
+    "serebii-champions-dex": "https://www.serebii.net/pokedex-champions/<species>/ (Mega types, Ability and base stats; retrieved 2026-10-03)",
+    "serebii-champions-items": "https://www.serebii.net/pokemonchampions/items.shtml (Mega Stone names; retrieved 2026-10-03)",
+    "aura-guard": "https://www.serebii.net/pokedex-champions/lucario/ (\"Reduces the amount of damage received by moves that make physical contact by 50%\"); Bulbapedia Aura Guard (Ability): Long Reach contact moves deal regular damage",
+    "op-gg": "https://op.gg/pokemon-champions/pokedex/mega-feraligatr (Mega Feraligatr base stats; retrieved 2026-10-03)"
+  },
+  "note": "Mega Evolutions first introduced after Sun & Moon (Legends: Z-A and its Mega Dimension DLC) that are in Pokémon Champions through Regulation Set M-C. Meowstic has one Mega in Champions; the simulator models male and female Mega forms separately, so both are listed with the same data.",
+  "megas": [
+    {
+      "species": "Raichu-Mega-X",
+      "megaStone": "Raichunite X",
+      "types": [
+        "Electric"
+      ],
+      "ability": "Electric Surge",
+      "baseStats": {
+        "hp": 60,
+        "atk": 135,
+        "def": 95,
+        "spa": 90,
+        "spd": 95,
+        "spe": 110
+      },
+      "source": "serebii-champions-dex:raichu"
+    },
+    {
+      "species": "Raichu-Mega-Y",
+      "megaStone": "Raichunite Y",
+      "types": [
+        "Electric"
+      ],
+      "ability": "No Guard",
+      "baseStats": {
+        "hp": 60,
+        "atk": 100,
+        "def": 55,
+        "spa": 160,
+        "spd": 80,
+        "spe": 130
+      },
+      "source": "serebii-champions-dex:raichu"
+    },
+    {
+      "species": "Clefable-Mega",
+      "megaStone": "Clefablite",
+      "types": [
+        "Fairy",
+        "Flying"
+      ],
+      "ability": "Magic Bounce",
+      "baseStats": {
+        "hp": 95,
+        "atk": 80,
+        "def": 93,
+        "spa": 135,
+        "spd": 110,
+        "spe": 70
+      },
+      "source": "serebii-champions-dex:clefable"
+    },
+    {
+      "species": "Victreebel-Mega",
+      "megaStone": "Victreebelite",
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "ability": "Innards Out",
+      "baseStats": {
+        "hp": 80,
+        "atk": 125,
+        "def": 85,
+        "spa": 135,
+        "spd": 95,
+        "spe": 70
+      },
+      "source": "serebii-champions-dex:victreebel"
+    },
+    {
+      "species": "Starmie-Mega",
+      "megaStone": "Starminite",
+      "types": [
+        "Water",
+        "Psychic"
+      ],
+      "ability": "Huge Power",
+      "baseStats": {
+        "hp": 60,
+        "atk": 100,
+        "def": 105,
+        "spa": 130,
+        "spd": 105,
+        "spe": 120
+      },
+      "source": "serebii-champions-dex:starmie"
+    },
+    {
+      "species": "Dragonite-Mega",
+      "megaStone": "Dragoninite",
+      "types": [
+        "Dragon",
+        "Flying"
+      ],
+      "ability": "Multiscale",
+      "baseStats": {
+        "hp": 91,
+        "atk": 124,
+        "def": 115,
+        "spa": 145,
+        "spd": 125,
+        "spe": 100
+      },
+      "source": "serebii-champions-dex:dragonite"
+    },
+    {
+      "species": "Meganium-Mega",
+      "megaStone": "Meganiumite",
+      "types": [
+        "Grass",
+        "Fairy"
+      ],
+      "ability": "Mega Sol",
+      "baseStats": {
+        "hp": 80,
+        "atk": 92,
+        "def": 115,
+        "spa": 143,
+        "spd": 115,
+        "spe": 80
+      },
+      "source": "serebii-champions-dex:meganium"
+    },
+    {
+      "species": "Feraligatr-Mega",
+      "megaStone": "Feraligite",
+      "types": [
+        "Water",
+        "Dragon"
+      ],
+      "ability": "Dragonize",
+      "baseStats": {
+        "hp": 85,
+        "atk": 160,
+        "def": 125,
+        "spa": 89,
+        "spd": 93,
+        "spe": 78
+      },
+      "source": "serebii-champions-dex:feraligatr + op-gg (Serebii shows two conflicting rows for Sp. Atk/Speed; op.gg and the simulator agree on 89/78)"
+    },
+    {
+      "species": "Skarmory-Mega",
+      "megaStone": "Skarmorite",
+      "types": [
+        "Steel",
+        "Flying"
+      ],
+      "ability": "Stalwart",
+      "baseStats": {
+        "hp": 65,
+        "atk": 140,
+        "def": 110,
+        "spa": 40,
+        "spd": 100,
+        "spe": 110
+      },
+      "source": "serebii-champions-dex:skarmory"
+    },
+    {
+      "species": "Chimecho-Mega",
+      "megaStone": "Chimechite",
+      "types": [
+        "Psychic",
+        "Steel"
+      ],
+      "ability": "Levitate",
+      "baseStats": {
+        "hp": 75,
+        "atk": 50,
+        "def": 110,
+        "spa": 135,
+        "spd": 120,
+        "spe": 65
+      },
+      "source": "serebii-champions-dex:chimecho"
+    },
+    {
+      "species": "Absol-Mega-Z",
+      "megaStone": "Absolite Z",
+      "types": [
+        "Dark",
+        "Ghost"
+      ],
+      "ability": "Sharpness",
+      "baseStats": {
+        "hp": 65,
+        "atk": 154,
+        "def": 60,
+        "spa": 75,
+        "spd": 60,
+        "spe": 151
+      },
+      "source": "serebii-champions-dex:absol"
+    },
+    {
+      "species": "Staraptor-Mega",
+      "megaStone": "Staraptite",
+      "types": [
+        "Fighting",
+        "Flying"
+      ],
+      "ability": "Contrary",
+      "baseStats": {
+        "hp": 85,
+        "atk": 140,
+        "def": 100,
+        "spa": 60,
+        "spd": 90,
+        "spe": 110
+      },
+      "source": "serebii-champions-dex:staraptor"
+    },
+    {
+      "species": "Garchomp-Mega-Z",
+      "megaStone": "Garchompite Z",
+      "types": [
+        "Dragon"
+      ],
+      "ability": "Levitate",
+      "baseStats": {
+        "hp": 108,
+        "atk": 130,
+        "def": 85,
+        "spa": 141,
+        "spd": 85,
+        "spe": 151
+      },
+      "source": "serebii-champions-dex:garchomp"
+    },
+    {
+      "species": "Lucario-Mega-Z",
+      "megaStone": "Lucarionite Z",
+      "types": [
+        "Fighting",
+        "Steel"
+      ],
+      "ability": "Aura Guard",
+      "baseStats": {
+        "hp": 70,
+        "atk": 100,
+        "def": 70,
+        "spa": 164,
+        "spd": 70,
+        "spe": 151
+      },
+      "source": "serebii-champions-dex:lucario"
+    },
+    {
+      "species": "Froslass-Mega",
+      "megaStone": "Froslassite",
+      "types": [
+        "Ice",
+        "Ghost"
+      ],
+      "ability": "Snow Warning",
+      "baseStats": {
+        "hp": 70,
+        "atk": 80,
+        "def": 70,
+        "spa": 140,
+        "spd": 100,
+        "spe": 120
+      },
+      "source": "serebii-champions-dex:froslass"
+    },
+    {
+      "species": "Emboar-Mega",
+      "megaStone": "Emboarite",
+      "types": [
+        "Fire",
+        "Fighting"
+      ],
+      "ability": "Mold Breaker",
+      "baseStats": {
+        "hp": 110,
+        "atk": 148,
+        "def": 75,
+        "spa": 110,
+        "spd": 110,
+        "spe": 75
+      },
+      "source": "serebii-champions-dex:emboar"
+    },
+    {
+      "species": "Excadrill-Mega",
+      "megaStone": "Excadrite",
+      "types": [
+        "Ground",
+        "Steel"
+      ],
+      "ability": "Piercing Drill",
+      "baseStats": {
+        "hp": 110,
+        "atk": 165,
+        "def": 100,
+        "spa": 65,
+        "spd": 65,
+        "spe": 103
+      },
+      "source": "serebii-champions-dex:excadrill"
+    },
+    {
+      "species": "Scolipede-Mega",
+      "megaStone": "Scolipite",
+      "types": [
+        "Bug",
+        "Poison"
+      ],
+      "ability": "Shell Armor",
+      "baseStats": {
+        "hp": 60,
+        "atk": 140,
+        "def": 149,
+        "spa": 75,
+        "spd": 99,
+        "spe": 62
+      },
+      "source": "serebii-champions-dex:scolipede"
+    },
+    {
+      "species": "Scrafty-Mega",
+      "megaStone": "Scraftinite",
+      "types": [
+        "Dark",
+        "Fighting"
+      ],
+      "ability": "Intimidate",
+      "baseStats": {
+        "hp": 65,
+        "atk": 130,
+        "def": 135,
+        "spa": 55,
+        "spd": 135,
+        "spe": 68
+      },
+      "source": "serebii-champions-dex:scrafty"
+    },
+    {
+      "species": "Eelektross-Mega",
+      "megaStone": "Eelektrossite",
+      "types": [
+        "Electric"
+      ],
+      "ability": "Eelevate",
+      "baseStats": {
+        "hp": 85,
+        "atk": 145,
+        "def": 80,
+        "spa": 135,
+        "spd": 90,
+        "spe": 80
+      },
+      "source": "serebii-champions-dex:eelektross"
+    },
+    {
+      "species": "Chandelure-Mega",
+      "megaStone": "Chandelurite",
+      "types": [
+        "Ghost",
+        "Fire"
+      ],
+      "ability": "Infiltrator",
+      "baseStats": {
+        "hp": 60,
+        "atk": 75,
+        "def": 110,
+        "spa": 175,
+        "spd": 110,
+        "spe": 90
+      },
+      "source": "serebii-champions-dex:chandelure"
+    },
+    {
+      "species": "Golurk-Mega",
+      "megaStone": "Golurkite",
+      "types": [
+        "Ground",
+        "Ghost"
+      ],
+      "ability": "Unseen Fist",
+      "baseStats": {
+        "hp": 89,
+        "atk": 159,
+        "def": 105,
+        "spa": 70,
+        "spd": 105,
+        "spe": 55
+      },
+      "source": "serebii-champions-dex:golurk"
+    },
+    {
+      "species": "Chesnaught-Mega",
+      "megaStone": "Chesnaughtite",
+      "types": [
+        "Grass",
+        "Fighting"
+      ],
+      "ability": "Bulletproof",
+      "baseStats": {
+        "hp": 88,
+        "atk": 137,
+        "def": 172,
+        "spa": 74,
+        "spd": 115,
+        "spe": 44
+      },
+      "source": "serebii-champions-dex:chesnaught"
+    },
+    {
+      "species": "Delphox-Mega",
+      "megaStone": "Delphoxite",
+      "types": [
+        "Fire",
+        "Psychic"
+      ],
+      "ability": "Levitate",
+      "baseStats": {
+        "hp": 75,
+        "atk": 69,
+        "def": 72,
+        "spa": 159,
+        "spd": 125,
+        "spe": 134
+      },
+      "source": "serebii-champions-dex:delphox"
+    },
+    {
+      "species": "Greninja-Mega",
+      "megaStone": "Greninjite",
+      "types": [
+        "Water",
+        "Dark"
+      ],
+      "ability": "Protean",
+      "baseStats": {
+        "hp": 72,
+        "atk": 125,
+        "def": 77,
+        "spa": 133,
+        "spd": 81,
+        "spe": 142
+      },
+      "source": "serebii-champions-dex:greninja"
+    },
+    {
+      "species": "Pyroar-Mega",
+      "megaStone": "Pyroarite",
+      "types": [
+        "Fire",
+        "Normal"
+      ],
+      "ability": "Fire Mane",
+      "baseStats": {
+        "hp": 86,
+        "atk": 88,
+        "def": 92,
+        "spa": 129,
+        "spd": 86,
+        "spe": 126
+      },
+      "source": "serebii-champions-dex:pyroar"
+    },
+    {
+      "species": "Floette-Mega",
+      "megaStone": "Floettite",
+      "types": [
+        "Fairy"
+      ],
+      "ability": "Fairy Aura",
+      "baseStats": {
+        "hp": 74,
+        "atk": 85,
+        "def": 87,
+        "spa": 155,
+        "spd": 148,
+        "spe": 102
+      },
+      "source": "serebii-champions-dex:floette"
+    },
+    {
+      "species": "Meowstic-M-Mega",
+      "megaStone": "Meowsticite",
+      "types": [
+        "Psychic"
+      ],
+      "ability": "Trace",
+      "baseStats": {
+        "hp": 74,
+        "atk": 48,
+        "def": 76,
+        "spa": 143,
+        "spd": 101,
+        "spe": 124
+      },
+      "source": "serebii-champions-dex:meowstic"
+    },
+    {
+      "species": "Meowstic-F-Mega",
+      "megaStone": "Meowsticite",
+      "types": [
+        "Psychic"
+      ],
+      "ability": "Trace",
+      "baseStats": {
+        "hp": 74,
+        "atk": 48,
+        "def": 76,
+        "spa": 143,
+        "spd": 101,
+        "spe": 124
+      },
+      "source": "serebii-champions-dex:meowstic"
+    },
+    {
+      "species": "Malamar-Mega",
+      "megaStone": "Malamarite",
+      "types": [
+        "Dark",
+        "Psychic"
+      ],
+      "ability": "Contrary",
+      "baseStats": {
+        "hp": 86,
+        "atk": 102,
+        "def": 88,
+        "spa": 98,
+        "spd": 120,
+        "spe": 88
+      },
+      "source": "serebii-champions-dex:malamar"
+    },
+    {
+      "species": "Barbaracle-Mega",
+      "megaStone": "Barbaracite",
+      "types": [
+        "Rock",
+        "Fighting"
+      ],
+      "ability": "Tough Claws",
+      "baseStats": {
+        "hp": 72,
+        "atk": 140,
+        "def": 130,
+        "spa": 64,
+        "spd": 106,
+        "spe": 88
+      },
+      "source": "serebii-champions-dex:barbaracle"
+    },
+    {
+      "species": "Dragalge-Mega",
+      "megaStone": "Dragalgite",
+      "types": [
+        "Poison",
+        "Dragon"
+      ],
+      "ability": "Regenerator",
+      "baseStats": {
+        "hp": 65,
+        "atk": 85,
+        "def": 105,
+        "spa": 132,
+        "spd": 163,
+        "spe": 44
+      },
+      "source": "serebii-champions-dex:dragalge"
+    },
+    {
+      "species": "Hawlucha-Mega",
+      "megaStone": "Hawluchanite",
+      "types": [
+        "Fighting",
+        "Flying"
+      ],
+      "ability": "No Guard",
+      "baseStats": {
+        "hp": 78,
+        "atk": 137,
+        "def": 100,
+        "spa": 74,
+        "spd": 93,
+        "spe": 118
+      },
+      "source": "serebii-champions-dex:hawlucha"
+    },
+    {
+      "species": "Crabominable-Mega",
+      "megaStone": "Crabominite",
+      "types": [
+        "Fighting",
+        "Ice"
+      ],
+      "ability": "Iron Fist",
+      "baseStats": {
+        "hp": 97,
+        "atk": 157,
+        "def": 122,
+        "spa": 62,
+        "spd": 107,
+        "spe": 33
+      },
+      "source": "serebii-champions-dex:crabominable"
+    },
+    {
+      "species": "Golisopod-Mega",
+      "megaStone": "Golisopite",
+      "types": [
+        "Bug",
+        "Steel"
+      ],
+      "ability": "Tough Claws",
+      "baseStats": {
+        "hp": 75,
+        "atk": 150,
+        "def": 175,
+        "spa": 70,
+        "spd": 120,
+        "spe": 40
+      },
+      "source": "serebii-champions-dex:golisopod"
+    },
+    {
+      "species": "Drampa-Mega",
+      "megaStone": "Drampanite",
+      "types": [
+        "Normal",
+        "Dragon"
+      ],
+      "ability": "Berserk",
+      "baseStats": {
+        "hp": 78,
+        "atk": 85,
+        "def": 110,
+        "spa": 160,
+        "spd": 116,
+        "spe": 36
+      },
+      "source": "serebii-champions-dex:drampa"
+    },
+    {
+      "species": "Falinks-Mega",
+      "megaStone": "Falinksite",
+      "types": [
+        "Fighting"
+      ],
+      "ability": "Defiant",
+      "baseStats": {
+        "hp": 65,
+        "atk": 135,
+        "def": 135,
+        "spa": 70,
+        "spd": 65,
+        "spe": 100
+      },
+      "source": "serebii-champions-dex:falinks"
+    },
+    {
+      "species": "Scovillain-Mega",
+      "megaStone": "Scovillainite",
+      "types": [
+        "Grass",
+        "Fire"
+      ],
+      "ability": "Spicy Spray",
+      "baseStats": {
+        "hp": 65,
+        "atk": 138,
+        "def": 85,
+        "spa": 138,
+        "spd": 85,
+        "spe": 75
+      },
+      "source": "serebii-champions-dex:scovillain"
+    },
+    {
+      "species": "Glimmora-Mega",
+      "megaStone": "Glimmoranite",
+      "types": [
+        "Rock",
+        "Poison"
+      ],
+      "ability": "Adaptability",
+      "baseStats": {
+        "hp": 83,
+        "atk": 90,
+        "def": 105,
+        "spa": 150,
+        "spd": 96,
+        "spe": 101
+      },
+      "source": "serebii-champions-dex:glimmora"
+    },
+    {
+      "species": "Baxcalibur-Mega",
+      "megaStone": "Baxcalibrite",
+      "types": [
+        "Dragon",
+        "Ice"
+      ],
+      "ability": "Thermal Exchange",
+      "baseStats": {
+        "hp": 115,
+        "atk": 175,
+        "def": 117,
+        "spa": 105,
+        "spd": 101,
+        "spe": 87
+      },
+      "source": "serebii-champions-dex:baxcalibur"
+    }
+  ]
+}

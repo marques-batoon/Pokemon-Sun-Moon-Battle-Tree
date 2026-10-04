@@ -1,0 +1,293 @@
+import type { BattleClient, BattleSnapshot } from '../client/battle-client';
+import type { AIKind } from '../engine/protocol';
+import { BRACKETS } from '../data/battle-tree';
+import type { PokemonSet } from '../team/types';
+import type { RunStore, TreeState } from './run-store';
+import { bpForWin, planOpponent } from './selection';
+import { BRING, DEFAULT_SETTINGS, MIN_REGISTERED, runKey, type Course, type Format, type RunKey, type RunSettings, type RunState } from './types';
+
+export interface RunTeam {
+  sourceTeamId: string | null;
+  name: string;
+  sets: PokemonSet[];
+  /** Indices into sets, battle order (lead first). Exactly 3 in Singles, 4 in Doubles. */
+  bring: number[];
+}
+
+export interface StartRunOptions {
+  /** Default 'singles'. */
+  format?: Format;
+  course: Course;
+  team: RunTeam;
+  settings: RunSettings;
+  /** Fixed base seed for reproducible runs; random if omitted. */
+  seedText?: string;
+  /** Debug: begin at this battle number. Marks the run as debug (never counts toward records). */
+  startBattle?: number;
+}
+
+export interface ControllerSnapshot extends TreeState {
+  /** Battle currently being played in this session. */
+  active: { key: RunKey; battleId: string } | null;
+  /** Last problem starting a battle (e.g. the engine rejected the team). */
+  error: string | null;
+}
+
+/**
+ * Runs the Battle Tree loop: plans opponents, starts battles through the
+ * BattleClient, applies results (streak, BP, records, Super unlock) and
+ * persists everything through the RunStore.
+ */
+export class RunController {
+  private readonly store: RunStore;
+  private readonly battle: BattleClient;
+  private readonly ai: AIKind;
+  private readonly now: () => number;
+  private active: ControllerSnapshot['active'] = null;
+  private error: string | null = null;
+  private snapshot: ControllerSnapshot;
+  private readonly listeners = new Set<() => void>();
+
+  constructor(store: RunStore, battle: BattleClient, opts: { ai?: AIKind; now?: () => number } = {}) {
+    this.store = store;
+    this.battle = battle;
+    this.ai = opts.ai ?? 'heuristic';
+    this.now = opts.now ?? Date.now;
+    this.snapshot = this.build();
+    store.subscribe(() => this.refresh());
+    battle.subscribe(() => this.onBattle(battle.getSnapshot()));
+  }
+
+  subscribe = (listener: () => void) => {
+    this.listeners.add(listener);
+    return () => { this.listeners.delete(listener); };
+  };
+
+  getSnapshot = (): ControllerSnapshot => this.snapshot;
+
+  /** The client playing this controller's battles (for the battle screen). */
+  get battleClient(): BattleClient {
+    return this.battle;
+  }
+
+  run(key: RunKey): RunState | undefined {
+    return this.store.getState().runs[key];
+  }
+
+  /** The run's battle was started but the app reloaded before it finished. */
+  isInterrupted(key: RunKey): boolean {
+    return this.run(key)?.status === 'in-battle' && this.active?.key !== key;
+  }
+
+  startRun(opts: StartRunOptions): RunState {
+    const { course, team, settings } = opts;
+    const format = opts.format ?? 'singles';
+    const key = runKey(format, course);
+    if (course === 'super' && !this.store.getState().profile.superUnlocked[format] && !opts.startBattle) {
+      throw new Error(format === 'singles'
+        ? 'Super Singles unlocks after beating the Battle Legend in Normal Singles.'
+        : 'Super Doubles unlocks after beating the Battle Legend in Normal Doubles.');
+    }
+    checkBring(team, format);
+    const existing = this.run(key);
+    if (existing && !isFinished(existing)) this.endRun(existing, 'retired');
+
+    const battle = Math.max(1, opts.startBattle ?? 1);
+    const length = BRACKETS[format][course].length;
+    if (length !== null && battle > length) throw new Error(`The ${course} course has ${length} battles.`);
+    const seedText = opts.seedText ?? `${this.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const t = this.now();
+    const fullSettings: RunSettings = { ...DEFAULT_SETTINGS, ...settings };
+    const run: RunState = {
+      id: `${key}-${t.toString(36)}`,
+      format,
+      course,
+      settings: fullSettings,
+      seedText,
+      team: structuredClone(team),
+      battle,
+      wins: battle - 1,
+      bp: 0,
+      status: 'ready',
+      next: planOpponent(seedText, format, course, battle, settings),
+      history: [],
+      debug: battle > 1 || fullSettings.ai !== 'heuristic',
+      startedAt: t,
+      updatedAt: t,
+    };
+    this.store.updateProfile(p => ({ ...p, settings: fullSettings }));
+    this.save(run);
+    return this.requireRun(key);
+  }
+
+  /**
+   * Swap the registered team or the 3 brought between battles. The game allows
+   * this after taking a break (Smogon Battle Tree guide); the streak continues.
+   */
+  changeTeam(key: RunKey, team: RunTeam): void {
+    const run = this.requireRun(key);
+    if (run.status !== 'ready') throw new Error('The team can only be changed between battles.');
+    checkBring(team, run.format);
+    this.save({ ...run, team: structuredClone(team) });
+  }
+
+  updateSettings(key: RunKey, patch: Partial<Pick<RunSettings, 'teamPreviewEachBattle'>>): void {
+    const run = this.requireRun(key);
+    this.save({ ...run, settings: { ...run.settings, ...patch } });
+  }
+
+  /** Starts the planned battle. Returns the battle id. */
+  startBattle(key: RunKey): string {
+    const run = this.requireRun(key);
+    if (run.status !== 'ready' && !this.isInterrupted(key)) throw new Error(`Can't start a battle while the run is ${run.status}.`);
+    const preview = run.settings.teamPreviewEachBattle;
+    const sets = preview ? run.team.sets : run.team.bring.map(i => run.team.sets[i]);
+    this.error = null;
+    const battleId = this.battle.start({
+      format: run.format,
+      teamPreview: preview,
+      seedText: run.next.seedText,
+      player: { name: 'Player', team: sets },
+      opponent: { kind: 'team', name: run.next.displayName, team: run.next.team },
+      ai: run.settings.ai ?? this.ai,
+    });
+    this.active = { key, battleId };
+    this.save({ ...run, status: 'in-battle' });
+    return battleId;
+  }
+
+  /** Interrupted battle: count it as a loss, as the game does. */
+  forfeitInterrupted(key: RunKey): void {
+    const run = this.requireRun(key);
+    if (!this.isInterrupted(key)) return;
+    this.recordLoss(run, 0);
+  }
+
+  /** Interrupted battle: replay it from the start (same opponent and seed). Not possible in the game. */
+  restartInterrupted(key: RunKey): void {
+    const run = this.requireRun(key);
+    if (!this.isInterrupted(key)) return;
+    this.save({ ...run, status: 'ready' });
+  }
+
+  /** Give up the challenge between battles. Ends the streak. */
+  retire(key: RunKey): void {
+    const run = this.requireRun(key);
+    if (!isFinished(run)) this.endRun(run, 'retired');
+  }
+
+  /** Remove a finished run after its results were shown. */
+  dismiss(key: RunKey): void {
+    const run = this.run(key);
+    if (run && isFinished(run)) this.store.setRun(key, null);
+  }
+
+  /** Defaults used to pre-fill new challenges. */
+  updateDefaults(patch: Partial<RunSettings>): void {
+    this.store.updateProfile(p => ({ ...p, settings: { ...p.settings, ...patch } }));
+  }
+
+  /** Erase records, BP, the Super unlock and saved runs. */
+  resetProgress(): void {
+    this.active = null;
+    this.store.reset();
+  }
+
+  /** Debug helper: unlock Super Singles / Super Doubles without clearing Normal. */
+  debugUnlockSuper(format: Format = 'singles'): void {
+    this.store.updateProfile(p => ({ ...p, superUnlocked: { ...p.superUnlocked, [format]: true } }));
+  }
+
+  private onBattle(s: BattleSnapshot) {
+    const active = this.active;
+    if (!active || s.battleId !== active.battleId) return;
+    const run = this.run(active.key);
+    if (!run || run.status !== 'in-battle') return;
+
+    if (s.phase === 'ended' && s.result) {
+      this.active = null;
+      if (s.result.winner === 'p1') this.recordWin(run, s.result.turns);
+      else this.recordLoss(run, s.result.turns);
+    } else if (s.phase === 'invalid-team' || s.phase === 'error') {
+      this.active = null;
+      this.error = s.phase === 'invalid-team' ? `Team rejected: ${s.problems.join(' ')}` : `Engine error: ${s.error}`;
+      this.save({ ...run, status: 'ready' });
+    }
+  }
+
+  private recordWin(run: RunState, turns: number) {
+    const bp = bpForWin(run.course, run.battle);
+    const wins = run.wins + 1;
+    const history = [...run.history, { battle: run.battle, opponent: run.next.displayName, result: 'win' as const, bp, turns, seedText: run.next.seedText }];
+    const length = BRACKETS[run.format][run.course].length;
+    const cleared = length !== null && run.battle >= length;
+    const key = runKey(run.format, run.course);
+
+    if (!run.debug) {
+      this.store.updateProfile(p => ({
+        ...p,
+        bpTotal: p.bpTotal + bp,
+        // Beating the Normal course's Battle Legend unlocks that format's Super course.
+        superUnlocked: { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
+        records: { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } },
+      }));
+    }
+
+    const base = { ...run, wins, bp: run.bp + bp, history };
+    if (cleared) {
+      this.finish({ ...base, status: 'cleared' });
+    } else {
+      const battle = run.battle + 1;
+      this.save({ ...base, battle, status: 'ready', next: planOpponent(run.seedText, run.format, run.course, battle, run.settings) });
+    }
+  }
+
+  private recordLoss(run: RunState, turns: number) {
+    const history = [...run.history, { battle: run.battle, opponent: run.next.displayName, result: 'loss' as const, bp: 0, turns, seedText: run.next.seedText }];
+    this.finish({ ...run, history, status: 'lost' });
+  }
+
+  private endRun(run: RunState, status: 'retired') {
+    this.finish({ ...run, status });
+  }
+
+  private finish(run: RunState) {
+    if (!run.debug) {
+      this.store.updateProfile(p => {
+        const key = runKey(run.format, run.course);
+        return { ...p, records: { ...p.records, [key]: { best: Math.max(p.records[key].best, run.wins), last: run.wins } } };
+      });
+    }
+    this.save(run);
+  }
+
+  private requireRun(key: RunKey): RunState {
+    const run = this.run(key);
+    if (!run) throw new Error(`No ${key} run in progress.`);
+    return run;
+  }
+
+  private save(run: RunState) {
+    this.store.setRun(runKey(run.format, run.course), { ...run, updatedAt: this.now() });
+  }
+
+  private build(): ControllerSnapshot {
+    return { ...this.store.getState(), active: this.active, error: this.error };
+  }
+
+  private refresh() {
+    this.snapshot = this.build();
+    this.listeners.forEach(l => l());
+  }
+}
+
+export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';
+
+function checkBring(team: RunTeam, format: Format) {
+  const { bring, sets } = team;
+  const n = BRING[format];
+  if (sets.length < MIN_REGISTERED[format]) throw new Error(`A ${format} team needs at least ${MIN_REGISTERED[format]} Pokémon.`);
+  if (bring.length !== n || new Set(bring).size !== n || bring.some(i => i < 0 || i >= sets.length)) {
+    throw new Error(`Choose exactly ${n} different Pokémon to bring.`);
+  }
+}

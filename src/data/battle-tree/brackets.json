@@ -1,0 +1,176 @@
+{
+  "source": {
+    "pools": "bulbapedia-trainers",
+    "poolsCrossCheck": "sadisticmystic-sheet (min/max battle per trainer: identical index ranges)",
+    "schedule": "bulbapedia-battle-tree",
+    "specialEveryTen": "bulbapedia-battle-tree + bulbapedia-trainers (\"Special Trainers appear only in ... Super Course challenges, during every ten battles\")",
+    "normalUsesSameTrainers": "bulbapedia-trainers (single table, no Normal/Super split) + atsync-iv-post (tested guess)",
+    "doubles": "bulbapedia-battle-tree (\"Blue is the Battle Legend for Double Battles and uses four Pokémon\"; \"In Super Battles, special Trainers appear every ten battles\"; one BP table by win streak for every format) + bulbapedia-trainers (regular trainers: one table for every format)"
+  },
+  "trainerWeighting": {
+    "rule": "uniform",
+    "source": "bulbapedia-trainers (\"Within each range, Trainers are selected randomly with equal weighting.\")"
+  },
+  "pools": {
+    "b01-10": {
+      "label": "1-10",
+      "trainerIds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49],
+      "bulbapediaNumbers": "001-050"
+    },
+    "b11-19": {
+      "label": "11-19",
+      "trainerIds": [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
+      "bulbapediaNumbers": "031-070"
+    },
+    "b21-29": {
+      "label": "21-29",
+      "trainerIds": [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89],
+      "bulbapediaNumbers": "051-090"
+    },
+    "b31-39": {
+      "label": "31-39",
+      "trainerIds": [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
+      "bulbapediaNumbers": "071-110"
+    },
+    "b41-49": {
+      "label": "41-49",
+      "trainerIds": [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129],
+      "bulbapediaNumbers": "091-130"
+    },
+    "b51+": {
+      "label": "51+",
+      "trainerIds": [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189],
+      "bulbapediaNumbers": "091-190"
+    }
+  },
+  "singles": {
+    "normal": {
+      "length": 20,
+      "endsAfterLength": true,
+      "schedule": [
+        {
+          "battles": [20, 20],
+          "boss": "red-normal"
+        },
+        {
+          "battles": [1, 10],
+          "pool": "b01-10"
+        },
+        {
+          "battles": [11, 19],
+          "pool": "b11-19"
+        }
+      ],
+      "specialTrainers": false
+    },
+    "super": {
+      "length": null,
+      "endsAfterLength": false,
+      "schedule": [
+        {
+          "battles": [50, 50],
+          "boss": "red-super"
+        },
+        {
+          "everyNth": 10,
+          "special": true
+        },
+        {
+          "battles": [1, 9],
+          "pool": "b01-10"
+        },
+        {
+          "battles": [11, 19],
+          "pool": "b11-19"
+        },
+        {
+          "battles": [21, 29],
+          "pool": "b21-29"
+        },
+        {
+          "battles": [31, 39],
+          "pool": "b31-39"
+        },
+        {
+          "battles": [41, 49],
+          "pool": "b41-49"
+        },
+        {
+          "battles": [51, null],
+          "pool": "b51+"
+        }
+      ],
+      "specialTrainers": true
+    }
+  },
+  "doubles": {
+    "normal": {
+      "length": 20,
+      "endsAfterLength": true,
+      "schedule": [
+        {
+          "battles": [20, 20],
+          "boss": "blue-normal"
+        },
+        {
+          "battles": [1, 10],
+          "pool": "b01-10"
+        },
+        {
+          "battles": [11, 19],
+          "pool": "b11-19"
+        }
+      ],
+      "specialTrainers": false
+    },
+    "super": {
+      "length": null,
+      "endsAfterLength": false,
+      "schedule": [
+        {
+          "battles": [50, 50],
+          "boss": "blue-super"
+        },
+        {
+          "everyNth": 10,
+          "special": true
+        },
+        {
+          "battles": [1, 9],
+          "pool": "b01-10"
+        },
+        {
+          "battles": [11, 19],
+          "pool": "b11-19"
+        },
+        {
+          "battles": [21, 29],
+          "pool": "b21-29"
+        },
+        {
+          "battles": [31, 39],
+          "pool": "b31-39"
+        },
+        {
+          "battles": [41, 49],
+          "pool": "b41-49"
+        },
+        {
+          "battles": [51, null],
+          "pool": "b51+"
+        }
+      ],
+      "specialTrainers": true
+    }
+  },
+  "specialTrainerPool": {
+    "weightsSource": "bulbapedia-trainers (\"All of these Trainers are equally likely to appear except Anabel, who appears only one-seventh as frequently\") + sadisticmystic-sheet (\"7x rarer\")",
+    "versionsSource": "bulbapedia-battle-tree (Special Trainers table, S/M columns)",
+    "trainerIds": [192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202],
+    "anabelFallback": {
+      "rule": "replace-with-regular-from-previous-bracket",
+      "approximation": true,
+      "note": "Bulbapedia says a \"random ordinary Trainer\" replaces Anabel if she is locked, but does not say which bracket. The app uses the bracket of battle N-1 (e.g. battle 20 -> 11-19 pool)."
+    }
+  }
+}
