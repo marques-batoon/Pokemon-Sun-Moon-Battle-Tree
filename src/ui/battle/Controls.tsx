@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { Battle } from '@pkmn/client';
 import { gen7 } from '../../team/dex';
 import { effectivenessLabel } from '../../team/effectiveness';
-import { doublesTargets } from '../../engine/choices';
+import { doublesTargets, needsReplacement } from '../../engine/choices';
 import {
   isFainted, isForceSwitch, isMoveRequest, type SimRequest, type SimRequestActive, type SimRequestPokemon,
 } from '../../engine/sim-types';
 import { typeColor } from '../types';
+import { zMoveInfo } from './z-move-info';
 import { PokemonIcon } from '../components/PokemonSprite';
 import { HpBar } from './HpBar';
 
@@ -52,24 +53,31 @@ function MoveGrid({ active, mega, setMega, megaAllowed, zMove, setZMove, zAllowe
     <>
       <div className="move-grid">
         {moves.map(({ m, i, data, z, disabled }) => {
-          const type = data?.type ?? '???';
+          // With Z-Move on, show what the move becomes: Z name, type, power (or Z-Power effect).
+          const zInfo = z && data ? zMoveInfo(data, z.move) : null;
+          const type = zInfo?.type ?? data?.type ?? '???';
+          const category = zInfo?.category ?? data?.category ?? '';
           const { bg, fg } = typeColor(type);
           const damaging = !!data && data.category !== 'Status';
-          const power = !damaging ? '—' : data.basePower ? String(data.basePower) : 'var.';
+          const power = zInfo ? zInfo.power : !damaging ? '—' : data.basePower ? String(data.basePower) : 'var.';
           const hint = showHints && damaging && hintTypes ? effectivenessLabel(type, hintTypes) : null;
-          const accuracy = data ? (data.accuracy === true ? '—' : `${data.accuracy}%`) : '';
+          // Z-Moves never miss.
+          const accuracy = zInfo ? '—' : data ? (data.accuracy === true ? '—' : `${data.accuracy}%`) : '';
+          const title = !data ? m.move
+            : zInfo ? `${zInfo.name} (Z-Move from ${data.name}) · ${type} ${category} · ${zInfo.effect ? `Z-Power: ${zInfo.effect}` : `Power ${power}`} · Accuracy ${accuracy}`
+            : `${data.name} · ${type} ${category} · Power ${power} · Accuracy ${accuracy}\n${data.shortDesc ?? ''}`;
           return (
             <button
               key={m.id + i}
-              className="move-btn"
+              className={`move-btn${zInfo ? ' z-on' : ''}`}
               style={{ background: bg, color: fg }}
               disabled={disabled}
-              title={data ? `${data.name} · ${type} ${data.category} · Power ${power} · Accuracy ${accuracy}\n${data.shortDesc ?? ''}` : m.move}
+              title={title}
               onClick={() => onPick(i, !!z)}
             >
-              <span className="move-name">{shortcuts && <kbd>{i + 1}</kbd>}{z ? z.move : m.move}</span>
+              <span className="move-name">{shortcuts && <kbd>{i + 1}</kbd>}{zInfo ? zInfo.name : m.move}</span>
               <span className="move-meta">
-                {type} · {data?.category ?? ''} · {power}
+                {type} · {category} · {zInfo?.effect ? <span className="z-power">{zInfo.effect}</span> : zInfo ? <span className="z-power">{power}</span> : power}
                 {m.maxpp !== undefined && <> · PP {m.pp}/{m.maxpp}</>}
               </span>
               {hint && <span className={`move-hint ${HINT_CLASS[hint]}`}>{hint}</span>}
@@ -181,9 +189,11 @@ interface Pending { moveIndex: number; z: boolean; mega: boolean; targetType: st
 function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Props) {
   const forced = isForceSwitch(request);
   const count = isMoveRequest(request) ? request.active.length : isForceSwitch(request) ? request.forceSwitch.length : 0;
-  // Which slots need an answer from the player (fainted / not-forced slots pass automatically).
-  const needs = (slot: number) => {
-    if (isForceSwitch(request)) return !!request.forceSwitch[slot];
+  // Which slots need an answer from the player, given the choices for earlier
+  // slots (fainted / not-forced slots, and forced slots with nobody left to
+  // send out, pass automatically).
+  const needs = (slot: number, earlier: string[]) => {
+    if (isForceSwitch(request)) return needsReplacement(request, slot, earlier);
     const mon = request.side.pokemon[slot];
     return !!mon && !isFainted(mon) && !!(request as Extract<SimRequest, { active: unknown }>).active[slot];
   };
@@ -195,7 +205,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
   // Advance past slots that pass automatically.
   let slot = choices.length;
   const auto: string[] = [...choices];
-  while (slot < count && !needs(slot)) { auto.push('pass'); slot++; }
+  while (slot < count && !needs(slot, auto)) { auto.push('pass'); slot++; }
   const done = slot >= count;
   const submitted = useRef(false);
   useEffect(() => {
@@ -214,7 +224,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     setPending(null); setMega(false); setZMove(false);
     // Drop the last real choice (and any automatic passes after it).
     const prev = [...choices];
-    while (prev.length && prev[prev.length - 1] === 'pass' && !needs(prev.length - 1)) prev.pop();
+    while (prev.length && prev[prev.length - 1] === 'pass' && !needs(prev.length - 1, prev.slice(0, -1))) prev.pop();
     prev.pop();
     setChoices(prev);
   };

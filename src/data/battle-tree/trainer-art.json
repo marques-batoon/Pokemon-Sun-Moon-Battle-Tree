@@ -1,0 +1,74 @@
+{
+  "source": "Official artwork as archived by PidgiWiki (pidgi.net), loaded at runtime from its image CDN (cdn.pidgi.net) as 400px-wide copies, not bundled; © Nintendo / Creatures / GAME FREAK. Checked on 2026-10-04 that each loads when requested from another site (scripts/check-trainer-sprites.mjs checks them too). Shown on the opponent card only; battles keep the Showdown trainer sprite.",
+  "notes": [
+    "Only special trainers and the Battle Legends have entries: Sun & Moon has no official 2D artwork for regular trainer classes (only in-game 3D 'VS' model renders, hosted by the Bulbagarden Archives, which blocks embedding on other sites).",
+    "Not from the Pokémon Wiki (Fandom) or the Bulbagarden Archives: both block images from being shown on other sites.",
+    "Cynthia and Wally appear in Sun & Moon in their Diamond and Pearl / Omega Ruby and Alpha Sapphire designs (matching their Showdown sprites), so that art is used.",
+    "Trainers without usable art fall back to the enlarged Showdown sprite (see 'missing')."
+  ],
+  "named": {
+    "Red": {
+      "url": "https://cdn.pidgi.net/images/thumb/8/87/Red_-_Pokemon_Sun_and_Moon.png/400px-Red_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 751,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Red_-_Pokemon_Sun_and_Moon.png"
+    },
+    "Blue": {
+      "url": "https://cdn.pidgi.net/images/thumb/8/82/Blue_-_Pokemon_Sun_and_Moon.png/400px-Blue_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 751,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Blue_-_Pokemon_Sun_and_Moon.png"
+    },
+    "Cynthia": {
+      "url": "https://cdn.pidgi.net/images/thumb/2/22/Cynthia_-_Pokemon_Diamond_and_Pearl.png/400px-Cynthia_-_Pokemon_Diamond_and_Pearl.png",
+      "width": 400,
+      "height": 732,
+      "game": "Diamond and Pearl",
+      "page": "https://www.pidgi.net/wiki/File:Cynthia_-_Pokemon_Diamond_and_Pearl.png"
+    },
+    "Wally": {
+      "url": "https://cdn.pidgi.net/images/thumb/4/4f/Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+      "width": 400,
+      "height": 710,
+      "game": "Omega Ruby and Alpha Sapphire",
+      "page": "https://www.pidgi.net/wiki/File:Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+    },
+    "Plumeria": {
+      "url": "https://cdn.pidgi.net/images/thumb/3/3f/Plumeria_-_Pokemon_Sun_and_Moon.png/400px-Plumeria_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 790,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Plumeria_-_Pokemon_Sun_and_Moon.png"
+    },
+    "Guzma": {
+      "url": "https://cdn.pidgi.net/images/thumb/7/7e/Guzma_-_Pokemon_Sun_and_Moon.png/400px-Guzma_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 668,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Guzma_-_Pokemon_Sun_and_Moon.png"
+    },
+    "Kiawe": {
+      "url": "https://cdn.pidgi.net/images/thumb/a/a0/Kiawe_-_Pokemon_Sun_and_Moon.png/400px-Kiawe_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 538,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Kiawe_-_Pokemon_Sun_and_Moon.png"
+    },
+    "Mallow": {
+      "url": "https://cdn.pidgi.net/images/thumb/4/45/Mallow_-_Pokemon_Sun_and_Moon.png/400px-Mallow_-_Pokemon_Sun_and_Moon.png",
+      "width": 400,
+      "height": 713,
+      "game": "Sun and Moon",
+      "page": "https://www.pidgi.net/wiki/File:Mallow_-_Pokemon_Sun_and_Moon.png"
+    }
+  },
+  "missing": {
+    "Grimsley": "Sun & Moon artwork (new outfit) is only on the Bulbagarden Archives, which blocks embedding; other hosts only have his Black and White design.",
+    "Anabel": "No embeddable official art of her Sun & Moon design (only Emerald and Pokémon Masters art).",
+    "Colress": "No official art of his Sun & Moon design (only Black 2 and White 2 art and concept sketches).",
+    "Sina": "No official art of her Sun & Moon (Alola) outfit; only concept sketches.",
+    "Dexio": "No official art of his Sun & Moon (Alola) outfit; only an in-game model render and concept sketches."
+  }
+}

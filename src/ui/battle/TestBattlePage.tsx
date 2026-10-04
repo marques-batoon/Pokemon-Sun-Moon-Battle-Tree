@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { BattleClient } from '../../client/battle-client';
+import { BOSSES, TRAINERS } from '../../data/battle-tree';
 import type { AIKind } from '../../engine/protocol';
 import { TEST_OPPONENT_SET_LABELS, TEST_PLAYER_TEAM_TEXT } from '../../engine/fixtures-data';
 import { randomSeedText } from '../../engine/seed';
@@ -23,12 +24,15 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
   const [format, setFormat] = useState<BattleTreeFormat>('singles');
   const { showDebugTools } = useAppSettings();
   const team = teams.find(t => t.id === teamId);
+  // Who the last started battle is against (Super Red or Super Blue) and its seed, for their closing remark.
+  const [foe, setFoe] = useState<{ trainerId: number; seed: string } | null>(null);
 
   const start = () => {
     // Without debug tools the seed isn't shown, so every battle gets a fresh one.
     const seed = showDebugTools ? seedText : randomSeedText();
     // Doubles: Battle Legend Blue's Super team (4 of his sets, rolled from the seed).
     const blue = format === 'doubles' ? planOpponent(seed, 'doubles', 'super', 50, DEFAULT_SETTINGS) : null;
+    setFoe({ trainerId: blue ? blue.trainerId : BOSSES['red-super'].trainerId, seed });
     client.start({
       format,
       seedText: seed,
@@ -79,7 +83,7 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
         </p>
       </section>
       {showDebugTools && <AnimationPreview />}
-      <BattleScreen client={client} />
+      <BattleScreen client={client} opponent={foe ? { trainer: TRAINERS[foe.trainerId], battleKey: foe.seed } : undefined} />
     </>
   );
 }

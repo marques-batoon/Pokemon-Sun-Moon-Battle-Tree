@@ -165,6 +165,17 @@ The sources leave these open, so they're product decisions rather than facts abo
 
 - **Practice runs:** challenges against the random AI are unranked. Like debug runs, they never count toward records, BP or the Super unlock.
 - **Images:** the original spec asked for placeholder visuals only. That was changed on request: Pokémon sprites and trainer portraits now load from Pokémon Showdown's sprite server (not bundled; © Nintendo / Creatures / GAME FREAK). They can be switched off in Settings. Trainer class → sprite mapping, including the approximations where Showdown has no Sun & Moon art (e.g. one Golfer sprite for both genders), is in `src/data/battle-tree/trainer-sprites.json`.
+- **Opponent card:** the next trainer is shown big and centred. Regular trainers get their Showdown sprite at 3× size (2× on phones), scaled with crisp pixels. Official artwork is drawn 25% taller than that sprite (300px, 200px on phones). Battles keep the small sprite.
+  - **Artwork (special trainers and Battle Legends only):** 8 of the 13 have official art, loaded from PidgiWiki's image server (not bundled; © Nintendo / Creatures / GAME FREAK): Red, Blue, Plumeria, Guzma, Kiawe and Mallow (Sun & Moon art), plus Cynthia (Diamond and Pearl) and Wally (Omega Ruby and Alpha Sapphire), whose Sun & Moon designs match that art. Entries and reasons are in `src/data/battle-tree/trainer-art.json`.
+  - **No artwork:** Grimsley, Anabel, Colress, Sina and Dexio get the big sprite. Their Sun & Moon designs have no official art that other sites can show: Grimsley's is only on the Bulbagarden Archives, which blocks embedding, and the others only have art of older outfits or concept sketches.
+  - **Regular trainers have no artwork:** Sun & Moon has none for its trainer classes, only in-game 3D renders, which are hosted where embedding is blocked. The Pokémon Wiki (Fandom) also blocks requests from other sites, so it isn't used.
+  - `node scripts/check-trainer-sprites.mjs` checks that every artwork URL still loads from another site.
+- **Trainer quotes (written for this app):** every named trainer (190 regular, 11 special trainers, Red and Blue) has **three sets** of lines. Each set is a greeting plus two closing remarks, one for winning and one for losing, that call back to that greeting. These are **not** the games' dialogue: the real Battle Tree lines are Nintendo's script, so they aren't copied here.
+  - **Regular trainers:** the lines draw on the trainer's sprite (the Golfer's red visor, the Hiker's bandana and pack, the Madame's floral muumuu), on Alola (Hau'oli, Wela Volcano, Lanakila, Poni Island, malasadas, luau, pau hana) and on their team when it has a theme. Themes were checked against each roster: all Eeveelutions (Golfers Zeno, Christina, Moe, Bruce), all Electric (Kikujiro), all Fairy (Xio), all Ice (Workers JT, Benjamin), legendary Pokémon, starters, fossils, rain, sun, sandstorm and Trick Room teams.
+  - **Special trainers and Battle Legends:** they speak in character. Red only says "…", with a stage direction.
+  - **Choosing a set:** one set is picked per battle from the battle's seed, so the card, the intro and the closing remark always match, and a replayed battle gets the same lines.
+  - **Where they appear:** the greeting shows on the opponent card and in the special-battle intro. The closing remark shows at the end of the battle (none on a tie). Free Battle uses Red's or Blue's.
+  - **Data:** `src/data/battle-tree/trainer-quotes.json`.
 - **Animations:** presentation only. Playback timing never changes battle outcomes, which come from the seeded simulator.
 
 ## 10. Pokémon Champions Megas (added on request, 2026-10-03)
@@ -190,6 +201,19 @@ The player can use the Mega Evolutions introduced after Sun & Moon (Legends: Z-A
 - **Records:** kept per format and course (`singles-normal`, `singles-super`, `doubles-normal`, `doubles-super`). Progress saved before Doubles existed is migrated: the old Super unlock becomes the Super Singles unlock.
 - **AI:** see AI_NOTES.md "Double Battles" (an approximation; the Doubles AI isn't documented).
 
-## 12. Not covered yet (future formats)
+## 12. Custom additions (made for this app; not in any game)
+
+Designed by the user and added on request (2026-10-03). Data in `src/data/custom/index.ts`, battle logic in `src/engine/custom.ts`. Battle Tree opponents never use them.
+
+- **Politoedite / Mega Politoed** (`Politoed-Mega`): only Politoed can Mega Evolve with it. Water type like Politoed, Ability **Rain Dish**. Base stats are Politoed's with Sp. Atk +40, Defense +30 and Sp. Def +30: 90 / 75 / 105 / 130 / 130 / 70 (total 500 → 600, like other Megas). (Revised 2026-10-04; first version was Swift Swim with Sp. Atk +50, Def +20, Sp. Def +20, Speed +10.) Uses Politoed's sprites, drawn 20% larger as a Mega.
+- **Poliwrathium Z:** only Poliwrath can use it. A damaging move of one of three types becomes that type's custom Z-Move, with the power and category the matching crystal would give (Fightinium, Waterium or Icium Z: power from the base move's Z power):
+  - Fighting → **Omega Wrath**; afterwards Poliwrath sets up a Substitute without losing HP, and its Attack and Defense rise by 1.
+  - Water → **Riptide Rocket Rush**; afterwards Attack +1, Speed +2.
+  - Ice → **Glacial Guardian Gauntlet**; afterwards Attack, Defense and Sp. Def +1.
+  - Moves of other types and status moves can't become Z-Moves with it. The after-effects happen only if the attack hits.
+- **Poliwrath learns Drain Punch** (added 2026-10-04): in the games it only gets Drain Punch from Gen 8 on (TM), so its Sun & Moon learnset doesn't have it. Allowed for Poliwrath only (not Poliwag, Poliwhirl or Politoed). The list is `CUSTOM_LEARNS` in `src/data/custom/index.ts`.
+- **Field turn counters** (display aid; the game shows none): weather, terrain, rooms (Trick Room, Magic Room, Wonder Room, Gravity) and Tailwind show "turn/total", e.g. "Rain 2/5". The total is the effect's real length from the simulator, including Damp Rock, Heat Rock, Smooth Rock, Icy Rock and Terrain Extender (8 turns). So an opponent's "/8" reveals that item, which the game wouldn't.
+
+## 13. Not covered yet (future formats)
 
 - **Multi:** not modelled. That includes scouting partners and the default partner, Rada.

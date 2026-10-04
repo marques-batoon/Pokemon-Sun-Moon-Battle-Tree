@@ -1,4 +1,6 @@
 import type { BattleClient } from '../../client/battle-client';
+import { trainerQuotes, type Trainer } from '../../data/battle-tree';
+import { TrainerSprite } from '../components/TrainerSprite';
 import { isTeamPreview } from '../../engine/sim-types';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { useAppSettings } from '../useAppSettings';
@@ -16,9 +18,11 @@ interface Props {
   /** Shown on the end-of-battle banner (e.g. "Continue" back to the run). */
   onContinue?: () => void;
   continueLabel?: string;
+  /** The trainer being fought and this battle's key (seed text): they say a closing remark when it ends. */
+  opponent?: { trainer: Trainer; battleKey: string };
 }
 
-export function BattleScreen({ client, onContinue, continueLabel = 'Continue' }: Props) {
+export function BattleScreen({ client, onContinue, continueLabel = 'Continue', opponent }: Props) {
   const s = useBattleSnapshot(client);
   const settings = useAppSettings();
   // Battle focus mode (the site header hides) while a battle is on screen.
@@ -53,7 +57,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue' }:
           />
         ) : (
           <>
-            <FieldStatus battle={battle} />
+            <FieldStatus battle={battle} timers={s.fieldTimers} />
             <BattleStage key={s.battleId} battle={battle} animation={s.animation} playing={s.playing} speed={ANIMATION_SPEED_FACTOR[settings.animationSpeed]} />
             {s.playing ? (
               <div className="controls waiting playing" role="status" aria-live="polite">
@@ -63,6 +67,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue' }:
               </div>
             ) : s.phase === 'ended' && s.result ? (
               <div className={`notice result ${s.result.winner === 'p1' ? 'win' : 'loss'}`}>
+                {opponent && <ClosingRemark trainer={opponent.trainer} battleKey={opponent.battleKey} winner={s.result.winner} />}
                 <strong>{s.result.winner === 'p1' ? 'You won!' : s.result.winner === 'p2' ? 'You lost.' : 'Tie.'}</strong>
                 <span className="muted small">{s.result.turns} turns</span>
                 {settings.showDebugTools && (
@@ -91,6 +96,22 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue' }:
         )}
       </div>
       <BattleLog entries={s.log} />
+    </div>
+  );
+}
+
+/** The opponent's last word: the closing remark (win or loss) that goes with this battle's greeting; none on a tie. */
+function ClosingRemark({ trainer, battleKey, winner }: { trainer: Trainer; battleKey: string; winner: string | null | undefined }) {
+  const quotes = trainerQuotes(trainer, battleKey);
+  const line = winner === 'p2' ? quotes?.trainerWins : winner === 'p1' ? quotes?.trainerLoses : null;
+  if (!line) return null;
+  return (
+    <div className="closing-remark">
+      <TrainerSprite trainer={trainer} size={48} />
+      <div className="closing-remark-text">
+        <span className="muted small">{trainer.class} {trainer.name}</span>
+        <q>{line}</q>
+      </div>
     </div>
   );
 }

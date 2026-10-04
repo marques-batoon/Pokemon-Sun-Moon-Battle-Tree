@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { Dex, TeamValidator } from '@pkmn/sim';
+import { Battle, Dex, TeamValidator, Teams } from '@pkmn/sim';
 import { RandomAI } from '../ai/random-ai';
 import { HeuristicAI } from '../ai/heuristic/heuristic-ai';
 import type { BattleAI } from '../ai/types';
 import { TRAINERS } from '../data/battle-tree';
 import { pickTeamSets, treeSetToPokemonSet } from '../run/opponent';
 import { Rng } from '../run/rng';
-import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats } from './format';
+import { needsReplacement } from './choices';
+import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, NO_PREVIEW_FORMAT_IDS, registerBattleTreeFormats } from './format';
+import type { SimRequest } from './sim-types';
 import { testPlayerTeam } from './fixtures';
 import { seedFromString } from './seed';
 import { BattleSession } from './session';
@@ -74,3 +76,22 @@ describe('Battle Tree Doubles format', () => {
   }, 20000);
 });
 
+
+describe('Doubles replacements with one Pokémon left', () => {
+  it('both actives faint and one Pokémon is left: the second slot passes', () => {
+    const b = new Battle({ formatid: NO_PREVIEW_FORMAT_IDS.doubles as never, seed: '1,2,3,4' });
+    const team = (text: string) => Teams.pack(Teams.import(text));
+    b.setPlayer('p1', { name: 'A', team: team('Magikarp\nLevel: 1\n- Splash\n\nMagikarp\nLevel: 1\n- Splash\n\nSnorlax\nAbility: Thick Fat\nLevel: 50\n- Rest') });
+    b.setPlayer('p2', { name: 'B', team: team('Garchomp\nAbility: Rough Skin\nLevel: 50\n- Earthquake\n\nZapdos\nAbility: Pressure\nLevel: 50\n- Roost') });
+    b.makeChoices('move 1, move 1', 'move 1, move 1');
+    const request = b.p1.activeRequest as unknown as Extract<SimRequest, { forceSwitch: boolean[] }>;
+    expect(request.forceSwitch).toEqual([true, true]);
+    // The player picks for the first slot; the second has nobody left to send out.
+    expect(needsReplacement(request, 0, [])).toBe(true);
+    expect(needsReplacement(request, 1, ['switch 3'])).toBe(false);
+    // Picking for the second slot instead leaves the first to pass.
+    expect(needsReplacement(request, 1, ['pass'])).toBe(true);
+    expect(b.choose('p1', 'switch 3, pass')).toBe(true);
+    expect(b.p1.active[0].species.name).toBe('Snorlax');
+  });
+});

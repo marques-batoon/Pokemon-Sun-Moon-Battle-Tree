@@ -34,3 +34,23 @@ if (bad.length) {
   console.error('Missing on server:', bad.map(([id, s]) => `${id} (${s})`).join(', '));
   process.exitCode = 1;
 }
+
+// Opponent-card artwork (special trainers and Battle Legends; Pokémon Wiki CDN).
+const art = JSON.parse(readFileSync(join(DATA, 'trainer-art.json'), 'utf8'));
+const namedTrainers = new Set(trainers.filter(t => t.kind !== 'regular').map(t => t.name));
+const unknown = [...Object.keys(art.named), ...Object.keys(art.missing)].filter(n => !namedTrainers.has(n));
+const uncovered = [...namedTrainers].filter(n => !art.named[n] && !art.missing[n]);
+if (unknown.length || uncovered.length) {
+  console.error('trainer-art.json: unknown names', unknown, '/ neither art nor a reason for', uncovered);
+  process.exitCode = 1;
+}
+const artResults = await Promise.all(Object.entries(art.named).map(async ([name, { url }]) => {
+  const res = await fetch(url, { headers: { Referer: 'https://example.com/' } });
+  return [name, res.status, res.headers.get('content-type')];
+}));
+const badArt = artResults.filter(([, status, type]) => status !== 200 || !type?.startsWith('image/'));
+console.log(`${artResults.length - badArt.length}/${artResults.length} artwork URLs OK`);
+if (badArt.length) {
+  console.error('Artwork not loading:', badArt.map(([n, s, t]) => `${n} (${s} ${t})`).join(', '));
+  process.exitCode = 1;
+}

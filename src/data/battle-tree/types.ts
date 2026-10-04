@@ -113,3 +113,12 @@ export interface RulesFile {
   battlePoints: Record<Course, BpRange[]>;
   [key: string]: unknown;
 }
+
+/** A trainer's lines: before the battle, and after it depending on who won. */
+export interface TrainerQuotes {
+  greeting: string;
+  /** Said when the trainer wins (the player lost). */
+  trainerWins: string;
+  /** Said when the trainer loses (the player won). */
+  trainerLoses: string;
+}

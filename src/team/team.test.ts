@@ -103,6 +103,10 @@ describe('species and move lists', () => {
     expect((await learnableMoves('Rotom-Wash')).map(m => m.name)).toContain('Hydro Pump');
     // Smeargle can Sketch almost anything.
     expect((await learnableMoves('Smeargle')).length).toBeGreaterThan(600);
+    // Custom extra move (DATA_NOTES "Custom additions"), listed once and only for Poliwrath.
+    const wrath = (await learnableMoves('Poliwrath')).map(m => m.name);
+    expect(wrath.filter(m => m === 'Drain Punch')).toHaveLength(1);
+    expect((await learnableMoves('Politoed')).map(m => m.name)).not.toContain('Drain Punch');
   });
 });
 

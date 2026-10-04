@@ -29,3 +29,21 @@ export function doublesTargets(target: string | undefined, slot: number): number
 export const hitsPartner = (target: string | undefined) => target === 'allAdjacent';
 /** Moves that hit both foes (Rock Slide, Heat Wave...). */
 export const isSpread = (target: string | undefined) => target === 'allAdjacentFoes' || target === 'allAdjacent';
+
+interface ForceSwitchRequest {
+  forceSwitch: boolean[];
+  side: { pokemon: { active: boolean; condition: string }[] };
+}
+
+/**
+ * Force-switch request (Doubles): whether active slot `slot` still needs a
+ * replacement picked, given the choices already made for earlier slots. When
+ * there are fewer healthy Pokémon on the bench than slots to fill (both
+ * actives fainted, one Pokémon left), the extra slots must "pass": there is
+ * nothing to send out, and the simulator expects a pass there.
+ */
+export function needsReplacement(request: ForceSwitchRequest, slot: number, earlier: readonly string[]): boolean {
+  if (!request.forceSwitch[slot]) return false;
+  const healthyBench = request.side.pokemon.filter(p => !p.active && !p.condition.endsWith(' fnt')).length;
+  return earlier.filter(c => c.startsWith('switch ')).length < healthyBench;
+}

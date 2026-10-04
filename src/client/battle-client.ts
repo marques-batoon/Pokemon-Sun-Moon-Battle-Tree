@@ -7,6 +7,7 @@ import type { AIKind, FromEngine, OpponentSpec, TeamInput } from '../engine/prot
 import type { BattleResult } from '../engine/session';
 import type { SimRequest } from '../engine/sim-types';
 import { gens } from '../team/dex';
+import { nextTimers, NO_TIMERS, type FieldTimers } from './field-timers';
 import { planLine, type BattleAnimation, type PlannedStep } from './playback';
 import type { EngineTransport } from './transport';
 
@@ -41,6 +42,8 @@ export interface BattleSnapshot {
   currentMove: CurrentMove | null;
   /** While events play back: the log text of the event on screen ("It's super effective!"). */
   caption: string | null;
+  /** Turn counters of timed field effects (weather, terrain, rooms, Tailwind), in step with playback. */
+  fieldTimers: FieldTimers;
   log: LogEntry[];
   result: BattleResult | null;
   problems: string[];
@@ -74,7 +77,7 @@ type QueueItem =
 
 const EMPTY: BattleSnapshot = {
   rev: 0, phase: 'idle', battleId: null, seedText: null, seed: null, opponentName: null, battle: null,
-  request: null, awaiting: false, playing: false, animation: null, currentMove: null, caption: null, log: [], result: null, problems: [], error: null,
+  request: null, awaiting: false, playing: false, animation: null, currentMove: null, caption: null, fieldTimers: NO_TIMERS, log: [], result: null, problems: [], error: null,
 };
 
 /**
@@ -269,6 +272,7 @@ export class BattleClient {
       for (const t of lines) draft.log.push(this.entry(line.startsWith('|turn|') ? 'turn' : 'line', t));
       if (lines.length) draft.caption = lines.join(' ');
       if (args[0] === 'turn') draft.currentMove = null;
+      draft.fieldTimers = nextTimers(draft.fieldTimers, args as readonly string[], kwArgs as Record<string, unknown>);
       battle.add(args, kwArgs);
     }
     const anim = step.animation;

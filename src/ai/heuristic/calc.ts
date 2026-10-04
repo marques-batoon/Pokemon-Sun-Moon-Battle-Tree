@@ -2,6 +2,7 @@
 import { calculate, Field, Generations, Move as CalcMove, Pokemon as CalcPokemon, Side as CalcSide } from '@smogon/calc';
 import type { Battle, Pokemon, Side } from '@pkmn/sim';
 import { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } from '../../data/champions';
+import { CUSTOM_SPECIES } from '../../data/custom';
 
 const gen = Generations.get(7);
 
@@ -35,7 +36,7 @@ export function calcSpeciesName(name: string, baseSpecies: string, baseForme: st
   return baseSpecies;
 }
 
-const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES]);
+const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES]);
 
 /** The calc's Gen 7 data predates the Champions Megas and Gen 8-9 Pokémon; describe them from the simulator's data. */
 function speciesOverrides(species: Pokemon['species'], calcName: string) {

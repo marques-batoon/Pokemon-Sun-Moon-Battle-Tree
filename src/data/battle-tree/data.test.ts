@@ -160,3 +160,38 @@ describe('bosses.json / rules.json', () => {
     for (const s of SETS) expect(banned.has(gen7.species.get(s.species).baseSpecies), s.label).toBe(false);
   });
 });
+
+describe('trainer-art.json', () => {
+  it('covers every special trainer and Battle Legend (artwork or a reason why not), and nobody else', async () => {
+    const art = (await import('./trainer-art.json')).default as { named: Record<string, { url: string }>; missing: Record<string, string> };
+    const named = new Set(TRAINERS.filter(t => t.kind !== 'regular').map(t => t.name));
+    const covered = [...Object.keys(art.named), ...Object.keys(art.missing)];
+    expect(new Set(covered)).toEqual(named);
+    expect(covered.length).toBe(named.size); // no name in both lists
+    for (const { url } of Object.values(art.named)) expect(url).toMatch(/^https:\/\/cdn\.pidgi\.net\/images\/thumb\//);
+  });
+});
+
+describe('trainer-quotes.json', () => {
+  it('gives every trainer (by name) three sets of greeting + both closing remarks, no line shared', async () => {
+    const { TRAINER_QUOTES } = await import('./index');
+    const names = new Set(TRAINERS.map(t => t.name));
+    expect(new Set(Object.keys(TRAINER_QUOTES))).toEqual(names);
+    const sets = Object.values(TRAINER_QUOTES);
+    for (const trainerSets of sets) expect(trainerSets).toHaveLength(3);
+    const lines = sets.flat().flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]);
+    for (const text of lines) {
+      expect(text.trim().length).toBeGreaterThan(0);
+      expect(text.length).toBeLessThanOrEqual(120);
+    }
+    expect(new Set(lines).size).toBe(lines.length);
+  });
+
+  it('picks one set per battle, the same every time for that battle, and uses all three', async () => {
+    const { trainerQuotes } = await import('./index');
+    const florian = TRAINERS[0];
+    expect(trainerQuotes(florian, 'run-1|battle-3')).toBe(trainerQuotes(florian, 'run-1|battle-3'));
+    const picked = new Set(Array.from({ length: 30 }, (_, i) => trainerQuotes(florian, `run-1|battle-${i + 1}`)?.greeting));
+    expect(picked.size).toBe(3);
+  });
+});

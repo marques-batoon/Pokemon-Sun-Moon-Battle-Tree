@@ -4,10 +4,14 @@ import { Generations, type Specie, type Move, type Item } from '@pkmn/data';
 import { Dex, type ID, type ModdedDex } from '@pkmn/dex';
 import { RULES } from '../data/battle-tree';
 import { CHAMPIONS_MOD, championsOverrides, NEW_BASE_SPECIES, NEW_MOVE_IDS } from '../data/champions';
+import { CUSTOM_LEARNS, customOverrides, mergeModData } from '../data/custom';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
-/** Gen 7 plus the Pokémon Champions Megas, the same data layer the simulator uses (src/engine/format.ts). */
-const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, { Scripts: { inherit: 'gen7' }, ...championsOverrides() } as never);
+/** Gen 7 plus the Pokémon Champions Megas and the custom additions: the same data layer the simulator uses (src/engine/format.ts). */
+const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, {
+  Scripts: { inherit: 'gen7' },
+  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never })),
+} as never);
 
 export const gens = new Generations({ ...Dex, forGen: (gen: number) => (gen === 7 ? championsDex : Dex.forGen(gen)) } as typeof Dex);
 export const gen7 = gens.get(7);
@@ -69,7 +73,8 @@ export async function learnableMoves(species: string): Promise<Move[]> {
     : await gen7.learnsets.learnable(species);
   if (!learnable) return [];
   if ('sketch' in learnable) return allMoves().filter(m => !UNSKETCHABLE.has(m.id));
-  return Object.keys(learnable)
+  const extra = (CUSTOM_LEARNS[s?.name ?? ''] ?? []).map(m => gen7.moves.get(m)?.id).filter((id): id is ID => !!id);
+  return [...new Set([...Object.keys(learnable), ...extra])]
     .map(id => gen7.moves.get(id))
     .filter((m): m is Move => !!m)
     .sort((a, b) => a.name.localeCompare(b.name));

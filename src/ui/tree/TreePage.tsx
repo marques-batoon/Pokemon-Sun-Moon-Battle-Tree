@@ -15,14 +15,14 @@ type View =
   | { kind: 'home' }
   | { kind: 'new'; key: RunKey }
   | { kind: 'run'; key: RunKey }
-  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerId: number };
+  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerId: number; seedText: string };
 
 export function TreePage({ controller, teamStore }: { controller: RunController; teamStore: TeamStore }) {
   const state = useRunState(controller);
   const teams = useTeams(teamStore);
   const [view, setView] = useState<View>(() => {
     const run = state.active && state.runs[state.active.key];
-    return run ? { kind: 'battle', key: runKey(run.format, run.course), battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId } : { kind: 'home' };
+    return run ? { kind: 'battle', key: runKey(run.format, run.course), battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId, seedText: run.next.seedText } : { kind: 'home' };
   });
   const { profile } = state;
 
@@ -33,7 +33,11 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
           <TrainerSprite trainer={TRAINERS[view.trainerId]} size={44} />
           <span>{keyLabel(view.key)} · Battle {view.battle} · vs {view.opponent}</span>
         </div>
-        <BattleScreen client={controller.battleClient} onContinue={state.active ? undefined : () => setView({ kind: 'run', key: view.key })} />
+        <BattleScreen
+          client={controller.battleClient}
+          opponent={{ trainer: TRAINERS[view.trainerId], battleKey: view.seedText }}
+          onContinue={state.active ? undefined : () => setView({ kind: 'run', key: view.key })}
+        />
       </>
     );
   }
@@ -67,7 +71,7 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
         error={state.error}
         onBattle={() => {
           controller.startBattle(key);
-          setView({ kind: 'battle', key, battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId });
+          setView({ kind: 'battle', key, battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId, seedText: run.next.seedText });
         }}
         onLeave={() => setView({ kind: 'home' })}
       />

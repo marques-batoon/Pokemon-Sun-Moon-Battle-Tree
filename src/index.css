@@ -87,7 +87,7 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; }
 .nav a:hover { background: var(--surface-2); }
 .nav a[aria-current='page'] { background: var(--surface); border-color: var(--border); font-weight: 600; box-shadow: var(--shadow); }
 
-/* Battle focus mode: the header floats above the page, hidden until you scroll up or reach for the top. */
+/* Battle focus mode: the header floats above the page, hidden until the pointer reaches the top (scrolling never shows it). */
 .app-header.autohide {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50; margin: 0;
   padding: 10px max(16px, calc((100% - 1200px) / 2 + 16px));
@@ -276,10 +276,91 @@ button.danger { color: var(--bad); }
 .run-stats dt { font-size: 0.75rem; color: var(--muted); }
 .run-stats dd { margin: 0; font-size: 1.4rem; font-weight: 700; }
 .run-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-.opponent-card { border: 1px solid var(--border); border-left: 5px solid var(--muted); border-radius: var(--radius); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; background: var(--surface-2); }
-.opponent-card.kind-special { border-left-color: var(--warn); }
-.opponent-card.kind-legend { border-left-color: var(--bad); }
-.opponent-name { font-size: 1.3rem; }
+/* Opponent card: the next trainer, big and centred (artwork or enlarged sprite) */
+.opponent-card {
+  --kind: var(--accent);
+  --stage-h: 210px;
+  --sprite-px: 240px; /* 3 × Showdown's 80px trainer sprites, so pixels stay crisp */
+  --art-h: calc(var(--sprite-px) * 1.25); /* official artwork stands 25% taller than the sprite */
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px;
+  /* room above the stage for whatever rises past its top edge */
+  padding: max(14px, calc(var(--sprite-px) - var(--stage-h) + 14px)) 14px 14px;
+  border: 1px solid var(--border); border-top: 4px solid var(--kind); border-radius: var(--radius);
+  background: var(--surface-2); text-align: center;
+}
+.opponent-card.kind-special { --kind: var(--warn); }
+.opponent-card.kind-legend { --kind: var(--bad); }
+.opponent-card:has(.has-art) { --stage-h: 240px; padding-top: calc(var(--art-h) - var(--stage-h) + 24px); }
+.opponent-stage {
+  position: relative; width: 100%; max-width: 520px; height: var(--stage-h);
+  border-radius: calc(var(--radius) + 4px);
+  border: 1px solid color-mix(in srgb, var(--kind) 30%, var(--border));
+  background:
+    radial-gradient(ellipse 55% 60% at 50% 58%, color-mix(in srgb, var(--kind) 34%, transparent), transparent 72%),
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--kind) 6%, transparent) 0 10px, transparent 10px 22px),
+    linear-gradient(180deg, color-mix(in srgb, var(--kind) 12%, var(--surface)), var(--surface));
+  box-shadow: inset 0 -18px 30px -18px color-mix(in srgb, var(--kind) 30%, transparent);
+}
+/* Halo ring behind the trainer and a floor shadow under their feet */
+.opponent-stage::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: calc(var(--stage-h) * 0.82); aspect-ratio: 1;
+  transform: translate(-50%, -46%); border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--kind) 35%, transparent);
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--kind) 8%, transparent);
+}
+.opponent-stage::after {
+  content: ""; position: absolute; left: 50%; bottom: 10px; width: 46%; height: 18px; transform: translateX(-50%);
+  border-radius: 50%; background: radial-gradient(closest-side, rgb(0 0 0 / 0.28), transparent);
+}
+/* The portrait stands on the stage floor and rises past its top edge */
+.opponent-portrait {
+  position: absolute; left: 50%; bottom: 14px; z-index: 1; transform: translateX(-50%);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: opponent-enter 420ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.opponent-art {
+  display: block; height: var(--art-h); width: auto; max-width: none;
+  filter: drop-shadow(0 8px 12px rgb(0 0 0 / 0.28));
+}
+.opponent-portrait .opponent-sprite {
+  width: var(--sprite-px); height: var(--sprite-px); margin-bottom: -10px;
+  image-rendering: pixelated; filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.25));
+}
+.opponent-portrait .opponent-sprite.placeholder { width: 120px; height: 120px; margin-bottom: 30px; font-size: 2.6rem; image-rendering: auto; background: var(--surface); }
+@keyframes opponent-enter { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .opponent-portrait { animation: none; } }
+.opponent-portrait.with-intro { animation: none; }
+/* Special-battle entrance: the trainer fills the screen's height, then flies to the card. */
+.portrait-intro {
+  position: fixed; inset: 0; z-index: 100; cursor: pointer;
+  background:
+    radial-gradient(ellipse 45% 70% at 50% 55%, color-mix(in srgb, var(--kind, #888) 45%, transparent), transparent 75%),
+    rgb(8 10 14 / 0.78);
+}
+.portrait-intro-caption {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; padding: 64px 16px max(28px, 5vh);
+  display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; color: #fff;
+  background: linear-gradient(to top, rgb(8 10 14 / 0.88), rgb(8 10 14 / 0.6) 60%, transparent);
+  pointer-events: none;
+}
+.portrait-intro-name { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--kind, #fff) 70%, #fff); }
+.portrait-intro-quote { max-width: 680px; font-size: clamp(1.1rem, 2.6vw, 1.6rem); font-style: italic; line-height: 1.35; text-shadow: 0 2px 8px rgb(0 0 0 / 0.6); }
+/* Waiting: full screen height, centred (follows window resizes); flying to the card: inline layout from the script. */
+.portrait-intro-img {
+  position: fixed; top: 0; left: 50%; height: 100vh; height: 100dvh; width: auto; max-width: none; transform: translateX(-50%);
+  display: block; object-fit: contain; filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.45));
+}
+.portrait-intro-img.leaving { transform: none; }
+.portrait-intro:focus { outline: none; }
+.portrait-intro-hint { margin-top: 6px; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; animation: intro-hint-pulse 1.6s ease-in-out infinite; }
+@keyframes intro-hint-pulse { 50% { opacity: 0.35; } }
+@media (max-width: 640px) {
+  .opponent-card { --stage-h: 170px; --sprite-px: 160px; }
+  .opponent-card:has(.has-art) { --stage-h: 180px; }
+}
+.opponent-info { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.opponent-name { font-size: 1.45rem; line-height: 1.2; }
+.opponent-quote { max-width: 520px; margin-top: 2px; font-style: italic; color: var(--text); opacity: 0.85; line-height: 1.4; }
 .brought { display: flex; flex-direction: column; gap: 6px; }
 .brought-list { margin: 0; padding-left: 22px; }
 .history ol { margin: 6px 0 0; padding-left: 22px; font-size: 0.9rem; }
@@ -305,6 +386,8 @@ button.danger { color: var(--bad); }
 .move-btn { position: relative; min-height: 64px; box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.12); }
 .move-btn:hover:not(:disabled) { filter: brightness(1.06); }
 .move-btn:disabled { filter: grayscale(0.6); }
+.move-btn.z-on { box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.12), inset 0 0 0 2px rgb(255 255 255 / 0.55); }
+.move-btn .z-power { font-weight: 800; }
 .move-name { display: flex; align-items: center; gap: 6px; }
 .move-hint { font-size: 0.7rem; font-weight: 700; margin-top: 2px; padding: 0 6px; border-radius: 4px; background: rgb(255 255 255 / 0.85); color: #222; }
 .hint-super { color: #0b6b2b; }
@@ -315,6 +398,9 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .gimmicks label.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); font-weight: 600; }
 .notice.result { position: sticky; bottom: 8px; box-shadow: var(--shadow); }
 .notice.result strong { font-size: 1.1rem; }
+.closing-remark { flex-basis: 100%; display: flex; align-items: center; gap: 10px; padding-bottom: 8px; margin-bottom: 2px; border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent); }
+.closing-remark-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.closing-remark-text q { font-style: italic; line-height: 1.35; }
 
 /* ---------- Settings ---------- */
 .settings { display: flex; flex-direction: column; gap: 16px; max-width: 760px; }
@@ -809,9 +895,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 
 /* Trainer portraits */
 .trainer-sprite { display: block; object-fit: contain; flex-shrink: 0; }
-.trainer-sprite.placeholder { border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.6rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--border); }
-.opponent-card { flex-direction: row; align-items: center; gap: 14px; }
-.opponent-info { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-width: 0; }
+.trainer-sprite.placeholder { width: var(--size); height: var(--size); border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.6rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--border); }
 .battle-banner { display: flex; align-items: center; gap: 10px; }
 
 .slot-name { display: flex; align-items: center; min-width: 0; }

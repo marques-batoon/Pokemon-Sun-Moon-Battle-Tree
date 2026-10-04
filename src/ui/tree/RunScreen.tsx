@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BRACKETS, TRAINERS } from '../../data/battle-tree';
+import { BRACKETS, TRAINERS, trainerQuotes } from '../../data/battle-tree';
 import type { RunController, RunTeam } from '../../run/controller';
 import { bpForWin } from '../../run/selection';
 import { BRING, runKey, type RunState } from '../../run/types';
@@ -8,7 +8,7 @@ import { useAppSettings } from '../useAppSettings';
 import { courseLabel } from './hooks';
 import { UnrankedTag } from './UnrankedTag';
 import { TeamSetup } from './TeamSetup';
-import { TrainerSprite } from '../components/TrainerSprite';
+import { OpponentPortrait } from '../components/OpponentPortrait';
 import { PokemonIcon } from '../components/PokemonSprite';
 
 interface Props {
@@ -32,6 +32,8 @@ export function RunScreen({ controller, run, teams, bpTotal, error, onBattle, on
   const brought = run.team.bring.map(i => run.team.sets[i]);
   const preview = run.settings.teamPreviewEachBattle;
   const { showDebugTools } = useAppSettings();
+  const opponent = TRAINERS[run.next.trainerId];
+  const greeting = trainerQuotes(opponent, run.next.seedText)?.greeting ?? null;
 
   return (
     <section className="panel run-screen">
@@ -46,11 +48,19 @@ export function RunScreen({ controller, run, teams, bpTotal, error, onBattle, on
       </header>
 
       <div className={`opponent-card kind-${run.next.kind}`}>
-        <TrainerSprite trainer={TRAINERS[run.next.trainerId]} size={104} />
+        <div className="opponent-stage">
+          <OpponentPortrait
+            key={`${run.id}:${run.battle}`}
+            trainer={opponent}
+            intro={run.next.kind !== 'regular' ? `${run.id}:${run.battle}` : null}
+            caption={{ name: run.next.displayName, quote: greeting }}
+          />
+        </div>
         <div className="opponent-info">
           <span className="muted small">Battle {run.battle} · win for {bpForWin(run.course, run.battle)} BP</span>
           <strong className="opponent-name">{run.next.displayName}</strong>
           {KIND_LABEL[run.next.kind] && <span className="tag">{KIND_LABEL[run.next.kind]}</span>}
+          {greeting && <q className="opponent-quote">{greeting}</q>}
         </div>
       </div>
 

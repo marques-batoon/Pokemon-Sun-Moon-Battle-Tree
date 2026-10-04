@@ -21,6 +21,7 @@ node scripts/check-trainer-sprites.mjs  # verify every trainer has a sprite that
 | Path | What |
 |---|---|
 | `src/data/battle-tree/` | Generated Battle Tree data (sets, trainers, brackets, bosses, rules) + typed loader |
+| `src/data/custom/` | Custom additions made for this app: Politoedite (Mega Politoed) and Poliwrathium Z (see DATA_NOTES.md) |
 | `src/data/champions/` | Pokémon Champions Megas made legal for the player (sourced Mega data, generated availability and sprite tables) |
 | `src/engine/` | Battle engine on `@pkmn/sim`: Battle Tree format, seeded `BattleSession`, worker host + protocol |
 | `src/ai/` | Opponent AI behind the `BattleAI` interface: `heuristic/` (default, approximates the in-game AI with `@smogon/calc`) and `random-ai.ts` |

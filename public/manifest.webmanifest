@@ -1,0 +1,13 @@
+{
+  "name": "Battle Tree Simulator",
+  "short_name": "Battle Tree",
+  "description": "Pokémon Sun & Moon Battle Tree simulator.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f5f8",
+  "theme_color": "#f4f5f8",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

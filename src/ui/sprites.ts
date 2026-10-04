@@ -3,7 +3,9 @@
 import type { CSSProperties } from 'react';
 import { Icons, Sprites } from '@pkmn/img';
 import { CHAMPIONS_SPRITES } from '../data/champions';
+import { SPRITE_ALIASES } from '../data/custom';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
+import artData from '../data/battle-tree/trainer-art.json';
 import type { Trainer } from '../data/battle-tree';
 
 export type SpriteSide = 'p1' | 'p2';
@@ -40,7 +42,8 @@ function championsSprite(species: string, side: SpriteSide, preferStatic: boolea
 }
 
 /** Animated 3D sprite (XY/SM style); `p1` = back sprite, `p2` = front sprite. */
-export function animatedSprite(species: string, side: SpriteSide, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo {
+export function animatedSprite(name: string, side: SpriteSide, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo {
+  const species = SPRITE_ALIASES[name] ?? name; // custom Megas use their base Pokémon's sprites
   const champions = championsSprite(species, side, false);
   if (champions) return champions;
   const s = Sprites.getPokemon(species, { gen: 'ani', side, shiny: opts.shiny, gender: opts.gender });
@@ -48,7 +51,8 @@ export function animatedSprite(species: string, side: SpriteSide, opts: { shiny?
 }
 
 /** Static Gen 5 sprite, used if the animated one fails to load. */
-export function staticSprite(species: string, side: SpriteSide): SpriteInfo {
+export function staticSprite(name: string, side: SpriteSide): SpriteInfo {
+  const species = SPRITE_ALIASES[name] ?? name;
   const champions = championsSprite(species, side, true);
   if (champions) return champions;
   const s = Sprites.getPokemon(species, { gen: 'gen5', side });
@@ -63,7 +67,7 @@ export function substituteSprite(side: SpriteSide): SpriteInfo {
 
 /** Small menu icon (sprite sheet) as inline styles. */
 export function iconStyle(species: string): CSSProperties {
-  const css = Icons.getPokemon(species).css;
+  const css = Icons.getPokemon(SPRITE_ALIASES[species] ?? species).css;
   // @pkmn/img returns CSS property names in kebab case.
   return Object.fromEntries(Object.entries(css).map(([k, v]) => [k.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase()), v])) as CSSProperties;
 }
@@ -80,4 +84,15 @@ export function trainerSpriteId(trainer: Trainer): string | null {
 export function trainerSpriteUrl(trainer: Trainer): string | null {
   const id = trainerSpriteId(trainer);
   return id ? Sprites.getAvatar(id) : null;
+}
+
+export interface TrainerArt { url: string; width: number; height: number }
+const art = artData.named as Record<string, TrainerArt>;
+
+/**
+ * Official artwork for the opponent card (special trainers and Battle Legends
+ * only; see trainer-art.json). Loaded from PidgiWiki's image CDN.
+ */
+export function trainerArt(trainer: Trainer): TrainerArt | null {
+  return trainer.kind === 'regular' ? null : art[trainer.name] ?? null;
 }

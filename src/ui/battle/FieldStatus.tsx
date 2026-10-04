@@ -1,22 +1,28 @@
 import type { Battle, Side } from '@pkmn/client';
+import { NO_TIMERS, timerText, type FieldTimers } from '../../client/field-timers';
 import { gen7 } from '../../team/dex';
 
 const conditionName = (id: string) => gen7.conditions.get(id)?.name ?? gen7.moves.get(id)?.name ?? id;
+/** "Trick Room 2/5" when the effect is timed. */
+const withTimer = (name: string, timer: string | null) => (timer ? `${name} ${timer}` : name);
 
-function sideConditions(side: Side): string[] {
-  return Object.values(side.sideConditions).map(c => (c.level > 1 ? `${c.name} ×${c.level}` : c.name));
+function sideConditions(side: Side, timers: FieldTimers): string[] {
+  return Object.entries(side.sideConditions).map(([id, c]) => {
+    const name = c.level > 1 ? `${c.name} ×${c.level}` : c.name;
+    return withTimer(name, timerText(timers, `${side.id}:${id}`));
+  });
 }
 
-export function FieldStatus({ battle }: { battle: Battle }) {
+export function FieldStatus({ battle, timers = NO_TIMERS }: { battle: Battle; timers?: FieldTimers }) {
   const { field } = battle;
-  const pseudo = Object.keys(field.pseudoWeather).map(conditionName);
+  const pseudo = Object.keys(field.pseudoWeather).map(id => withTimer(conditionName(id), timerText(timers, id)));
   const items = [
-    field.weather && `Weather: ${field.weather}`,
-    field.terrain && `${field.terrain} Terrain`,
+    field.weather && withTimer(`Weather: ${field.weather}`, timerText(timers, 'weather')),
+    field.terrain && withTimer(`${field.terrain} Terrain`, timerText(timers, 'terrain')),
     ...pseudo,
   ].filter(Boolean) as string[];
-  const foe = sideConditions(battle.p2);
-  const mine = sideConditions(battle.p1);
+  const foe = sideConditions(battle.p2, timers);
+  const mine = sideConditions(battle.p1, timers);
 
   return (
     <div className="field-status">
