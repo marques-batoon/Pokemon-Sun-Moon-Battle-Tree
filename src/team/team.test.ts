@@ -155,6 +155,13 @@ Adamant Nature
     expect(again.teams[0].sets).toEqual(teams[0].sets);
   });
 
+  it('exports and re-imports a single Pokémon (Export / Paste from Showdown in the builder)', () => {
+    const [, bisharp] = importShowdownText(TEXT).teams[0].sets;
+    const one = exportShowdownText([bisharp]);
+    expect(one.split('\n\n')).toHaveLength(1);
+    expect(importShowdownText(one).teams[0].sets).toEqual([bisharp]);
+  });
+
   it('applies the standard Hidden Power IVs when none are given', () => {
     const { teams } = importShowdownText('Magnezone\nAbility: Magnet Pull\n- Hidden Power [Fire]');
     const s = teams[0].sets[0];

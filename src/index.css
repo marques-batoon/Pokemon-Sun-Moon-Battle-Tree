@@ -204,7 +204,7 @@ button.danger { color: var(--bad); }
 .slot-card.bad { border-color: var(--bad); }
 .slot-card.add { align-items: center; justify-content: center; color: var(--muted); border-style: dashed; }
 .slot-card .dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--bad); }
-.slot-actions { display: flex; gap: 6px; }
+.slot-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .problems { margin: 0; padding: 8px 12px 8px 28px; border: 1px solid var(--bad); border-radius: 8px; color: var(--bad); font-size: 0.85rem; background: color-mix(in srgb, var(--bad) 7%, transparent); }
 .problems li + li { margin-top: 2px; }
@@ -219,6 +219,7 @@ button.danger { color: var(--bad); }
 .fld input, .fld select { width: 100%; }
 .num { width: 64px; }
 .add-panel { display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
+.add-panel .fld { flex: none; } /* row-layout flex sizing would stretch it vertically here */
 
 .moves { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
 @media (max-width: 520px) { .moves { grid-template-columns: 1fr; } }

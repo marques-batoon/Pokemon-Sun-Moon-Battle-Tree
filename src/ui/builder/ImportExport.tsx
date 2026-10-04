@@ -128,3 +128,69 @@ export function ImportDialog({ currentTeamName, existingTeamCount = 0, onCreate,
     </Modal>
   );
 }
+
+interface PokemonImportProps {
+  /** "add": add the pasted Pokémon to the team (as many as there's room for); "replace": replace one Pokémon. */
+  mode: 'add' | 'replace';
+  /** Free team slots ("add"). */
+  room: number;
+  /** Name of the Pokémon being replaced ("replace"). */
+  replacing?: string;
+  onImport: (sets: PokemonSet[]) => void;
+  onClose: () => void;
+}
+
+/** Paste individual Pokémon in Showdown format, to add to a team or replace one slot. */
+export function PokemonImportDialog({ mode, room, replacing, onImport, onClose }: PokemonImportProps) {
+  const [text, setText] = useState('');
+  const parsed = useMemo(() => (text.trim() ? importShowdownText(text) : null), [text]);
+  const found = parsed?.teams.flatMap(t => t.sets) ?? [];
+  const limit = mode === 'replace' ? 1 : room;
+  const sets = found.slice(0, limit);
+  const leftOver = found.length - sets.length;
+  const label = (s: PokemonSet) => `${s.name !== s.species ? `${s.name} (${s.species})` : s.species}${s.item ? ` @ ${s.item}` : ''}`;
+
+  return (
+    <Modal
+      title={mode === 'replace' ? `Paste over ${replacing ?? 'this Pokémon'}` : 'Paste a Pokémon'}
+      onClose={onClose}
+      footer={
+        <button className="primary" disabled={!sets.length} onClick={() => { onImport(sets); onClose(); }}>
+          {mode === 'replace' ? `Replace ${replacing ?? 'Pokémon'}` : sets.length > 1 ? `Add ${sets.length} Pokémon` : 'Add to team'}
+        </button>
+      }
+    >
+      <p className="muted small">
+        Paste one Pokémon in Showdown format, e.g. copied from Showdown's teambuilder, a forum post, or this app's
+        {' '}Export.{mode === 'add' && room > 1 ? ` You can paste up to ${room} at once.` : ''}
+      </p>
+      <textarea
+        className="code-area"
+        rows={10}
+        value={text}
+        placeholder={'Garchomp @ Choice Scarf\nAbility: Rough Skin\nLevel: 50\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Earthquake\n- Outrage\n- Stone Edge\n- Fire Fang'}
+        onChange={e => setText(e.target.value)}
+        aria-label="Showdown Pokémon text"
+        autoFocus
+      />
+      {sets.length > 0 && (
+        <div className="import-preview">
+          <strong>{mode === 'replace' ? 'Replacing with:' : `${sets.length} Pokémon found:`}</strong>
+          <ul>{sets.map((s, i) => <li key={i}>{label(s)}</li>)}</ul>
+        </div>
+      )}
+      {leftOver > 0 && (
+        <p className="error-text small">
+          {mode === 'replace'
+            ? `Only the first Pokémon is used; ${leftOver} more ${leftOver === 1 ? 'was' : 'were'} ignored.`
+            : `The team only has room for ${room}; ${leftOver} more ${leftOver === 1 ? 'was' : 'were'} ignored.`}
+        </p>
+      )}
+      {parsed && !found.length && <p className="error-text small">No Pokémon found in that text.</p>}
+      {parsed && parsed.warnings.length > 0 && (
+        <ul className="problems">{parsed.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+      )}
+      <p className="muted small">A missing "Level:" line means Lv. 100, as in Showdown. Pokémon above Lv. 50 battle at 50.</p>
+    </Modal>
+  );
+}
