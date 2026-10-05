@@ -263,7 +263,8 @@ export class BattleClient {
     const { args, kwArgs } = Protocol.parseBattleLine(line);
     if (!item.steps) {
       // Plan against the state before the line is applied (the formatter needs that state too).
-      item.text = this.formatter!.formatText(args, kwArgs);
+      // [silent] lines change state without a message (as in Showdown's own client).
+      item.text = 'silent' in kwArgs ? '' : this.formatter!.formatText(args, kwArgs);
       item.steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, !!item.text.trim());
     }
     const step = item.steps.shift()!;

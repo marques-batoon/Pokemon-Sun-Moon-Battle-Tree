@@ -2,6 +2,7 @@ import type { BattleTreeFormat } from '../../engine/format-constants';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Move } from '@pkmn/data';
 import type { TeamStore } from '../../storage/team-store';
+import { paradoxFormForSet } from '../../data/custom/paradox';
 import { learnableMoves } from '../../team/dex';
 import type { PokemonSet, TeamValidation } from '../../team/types';
 import { getValidationClient } from '../services';
@@ -12,20 +13,25 @@ export function useTeams(store: TeamStore) {
 
 const learnsetCache = new Map<string, Move[]>();
 
-/** Learnable moves for a species (null while loading; learnsets load lazily). */
-export function useLearnset(species: string): Move[] | null {
-  const [loaded, setLoaded] = useState<{ species: string; moves: Move[] } | null>(null);
-  const cached = learnsetCache.get(species);
+/**
+ * Learnable moves for a species (null while loading; learnsets load lazily).
+ * With a Paradoxorb that fits, they're its Paradox form's moves.
+ */
+export function useLearnset(species: string, item = ''): Move[] | null {
+  const paradox = paradoxFormForSet(species, item);
+  const key = paradox ? `${species}>${paradox}` : species;
+  const [loaded, setLoaded] = useState<{ key: string; moves: Move[] } | null>(null);
+  const cached = learnsetCache.get(key);
   useEffect(() => {
-    if (learnsetCache.has(species)) return;
+    if (learnsetCache.has(key)) return;
     let live = true;
-    void learnableMoves(species).then(moves => {
-      learnsetCache.set(species, moves);
-      if (live) setLoaded({ species, moves });
+    void learnableMoves(species, paradox ? item : undefined).then(moves => {
+      learnsetCache.set(key, moves);
+      if (live) setLoaded({ key, moves });
     });
     return () => { live = false; };
-  }, [species]);
-  return cached ?? (loaded?.species === species ? loaded.moves : null);
+  }, [key, species, item, paradox]);
+  return cached ?? (loaded?.key === key ? loaded.moves : null);
 }
 
 export interface ValidationState {

@@ -1,3 +1,4 @@
+import { paradoxKindOfItem } from '../data/custom/paradox';
 import { gen7 } from './dex';
 import type { PokemonSet } from './types';
 
@@ -17,7 +18,8 @@ export function clauseConflicts(sets: PokemonSet[]): { species: number[][]; item
   };
   return {
     species: group(s => String(gen7.species.get(s.species)?.num ?? s.species)),
-    items: group(s => (s.item ? gen7.items.get(s.item)?.id ?? s.item : null)),
+    // Any number of Pokémon may hold a Paradoxorb (Item Clause exemption).
+    items: group(s => (s.item && !paradoxKindOfItem(s.item) ? gen7.items.get(s.item)?.id ?? s.item : null)),
   };
 }
 

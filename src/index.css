@@ -389,6 +389,13 @@ button.danger { color: var(--bad); }
 .move-btn:disabled { filter: grayscale(0.6); }
 .move-btn.z-on { box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.12), inset 0 0 0 2px rgb(255 255 255 / 0.55); }
 .move-btn .z-power { font-weight: 800; }
+/* Protosynthesis / Quark Drive: a flat multiplier, not a stat stage, so it gets its own chip. */
+.tag.tag-paradox { font-weight: 700; border: 1px solid transparent; }
+.tag.tag-paradox.ancient { background: linear-gradient(135deg, #f6d7a7, #e0a548); color: #4a2a08; border-color: #c8862a; }
+.tag.tag-paradox.future { background: linear-gradient(135deg, #c9fbff, #7c9cff); color: #0b2340; border-color: #3ec8ff; }
+.paradox-badge { display: inline-block; margin-right: 6px; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+.paradox-badge.paradox-ancient { background: linear-gradient(135deg, #f6d7a7, #e0a548); color: #4a2a08; }
+.paradox-badge.paradox-future { background: linear-gradient(135deg, #c9fbff, #7c9cff); color: #0b2340; }
 .move-name { display: flex; align-items: center; gap: 6px; }
 .move-hint { font-size: 0.7rem; font-weight: 700; margin-top: 2px; padding: 0 6px; border-radius: 4px; background: rgb(255 255 255 / 0.85); color: #222; }
 .hint-super { color: #0b6b2b; }
@@ -559,6 +566,44 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes mega-start { 0%{filter:none} 30%{filter:brightness(1.6) drop-shadow(0 0 10px #ff5ea8)} 55%{filter:brightness(2.2) drop-shadow(0 0 14px #5ec8ff)} 80%{filter:brightness(3) drop-shadow(0 0 18px #ffe45e)} 100%{filter:brightness(5) drop-shadow(0 0 22px #fff);transform:scale(1.08)} }
 .fx-mega-burst { animation: mega-burst calc(900ms * var(--spd, 1)) ease-out; }
 @keyframes mega-burst { 0%{transform:scale(1.3);filter:brightness(5) drop-shadow(0 0 22px #fff)} 40%{transform:scale(0.96)} 100%{transform:none;filter:none} }
+/* Paradox Evolution. Ancient: amber, sepia and a primal tremble. Future: a cold neon glitch, then a scan-in. */
+.fx-paradox-ancient-start { animation: paradox-ancient-start calc(1100ms * var(--spd, 1)) ease-in forwards; }
+@keyframes paradox-ancient-start {
+  0% { filter: none; transform: none }
+  20% { filter: sepia(0.6) drop-shadow(0 0 8px #d9822b); transform: translateX(-2px) }
+  35% { transform: translateX(2px) }
+  50% { filter: sepia(1) brightness(1.4) drop-shadow(0 0 14px #ffb347); transform: translateX(-3px) }
+  65% { transform: translateX(3px) }
+  85% { filter: sepia(1) brightness(2.4) drop-shadow(0 0 20px #ffcf7a); transform: translateX(-1px) scale(1.04) }
+  100% { filter: sepia(1) brightness(4) drop-shadow(0 0 24px #fff2cc); transform: scale(1.08) }
+}
+.fx-paradox-ancient-burst { animation: paradox-ancient-burst calc(1000ms * var(--spd, 1)) ease-out; }
+@keyframes paradox-ancient-burst {
+  0% { transform: scale(1.35) translateY(-6px); filter: sepia(1) brightness(4) drop-shadow(0 0 24px #ffcf7a) }
+  30% { transform: scale(0.94) translateY(2px) }
+  55% { transform: scale(1.03); filter: sepia(0.4) drop-shadow(0 0 12px #ffb347) }
+  100% { transform: none; filter: none }
+}
+.fx-paradox-future-start { animation: paradox-future-start calc(1100ms * var(--spd, 1)) steps(1, end) forwards; }
+@keyframes paradox-future-start {
+  0% { filter: none; transform: none; opacity: 1 }
+  10% { filter: hue-rotate(160deg) saturate(2) drop-shadow(0 0 6px #3ef0ff); transform: translateX(3px) skewX(-6deg) }
+  18% { filter: none; transform: translateX(-2px); opacity: 0.6 }
+  28% { filter: hue-rotate(200deg) brightness(1.5) drop-shadow(2px 0 0 #ff4fd8) drop-shadow(-2px 0 0 #3ef0ff); transform: translateX(-4px) skewX(8deg); opacity: 1 }
+  40% { filter: brightness(1.2) drop-shadow(0 0 10px #3ef0ff); transform: translateX(1px) }
+  52% { opacity: 0.5; transform: translateX(4px) skewX(-4deg) }
+  64% { opacity: 1; filter: hue-rotate(180deg) brightness(2) drop-shadow(0 0 14px #7ff6ff); transform: none }
+  80% { filter: brightness(3) drop-shadow(0 0 18px #9ffcff); transform: translateX(-2px) skewX(3deg) }
+  100% { filter: brightness(4.5) drop-shadow(0 0 22px #e8feff); transform: scale(1.06) }
+}
+.fx-paradox-future-burst { animation: paradox-future-burst calc(1000ms * var(--spd, 1)) cubic-bezier(.2, .8, .2, 1); }
+@keyframes paradox-future-burst {
+  0% { clip-path: inset(0 0 100% 0); filter: brightness(3) drop-shadow(0 0 20px #3ef0ff) }
+  45% { clip-path: inset(0 0 0 0); filter: brightness(1.8) drop-shadow(0 0 14px #3ef0ff) }
+  60% { transform: translateX(2px) }
+  70% { transform: translateX(-2px) }
+  100% { transform: none; filter: none; clip-path: inset(0 0 0 0) }
+}
 /* Screen shake on heavy hits */
 .fx-shake-light-a { animation: shake-light-a calc(380ms * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)); }
 .fx-shake-light-b { animation: shake-light-b calc(380ms * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)); }

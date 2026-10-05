@@ -5,12 +5,17 @@ import { Dex, type ID, type ModdedDex } from '@pkmn/dex';
 import { RULES } from '../data/battle-tree';
 import { CHAMPIONS_MOD, championsOverrides, NEW_BASE_SPECIES, NEW_MOVE_IDS } from '../data/champions';
 import { CUSTOM_LEARNS, customOverrides, mergeModData } from '../data/custom';
+import { isParadoxForm, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxOverrides } from '../data/custom/paradox';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
-/** Gen 7 plus the Pokémon Champions Megas and the custom additions: the same data layer the simulator uses (src/engine/format.ts). */
+/**
+ * Gen 7 plus the Pokémon Champions Megas and the custom additions: the same data
+ * layer the simulator uses (src/engine/format.ts). Here the Paradox forms are
+ * visible too, for their stats, types and sprites (they're never team choices).
+ */
 const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, {
   Scripts: { inherit: 'gen7' },
-  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never })),
+  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true })),
 } as never);
 
 export const gens = new Generations({ ...Dex, forGen: (gen: number) => (gen === 7 ? championsDex : Dex.forGen(gen)) } as typeof Dex);
@@ -28,11 +33,11 @@ const bannedExact = new Set(USUM_ONLY_SPECIES.filter(isForme));
 /**
  * Whether a species can be registered in the Sun/Moon Battle Tree. Banned
  * species include every forme; USUM-only formes (Lycanroc-Dusk) are banned
- * individually. Battle-only formes (Megas, Ash-Greninja, ...) and Totems aren't
- * team choices.
+ * individually. Battle-only formes (Megas, Ash-Greninja, ...), Totems and the
+ * Paradox forms (reached by Paradox Evolution) aren't team choices.
  */
 export function isEligibleSpecies(s: Specie): boolean {
-  if (s.battleOnly || s.name.endsWith('-Totem')) return false;
+  if (s.battleOnly || s.name.endsWith('-Totem') || isParadoxForm(s.name)) return false;
   if (bannedExact.has(s.name)) return false;
   return !bannedBase.has(s.baseSpecies);
 }
@@ -51,9 +56,11 @@ export function allItems(): Item[] {
 }
 
 let moveCache: Move[] | null = null;
-/** Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon aren't for anyone else). */
+/** Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon and Paradox forms aren't for anyone else). */
 export function allMoves(): Move[] {
-  moveCache ??= [...gen7.moves].filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id)).sort((a, b) => a.name.localeCompare(b.name));
+  moveCache ??= [...gen7.moves]
+    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id))
+    .sort((a, b) => a.name.localeCompare(b.name));
   return moveCache;
 }
 
@@ -64,8 +71,17 @@ const UNSKETCHABLE = new Set(['chatter', 'struggle', 'sketch']);
  * Moves the species can learn in Gen 7 per Showdown's merged Sun/Moon + Ultra
  * Sun/Ultra Moon learnsets (approved decision). Teambuilder-level legality;
  * event/egg-move combinations are checked by the simulator's validator.
+ * Holding a Paradoxorb, it's the Paradox form's moves instead (its newest learnset).
  */
-export async function learnableMoves(species: string): Promise<Move[]> {
+export async function learnableMoves(species: string, item?: string): Promise<Move[]> {
+  const paradox = paradoxFormForSet(species, item);
+  if (paradox) {
+    const learnable = (await gen9.learnsets.learnable(paradox)) ?? {};
+    return Object.keys(learnable)
+      .map(id => gen7.moves.get(id))
+      .filter((m): m is Move => !!m && !m.isZ)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
   const s = gen7.species.get(species);
   // Champions Pokémon that aren't in Sun & Moon learn from their newest (Gen 9) learnsets.
   const learnable = s && NEW_BASE_SPECIES.includes(s.name)

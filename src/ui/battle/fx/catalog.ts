@@ -287,6 +287,43 @@ export const MEGA_BURST: FxSpec = { shake: 'light', layers: [
   { kind: 'rings', at: 'user', color: '#ffffff', count: 1, size: 230, rainbow: true },
 ] };
 
+/**
+ * Paradox Evolution. Ancient: the past wells up (amber dimness, stone shards
+ * pulled in, a primal quake and a burst of sunlit rock). Future: the future
+ * glitches in (cold neon, circuit sparks converging, scan rings, a crisp flash
+ * of light).
+ */
+export const PARADOX_START: Record<'ancient' | 'future', FxSpec> = {
+  ancient: { shake: 'light', layers: [
+    { kind: 'screen', color: '#2a1606', mode: 'dim', dur: 1100 },
+    { kind: 'screen', color: '#c8862a', mode: 'tint', delay: 200, dur: 900 },
+    { kind: 'particles', at: 'user', shape: 'rock', motion: 'converge', color: '#b07a3a', color2: '#6b4a2b', count: 16, size: 16, spread: 150 },
+    { kind: 'particles', at: 'user', shape: 'shard', motion: 'rise', color: '#ffcf7a', color2: '#d9822b', count: 10, size: 12, spread: 90, delay: 350 },
+    { kind: 'rings', at: 'user', color: '#e0a548', count: 3, size: 200, delay: 200 },
+    { kind: 'aura', at: 'user', color: '#ffb347', size: 190, delay: 450, dur: 650 },
+  ] },
+  future: { layers: [
+    { kind: 'screen', color: '#020814', mode: 'dim', dur: 1100 },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#3ef0ff', color2: '#c86bff', count: 22, size: 9, spread: 150 },
+    { kind: 'rings', at: 'user', color: '#3ef0ff', count: 4, size: 180, delay: 150 },
+    { kind: 'particles', at: 'user', shape: 'gem', motion: 'swirl', color: '#9ffcff', color2: '#7c5cff', count: 8, size: 10, spread: 70, delay: 400 },
+    { kind: 'aura', at: 'user', color: '#7ff6ff', size: 170, delay: 450, dur: 650 },
+  ] },
+};
+export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
+  ancient: { shake: 'strong', layers: [
+    { kind: 'screen', color: '#ffd59a', mode: 'flash', dur: 450 },
+    { kind: 'ground', color: '#c8862a', dur: 700 },
+    { kind: 'particles', at: 'user', shape: 'rock', motion: 'burst', color: '#c08a4a', color2: '#ffd27f', count: 14, size: 16, spread: 140 },
+    { kind: 'rings', at: 'user', color: '#ffbf5e', count: 1, size: 240 },
+  ] },
+  future: { shake: 'light', layers: [
+    { kind: 'screen', color: '#c9fbff', mode: 'flash', dur: 400 },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'burst', color: '#3ef0ff', color2: '#ffffff', count: 18, size: 11, spread: 130 },
+    { kind: 'rings', at: 'user', color: '#7ff6ff', count: 2, size: 230 },
+  ] },
+};
+
 /** Substitute: a puff of smoke while the user builds its decoy... */
 export const SUBSTITUTE_MOVE: FxSpec = { layers: [
   { kind: 'particles', at: 'user', shape: 'wisp', motion: 'converge', color: '#ffffff', color2: '#dfe6ee', count: 12, size: 26, spread: 90 },

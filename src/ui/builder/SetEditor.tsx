@@ -1,5 +1,6 @@
 import type { Item, Move, Specie } from '@pkmn/data';
 import { allItems, eligibleSpecies, gen7, speciesAbilities } from '../../team/dex';
+import { canHoldItem, PARADOX_LABELS, paradoxFormForSet, paradoxKindOfItem } from '../../data/custom/paradox';
 import { changeSpecies, hiddenPowerType } from '../../team/sets';
 import { STAT_LABELS, type PokemonSet } from '../../team/types';
 import { SearchSelect } from '../components/SearchSelect';
@@ -44,7 +45,11 @@ function MoveOption({ m }: { m: Move }) {
 
 export function SetEditor({ set, problems, speciesConflict, itemConflict, onChange }: Props) {
   const species = gen7.species.get(set.species);
-  const learnset = useLearnset(set.species);
+  // Holding a matching Paradoxorb, it battles as its Paradox form: show that form's look, stats, Ability and moves.
+  const paradox = paradoxFormForSet(set.species, set.item);
+  const paradoxKind = paradox ? paradoxKindOfItem(set.item) : null;
+  const shown = paradox ? gen7.species.get(paradox) : species;
+  const learnset = useLearnset(set.species, set.item);
   const abilities = speciesAbilities(set.species);
   const learnable = new Set<string>(learnset?.map(m => m.name));
   const update = (patch: Partial<PokemonSet>) => onChange({ ...set, ...patch });
@@ -58,8 +63,16 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
   return (
     <div className="set-editor">
       <div className="set-hero">
-        <div className="set-hero-sprite"><PokemonSprite key={set.species} species={set.species} side="p2" /></div>
-        <div className="set-hero-types">{species?.types.map(t => <TypeBadge key={t} type={t} />)}<span className="muted small">BST {species ? Object.values(species.baseStats).reduce((a, b) => a + b, 0) : '—'}</span></div>
+        <div className="set-hero-sprite"><PokemonSprite key={shown?.name ?? set.species} species={shown?.name ?? set.species} side="p2" /></div>
+        <div className="set-hero-types">
+          {paradox && paradoxKind && (
+            <span className={`paradox-badge paradox-${paradoxKind}`} title={`Paradox Evolves into ${paradox} when first sent out`}>
+              {PARADOX_LABELS[paradoxKind]} Paradox Form: {paradox}
+            </span>
+          )}
+          {shown?.types.map(t => <TypeBadge key={t} type={t} />)}
+          <span className="muted small">BST {shown ? Object.values(shown.baseStats).reduce((a, b) => a + b, 0) : '—'}</span>
+        </div>
       </div>
       <div className="field-grid">
         <label className="fld fld-wide">
@@ -85,7 +98,7 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
           <input type="number" min={1} max={100} value={set.level} className="num"
             onChange={e => update({ level: Math.max(1, Math.min(100, Math.floor(Number(e.target.value) || 1))) })} />
         </label>
-        {species && !species.gender && (
+        {species && !species.gender && !paradox && (
           <label className="fld fld-narrow">
             <span>Gender</span>
             <select value={set.gender || ''} onChange={e => update({ gender: e.target.value })}>
@@ -99,11 +112,18 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
 
       <div className="field-grid">
         <label className="fld">
-          <span>Ability</span>
-          <select value={set.ability} onChange={e => update({ ability: e.target.value })}>
-            {!abilities.includes(set.ability) && <option value={set.ability}>{set.ability || '—'}</option>}
-            {abilities.map(a => <option key={a} value={a}>{a}{a === species?.abilities.H ? ' (Hidden)' : ''}</option>)}
-          </select>
+          <span>Ability{paradox ? ' (Paradox form)' : ''}</span>
+          {paradox ? (
+            // The Paradox form's Ability replaces the original's before it ever activates.
+            <select value="paradox" disabled title={shown?.abilities[0] ? gen7.abilities.get(shown.abilities[0])?.shortDesc : undefined}>
+              <option value="paradox">{shown?.abilities[0] ?? '—'}</option>
+            </select>
+          ) : (
+            <select value={set.ability} onChange={e => update({ ability: e.target.value })}>
+              {!abilities.includes(set.ability) && <option value={set.ability}>{set.ability || '—'}</option>}
+              {abilities.map(a => <option key={a} value={a}>{a}{a === species?.abilities.H ? ' (Hidden)' : ''}</option>)}
+            </select>
+          )}
         </label>
         <label className="fld">
           <span>Item</span>
@@ -112,7 +132,7 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
             value={set.item}
             invalid={itemConflict}
             placeholder="(none)"
-            options={allItems()}
+            options={allItems().filter(i => canHoldItem(set.species, i.name))}
             allowEmpty
             getKey={i => i.id}
             getLabel={i => i.name}

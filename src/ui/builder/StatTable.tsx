@@ -1,6 +1,6 @@
 import type { Nature } from '@pkmn/data';
 import { gen7 } from '../../team/dex';
-import { battleLevel, calcStats, evTotal, withEv, withIv } from '../../team/sets';
+import { battleLevel, battleSpecies, calcStats, evTotal, withEv, withIv } from '../../team/sets';
 import { MAX_EV_STAT, MAX_EV_TOTAL, MAX_IV, STAT_IDS, STAT_LABELS, type PokemonSet } from '../../team/types';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 /** EV / IV inputs with live final stats at the battle level. */
 export function StatTable({ set, onChange }: Props) {
-  const species = gen7.species.get(set.species);
+  const species = gen7.species.get(battleSpecies(set));
   const nature = gen7.natures.get(set.nature) as Nature | undefined;
   const stats = calcStats(set);
   const remaining = MAX_EV_TOTAL - evTotal(set);

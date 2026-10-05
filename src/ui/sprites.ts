@@ -4,6 +4,7 @@ import type { CSSProperties } from 'react';
 import { Icons, Sprites } from '@pkmn/img';
 import { CHAMPIONS_SPRITES } from '../data/champions';
 import { SPRITE_ALIASES } from '../data/custom';
+import { PARADOX_SPRITES } from '../data/custom/paradox';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
 import type { Trainer } from '../data/battle-tree';
@@ -22,12 +23,12 @@ export interface SpriteInfo {
 const SPRITE_BASE = 'https://play.pokemonshowdown.com/sprites';
 
 /**
- * Sprites for the Pokémon Champions formes, from the probed availability table
- * (@pkmn/img predates them). Animated first, then static; with no back sprite,
+ * Sprites for the Pokémon Champions formes and the Paradox forms, from the probed
+ * availability tables (@pkmn/img predates them). Animated first, then static; with no back sprite,
  * the front one is mirrored. `preferStatic` picks the static image first.
  */
 function championsSprite(species: string, side: SpriteSide, preferStatic: boolean): SpriteInfo | null {
-  const a = CHAMPIONS_SPRITES[species];
+  const a = CHAMPIONS_SPRITES[species] ?? PARADOX_SPRITES[species];
   if (!a) return null;
   const ani = (size: [number, number], back: boolean): SpriteInfo => ({ url: `${SPRITE_BASE}/${back ? 'ani-back' : 'ani'}/${a.id}.gif`, w: size[0], h: size[1], pixelated: false });
   const gen5 = (size: [number, number], back: boolean): SpriteInfo => ({ url: `${SPRITE_BASE}/${back ? 'gen5-back' : 'gen5'}/${a.id}.png`, w: size[0], h: size[1], pixelated: true });

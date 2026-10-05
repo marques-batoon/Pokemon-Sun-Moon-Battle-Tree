@@ -1,4 +1,5 @@
 import type { Nature, StatsTable } from '@pkmn/data';
+import { canHoldItem, paradoxFormForSet } from '../data/custom/paradox';
 import { gen7, speciesAbilities } from './dex';
 import { DEFAULT_LEVEL, MAX_EV_STAT, MAX_EV_TOTAL, MAX_IV, STAT_IDS, type PokemonSet, type StatID } from './types';
 
@@ -34,8 +35,13 @@ export function changeSpecies(set: PokemonSet, species: string): PokemonSet {
     species: fresh.species,
     ability: abilities.includes(set.ability) ? set.ability : fresh.ability,
     gender: fresh.gender,
+    // A Paradoxorb only stays if the new species has that kind of Paradox form.
+    item: canHoldItem(fresh.species, set.item) ? set.item : '',
   };
 }
+
+/** The species a set battles as: its Paradox form when holding the matching Paradoxorb, else itself. */
+export const battleSpecies = (set: Pick<PokemonSet, 'species' | 'item'>): string => paradoxFormForSet(set.species, set.item) ?? set.species;
 
 /** Level the Pokémon actually battles at: above 50 is lowered to 50, lower levels stay. */
 export const battleLevel = (set: PokemonSet) => Math.min(set.level || DEFAULT_LEVEL, DEFAULT_LEVEL);
@@ -60,8 +66,9 @@ export function withIv(set: PokemonSet, stat: StatID, value: number): PokemonSet
 }
 
 /** Final stats at the battle level (min(level, 50)), as the game computes them. */
+/** Stats at the battle level; for a Paradoxorb holder, its Paradox form's stats. */
 export function calcStats(set: PokemonSet): StatsTable {
-  const species = gen7.species.get(set.species);
+  const species = gen7.species.get(battleSpecies(set));
   const nature = gen7.natures.get(set.nature) as Nature | undefined;
   const level = battleLevel(set);
   const out = fill(0);

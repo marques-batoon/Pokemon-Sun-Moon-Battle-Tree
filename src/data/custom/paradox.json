@@ -1,0 +1,510 @@
+{
+  "source": {
+    "pokemon-showdown-data": "@pkmn/sim 0.10.11 (species, learnsets; moves marked \"Future\" in Gen 7)",
+    "pokemon-showdown-sprites": "https://play.pokemonshowdown.com/sprites/{ani,ani-back,gen5,gen5-back}/<id> (probed 2026-10-05)"
+  },
+  "forms": [
+    {
+      "form": "Great Tusk",
+      "kind": "ancient",
+      "bases": [
+        "Donphan"
+      ]
+    },
+    {
+      "form": "Scream Tail",
+      "kind": "ancient",
+      "bases": [
+        "Jigglypuff"
+      ]
+    },
+    {
+      "form": "Brute Bonnet",
+      "kind": "ancient",
+      "bases": [
+        "Amoonguss"
+      ]
+    },
+    {
+      "form": "Flutter Mane",
+      "kind": "ancient",
+      "bases": [
+        "Misdreavus"
+      ]
+    },
+    {
+      "form": "Slither Wing",
+      "kind": "ancient",
+      "bases": [
+        "Volcarona"
+      ]
+    },
+    {
+      "form": "Sandy Shocks",
+      "kind": "ancient",
+      "bases": [
+        "Magneton"
+      ]
+    },
+    {
+      "form": "Roaring Moon",
+      "kind": "ancient",
+      "bases": [
+        "Salamence"
+      ]
+    },
+    {
+      "form": "Walking Wake",
+      "kind": "ancient",
+      "bases": [
+        "Suicune"
+      ]
+    },
+    {
+      "form": "Gouging Fire",
+      "kind": "ancient",
+      "bases": [
+        "Entei"
+      ]
+    },
+    {
+      "form": "Raging Bolt",
+      "kind": "ancient",
+      "bases": [
+        "Raikou"
+      ]
+    },
+    {
+      "form": "Iron Treads",
+      "kind": "future",
+      "bases": [
+        "Donphan"
+      ]
+    },
+    {
+      "form": "Iron Bundle",
+      "kind": "future",
+      "bases": [
+        "Delibird"
+      ]
+    },
+    {
+      "form": "Iron Hands",
+      "kind": "future",
+      "bases": [
+        "Hariyama"
+      ]
+    },
+    {
+      "form": "Iron Jugulis",
+      "kind": "future",
+      "bases": [
+        "Hydreigon"
+      ]
+    },
+    {
+      "form": "Iron Moth",
+      "kind": "future",
+      "bases": [
+        "Volcarona"
+      ]
+    },
+    {
+      "form": "Iron Thorns",
+      "kind": "future",
+      "bases": [
+        "Tyranitar"
+      ]
+    },
+    {
+      "form": "Iron Valiant",
+      "kind": "future",
+      "bases": [
+        "Gardevoir",
+        "Gallade"
+      ]
+    },
+    {
+      "form": "Iron Leaves",
+      "kind": "future",
+      "bases": [
+        "Virizion"
+      ]
+    },
+    {
+      "form": "Iron Boulder",
+      "kind": "future",
+      "bases": [
+        "Terrakion"
+      ]
+    },
+    {
+      "form": "Iron Crown",
+      "kind": "future",
+      "bases": [
+        "Cobalion"
+      ]
+    }
+  ],
+  "moves": [
+    "Body Press",
+    "Breaking Swipe",
+    "Burning Bulwark",
+    "Chilling Water",
+    "Coaching",
+    "Dragon Cheer",
+    "Dual Wingbeat",
+    "Expanding Force",
+    "Flip Turn",
+    "Hard Press",
+    "Headlong Rush",
+    "Hydro Steam",
+    "Ice Spinner",
+    "Jaw Lock",
+    "Lash Out",
+    "Meteor Beam",
+    "Mighty Cleave",
+    "Misty Explosion",
+    "Poltergeist",
+    "Pounce",
+    "Psyblade",
+    "Psychic Noise",
+    "Raging Fury",
+    "Rising Voltage",
+    "Scale Shot",
+    "Scorching Sands",
+    "Skitter Smack",
+    "Snowscape",
+    "Spirit Break",
+    "Steel Beam",
+    "Steel Roller",
+    "Supercell Slam",
+    "Tachyon Cutter",
+    "Temper Flare",
+    "Tera Blast",
+    "Thunderclap",
+    "Trailblaze"
+  ],
+  "sprites": {
+    "Great Tusk": {
+      "id": "greattusk",
+      "ani": [
+        104,
+        68
+      ],
+      "aniBack": [
+        151,
+        67
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Scream Tail": {
+      "id": "screamtail",
+      "ani": [
+        63,
+        67
+      ],
+      "aniBack": [
+        94,
+        65
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Brute Bonnet": {
+      "id": "brutebonnet",
+      "ani": [
+        96,
+        84
+      ],
+      "aniBack": [
+        104,
+        79
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Flutter Mane": {
+      "id": "fluttermane",
+      "ani": [
+        112,
+        87
+      ],
+      "aniBack": [
+        106,
+        92
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Slither Wing": {
+      "id": "slitherwing",
+      "ani": [
+        92,
+        105
+      ],
+      "aniBack": [
+        111,
+        122
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Sandy Shocks": {
+      "id": "sandyshocks",
+      "ani": [
+        74,
+        115
+      ],
+      "aniBack": [
+        97,
+        113
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Roaring Moon": {
+      "id": "roaringmoon",
+      "ani": [
+        155,
+        163
+      ],
+      "aniBack": [
+        155,
+        155
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Walking Wake": {
+      "id": "walkingwake",
+      "ani": [
+        106,
+        96
+      ],
+      "aniBack": [
+        175,
+        97
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Gouging Fire": {
+      "id": "gougingfire",
+      "ani": [
+        90,
+        91
+      ],
+      "aniBack": [
+        179,
+        86
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Raging Bolt": {
+      "id": "ragingbolt",
+      "ani": [
+        74,
+        135
+      ],
+      "aniBack": [
+        106,
+        129
+      ],
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Treads": {
+      "id": "irontreads",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Bundle": {
+      "id": "ironbundle",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Hands": {
+      "id": "ironhands",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Jugulis": {
+      "id": "ironjugulis",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Moth": {
+      "id": "ironmoth",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Thorns": {
+      "id": "ironthorns",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Valiant": {
+      "id": "ironvaliant",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Leaves": {
+      "id": "ironleaves",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Boulder": {
+      "id": "ironboulder",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    },
+    "Iron Crown": {
+      "id": "ironcrown",
+      "ani": null,
+      "aniBack": null,
+      "gen5": [
+        96,
+        96
+      ],
+      "gen5Back": [
+        96,
+        96
+      ]
+    }
+  }
+}

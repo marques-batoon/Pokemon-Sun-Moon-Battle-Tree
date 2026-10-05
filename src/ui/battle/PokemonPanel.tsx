@@ -16,6 +16,15 @@ const SHOWN_VOLATILES: Record<string, string> = {
   typechange: 'Type changed', transform: 'Transformed', minimize: 'Minimized', defensecurl: 'Curled',
 };
 
+/** Protosynthesis / Quark Drive's boost: @pkmn/client keeps the boosted stat on the volatile. */
+function paradoxBoostOf(pokemon: Pokemon): { ability: 'protosynthesis' | 'quarkdrive'; stat: string } | null {
+  for (const ability of ['protosynthesis', 'quarkdrive'] as const) {
+    const stat = (pokemon.volatiles[ability] as { stat?: string } | undefined)?.stat;
+    if (stat) return { ability, stat };
+  }
+  return null;
+}
+
 const hpPercent = (p: Pokemon) => (p.maxhp ? Math.max(0, Math.min(100, (p.hp / p.maxhp) * 100)) : 0);
 
 interface Props {
@@ -47,6 +56,7 @@ export function PokemonPanel({ battle, side, pokemon, compact = false, party = t
   const hpText = pokemon.fainted ? 'Fainted' : side === 'p1' ? `${pokemon.hp}/${pokemon.maxhp}` : `~${Math.round(percent)}%`;
   const boosts = Object.entries(pokemon.boosts).filter(([, v]) => v);
   const volatiles = Object.keys(pokemon.volatiles).filter(v => SHOWN_VOLATILES[v]);
+  const paradoxBoost = paradoxBoostOf(pokemon);
   const item = pokemon.item ? gen7.items.get(pokemon.item)?.name ?? pokemon.item : null;
   const ability = pokemon.ability ? gen7.abilities.get(pokemon.ability)?.name ?? pokemon.ability : null;
 
@@ -70,8 +80,16 @@ export function PokemonPanel({ battle, side, pokemon, compact = false, party = t
           {item && <span>@ {item}</span>}
         </div>
       )}
-      {(boosts.length > 0 || volatiles.length > 0) && (
+      {(boosts.length > 0 || volatiles.length > 0 || paradoxBoost) && (
         <div className="mon-tags">
+          {paradoxBoost && (
+            <span
+              className={`tag tag-paradox ${paradoxBoost.ability === 'protosynthesis' ? 'ancient' : 'future'}`}
+              title={`${paradoxBoost.ability === 'protosynthesis' ? 'Protosynthesis' : 'Quark Drive'}: a flat multiplier, not a stat stage (Haze can't remove it; it ends when switched out)`}
+            >
+              ⬢ {BOOST_LABELS[paradoxBoost.stat]} ×{paradoxBoost.stat === 'spe' ? '1.5' : '1.3'}
+            </span>
+          )}
           {boosts.map(([stat, v]) => (
             <span key={stat} className={`tag ${v! > 0 ? 'tag-up' : 'tag-down'}`}>{v! > 0 ? '+' : ''}{v} {BOOST_LABELS[stat]}</span>
           ))}

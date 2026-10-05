@@ -3,11 +3,12 @@ import { calculate, Field, Generations, Move as CalcMove, Pokemon as CalcPokemon
 import type { Battle, Pokemon, Side } from '@pkmn/sim';
 import { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } from '../../data/champions';
 import { CUSTOM_SPECIES } from '../../data/custom';
+import { PARADOX_FORMS } from '../../data/custom/paradox';
 
 const gen = Generations.get(7);
 
 const WEATHER: Record<string, string> = {
-  sunnyday: 'Sun', raindance: 'Rain', sandstorm: 'Sand', hail: 'Hail',
+  sunnyday: 'Sun', raindance: 'Rain', sandstorm: 'Sand', hail: 'Hail', snowscape: 'Snow',
   desolateland: 'Harsh Sunshine', primordialsea: 'Heavy Rain', deltastream: 'Strong Winds',
 };
 const TERRAIN: Record<string, string> = {
@@ -36,7 +37,7 @@ export function calcSpeciesName(name: string, baseSpecies: string, baseForme: st
   return baseSpecies;
 }
 
-const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES]);
+const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...PARADOX_FORMS.map(f => f.form)]);
 
 /** The calc's Gen 7 data predates the Champions Megas and Gen 8-9 Pokémon; describe them from the simulator's data. */
 function speciesOverrides(species: Pokemon['species'], calcName: string) {
@@ -54,7 +55,10 @@ export function calcPokemon(p: Pokemon, forme: Forme = {}): CalcPokemon {
   const set = p.set;
   const species = forme.species ? p.battle.dex.species.get(forme.species) : p.species;
   const name = calcSpeciesName(species.name, species.baseSpecies, species.baseForme);
+  // Protosynthesis / Quark Drive (this app's always-on version): the stat it boosts, so the calc applies 1.3x.
+  const paradox = p.volatiles.paradoxboost as { bestStat?: string } | undefined;
   return new CalcPokemon(gen, name, {
+    ...(paradox?.bestStat && !forme.species ? { boostedStat: paradox.bestStat as never } : {}),
     overrides: speciesOverrides(species, name) as never,
     level: p.level,
     ability: forme.ability ?? p.getAbility().name,

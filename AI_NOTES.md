@@ -17,7 +17,7 @@ The AI implements the same `BattleAI` interface as the random AI (`src/ai/types.
 
 Like the in-game AI, it sees the whole battle state. That includes your Pokémon's real stats, moves, item and ability. The guide's AI behaviour (Lightning Rod / Levitate awareness, switching to absorb your attack) implies the game reads that information too. Damage numbers come from `@smogon/calc`: expected damage is the midpoint of the roll range, crits are ignored, and a "KO" means every roll knocks the target out.
 
-The calc reports 0 for OHKO moves (Sheer Cold, Fissure...) and Endeavor, so those are worked out directly: an OHKO move kills unless the target is immune, has Sturdy or is a higher level. Showdown species names are mapped to the calc's: "Aegislash" becomes "Aegislash-Shield", and cosmetic formes fall back to their base species. A test checks every Battle Tree set, every builder species and every Gen 7 Mega. Calc errors are counted in `calcErrors` (tests assert zero) rather than silently scoring a move as useless.
+The calc reports 0 for OHKO moves (Sheer Cold, Fissure...) and Endeavor, so those are worked out directly: an OHKO move kills unless the target is immune, has Sturdy or is a higher level. Showdown species names are mapped to the calc's: "Aegislash" becomes "Aegislash-Shield", and cosmetic formes fall back to their base species. A test checks every Battle Tree set, every builder species and every Gen 7 Mega. A Paradox form's Protosynthesis / Quark Drive boost is passed to the calc as its `boostedStat`, so the 1.3x counts in the estimates. Calc errors are counted in `calcErrors` (tests assert zero) rather than silently scoring a move as useless.
 
 ## Turning scores into a choice
 

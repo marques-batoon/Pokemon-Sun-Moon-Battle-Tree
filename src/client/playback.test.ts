@@ -150,3 +150,19 @@ describe('planLine: single lines', () => {
     expect(plan(line)).toMatchObject(expected);
   });
 });
+
+describe('planLine: Paradox Evolution', () => {
+  const steps = (line: string) => {
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    return planLine(args as readonly string[], kwArgs as Record<string, unknown>, new ClientBattle(new Generations(Dex)), false);
+  };
+
+  it('charges up, then changes the sprite, with an Ancient or Future look', () => {
+    const ancient = steps('|detailschange|p1a: Donphan|Great Tusk, L50');
+    expect(ancient.map(s => [s.animation?.kind, s.animation?.condition, s.applyLine])).toEqual([['paradox-start', 'ancient', false], ['paradox', 'ancient', true]]);
+    const future = steps('|detailschange|p1b: Gallade|Iron Valiant, L50');
+    expect(future.map(s => [s.animation?.kind, s.animation?.condition, s.animation?.slot])).toEqual([['paradox-start', 'future', 1], ['paradox', 'future', 1]]);
+    // Mega Evolution keeps its own animation.
+    expect(steps('|detailschange|p1a: Salamence|Salamence-Mega, L50, M')[0].animation?.kind).toBe('mega-start');
+  });
+});
