@@ -1032,6 +1032,7 @@ Modest Nature
 Jynx (F) @ Wide Lens
 Ability: Oblivious
 Level: 50
+EVs: 6 HP / 252 SpA / 252 Spe
 Timid Nature
 - Blizzard
 - Psyshock
@@ -1167,6 +1168,7 @@ Adamant Nature
 Minior @ White Herb
 Ability: Shields Down
 Level: 50
+EVs: 6 HP / 252 Atk / 252 Spe
 Adamant Nature
 - Shell Smash
 - Stone Edge
@@ -1524,6 +1526,7 @@ Sassy Nature
 Metagross @ Assault Vest
 Ability: Clear Body
 Level: 50
+EVs: 252 HP / 252 Atk / 6 SpD
 Adamant Nature
 - Meteor Mash
 - Zen Headbutt
@@ -1553,6 +1556,7 @@ Jolly Nature
 Oranguru @ Mental Herb
 Ability: Inner Focus
 Level: 50
+EVs: 252 HP / 252 Def / 6 SpD
 Sassy Nature
 - Psychic
 - Instruct
@@ -1963,6 +1967,7 @@ Modest Nature
 Gastrodon @ Rindo Berry
 Ability: Sticky Hold
 Level: 50
+EVs: 252 HP / 6 Def / 252 SpA
 Modest Nature
 - Surf
 - Earth Power
@@ -2655,6 +2660,7 @@ Jolly Nature
 Starmie @ Light Clay
 Ability: Natural Cure
 Level: 50
+EVs: 252 HP / 6 SpA / 252 Spe
 Timid Nature
 - Scald
 - Light Screen

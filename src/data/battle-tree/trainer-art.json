@@ -5,7 +5,7 @@
   "Not from the Pokémon Wiki (Fandom) or the Bulbagarden Archives: both block images from being shown on other sites.",
   "Cynthia and Wally appear in Sun & Moon in their Diamond and Pearl / Omega Ruby and Alpha Sapphire designs (matching their Showdown sprites), so that art is used.",
   "Trainers without usable art fall back to the enlarged Showdown sprite (see 'missing').",
-  "Gym Leaders (custom special trainers, 2026-10-08): artwork from each one's most recent main-series game other than Let's Go Pikachu / Eevee that has it on PidgiWiki (HeartGold and SoulSilver for Kanto and Johto, Ultra Sun and Ultra Moon for Giovanni, Omega Ruby and Alpha Sapphire for Hoenn, Brilliant Diamond and Shining Pearl for Sinnoh, Black 2 and White 2 or Black and White for Unova). Thumbnails were generated through PidgiWiki's API (iiurlwidth=400)."
+  "Gym Leaders (custom special trainers, 2026-10-08): drawn artwork only, never renders of 3D models (so nothing from Brilliant Diamond and Shining Pearl), from each one's most recent main-series game other than Let's Go Pikachu / Eevee that has drawn art on PidgiWiki: HeartGold and SoulSilver (Kanto, Johto), Ultra Sun and Ultra Moon (Giovanni), Omega Ruby and Alpha Sapphire (Hoenn), Diamond and Pearl (Sinnoh), Black 2 and White 2 or Black and White (Unova). Thumbnails were generated through PidgiWiki's API (iiurlwidth=400)."
  ],
  "named": {
   "Red": {
@@ -212,18 +212,11 @@
    "page": "https://www.pidgi.net/wiki/File:Norman_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
   },
   "Roark": {
-   "url": "https://cdn.pidgi.net/images/thumb/0/0d/Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png/400px-Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png",
+   "url": "https://cdn.pidgi.net/images/thumb/d/d5/Roark_-_Pokemon_Diamond_and_Pearl.png/400px-Roark_-_Pokemon_Diamond_and_Pearl.png",
    "width": 400,
-   "height": 594,
-   "game": "Brilliant Diamond and Shining Pearl",
-   "page": "https://www.pidgi.net/wiki/File:Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png"
-  },
-  "Gardenia": {
-   "url": "https://cdn.pidgi.net/images/thumb/d/dd/Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png/400px-Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png",
-   "width": 400,
-   "height": 695,
-   "game": "Brilliant Diamond and Shining Pearl",
-   "page": "https://www.pidgi.net/wiki/File:Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png"
+   "height": 751,
+   "game": "Diamond and Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Roark_-_Pokemon_Diamond_and_Pearl.png"
   },
   "Cheren": {
    "url": "https://cdn.pidgi.net/images/thumb/5/51/Cheren_-_Pokemon_Black_2_and_White_2.png/400px-Cheren_-_Pokemon_Black_2_and_White_2.png",
@@ -287,6 +280,13 @@
    "height": 566,
    "game": "Black 2 and White 2",
    "page": "https://www.pidgi.net/wiki/File:Bianca_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Volkner": {
+   "url": "https://cdn.pidgi.net/images/thumb/d/d3/Volkner_-_Pokemon_Diamond_and_Pearl.png/400px-Volkner_-_Pokemon_Diamond_and_Pearl.png",
+   "width": 400,
+   "height": 690,
+   "game": "Diamond and Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Volkner_-_Pokemon_Diamond_and_Pearl.png"
   }
  },
  "missing": {
@@ -300,15 +300,15 @@
   "Liza": "Her Omega Ruby and Alpha Sapphire artwork shows her with Tate; her ORAS-style sprite is shown instead.",
   "Juan": "No official artwork on PidgiWiki.",
   "Fantina": "No official artwork on PidgiWiki.",
-  "Maylene": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background, which can't stand on the card.",
+  "Maylene": "Her only artwork on PidgiWiki is from Brilliant Diamond and Shining Pearl, a render of the game's 3D model; only drawn artwork is used, so her sprite is shown.",
   "Crasher Wake": "No official artwork on PidgiWiki.",
-  "Byron": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background, which can't stand on the card.",
-  "Candice": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background (the PNG is a 240-pixel thumbnail).",
-  "Volkner": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background (the PNG is a 240-pixel thumbnail).",
+  "Byron": "His only artwork on PidgiWiki is from Brilliant Diamond and Shining Pearl, a render of the game's 3D model; only drawn artwork is used, so his sprite is shown.",
+  "Candice": "Her only artwork on PidgiWiki is from Brilliant Diamond and Shining Pearl, a render of the game's 3D model; only drawn artwork is used, so her sprite is shown.",
   "Burgh": "No official artwork on PidgiWiki.",
   "Clay": "No official artwork on PidgiWiki.",
   "Skyla": "Her only artwork on PidgiWiki includes a Pokémon.",
   "Chili": "His only artwork on PidgiWiki shows all three Striaton brothers together.",
-  "Cress": "His only artwork on PidgiWiki shows all three Striaton brothers together."
+  "Cress": "His only artwork on PidgiWiki shows all three Striaton brothers together.",
+  "Gardenia": "Her only artwork on PidgiWiki is from Brilliant Diamond and Shining Pearl, a render of the game's 3D model; only drawn artwork is used, so her sprite is shown."
  }
 }

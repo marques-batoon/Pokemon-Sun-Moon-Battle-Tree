@@ -2079,12 +2079,12 @@
      "ability": "Oblivious",
      "nature": "Timid",
      "evs": {
-      "hp": 0,
+      "hp": 6,
       "atk": 0,
       "def": 0,
-      "spa": 0,
+      "spa": 252,
       "spd": 0,
-      "spe": 0
+      "spe": 252
      },
      "moves": [
       "Blizzard",
@@ -2356,12 +2356,12 @@
      "ability": "Shields Down",
      "nature": "Adamant",
      "evs": {
-      "hp": 0,
-      "atk": 0,
+      "hp": 6,
+      "atk": 252,
       "def": 0,
       "spa": 0,
       "spd": 0,
-      "spe": 0
+      "spe": 252
      },
      "moves": [
       "Shell Smash",
@@ -3086,11 +3086,11 @@
      "ability": "Clear Body",
      "nature": "Adamant",
      "evs": {
-      "hp": 0,
-      "atk": 0,
+      "hp": 252,
+      "atk": 252,
       "def": 0,
       "spa": 0,
-      "spd": 0,
+      "spd": 6,
       "spe": 0
      },
      "moves": [
@@ -3147,11 +3147,11 @@
      "ability": "Inner Focus",
      "nature": "Sassy",
      "evs": {
-      "hp": 0,
+      "hp": 252,
       "atk": 0,
-      "def": 0,
+      "def": 252,
       "spa": 0,
-      "spd": 0,
+      "spd": 6,
       "spe": 0
      },
      "moves": [
@@ -3984,10 +3984,10 @@
      "ability": "Sticky Hold",
      "nature": "Modest",
      "evs": {
-      "hp": 0,
+      "hp": 252,
       "atk": 0,
-      "def": 0,
-      "spa": 0,
+      "def": 6,
+      "spa": 252,
       "spd": 0,
       "spe": 0
      },
@@ -5396,12 +5396,12 @@
      "ability": "Natural Cure",
      "nature": "Timid",
      "evs": {
-      "hp": 0,
+      "hp": 252,
       "atk": 0,
       "def": 0,
-      "spa": 0,
+      "spa": 6,
       "spd": 0,
-      "spe": 0
+      "spe": 252
      },
      "moves": [
       "Scald",
