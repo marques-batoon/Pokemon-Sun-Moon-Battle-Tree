@@ -5,7 +5,8 @@
     "schedule": "bulbapedia-battle-tree",
     "specialEveryTen": "bulbapedia-battle-tree + bulbapedia-trainers (\"Special Trainers appear only in ... Super Course challenges, during every ten battles\")",
     "normalUsesSameTrainers": "bulbapedia-trainers (single table, no Normal/Super split) + atsync-iv-post (tested guess)",
-    "doubles": "bulbapedia-battle-tree (\"Blue is the Battle Legend for Double Battles and uses four Pokémon\"; \"In Super Battles, special Trainers appear every ten battles\"; one BP table by win streak for every format) + bulbapedia-trainers (regular trainers: one table for every format)"
+    "doubles": "bulbapedia-battle-tree (\"Blue is the Battle Legend for Double Battles and uses four Pokémon\"; \"In Super Battles, special Trainers appear every ten battles\"; one BP table by win streak for every format) + bulbapedia-trainers (regular trainers: one table for every format)",
+    "multi": "serebii-battle-tree (Double Battles against two Trainers, you pick two Pokémon) + smogon-guide (every trainer runs 2 Pokémon; the Battle Legends come \"both at same time for Multis\"; clauses apply per trainer). Only Super Multi exists in this app (app choice). APPROXIMATIONS: Red and Blue together at battle 50 (the guide only spells out battle 20 of Normal); special trainers come in pairs every ten battles (no source says how they are paired)."
   },
   "trainerWeighting": {
     "rule": "uniform",
@@ -130,6 +131,47 @@
         {
           "battles": [50, 50],
           "boss": "blue-super"
+        },
+        {
+          "everyNth": 10,
+          "special": true
+        },
+        {
+          "battles": [1, 9],
+          "pool": "b01-10"
+        },
+        {
+          "battles": [11, 19],
+          "pool": "b11-19"
+        },
+        {
+          "battles": [21, 29],
+          "pool": "b21-29"
+        },
+        {
+          "battles": [31, 39],
+          "pool": "b31-39"
+        },
+        {
+          "battles": [41, 49],
+          "pool": "b41-49"
+        },
+        {
+          "battles": [51, null],
+          "pool": "b51+"
+        }
+      ],
+      "specialTrainers": true
+    }
+  },
+  "multi": {
+    "super": {
+      "length": null,
+      "endsAfterLength": false,
+      "schedule": [
+        {
+          "battles": [50, 50],
+          "boss": "redblue-super"
         },
         {
           "everyNth": 10,

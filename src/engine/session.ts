@@ -23,6 +23,13 @@ export interface SessionOptions {
   p2: PlayerSpec;
   /** Controls p2 (the Battle Tree opponent). */
   p2AI: BattleAI;
+  /**
+   * Multi Battles: the player's partner (p3) and the second opponent (p4, AI). The partner is
+   * an AI, or a person (online Multi) when `ai` is left out: their protocol goes to
+   * `onOutput` and their choices come in through choose(choice, 'p3').
+   */
+  p3?: PlayerSpec & ({ ai: BattleAI } | { ai?: undefined; onOutput: (chunk: string) => void });
+  p4?: PlayerSpec & { ai: BattleAI };
   /** Optional controller for p1, for headless autoplay (tests, debugging). */
   p1AI?: BattleAI;
   /** Every protocol chunk from p1's point of view (what the player is allowed to see). */
@@ -31,7 +38,7 @@ export interface SessionOptions {
 }
 
 export interface BattleResult {
-  /** Side that won, or null on a tie. */
+  /** Side that won, or null on a tie. In Multi Battles, p1 means the player and partner won. */
   winner: SideID | null;
   turns: number;
   seed: PRNGSeed;
@@ -50,6 +57,10 @@ export class BattleSession {
   private resolveDone!: (r: BattleResult) => void;
   private finished = false;
   private readonly opts: SessionOptions;
+  /** Who answers each side's requests (none: a person, through choose()). Can change mid-battle (takeOver). */
+  private readonly ais: Partial<Record<SideID, BattleAI>> = {};
+  /** Each side's latest unanswered request, so an AI taking over can answer it. */
+  private readonly pending: Partial<Record<SideID, SimRequest>> = {};
 
   constructor(opts: SessionOptions) {
     this.opts = opts;
@@ -64,20 +75,41 @@ export class BattleSession {
   }
 
   start(): void {
-    const { format, seed, p1, p2, p1AI, p2AI, teamPreview = true } = this.opts;
-    void this.pump(this.streams.p2, 'p2', p2AI);
-    void this.pump(this.streams.p1, 'p1', p1AI, this.opts.onP1Output);
+    const { format, seed, p1, p2, p3, p4, p1AI, p2AI, teamPreview = true } = this.opts;
+    const multi = format === 'multi';
+    if (multi && (!p3 || !p4)) throw new Error('A Multi Battle needs a partner and two opponents.');
+    Object.assign(this.ais, { p1: p1AI, p2: p2AI, ...(multi ? { p3: p3!.ai, p4: p4!.ai } : {}) });
+    void this.pump(this.streams.p2, 'p2');
+    if (multi) {
+      void this.pump(this.streams.p3, 'p3', p3!.ai ? undefined : p3!.onOutput);
+      void this.pump(this.streams.p4, 'p4');
+    }
+    void this.pump(this.streams.p1, 'p1', this.opts.onP1Output);
+    const player = (id: SideID, spec: PlayerSpec) => `>player ${id} ${JSON.stringify({ name: spec.name, team: Teams.pack(applyFlatRules(spec.team)) })}`;
     void this.streams.omniscient.write([
       `>start ${JSON.stringify({ formatid: simFormatId(format, teamPreview), seed })}`,
-      `>player p1 ${JSON.stringify({ name: p1.name, team: Teams.pack(applyFlatRules(p1.team)) })}`,
-      `>player p2 ${JSON.stringify({ name: p2.name, team: Teams.pack(applyFlatRules(p2.team)) })}`,
+      player('p1', p1),
+      player('p2', p2),
+      ...(multi ? [player('p3', p3!), player('p4', p4!)] : []),
     ].join('\n'));
   }
 
-  /** Sends the player's choice ("team 123", "move 1", "move 2 zmove", "switch 3", ...). */
-  choose(choice: string): void {
-    if (this.finished) return;
-    void this.streams.p1.write(choice);
+  /**
+   * Sends a person's choice ("team 123", "move 1", "move 2 zmove", "switch 3", ...): the
+   * player's (p1), or an online partner's (p3). Ignored for sides an AI controls.
+   */
+  choose(choice: string, side: 'p1' | 'p3' = 'p1'): void {
+    if (this.finished || (side === 'p3' && this.ais.p3)) return;
+    delete this.pending[side];
+    void this.streams[side].write(choice);
+  }
+
+  /** An AI takes over a side from now on (an online partner left), answering any request they left open. */
+  takeOver(side: 'p3', ai: BattleAI): void {
+    if (this.finished || this.ais[side]) return;
+    this.ais[side] = ai;
+    const request = this.pending[side];
+    if (request) this.answer(this.streams[side], side, request);
   }
 
   stop(): void {
@@ -85,16 +117,19 @@ export class BattleSession {
     void this.stream.writeEnd();
   }
 
-  private async pump(stream: PlayerStream, side: SideID, ai?: BattleAI, onChunk?: (chunk: string) => void) {
-    const prng = ai ? derivedPrng(this.opts.seed, `ai-${side}`) : null;
+  private readonly prngs: Partial<Record<SideID, ReturnType<typeof derivedPrng>>> = {};
+
+  private async pump(stream: PlayerStream, side: SideID, onChunk?: (chunk: string) => void) {
     for await (const chunk of stream) {
-      onChunk?.(chunk);
+      // Once an AI has taken over, the person who left no longer gets this side's view.
+      if (!this.ais[side] || side === 'p1') onChunk?.(chunk);
       for (const line of chunk.split('\n')) {
-        if (ai && prng && line.startsWith('|request|')) {
+        const ai = this.ais[side];
+        if (line.startsWith('|request|')) {
           const request = JSON.parse(line.slice('|request|'.length)) as SimRequest;
           if ('wait' in request && request.wait) continue;
-          const choice = ai.choose({ request, battle: this.battle, side, prng });
-          void stream.write(choice);
+          this.pending[side] = request;
+          if (ai) this.answer(stream, side, request);
         } else if (ai && line.startsWith('|error|')) {
           this.opts.onWarning?.(`${ai.name} AI (${side}) made an invalid choice: ${line}`);
           void stream.write('default');
@@ -104,13 +139,22 @@ export class BattleSession {
     }
   }
 
+  private answer(stream: PlayerStream, side: SideID, request: SimRequest) {
+    const ai = this.ais[side]!;
+    const prng = (this.prngs[side] ??= derivedPrng(this.opts.seed, `ai-${side}`));
+    delete this.pending[side];
+    void stream.write(ai.choose({ request, battle: this.battle, side, prng }));
+  }
+
   private checkEnded() {
     const battle = this.stream.battle;
     if (this.finished || !battle?.ended) return;
     this.finished = true;
-    const winnerSide = battle.sides.find(s => s.name === battle.winner);
+    // Multi Battles: the winner is the allied pair ("Player & Sina"); report it as the player's side or not.
+    const winnerSide = battle.sides.find(s => s.name === battle.winner || (s.allySide && `${s.name} & ${s.allySide.name}` === battle.winner));
+    const winner = !winnerSide ? null : winnerSide.id === 'p3' ? 'p1' : winnerSide.id === 'p4' ? 'p2' : winnerSide.id;
     this.resolveDone({
-      winner: winnerSide ? winnerSide.id : null,
+      winner,
       turns: battle.turn,
       seed: this.opts.seed,
       inputLog: [...battle.inputLog],

@@ -1,10 +1,15 @@
 import type { BattleClient, BattleSnapshot } from '../client/battle-client';
 import type { AIKind } from '../engine/protocol';
-import { BRACKETS } from '../data/battle-tree';
+import { TRAINERS } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
+import { partnerTeam, rollOffer, runPartner } from './partners';
+import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
-import { bpForWin, planOpponent } from './selection';
-import { BRING, DEFAULT_SETTINGS, MIN_REGISTERED, runKey, type Course, type Format, type RunKey, type RunSettings, type RunState } from './types';
+import { bpForWin, courseSchedule, displayName, planOpponent } from './selection';
+import {
+  bpBalance, BRING, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, PARTNER_COST, runKey,
+  type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
+} from './types';
 
 export interface RunTeam {
   sourceTeamId: string | null;
@@ -24,6 +29,8 @@ export interface StartRunOptions {
   seedText?: string;
   /** Debug: begin at this battle number. Marks the run as debug (never counts toward records). */
   startBattle?: number;
+  /** Multi (required): a partner you own and the two of their Pokémon (set ids from their offer) they bring, lead first. */
+  partner?: { name: string; setIds: number[] };
 }
 
 export interface ControllerSnapshot extends TreeState {
@@ -43,16 +50,19 @@ export class RunController {
   private readonly battle: BattleClient;
   private readonly ai: AIKind;
   private readonly now: () => number;
+  /** The player's trainer name (Settings), read when each battle starts. */
+  private readonly playerName: () => string;
   private active: ControllerSnapshot['active'] = null;
   private error: string | null = null;
   private snapshot: ControllerSnapshot;
   private readonly listeners = new Set<() => void>();
 
-  constructor(store: RunStore, battle: BattleClient, opts: { ai?: AIKind; now?: () => number } = {}) {
+  constructor(store: RunStore, battle: BattleClient, opts: { ai?: AIKind; now?: () => number; playerName?: () => string } = {}) {
     this.store = store;
     this.battle = battle;
     this.ai = opts.ai ?? 'heuristic';
     this.now = opts.now ?? Date.now;
+    this.playerName = opts.playerName ?? (() => 'Player');
     this.snapshot = this.build();
     store.subscribe(() => this.refresh());
     battle.subscribe(() => this.onBattle(battle.getSnapshot()));
@@ -82,18 +92,18 @@ export class RunController {
   startRun(opts: StartRunOptions): RunState {
     const { course, team, settings } = opts;
     const format = opts.format ?? 'singles';
+    if (!COURSES[format].includes(course)) throw new Error(`There's no ${course} ${format} course.`);
     const key = runKey(format, course);
-    if (course === 'super' && !this.store.getState().profile.superUnlocked[format] && !opts.startBattle) {
-      throw new Error(format === 'singles'
-        ? 'Super Singles unlocks after beating the Battle Legend in Normal Singles.'
-        : 'Super Doubles unlocks after beating the Battle Legend in Normal Doubles.');
-    }
+    const { profile } = this.store.getState();
+    if (course === 'super' && !isSuperUnlocked(profile, format) && !opts.startBattle) throw new Error(LOCKED[format]);
     checkBring(team, format);
+    if (format === 'multi' && !opts.partner) throw new Error('Choose a partner for the Multi Battle.');
+    const partner = format === 'multi' ? runPartner(opts.partner!.name, opts.partner!.setIds, profile.partners) : undefined;
     const existing = this.run(key);
     if (existing && !isFinished(existing)) this.endRun(existing, 'retired');
 
     const battle = Math.max(1, opts.startBattle ?? 1);
-    const length = BRACKETS[format][course].length;
+    const length = courseSchedule(format, course).length;
     if (length !== null && battle > length) throw new Error(`The ${course} course has ${length} battles.`);
     const seedText = opts.seedText ?? `${this.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const t = this.now();
@@ -109,7 +119,8 @@ export class RunController {
       wins: battle - 1,
       bp: 0,
       status: 'ready',
-      next: planOpponent(seedText, format, course, battle, settings),
+      next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
+      ...(partner && { partner }),
       history: [],
       debug: battle > 1 || fullSettings.ai !== 'heuristic',
       startedAt: t,
@@ -143,12 +154,17 @@ export class RunController {
     const preview = run.settings.teamPreviewEachBattle;
     const sets = preview ? run.team.sets : run.team.bring.map(i => run.team.sets[i]);
     this.error = null;
+    const { next, partner } = run;
     const battleId = this.battle.start({
       format: run.format,
       teamPreview: preview,
-      seedText: run.next.seedText,
-      player: { name: 'Player', team: sets },
-      opponent: { kind: 'team', name: run.next.displayName, team: run.next.team },
+      seedText: next.seedText,
+      player: { name: this.playerName(), team: sets },
+      opponent: { kind: 'team', name: next.displayName, team: next.team },
+      ...(partner && next.second && {
+        partner: { name: displayName(TRAINERS[partner.trainerId]), team: partnerTeam(partner) },
+        opponent2: { kind: 'team' as const, name: next.second.displayName, team: next.second.team },
+      }),
       ai: run.settings.ai ?? this.ai,
     });
     this.active = { key, battleId };
@@ -193,9 +209,26 @@ export class RunController {
     this.store.reset();
   }
 
-  /** Debug helper: unlock Super Singles / Super Doubles without clearing Normal. */
+  /** Debug helper: unlock Super Singles / Super Doubles (Multi: both) without clearing Normal. */
   debugUnlockSuper(format: Format = 'singles'): void {
-    this.store.updateProfile(p => ({ ...p, superUnlocked: { ...p.superUnlocked, [format]: true } }));
+    const formats: UnlockFormat[] = format === 'multi' ? ['singles', 'doubles'] : [format];
+    this.store.updateProfile(p => ({ ...p, superUnlocked: { ...p.superUnlocked, ...Object.fromEntries(formats.map(f => [f, true])) } }));
+  }
+
+  /**
+   * Buys a special trainer you've beaten as a Multi partner for PARTNER_COST BP.
+   * Their offer (the six Pokémon you'll choose their two from) is rolled now.
+   */
+  buyPartner(name: string): void {
+    const { profile } = this.store.getState();
+    if (!profile.partners.available.includes(name)) throw new Error(`Beat ${name} in a challenge before buying them as a partner.`);
+    if (bpBalance(profile) < PARTNER_COST) throw new Error(`A partner costs ${PARTNER_COST} BP.`);
+    const offer = rollOffer(name, new Rng(`partner-offer|${name}|${this.now()}`));
+    this.store.updateProfile(p => ({
+      ...p,
+      bpSpent: p.bpSpent + PARTNER_COST,
+      partners: { owned: { ...p.partners.owned, [name]: { offer } }, available: p.partners.available.filter(n => n !== name) },
+    }));
   }
 
   private onBattle(s: BattleSnapshot) {
@@ -218,8 +251,8 @@ export class RunController {
   private recordWin(run: RunState, turns: number) {
     const bp = bpForWin(run.course, run.battle);
     const wins = run.wins + 1;
-    const history = [...run.history, { battle: run.battle, opponent: run.next.displayName, result: 'win' as const, bp, turns, seedText: run.next.seedText }];
-    const length = BRACKETS[run.format][run.course].length;
+    const history = [...run.history, { battle: run.battle, opponent: opponentLabel(run.next), result: 'win' as const, bp, turns, seedText: run.next.seedText }];
+    const length = courseSchedule(run.format, run.course).length;
     const cleared = length !== null && run.battle >= length;
     const key = runKey(run.format, run.course);
 
@@ -228,8 +261,9 @@ export class RunController {
         ...p,
         bpTotal: p.bpTotal + bp,
         // Beating the Normal course's Battle Legend unlocks that format's Super course.
-        superUnlocked: { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
+        superUnlocked: run.format === 'multi' ? p.superUnlocked : { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
         records: { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } },
+        partners: withAvailable(p, run.next),
       }));
     }
 
@@ -238,12 +272,12 @@ export class RunController {
       this.finish({ ...base, status: 'cleared' });
     } else {
       const battle = run.battle + 1;
-      this.save({ ...base, battle, status: 'ready', next: planOpponent(run.seedText, run.format, run.course, battle, run.settings) });
+      this.save({ ...base, battle, status: 'ready', next: planOpponent(run.seedText, run.format, run.course, battle, run.settings, run.partner?.trainerId) });
     }
   }
 
   private recordLoss(run: RunState, turns: number) {
-    const history = [...run.history, { battle: run.battle, opponent: run.next.displayName, result: 'loss' as const, bp: 0, turns, seedText: run.next.seedText }];
+    const history = [...run.history, { battle: run.battle, opponent: opponentLabel(run.next), result: 'loss' as const, bp: 0, turns, seedText: run.next.seedText }];
     this.finish({ ...run, history, status: 'lost' });
   }
 
@@ -279,6 +313,20 @@ export class RunController {
     this.snapshot = this.build();
     this.listeners.forEach(l => l());
   }
+}
+
+const LOCKED: Record<Format, string> = {
+  singles: 'Super Singles unlocks after beating the Battle Legend in Normal Singles.',
+  doubles: 'Super Doubles unlocks after beating the Battle Legend in Normal Doubles.',
+  multi: 'Super Multi unlocks once Super Singles and Super Doubles are both unlocked.',
+};
+
+/** Special trainers just beaten can be bought as partners (Battle Legends never can). */
+function withAvailable(p: TreeProfile, next: PlannedOpponent): TreeProfile['partners'] {
+  const beaten = [next, ...(next.second ? [next.second] : [])].filter(t => t.kind === 'special').map(t => TRAINERS[t.trainerId].name);
+  const available = [...p.partners.available];
+  for (const name of beaten) if (!p.partners.owned[name] && !available.includes(name)) available.push(name);
+  return { ...p.partners, available };
 }
 
 export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';

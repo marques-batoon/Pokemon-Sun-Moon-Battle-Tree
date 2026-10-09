@@ -126,7 +126,9 @@ function SwitchList({ request, forced, trapped, exclude = [], onPick, heading }:
 }
 
 export function Controls(props: Props) {
-  const doubles = isMoveRequest(props.request) ? props.request.active.length > 1 : isForceSwitch(props.request) && props.request.forceSwitch.length > 1;
+  // Multi Battles use the Doubles controls for one Pokémon: its moves can target either foe or the partner.
+  const doubles = props.battle?.gameType === 'multi'
+    || (isMoveRequest(props.request) ? props.request.active.length > 1 : isForceSwitch(props.request) && props.request.forceSwitch.length > 1);
   if (props.awaiting) return <div className="controls waiting" role="status">Waiting for the opponent…</div>;
   // Key by request so a new turn starts from the first Pokémon again.
   return doubles ? <DoublesControls key={props.request.rqid ?? JSON.stringify(props.request.side.pokemon.map(p => p.condition))} {...props} /> : <SinglesControls {...props} />;
@@ -234,6 +236,9 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
   const me = request.side.pokemon[slot];
   const name = me ? speciesOf(me) : 'your Pokémon';
   const active = isMoveRequest(request) ? request.active[slot] : null;
+  // Where this Pokémon stands on the field (targets are relative to it). In Multi each trainer has one:
+  // the player (p1) and the first opponent in slot a, the partner (p3) and the second opponent in slot b.
+  const position = battle?.gameType === 'multi' ? (request.side.id === 'p3' || request.side.id === 'p4' ? 1 : 0) : slot;
   const trapped = !!(active?.trapped || active?.maybeTrapped);
 
   const finishMove = (p: Pending, target: number | null) =>
@@ -242,7 +247,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     if (!active) return;
     const targetType = z ? active.canZMove?.[moveIndex]?.target : active.moves[moveIndex].target;
     const p: Pending = { moveIndex, z, mega, targetType };
-    const targets = doublesTargets(targetType, slot);
+    const targets = doublesTargets(targetType, position);
     if (!targets) finishMove(p, null);
     else if (targets.length === 1) finishMove(p, targets[0]);
     else setPending(p);
@@ -253,14 +258,14 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     const side = loc > 0 ? battle?.p2 : battle?.p1;
     const idx = Math.abs(loc) - 1;
     const mon = side?.active[idx] ?? null;
-    const allowed = pending ? doublesTargets(pending.targetType, slot)?.includes(loc) : false;
+    const allowed = pending ? doublesTargets(pending.targetType, position)?.includes(loc) : false;
     const gone = !mon || mon.fainted;
     const moveData = pending && active ? gen7.moves.get(active.moves[pending.moveIndex].id) : null;
     const hint = showHints && loc > 0 && mon && moveData && moveData.category !== 'Status' ? effectivenessLabel(moveData.type, mon.types) : null;
     return (
       <button key={loc} type="button" className={`target-btn ${loc > 0 ? 'foe' : 'ally'}`} disabled={!allowed || gone} onClick={() => pending && finishMove(pending, loc)}>
         {mon ? <><PokemonIcon species={mon.speciesForme} />{mon.speciesForme}</> : <span className="muted">Empty</span>}
-        <span className="muted small">{loc > 0 ? 'Opponent' : loc === -(slot + 1) ? 'Itself' : 'Partner'}</span>
+        <span className="muted small">{loc > 0 ? 'Opponent' : loc === -(position + 1) ? 'Itself' : 'Partner'}</span>
         {hint && <span className={`move-hint ${HINT_CLASS[hint]}`}>{hint}</span>}
       </button>
     );
@@ -270,7 +275,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     <div className="controls doubles-controls">
       <div className="slot-head">
         <strong>{forced ? `Send out a Pokémon in ${name}'s place` : `What will ${name} do?`}</strong>
-        <span className="muted small">{forced ? '' : `Pokémon ${slot + 1} of ${count}`}</span>
+        <span className="muted small">{forced || count < 2 ? '' : `Pokémon ${slot + 1} of ${count}`}</span>
         <span className="spacer" />
         {choices.length > 0 && <button type="button" onClick={back}>Back</button>}
       </div>

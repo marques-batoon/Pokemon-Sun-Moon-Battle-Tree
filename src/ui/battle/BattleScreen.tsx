@@ -18,8 +18,8 @@ interface Props {
   /** Shown on the end-of-battle banner (e.g. "Continue" back to the run). */
   onContinue?: () => void;
   continueLabel?: string;
-  /** The trainer being fought and this battle's key (seed text): they say a closing remark when it ends. */
-  opponent?: { trainer: Trainer; battleKey: string };
+  /** The trainer(s) being fought (two in Multi) and this battle's key (seed text): they say a closing remark when it ends. */
+  opponent?: { trainers: Trainer[]; battleKey: string };
 }
 
 export function BattleScreen({ client, onContinue, continueLabel = 'Continue', opponent }: Props) {
@@ -58,7 +58,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
         ) : (
           <>
             <FieldStatus battle={battle} timers={s.fieldTimers} />
-            <BattleStage key={s.battleId} battle={battle} animation={s.animation} playing={s.playing} speed={ANIMATION_SPEED_FACTOR[settings.animationSpeed]} />
+            <BattleStage key={s.battleId} battle={battle} animation={s.animation} playing={s.playing} speed={ANIMATION_SPEED_FACTOR[settings.animationSpeed]} me={s.perspective} />
             {s.playing ? (
               <div className="controls waiting playing" role="status" aria-live="polite">
                 <NowPlaying move={s.currentMove} caption={s.caption} />
@@ -67,7 +67,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
               </div>
             ) : s.phase === 'ended' && s.result ? (
               <div className={`notice result ${s.result.winner === 'p1' ? 'win' : 'loss'}`}>
-                {opponent && <ClosingRemark trainer={opponent.trainer} battleKey={opponent.battleKey} winner={s.result.winner} />}
+                {opponent?.trainers.map(t => <ClosingRemark key={t.id} trainer={t} battleKey={opponent.battleKey} winner={s.result!.winner} />)}
                 <strong>{s.result.winner === 'p1' ? 'You won!' : s.result.winner === 'p2' ? 'You lost.' : 'Tie.'}</strong>
                 <span className="muted small">{s.result.turns} turns</span>
                 {settings.showDebugTools && (

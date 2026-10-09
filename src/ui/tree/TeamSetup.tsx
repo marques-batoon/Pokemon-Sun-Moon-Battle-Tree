@@ -8,7 +8,7 @@ import { TypeBadge } from '../battle/TypeBadge';
 import { gen7 } from '../../team/dex';
 
 interface Props {
-  /** Singles (bring 3) or Doubles (bring 4). */
+  /** Singles (bring 3), Doubles (bring 4) or Multi (bring 2). */
   format?: Format;
   teams: readonly SavedTeam[];
   initial?: RunTeam;
@@ -16,7 +16,9 @@ interface Props {
   onChange: (team: RunTeam | null) => void;
 }
 
-/** Pick a saved team and the 3 (Doubles: 4) to bring, in battle order (lead first; Doubles: first two lead). Validated through the engine. */
+/** Pick a saved team and the 3 (Doubles: 4, Multi: 2) to bring, in battle order (lead first; Doubles: first two lead). Validated through the engine. */
+const FORMAT_NAME: Record<Format, string> = { singles: 'Singles', doubles: 'Doubles', multi: 'Multi' };
+
 export function TeamSetup({ format = 'singles', teams, initial, onChange }: Props) {
   const n = BRING[format];
   const min = MIN_REGISTERED[format];
@@ -63,7 +65,7 @@ export function TeamSetup({ format = 'singles', teams, initial, onChange }: Prop
               <li><a href="#/builder">Fix it in the Team Builder</a></li>
             </ul>
           )}
-          {team.sets.length < min && <p className="problems">A {format === 'doubles' ? 'Doubles' : 'Singles'} team needs at least {min} Pokémon.</p>}
+          {team.sets.length < min && <p className="problems">A {FORMAT_NAME[format]} team needs at least {min} Pokémon.</p>}
           <div className="preview-row">
             {team.sets.map((s, i) => {
               const order = bring.indexOf(i);

@@ -34,7 +34,7 @@ Each usable move is scored, along with Z-Move versions of damaging moves. A dama
    | 90% | about 0.43× |
    | 70% | about 0.08× |
 
-   Options that score 0.04 or less are dropped unless nothing else is left. That covers failing moves, weather already up, Protect twice in a row. The guide: move choice "is based on a potentially weighted roll ... significant chance for the AI to not select the highest damage attack" when no OHKO is available.
+   Options that score 0.04 or less are dropped. That covers failing moves, weather already up, Protect twice in a row. A move that's certain to fail (Thunder Wave on a Pokémon that already has a status, healing at full HP, Taunt on a taunted foe, a maxed setup move) scores exactly 0. If nothing scores above 0.04, the AI takes the highest-scoring option, e.g. a 3% chip attack, instead of picking at random. It only picks at random when every option ties. The guide: move choice "is based on a potentially weighted roll ... significant chance for the AI to not select the highest damage attack" when no OHKO is available.
 6. **Accuracy is ignored** (`considerAccuracy: false`). The guide: the AI "does not factor in the accuracy of the moves", for example choosing Focus Blast over a sure KO.
 
 ## Move scores
@@ -88,6 +88,17 @@ The guide documents the Singles AI; the Doubles logic is an **approximation** bu
 - **One Mega Evolution and one Z-Move per turn**, the first Pokémon that picks one.
 - **No voluntary switching** in Doubles. Replacements after a faint: the strongest remaining Pokémon against a foe still standing, never the same one twice.
 - Not modelled: redirection (Follow Me, Rage Powder, Lightning Rod pulling moves), Wide Guard / Quick Guard decisions, targeting a foe that is likely to Protect, or coordinating the two actions (e.g. Trick Room plus a slow attacker).
+
+## Multi Battles
+
+The same Doubles logic, with one AI per trainer (**approximation**; the Multi AI isn't documented):
+
+- Each of the three AI trainers (both opponents and your partner) controls one Pokémon at its own field position and chooses on its own; nobody coordinates.
+- **Foes** are both Pokémon on the other half of the field (`fieldFoes` in `heuristic-ai.ts`), so it aims at whichever of the two it hurts most.
+- **Partner** is the ally trainer's Pokémon: spread moves that hit it are penalised and partner-only moves score as in Doubles.
+- Each trainer has its own Mega Evolution and Z-Move (as in the game).
+- Your partner uses this AI too, so it plays like an opponent would: it won't cover your Pokémon's weaknesses or follow a plan with you.
+- **Online Multi Battles:** when a player leaves (or the host lets the AI take over), this AI plays that player's Pokémon for the rest of the battle.
 
 ## Known gaps
 

@@ -155,12 +155,12 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
     return foe.hasType('Grass') || foe.volatiles.leechseed || foe.volatiles.substitute ? out(0, 'seed fails') : out(sc.leechSeed, 'leech seed');
   }
   if (move.weather) {
-    const active = battle.field.effectiveWeather() === toId(move.weather);
-    return active || koAvailable ? out(0.02, 'weather up / KO available') : out(sc.weather, 'set weather');
+    if (battle.field.effectiveWeather() === toId(move.weather)) return out(0, 'weather already up');
+    return koAvailable ? out(0.02, 'KO available') : out(sc.weather, 'set weather');
   }
   if (move.terrain) {
-    const active = battle.field.terrain === toId(move.terrain);
-    return active || koAvailable ? out(0.02, 'terrain up / KO available') : out(sc.terrain, 'set terrain');
+    if (battle.field.terrain === toId(move.terrain)) return out(0, 'terrain already up');
+    return koAvailable ? out(0.02, 'KO available') : out(sc.terrain, 'set terrain');
   }
   if (move.pseudoWeather === 'trickroom') {
     const foeFaster = foe.getActionSpeed() > me.getActionSpeed();
@@ -169,7 +169,7 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   }
   if (move.sideCondition) {
     const cond = move.sideCondition;
-    if (cond === 'tailwind') return me.side.sideConditions.tailwind || s.trickRoom ? out(0.02, 'tailwind up') : out(sc.tailwind, 'tailwind');
+    if (cond === 'tailwind') return me.side.sideConditions.tailwind ? out(0, 'tailwind up') : s.trickRoom ? out(0.02, 'Trick Room up') : out(sc.tailwind, 'tailwind');
     if (cond === 'reflect' || cond === 'lightscreen') {
       if (me.side.sideConditions[cond]) return out(0, 'screen up');
       const fits = cond === 'reflect' ? isPhysical(foe) : !isPhysical(foe);
@@ -180,7 +180,8 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
     }
     if (cond in HAZARD_MAX) {
       const layers = (foe.side.sideConditions[cond]?.layers as number | undefined) ?? (foe.side.sideConditions[cond] ? 1 : 0);
-      return layers >= HAZARD_MAX[cond] || aliveBench(foe.side) === 0 ? out(0.02, 'hazard maxed') : out(sc.hazard, cond);
+      if (layers >= HAZARD_MAX[cond]) return out(0, 'hazard maxed');
+      return aliveBench(foe.side) === 0 ? out(0.02, 'no bench to hurt') : out(sc.hazard, cond);
     }
     return out(sc.other, cond);
   }
@@ -191,10 +192,12 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   if (move.id === 'haze') return positiveBoosts(foe) > 0 ? out(sc.haze, 'haze boosts') : out(0.02, 'nothing to haze');
 
   if (move.id === 'bellydrum') {
-    return hpFrac > 0.55 && me.boosts.atk < 6 && safe ? out(sc.setup, 'belly drum') : out(0.02, 'belly drum unsafe');
+    if (me.boosts.atk >= 6 || hpFrac <= 0.5) return out(0, 'belly drum fails');
+    return hpFrac > 0.55 && safe ? out(sc.setup, 'belly drum') : out(0.02, 'belly drum unsafe');
   }
   if (move.id === 'stockpile') {
     const layers = (me.volatiles.stockpile?.layers as number | undefined) ?? 0;
+    if (layers >= 3) return out(0, 'stockpile full');
     return layers < 2 && safe ? out(sc.setup * 0.8, 'stockpile') : out(0.03, 'stockpiled');
   }
   if (move.boosts && (move.target === 'self' || move.target === 'adjacentAllyOrSelf')) {
@@ -214,6 +217,7 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   }
   if (RECOVERY.has(move.id) || (move.heal && move.target === 'self')) {
     if (move.id === 'swallow' && !me.volatiles.stockpile) return out(0, 'nothing swallowed');
+    if (me.hp >= me.maxhp) return out(0, 'HP full');
     if (hpFrac > 0.85) return out(0.02, 'healthy');
     // Healing helps only if we survive the hit we're about to take.
     const helps = !threat.koFirst || hpFrac > threat.frac;
@@ -236,17 +240,20 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
     return out(sturdy ? sc.counter * 1.5 : threat.frac < 0.9 ? sc.counter * 0.5 : 0.05, 'counter');
   }
   if (move.id === 'destinybond') {
-    const usedLast = me.lastMove?.id === 'destinybond';
-    return out(threat.koFirst && !usedLast ? sc.destinyBond : 0.02, 'destiny bond');
+    // Gen 7: it fails if used twice in a row.
+    if (me.lastMove?.id === 'destinybond') return out(0, 'destiny bond fails');
+    return out(threat.koFirst ? sc.destinyBond : 0.02, 'destiny bond');
   }
   if (move.id === 'painsplit') return out(hpFrac + 0.25 < foe.hp / foe.maxhp ? sc.painSplit : 0.03, 'pain split');
   if (move.id === 'taunt') {
+    if (foe.volatiles.taunt) return out(0, 'already taunted');
     const foeHasStatus = foe.moveSlots.some(m => battle.dex.moves.get(m.id).category === 'Status');
-    return out(!foe.volatiles.taunt && foeHasStatus ? sc.taunt : 0.03, 'taunt');
+    return out(foeHasStatus ? sc.taunt : 0.03, 'taunt');
   }
   if (move.id === 'encore') {
     const last = foe.lastMove ? battle.dex.moves.get(foe.lastMove.id) : null;
-    return out(last?.category === 'Status' && !foe.volatiles.encore ? sc.taunt + 0.2 : 0.03, 'encore');
+    if (!last || foe.volatiles.encore) return out(0, 'encore fails');
+    return out(last.category === 'Status' ? sc.taunt + 0.2 : 0.03, 'encore');
   }
   if (move.id === 'trick' || move.id === 'switcheroo') {
     return out(CHOICE_LIKE.has(me.getItem().id) && me.getItem().id !== foe.getItem().id ? 0.45 : 0.03, 'trick');
@@ -261,6 +268,7 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
 function scoreSetup(s: Situation, move: DexMove, safe: boolean, out: (score: number, reason: string) => ScoredMove): ScoredMove {
   const { battle, me, foe, config } = s;
   const raised = Object.entries(move.boosts ?? {}).filter(([, v]) => (v ?? 0) > 0).map(([k]) => k as keyof typeof me.boosts);
+  if (raised.every(stat => me.boosts[stat] >= 6)) return out(0, 'stats maxed');
   const room = raised.filter(stat => me.boosts[stat] < config.maxSetupStage);
   if (!room.length) return out(0.03, 'setup maxed');
   // Breakpoints (Smogon guide): boost until we outspeed or can KO.

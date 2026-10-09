@@ -129,10 +129,11 @@ export function moveDuration(fx: MoveFx): number {
   return 800;
 }
 
-const sideOf = (ident: string | undefined): 'p1' | 'p2' | null =>
-  ident?.startsWith('p1') ? 'p1' : ident?.startsWith('p2') ? 'p2' : null;
+/** The player's or the opponent's half of the field (Multi: the partner p3 is with p1, p4 with p2). */
+export const sideOf = (ident: string | undefined): 'p1' | 'p2' | null =>
+  /^p[13]/.test(ident ?? '') ? 'p1' : /^p[24]/.test(ident ?? '') ? 'p2' : null;
 /** Active slot from an ident like "p1b: Garchomp" (0 when there's no letter). */
-const slotOf = (ident: string | undefined): number => (/^p[12]b/.test(ident ?? '') ? 1 : 0);
+const slotOf = (ident: string | undefined): number => (/^p[1-4]b/.test(ident ?? '') ? 1 : 0);
 /** Side and slot of the Pokémon an ident names. */
 const at = (ident: string | undefined) => ({ side: sideOf(ident), slot: slotOf(ident) });
 

@@ -28,7 +28,9 @@ node scripts/check-trainer-sprites.mjs  # verify every trainer has a sprite that
 | `src/client/` | UI-thread clients for the worker: battles (`@pkmn/client` state, `@pkmn/view` log) and team validation |
 | `src/team/` | Team model (UI-thread safe): eligible species, learnsets, Lv. 50 stats, Showdown import/export, clause checks |
 | `src/storage/` | `KeyValueStore` interface (localStorage / memory) and the versioned `TeamStore` |
-| `src/run/` | Battle Tree run loop: seeded RNG, bracket/special trainer selection, opponent team generation, BP, `RunStore` (progress) and `RunController` (start/resume/battle/retire) |
+| `src/online/` | Online Multi Battles: trainer-name rules, relay connection, host/partner messages (`link-protocol.ts`, checked on receipt) and the room logic (`link-room.ts`) |
+| `relay/` | The relay server for online play (Cloudflare Worker + Durable Object; separate `package.json`, see its README) |
+| `src/run/` | Battle Tree run loop: seeded RNG, bracket/special trainer selection, opponent team generation, BP, Multi partners and scouting (`partners.ts`), `RunStore` (progress) and `RunController` (start/resume/battle/retire) |
 | `src/settings/` | App preferences (theme, sprites, animation speed, battle aids, debug tools) |
 | `src/ui/` | React components (Battle Tree, builder, battle stage, settings) |
 
@@ -41,6 +43,8 @@ Battles are seeded: the same seed text plus the same choices reproduce the same 
 ## Battle presentation
 
 - **Formats.** Single Battles (bring 3) and Double Battles (bring 4), each with a Normal course (20 battles, Battle Legend Red / Blue at 20) and an endless Super course. In Doubles you choose an action for each of your two Pokémon in turn and pick a target when the move needs one (effectiveness is shown per target); spread moves animate on every Pokémon they hit.
+- **Multi Battles.** Super Multi opens once Super Singles and Super Doubles are both unlocked: you bring 2 and an AI partner (a special trainer) brings 2 against two trainers, with Red and Blue together at battle 50. Sina and Dexio are partners from the start; special trainers you beat can be bought for 100 BP on the Battle Tree page, and you pick two of a partner's (up to six) Pokémon by picture. See DATA_NOTES.md section 13.
+- **Online Multi Battles.** Team up with a friend (Online page): one player hosts the battle in their browser, and a small relay server passes messages between you. Set up the relay with `relay/README.md`; the app needs its address in `VITE_RELAY_URL` at build time (`.env.example`). Trainer names are set in Settings.
 - **Playback.** The battle client plays events one at a time (`src/client/playback.ts`). Each protocol line updates the state and the log, shows its animation, and the next line waits until that animation ends. Animated events: moves, hits and HP drain, healing, switch-out, switch-in, faints, Mega Evolution, forme changes, status, stat changes and misses. Animation speed is a setting (off / fast / normal / slow), and Skip jumps to the end of the turn.
 - **Now playing.** While events play, the bar under the stage shows the move being carried out (type, name, category and who used it) and the text of the event on screen, so you can follow along before the log catches your eye.
 - **Move animations.** Every move gets an animation from `src/ui/battle/fx/catalog.ts`, picked by what the move does (`src/client/move-class.ts`):

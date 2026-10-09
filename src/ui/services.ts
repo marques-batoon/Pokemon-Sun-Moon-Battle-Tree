@@ -8,6 +8,7 @@ import { ANIMATION_SPEED_FACTOR, SettingsStore } from '../settings/settings-stor
 import { TeamStore } from '../storage/team-store';
 import { RunController } from '../run/controller';
 import { RunStore } from '../run/run-store';
+import { battleName } from '../online/trainer-name';
 
 let transport: EngineTransport | null = null;
 let battleClient: BattleClient | null = null;
@@ -29,12 +30,17 @@ export function engine(): EngineTransport {
   return transport;
 }
 
-/** A battle client that plays at the animation speed from Settings and follows changes to it. */
-function newBattleClient(): BattleClient {
+/**
+ * A battle client that plays at the animation speed from Settings and follows changes to it.
+ * Online Multi Battles pass their own transport (the guest's is the room) and perspective.
+ */
+export function newBattleClient(transport: EngineTransport = engine(), perspective: 'p1' | 'p3' = 'p1'): BattleClient {
   const settings = getSettingsStore();
   const speed = () => ANIMATION_SPEED_FACTOR[settings.getSettings().animationSpeed] ?? 1;
-  const client = new BattleClient(engine(), { speed: speed() });
-  settings.subscribe(() => client.setSpeed(speed()));
+  const client = new BattleClient(transport, { speed: speed(), perspective });
+  const unsubscribe = settings.subscribe(() => client.setSpeed(speed()));
+  const dispose = client.dispose.bind(client);
+  client.dispose = () => { unsubscribe(); dispose(); };
   return client;
 }
 
@@ -55,7 +61,9 @@ export function getTeamStore(): TeamStore {
 
 /** Battle Tree runs get their own battle client so a test battle can't cut off a run's battle. */
 export function getRunController(): RunController {
-  runController ??= new RunController(new RunStore(getKeyValueStore()), newBattleClient());
+  runController ??= new RunController(new RunStore(getKeyValueStore()), newBattleClient(), {
+    playerName: () => battleName(getSettingsStore().getSettings().trainerName),
+  });
   return runController;
 }
 

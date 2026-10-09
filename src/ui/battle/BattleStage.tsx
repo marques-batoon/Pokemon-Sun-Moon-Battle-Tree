@@ -88,11 +88,20 @@ interface StageProps {
   playing: boolean;
   /** Animation speed factor (1 = normal, 0.5 = fast); scales CSS effect timings to match playback. */
   speed?: number;
+  /** Whose view the battle is from (p3: the partner's client in an online Multi Battle). */
+  me?: 'p1' | 'p3';
 }
 
-/** The battlefield: the active Pokémon (one per side, two in Doubles) as sprites, HP boxes, and the current event's animation. */
-export function BattleStage({ battle, animation, playing, speed = 1 }: StageProps) {
-  const doubles = battle.gameType === 'doubles';
+/**
+ * The battlefield: the active Pokémon (one per side, two in Doubles and Multi) as sprites,
+ * HP boxes, and the current event's animation. Multi: the partner (p3) shares the player's
+ * half and the second opponent (p4) the opponent's, each with their own party pips.
+ */
+export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }: StageProps) {
+  const doubles = battle.gameType !== 'singles';
+  const multi = battle.gameType === 'multi';
+  // Whose party each box shows: Doubles once per side (first box); Multi each trainer's own.
+  const partyOf = (side: Side, slot: number) => (multi ? (slot === 0 ? battle[side] : side === 'p1' ? battle.p3 : battle.p4) : slot === 0 ? battle[side] : null);
   const slots = doubles ? [0, 1] : [0];
   // Stable per battle (the stage is keyed by battle id); only ever grows.
   const [faintSeen] = useState(() => new Set<string>());
@@ -126,7 +135,7 @@ export function BattleStage({ battle, animation, playing, speed = 1 }: StageProp
       </div>
       {(['p2', 'p1'] as const).map(side => (
         <div key={side} className={`hud-stack hud-stack-${side}`}>
-          {slots.map(slot => <PokemonPanel key={slot} side={side} pokemon={battle[side].active[slot] ?? null} battle={battle} compact={doubles} party={slot === 0} />)}
+          {slots.map(slot => <PokemonPanel key={slot} side={side} pokemon={battle[side].active[slot] ?? null} battle={battle} compact={doubles} party={partyOf(side, slot)} me={me} />)}
         </div>
       ))}
       {animation && <Pops key={animation.id} anim={animation} at={animation.side ? points[posKey(animation.side, animation.slot)] : undefined} />}

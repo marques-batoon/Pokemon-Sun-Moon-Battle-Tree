@@ -7,6 +7,8 @@ import { useTeams } from '../builder/hooks';
 import { getKeyValueStore, getRunController, getSettingsStore, getTeamStore } from '../services';
 import { keyLabel, useRunState } from '../tree/hooks';
 import { RUN_KEYS } from '../../run/types';
+import { TrainerNameField } from '../components/TrainerNameField';
+import { TRAINER_NAME_MAX } from '../../online/trainer-name';
 
 export function SettingsPage() {
   const store = getSettingsStore();
@@ -20,6 +22,15 @@ export function SettingsPage() {
 
   return (
     <div className="settings">
+      <section className="panel">
+        <h2>Trainer</h2>
+        <TrainerNameField />
+        <p className="muted small">
+          Shown in battle, and to your partner in online Multi Battles. Up to {TRAINER_NAME_MAX} letters, numbers, spaces and . ' _ -.
+          Not your real name, please: other players can see it.
+        </p>
+      </section>
+
       <section className="panel">
         <h2>Appearance</h2>
         <fieldset className="choice-row">

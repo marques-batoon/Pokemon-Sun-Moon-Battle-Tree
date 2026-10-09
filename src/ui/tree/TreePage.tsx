@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { isFinished, type RunController } from '../../run/controller';
-import { FORMATS, runKey, type Format, type RunKey, type RunState } from '../../run/types';
+import {
+  bpBalance, COURSES, FORMATS, isSuperUnlocked, opponentLabel, PARTNER_COST, PARTNER_OFFER_SIZE, runKey, type Course, type Format, type RunKey, type RunState, type TreeProfile,
+} from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
 import { useTeams } from '../builder/hooks';
-import { courseLabel, keyLabel, LEGEND, useRunState } from './hooks';
+import { BATTLE_TITLE, courseLabel, keyLabel, LEGEND, useRunState } from './hooks';
 import { NewRunForm } from './NewRunForm';
+import { PartnerCard } from './PartnerCard';
 import { RunScreen } from './RunScreen';
 import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
@@ -15,14 +18,24 @@ type View =
   | { kind: 'home' }
   | { kind: 'new'; key: RunKey }
   | { kind: 'run'; key: RunKey }
-  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerId: number; seedText: string };
+  /** trainerIds: the opposing trainer, or both in a Multi Battle. */
+  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerIds: number[]; seedText: string };
+
+const battleView = (run: RunState): View => ({
+  kind: 'battle',
+  key: runKey(run.format, run.course),
+  battle: run.battle,
+  opponent: opponentLabel(run.next),
+  trainerIds: [run.next.trainerId, ...(run.next.second ? [run.next.second.trainerId] : [])],
+  seedText: run.next.seedText,
+});
 
 export function TreePage({ controller, teamStore }: { controller: RunController; teamStore: TeamStore }) {
   const state = useRunState(controller);
   const teams = useTeams(teamStore);
   const [view, setView] = useState<View>(() => {
     const run = state.active && state.runs[state.active.key];
-    return run ? { kind: 'battle', key: runKey(run.format, run.course), battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId, seedText: run.next.seedText } : { kind: 'home' };
+    return run ? battleView(run) : { kind: 'home' };
   });
   const { profile } = state;
 
@@ -30,12 +43,12 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
     return (
       <>
         <div className="battle-banner">
-          <TrainerSprite trainer={TRAINERS[view.trainerId]} size={44} />
+          {view.trainerIds.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
           <span>{keyLabel(view.key)} · Battle {view.battle} · vs {view.opponent}</span>
         </div>
         <BattleScreen
           client={controller.battleClient}
-          opponent={{ trainer: TRAINERS[view.trainerId], battleKey: view.seedText }}
+          opponent={{ trainers: view.trainerIds.map(id => TRAINERS[id]), battleKey: view.seedText }}
           onContinue={state.active ? undefined : () => setView({ kind: 'run', key: view.key })}
         />
       </>
@@ -47,7 +60,7 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
       <NewRunForm
         controller={controller}
         teams={teams}
-        superUnlocked={profile.superUnlocked}
+        profile={profile}
         defaults={profile.settings}
         initialKey={view.key}
         onStarted={key => setView({ kind: 'run', key })}
@@ -60,18 +73,18 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
     const key = view.key;
     const run = state.runs[key];
     if (!run) return <TreeHomeFallback onHome={() => setView({ kind: 'home' })} />;
-    if (isFinished(run)) return <RunResult run={run} best={profile.records[key].best} superUnlocked={profile.superUnlocked[run.format]} onDone={() => { controller.dismiss(key); setView({ kind: 'home' }); }} />;
+    if (isFinished(run)) return <RunResult run={run} best={profile.records[key].best} superUnlocked={isSuperUnlocked(profile, run.format)} onDone={() => { controller.dismiss(key); setView({ kind: 'home' }); }} />;
     if (controller.isInterrupted(key)) return <Interrupted controller={controller} run={run} onBack={() => setView({ kind: 'home' })} />;
     return (
       <RunScreen
         controller={controller}
         run={run}
         teams={teams}
-        bpTotal={profile.bpTotal}
+        bp={bpBalance(profile)}
         error={state.error}
         onBattle={() => {
           controller.startBattle(key);
-          setView({ kind: 'battle', key, battle: run.battle, opponent: run.next.displayName, trainerId: run.next.trainerId, seedText: run.next.seedText });
+          setView(battleView(run));
         }}
         onLeave={() => setView({ kind: 'home' })}
       />
@@ -84,19 +97,29 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
         <div className="panel getting-started">
           <h2>Getting started</h2>
           <ol className="small">
-            <li>Build a team in the <a href="#/builder">Team Builder</a> (or import one from Showdown): 3–6 Pokémon for Singles, 4–6 for Doubles.</li>
+            <li>Build a team in the <a href="#/builder">Team Builder</a> (or import one from Showdown): 3–6 Pokémon for Singles, 4–6 for Doubles, 2–6 for Multi.</li>
             <li>Start <strong>Normal Singles</strong> (Battle Legend Red at battle 20) or <strong>Normal Doubles</strong> (Battle Legend Blue).</li>
             <li>Beat the Battle Legend to unlock that format's <strong>Super</strong> course, the endless challenge.</li>
+            <li>With both Super courses unlocked, team up with a partner in <strong>Super Multi</strong>.</li>
           </ol>
         </div>
       )}
-      {FORMATS.map(format => <FormatSection key={format} format={format} state={state} onOpen={setView} />)}
-      <p className="muted small">Total BP earned: {profile.bpTotal}. BP are tracked for display only.</p>
+      {FORMATS.map(format => (
+        <FormatSection key={format} format={format} state={state} onOpen={setView}>
+          {format === 'multi' && (
+            <>
+              <p className="small online-link"><a href="#/online">Team up with a friend online →</a></p>
+              <PartnerShop controller={controller} profile={profile} />
+            </>
+          )}
+        </FormatSection>
+      ))}
+      <p className="muted small">BP: {bpBalance(profile)} to spend ({profile.bpTotal} earned{profile.bpSpent ? `, ${profile.bpSpent} spent on partners` : ''}).</p>
     </section>
   );
 }
 
-const COURSE_TEXT: Record<Format, { normal: string; super: string }> = {
+const COURSE_TEXT: Record<Format, Partial<Record<Course, string>>> = {
   singles: {
     normal: '20 battles, bringing 3. Battle Legend Red waits at battle 20; beating him unlocks Super Singles.',
     super: 'Endless. Special trainers every 10 battles, Red at 50, the toughest trainers from battle 51.',
@@ -105,20 +128,29 @@ const COURSE_TEXT: Record<Format, { normal: string; super: string }> = {
     normal: '20 Double Battles, bringing 4. Battle Legend Blue waits at battle 20; beating him unlocks Super Doubles.',
     super: 'Endless Double Battles. Special trainers every 10 battles, Blue at 50, the toughest trainers from battle 51.',
   },
+  multi: {
+    super: 'Endless Multi Battles: you and a partner bring 2 each against two trainers. Special trainers in pairs every 10 battles, Red and Blue together at 50.',
+  },
 };
 
-/** Normal and Super cards for one format. */
-function FormatSection({ format, state, onOpen }: { format: Format; state: ReturnType<typeof useRunState>; onOpen: (v: View) => void }) {
+const LOCKED_TEXT: Record<Format, string> = {
+  singles: `Super Singles unlocks when you beat Battle Legend Red at the end of Normal Singles.`,
+  doubles: `Super Doubles unlocks when you beat Battle Legend Blue at the end of Normal Doubles.`,
+  multi: 'Super Multi unlocks once Super Singles and Super Doubles are both unlocked.',
+};
+
+/** The course cards for one format (Normal and Super; Multi has only Super). */
+function FormatSection({ format, state, onOpen, children }: { format: Format; state: ReturnType<typeof useRunState>; onOpen: (v: View) => void; children?: ReactNode }) {
   const { profile } = state;
   return (
     <section className="format-section">
-      <h2 className="format-title">{format === 'singles' ? 'Single Battles' : 'Double Battles'}</h2>
+      <h2 className="format-title">{BATTLE_TITLE[format]}</h2>
       <div className="course-grid">
-        {(['normal', 'super'] as const).map(course => {
+        {COURSES[format].map(course => {
           const key = runKey(format, course);
           const run = state.runs[key];
           const record = profile.records[key];
-          const locked = course === 'super' && !profile.superUnlocked[format];
+          const locked = course === 'super' && !isSuperUnlocked(profile, format);
           return (
             <article key={course} className="panel course-card">
               <h3>{courseLabel(format, course)}</h3>
@@ -143,10 +175,55 @@ function FormatSection({ format, state, onOpen }: { format: Format; state: Retur
           );
         })}
       </div>
-      {!profile.superUnlocked[format] && (
-        <p className="muted small">{courseLabel(format, 'super')} unlocks when you beat Battle Legend {LEGEND[format]} at the end of {courseLabel(format, 'normal')}.</p>
-      )}
+      {!isSuperUnlocked(profile, format) && <p className="muted small">{LOCKED_TEXT[format]}</p>}
+      {children}
     </section>
+  );
+}
+
+/** Multi partners: the ones you have, and special trainers you've beaten who can be bought with BP. */
+function PartnerShop({ controller, profile }: { controller: RunController; profile: TreeProfile }) {
+  const [error, setError] = useState<string | null>(null);
+  const balance = bpBalance(profile);
+  const owned = Object.keys(profile.partners.owned);
+  const available = profile.partners.available;
+  const buy = (name: string) => {
+    if (!confirm(`Buy ${name} as a Multi partner for ${PARTNER_COST} BP?`)) return;
+    try {
+      controller.buyPartner(name);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+  return (
+    <div className="panel partner-shop">
+      <div className="partner-shop-head">
+        <h3>Partners</h3>
+        <span className="bp-balance">{balance} BP</span>
+      </div>
+      <p className="muted small">
+        Beat a special trainer in any challenge and you can buy them as a Multi partner for {PARTNER_COST} BP.
+        Each partner offers {PARTNER_OFFER_SIZE} of their Pokémon; you choose two when you start a Super Multi challenge.
+      </p>
+      <h4>Your partners</h4>
+      <div className="partner-grid">
+        {owned.map(name => <PartnerCard key={name} name={name} />)}
+      </div>
+      <h4>Buy a partner</h4>
+      {available.length ? (
+        <div className="partner-grid">
+          {available.map(name => (
+            <PartnerCard key={name} name={name}>
+              <button className="primary" disabled={balance < PARTNER_COST} onClick={() => buy(name)}>Buy · {PARTNER_COST} BP</button>
+            </PartnerCard>
+          ))}
+        </div>
+      ) : (
+        <p className="muted small">Nobody to buy yet. Special trainers appear every 10th battle of a Super challenge.</p>
+      )}
+      {error && <p className="problems">{error}</p>}
+    </div>
   );
 }
 
@@ -158,7 +235,7 @@ function Interrupted({ controller, run, onBack }: { controller: RunController; r
   return (
     <section className="panel">
       <h2>Battle interrupted</h2>
-      <p>Battle {run.battle} against {run.next.displayName} didn't finish (the app was closed or reloaded).</p>
+      <p>Battle {run.battle} against {opponentLabel(run.next)} didn't finish (the app was closed or reloaded).</p>
       <p className="muted small">In the game, quitting mid-battle counts as a loss. You can also replay the battle from the start: same opponent, same seed.</p>
       <div className="row-actions">
         <button onClick={onBack}>Back</button>

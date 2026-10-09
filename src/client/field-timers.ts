@@ -5,6 +5,8 @@
 // first turn, unless it starts after that turn's end-of-turn effects ("upkeep",
 // e.g. a Drizzle switch-in after a faint), when its first turn is the next one.
 
+import { sideOf } from './playback';
+
 export interface FieldTimer {
   total: number;
   /** Battle turn that counts as the effect's first. */
@@ -25,7 +27,6 @@ export const NO_TIMERS: FieldTimers = { turn: 0, afterUpkeep: false, timers: {} 
 const toId = (s: string | undefined) => (s ?? '').replace(/^move: /i, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const TERRAINS = new Set(['electricterrain', 'grassyterrain', 'psychicterrain', 'mistyterrain']);
 const fieldKey = (id: string) => (TERRAINS.has(id) ? 'terrain' : id);
-const sideOf = (ident: string | undefined) => (ident?.startsWith('p1') ? 'p1' : ident?.startsWith('p2') ? 'p2' : null);
 
 /** The timers after one protocol line (the same object when nothing changed). */
 export function nextTimers(state: FieldTimers, args: readonly string[], kwArgs: Record<string, unknown>): FieldTimers {

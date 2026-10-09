@@ -8,7 +8,9 @@ import { STATUS_LABELS } from '../types';
 export function PartyPips({ side, label }: { side: Side; label: string }) {
   // With Team Preview every registered Pokémon is "known"; the player's request
   // lists only the ones actually brought, so use it to trim the player's pips.
-  const brought = side.id === 'p1' ? side.battle.request?.side?.pokemon.map(p => p.ident) : undefined;
+  const request = side.battle.request?.side;
+  // (Compare Side objects: a Side's `id` is its player's user id, not "p1".)
+  const brought = request && side.battle.getSide(request.id) === side ? request.pokemon.map(p => p.ident) : undefined;
   const team = brought ? side.team.filter(p => brought.includes(p.originalIdent)) : side.team;
   const total = brought ? team.length : Math.max(side.totalPokemon, team.length);
   const pips = Array.from({ length: total }, (_, i) => team[i] ?? null);

@@ -1,4 +1,5 @@
-import type { Battle, Pokemon } from '@pkmn/client';
+import type { Battle, Pokemon, Side } from '@pkmn/client';
+import { TRAINERS } from '../../data/battle-tree';
 import { gen7 } from '../../team/dex';
 import { BOOST_LABELS, STATUS_LABELS } from '../types';
 import { HpBar } from './HpBar';
@@ -33,27 +34,38 @@ interface Props {
   pokemon: Pokemon | null;
   /** Doubles: smaller boxes, two per side. */
   compact?: boolean;
-  /** Show the party pips (Doubles shows them once per side, on the first box). */
-  party?: boolean;
+  /** Whose party pips to show, if any (Doubles: once per side, on the first box; Multi: each trainer's own). */
+  party?: Side | null;
+  /** Whose view the battle is from (p3: the partner's client in an online Multi Battle). */
+  me?: 'p1' | 'p3';
 }
+
+/** Battle Tree trainers by their battle name ("Pokémon Trainer Sina" -> "Sina"). */
+const SHORT_NAMES = new Map(TRAINERS.map(t => [`${t.class} ${t.name}`, t.name]));
+/** Multi Battles: whose Pokémon a box shows (your trainer name, "Sina", "Red", or the other player's name). */
+const ownerLabel = (side: Side) => SHORT_NAMES.get(side.name) ?? side.name;
 
 /**
  * Everything about one active Pokémon in one box on the battlefield: name,
  * level, status, types, HP, party, ability/item and stat changes.
  */
-export function PokemonPanel({ battle, side, pokemon, compact = false, party = true }: Props) {
-  const pips = party ? <PartyPips side={battle[side]} label={side === 'p1' ? 'Your Pokémon' : "Opponent's Pokémon"} /> : null;
+export function PokemonPanel({ battle, side, pokemon, compact = false, party = battle[side], me = 'p1' }: Props) {
+  const multi = battle.gameType === 'multi';
+  const mine = battle[me] ?? battle.p1;
+  const pips = party ? <PartyPips side={party} label={party === mine ? 'Your Pokémon' : multi ? `${party.name}'s Pokémon` : "Opponent's Pokémon"} /> : null;
+  const owner = multi && party ? <span className="mon-owner">{ownerLabel(party)}</span> : null;
   if (!pokemon) {
     return (
       <div className={`hud hud-${side} mon-panel ${compact ? 'compact' : ''}`}>
-        <div className="mon-head"><span className="mon-name muted">—</span></div>
+        <div className="mon-head">{owner}<span className="mon-name muted">—</span></div>
         <div className="mon-hp-row">{pips}</div>
       </div>
     );
   }
   const percent = pokemon.fainted ? 0 : hpPercent(pokemon);
-  // The player sees exact HP; the opponent's HP arrives as a 48-pixel bar (like in-game), shown as ~%.
-  const hpText = pokemon.fainted ? 'Fainted' : side === 'p1' ? `${pokemon.hp}/${pokemon.maxhp}` : `~${Math.round(percent)}%`;
+  // The player sees exact HP for their own Pokémon; others' HP (opponents, a Multi partner) arrives as a
+  // 48-pixel bar (like in-game), shown as ~%.
+  const hpText = pokemon.fainted ? 'Fainted' : pokemon.side === mine ? `${pokemon.hp}/${pokemon.maxhp}` : `~${Math.round(percent)}%`;
   const boosts = Object.entries(pokemon.boosts).filter(([, v]) => v);
   const volatiles = Object.keys(pokemon.volatiles).filter(v => SHOWN_VOLATILES[v]);
   const paradoxBoost = paradoxBoostOf(pokemon);
@@ -61,8 +73,9 @@ export function PokemonPanel({ battle, side, pokemon, compact = false, party = t
   const ability = pokemon.ability ? gen7.abilities.get(pokemon.ability)?.name ?? pokemon.ability : null;
 
   return (
-    <div className={`hud hud-${side} mon-panel ${side === 'p1' ? 'player' : 'opponent'} ${compact ? 'compact' : ''}`}>
+    <div className={`hud hud-${side} mon-panel ${side === 'p1' ? 'player' : 'opponent'}${multi && side === 'p1' && party !== mine ? ' partner' : ''} ${compact ? 'compact' : ''}`}>
       <div className="mon-head">
+        {owner}
         <span className="mon-name">{pokemon.speciesForme}</span>
         <span className="mon-level">Lv{pokemon.level}</span>
         {pokemon.gender !== 'N' && <span className="mon-gender">{pokemon.gender === 'M' ? '♂' : '♀'}</span>}

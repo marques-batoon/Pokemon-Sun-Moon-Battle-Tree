@@ -5,7 +5,7 @@ export type StatId = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 export type StatTable = Record<StatId, number>;
 export type GameVersion = 'sun' | 'moon';
 export type Course = 'normal' | 'super';
-export type Format = 'singles' | 'doubles';
+export type Format = 'singles' | 'doubles' | 'multi';
 
 export interface TreeSet {
   id: number;
@@ -79,6 +79,8 @@ export interface BracketsFile {
   pools: Record<string, { label: string; trainerIds: number[]; bulbapediaNumbers: string }>;
   singles: Record<Course, CourseSchedule>;
   doubles: Record<Course, CourseSchedule>;
+  /** Super only (this app has no Normal Multi). */
+  multi: Partial<Record<Course, CourseSchedule>>;
   specialTrainerPool: {
     weightsSource: string;
     versionsSource: string;
@@ -89,6 +91,8 @@ export interface BracketsFile {
 
 export interface Boss {
   trainerId: number;
+  /** Multi: the second Battle Legend fighting alongside (Blue with Red). */
+  partnerTrainerId?: number;
   format: Format;
   course: Course;
   battle: number;

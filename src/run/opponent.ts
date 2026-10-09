@@ -54,11 +54,18 @@ const dexNum = (set: TreeSet) => gen7.species.get(set.species)!.num;
  * Source: Smogon Battle Tree guide; uniform weighting assumed (DATA_NOTES.md section 4).
  */
 export function pickTeamSets(trainer: Trainer, size: number, rng: Rng): TreeSet[] {
+  const picked = pickUpTo(trainer, size, rng);
+  if (picked.length < size) throw new Error(`${trainer.name} can't field ${size} Pokémon under the clauses`);
+  return picked;
+}
+
+/** pickTeamSets, but stops early (with fewer) when no set fits the clauses anymore. */
+export function pickUpTo(trainer: Trainer, size: number, rng: Rng): TreeSet[] {
   const picked: TreeSet[] = [];
   let candidates = trainer.roster.map(id => SETS[id]);
   while (picked.length < size) {
     candidates = candidates.filter(c => !picked.some(p => dexNum(p) === dexNum(c) || p.item === c.item));
-    if (!candidates.length) throw new Error(`${trainer.name} can't field ${size} Pokémon under the clauses`);
+    if (!candidates.length) break;
     picked.push(rng.pick(candidates));
   }
   return picked;

@@ -115,6 +115,7 @@ export function registerBattleTreeFormats(): void {
   registerChampionsMod();
   const singles = RULES.teamSize.singles;
   const doubles = RULES.teamSize.doubles as Required<typeof RULES.teamSize.doubles>;
+  const multi = RULES.teamSize.multi as Required<typeof RULES.teamSize.multi>;
   const shared = [
     'Cancel Mod',
     'Max Level = 100',
@@ -180,6 +181,28 @@ export function registerBattleTreeFormats(): void {
       onValidateTeam,
       gameType: 'doubles',
       ruleset: [`Max Team Size = ${doubles.bring}`, `Min Team Size = ${doubles.bring}`, ...shared],
+      banlist,
+    },
+    {
+      name: '[Gen 7] Battle Tree Multi',
+      desc: 'Registered team of 2-6 (validation only); you bring 2.',
+      mod: CHAMPIONS_MOD,
+      checkCanLearn,
+      onValidateSet,
+      onValidateTeam,
+      gameType: 'multi',
+      ruleset: [`Max Team Size = ${multi.registeredMax}`, `Min Team Size = ${multi.registeredMin}`, ...shared],
+      banlist,
+    },
+    {
+      name: '[Gen 7] Battle Tree Multi (No Preview)',
+      desc: 'Multi Battle: you and your partner (2 Pokémon each) against two trainers (2 each). Clauses apply per trainer.',
+      mod: CHAMPIONS_MOD,
+      checkCanLearn,
+      onValidateSet,
+      onValidateTeam,
+      gameType: 'multi',
+      ruleset: [`Max Team Size = ${multi.bring}`, `Min Team Size = ${multi.bring}`, ...shared],
       banlist,
     },
   ]);

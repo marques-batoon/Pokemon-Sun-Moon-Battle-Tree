@@ -3,7 +3,7 @@ import { doublesTargets } from '../engine/choices';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequestActive, type SimRequestSide } from '../engine/sim-types';
 import type { PRNG } from '@pkmn/sim';
 
-/** Legal but random choices (practice opponent; also drives the player's side in headless tests). Singles and Doubles. */
+/** Legal but random choices (practice opponent; also drives the player's side in headless tests). Singles, Doubles and Multi. */
 export class RandomAI implements BattleAI {
   readonly name = 'random';
 
@@ -16,7 +16,7 @@ export class RandomAI implements BattleAI {
     this.zMoveChance = zMoveChance;
   }
 
-  choose({ request, prng }: AIContext): string {
+  choose({ request, prng, battle, side }: AIContext): string {
     if (isTeamPreview(request)) {
       const order = request.side.pokemon.map((_, i) => i + 1);
       prng.shuffle(order);
@@ -35,7 +35,10 @@ export class RandomAI implements BattleAI {
     }
 
     if (isMoveRequest(request)) {
-      const doubles = request.active.length > 1;
+      // Doubles and Multi both need targets; in Multi this side controls one Pokémon, at its own field position.
+      // Without the simulator's battle (headless player in tests), the request tells Singles from Doubles.
+      const doubles = battle ? battle.gameType !== 'singles' : request.active.length > 1;
+      const position = (slot: number) => battle?.getSide(side).active[slot]?.position ?? slot;
       const bench = benchSlots(request.side);
       let megaUsed = false;
       let zUsed = false;
@@ -48,7 +51,7 @@ export class RandomAI implements BattleAI {
           bench.splice(bench.indexOf(pick), 1);
           return `switch ${pick}`;
         }
-        const choice = this.pickMove(active, slot, doubles, prng, { mega: !megaUsed, z: !zUsed });
+        const choice = this.pickMove(active, position(slot), doubles, prng, { mega: !megaUsed, z: !zUsed });
         if (choice.endsWith(' mega')) megaUsed = true;
         if (choice.endsWith(' zmove')) zUsed = true;
         return choice;

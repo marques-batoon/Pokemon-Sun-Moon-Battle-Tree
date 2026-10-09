@@ -4,19 +4,34 @@ import type { PokemonSet } from '../team/types';
 
 export type { Course, Format };
 
-/** One saved challenge per format + course, e.g. "singles-super". */
-export type RunKey = `${Format}-${Course}`;
-export const runKey = (format: Format, course: Course): RunKey => `${format}-${course}`;
-export const RUN_KEYS: readonly RunKey[] = ['singles-normal', 'singles-super', 'doubles-normal', 'doubles-super'];
-export const FORMATS: readonly Format[] = ['singles', 'doubles'];
+/** One saved challenge per format + course, e.g. "singles-super" (there's no Normal Multi). */
+export type RunKey = Exclude<`${Format}-${Course}`, 'multi-normal'>;
+export const runKey = (format: Format, course: Course): RunKey => `${format}-${course}` as RunKey;
+export const RUN_KEYS: readonly RunKey[] = ['singles-normal', 'singles-super', 'doubles-normal', 'doubles-super', 'multi-super'];
+export const FORMATS: readonly Format[] = ['singles', 'doubles', 'multi'];
+/** Courses each format has: this app has only Super Multi. */
+export const COURSES: Record<Format, readonly Course[]> = { singles: ['normal', 'super'], doubles: ['normal', 'super'], multi: ['super'] };
 
-/** How many Pokémon the player brings to each battle (Singles 3, Doubles 4). */
-export const BRING: Record<Format, number> = { singles: RULES.teamSize.singles.bring, doubles: RULES.teamSize.doubles.bring };
-/** Fewest Pokémon a registered team may have (Singles 3, Doubles 4). */
+/** How many Pokémon the player brings to each battle (Singles 3, Doubles 4, Multi 2). */
+export const BRING: Record<Format, number> = {
+  singles: RULES.teamSize.singles.bring, doubles: RULES.teamSize.doubles.bring, multi: RULES.teamSize.multi.bring,
+};
+/** Fewest Pokémon a registered team may have (Singles 3, Doubles 4, Multi 2). */
 export const MIN_REGISTERED: Record<Format, number> = {
   singles: RULES.teamSize.singles.registeredMin ?? 3,
   doubles: RULES.teamSize.doubles.registeredMin ?? 4,
+  multi: RULES.teamSize.multi.registeredMin ?? 2,
 };
+
+/** Multi partners everyone starts with (rules.json multiPartners). */
+const MULTI_PARTNERS = RULES.multiPartners as { scoutCost: number; defaultPartners: string[] };
+export const DEFAULT_PARTNERS: readonly string[] = MULTI_PARTNERS.defaultPartners;
+/** BP to buy a partner. App choice (requested 2026-10-08); the game's scouting costs 10 (rules.json multiPartners.scoutCost). */
+export const PARTNER_COST = 100;
+/** How many of a partner's Pokémon you choose their two from. App choice (requested 2026-10-08). */
+export const PARTNER_OFFER_SIZE = 6;
+/** Pokémon a Multi partner brings. */
+export const PARTNER_BRING = 2;
 
 export interface RunSettings {
   /** Reached Guzzlord's chapter of the Looker episode (Anabel can appear). */
@@ -33,8 +48,8 @@ export interface RunSettings {
 
 export const DEFAULT_SETTINGS: RunSettings = { anabelUnlocked: true, teamPreviewEachBattle: false, ai: 'heuristic' };
 
-export interface PlannedOpponent {
-  battle: number;
+/** One opposing trainer and the team they bring. */
+export interface PlannedTrainer {
   trainerId: number;
   /** "Youngster Florian", "Battle Legend Red". */
   displayName: string;
@@ -43,8 +58,24 @@ export interface PlannedOpponent {
   replacedAnabel: boolean;
   setIds: number[];
   team: PokemonSet[];
+}
+
+export interface PlannedOpponent extends PlannedTrainer {
+  battle: number;
   /** Simulator seed text for this battle. */
   seedText: string;
+  /** Multi Battles: the second opposing trainer. */
+  second?: PlannedTrainer;
+}
+
+/** "Lass Sophia" or, in a Multi Battle, "Lass Sophia & Youngster Max". */
+export const opponentLabel = (next: PlannedOpponent) => (next.second ? `${next.displayName} & ${next.second.displayName}` : next.displayName);
+
+/** A Multi Battle partner (a special trainer) and the two Pokémon they bring, as Battle Tree set ids. */
+export interface RunPartner {
+  name: string;
+  trainerId: number;
+  setIds: number[];
 }
 
 export interface BattleRecord {
@@ -90,6 +121,8 @@ export interface RunState {
   bp: number;
   status: RunStatus;
   next: PlannedOpponent;
+  /** Multi Battles: the partner chosen for this challenge. */
+  partner?: RunPartner;
   history: BattleRecord[];
   /** Unranked: started at battle > 1 (debug) or against the random AI (practice). Never counts toward records or unlocks. */
   debug: boolean;
@@ -103,11 +136,35 @@ export interface CourseRecord {
   last: number;
 }
 
+/** Formats with a Normal course whose Battle Legend unlocks Super. */
+export type UnlockFormat = Exclude<Format, 'multi'>;
+
+/** Partners for Multi Battles, by special trainer name. */
+export interface PartnerBook {
+  /**
+   * Partners you can pick (Sina and Dexio from the start), each with the Battle Tree sets
+   * (up to PARTNER_OFFER_SIZE, rolled when you got them) you choose their two Pokémon from.
+   */
+  owned: Record<string, { offer: number[] }>;
+  /** Special trainers you've beaten, who can be bought for PARTNER_COST BP. */
+  available: string[];
+}
+
 export interface TreeProfile {
   /** Super Singles / Super Doubles unlocked by beating the Normal course's Battle Legend (Red / Blue). */
-  superUnlocked: Record<Format, boolean>;
+  superUnlocked: Record<UnlockFormat, boolean>;
   records: Record<RunKey, CourseRecord>;
-  /** All BP ever earned (display only). */
+  /** All BP ever earned. */
   bpTotal: number;
+  /** BP spent buying partners; the balance is bpTotal - bpSpent. */
+  bpSpent: number;
+  partners: PartnerBook;
   settings: RunSettings;
 }
+
+/** Super Multi opens once both Super Singles and Super Doubles are unlocked. */
+export function isSuperUnlocked(profile: TreeProfile, format: Format): boolean {
+  return format === 'multi' ? profile.superUnlocked.singles && profile.superUnlocked.doubles : profile.superUnlocked[format];
+}
+
+export const bpBalance = (profile: TreeProfile) => profile.bpTotal - profile.bpSpent;

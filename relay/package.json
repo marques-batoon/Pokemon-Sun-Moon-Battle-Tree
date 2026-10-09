@@ -1,0 +1,17 @@
+{
+  "name": "battle-tree-relay",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Relay server for online Multi Battles: passes messages between the two players of a room.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261006.1",
+    "typescript": "~5.9.3",
+    "wrangler": "^4.149.0"
+  }
+}

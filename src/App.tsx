@@ -3,6 +3,7 @@ import { BuilderPage } from './ui/builder/BuilderPage';
 import { TestBattlePage } from './ui/battle/TestBattlePage';
 import { engine, getBattleClient, getRunController, getSettingsStore, getTeamStore } from './ui/services';
 import { SettingsPage } from './ui/settings/SettingsPage';
+import { OnlinePage } from './ui/online/OnlinePage';
 import { applyTheme } from './ui/theme';
 import { TreePage } from './ui/tree/TreePage';
 import { useHashRoute } from './ui/useHashRoute';
@@ -10,11 +11,12 @@ import { useBattleFocus } from './ui/battleFocus';
 import { Footer } from './ui/components/Footer';
 import { SiteHeader } from './ui/components/SiteHeader';
 
-const ROUTES = ['tree', 'builder', 'battle', 'settings'] as const;
+const ROUTES = ['tree', 'builder', 'battle', 'online', 'settings'] as const;
 const TITLES: Record<(typeof ROUTES)[number], string> = {
   tree: 'Battle Tree',
   builder: 'Team Builder',
   battle: 'Free Battle',
+  online: 'Online',
   settings: 'Settings',
 };
 
@@ -39,7 +41,7 @@ export default function App() {
       <SiteHeader autoHide={battleFocus}>
         <div className="brand">
           <h1>Battle Tree Simulator</h1>
-          <span className="muted small">Sun &amp; Moon · Single &amp; Double Battles</span>
+          <span className="muted small">Sun &amp; Moon · Single, Double &amp; Multi Battles</span>
         </div>
         <nav className="nav" aria-label="Main">
           {ROUTES.map(r => (
@@ -51,6 +53,7 @@ export default function App() {
         {route === 'tree' && <TreePage controller={getRunController()} teamStore={getTeamStore()} />}
         {route === 'builder' && <BuilderPage store={getTeamStore()} />}
         {route === 'battle' && <TestBattlePage client={getBattleClient()} store={getTeamStore()} />}
+        {route === 'online' && <OnlinePage teamStore={getTeamStore()} />}
         {route === 'settings' && <SettingsPage />}
       </main>
       <Footer />

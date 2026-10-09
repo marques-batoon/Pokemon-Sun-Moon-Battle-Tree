@@ -9,6 +9,7 @@ import { planOpponent } from '../../run/selection';
 import { DEFAULT_SETTINGS, MIN_REGISTERED } from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { useTeams } from '../builder/hooks';
+import { battleName } from '../../online/trainer-name';
 import { useAppSettings } from '../useAppSettings';
 import { AnimationPreview } from './AnimationPreview';
 import { BattleScreen } from './BattleScreen';
@@ -22,7 +23,7 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
   const [seedText, setSeedText] = useState(randomSeedText);
   const [ai, setAi] = useState<AIKind>('heuristic');
   const [format, setFormat] = useState<BattleTreeFormat>('singles');
-  const { showDebugTools } = useAppSettings();
+  const { showDebugTools, trainerName } = useAppSettings();
   const team = teams.find(t => t.id === teamId);
   // Who the last started battle is against (Super Red or Super Blue) and its seed, for their closing remark.
   const [foe, setFoe] = useState<{ trainerId: number; seed: string } | null>(null);
@@ -36,7 +37,7 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
     client.start({
       format,
       seedText: seed,
-      player: { name: 'Player', team: team ? team.sets : TEST_PLAYER_TEAM_TEXT },
+      player: { name: battleName(trainerName), team: team ? team.sets : TEST_PLAYER_TEAM_TEXT },
       opponent: blue ? { kind: 'team', name: blue.displayName, team: blue.team } : { kind: 'test-fixture' },
       ai,
     });
@@ -83,7 +84,7 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
         </p>
       </section>
       {showDebugTools && <AnimationPreview />}
-      <BattleScreen client={client} opponent={foe ? { trainer: TRAINERS[foe.trainerId], battleKey: foe.seed } : undefined} />
+      <BattleScreen client={client} opponent={foe ? { trainers: [TRAINERS[foe.trainerId]], battleKey: foe.seed } : undefined} />
     </>
   );
 }

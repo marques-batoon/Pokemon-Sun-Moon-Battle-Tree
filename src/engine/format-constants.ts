@@ -12,6 +12,8 @@ export const USUM_ONLY_SPECIES = ['Poipole', 'Naganadel', 'Stakataka', 'Blacepha
 export const FORMAT_IDS = {
   singles: 'gen7battletreesingles',
   doubles: 'gen7battletreedoubles',
+  /** Multi: validates the registered team; battles always use the no-preview format (4 trainers, 2 Pokémon each). */
+  multi: 'gen7battletreemulti',
 } as const;
 export type BattleTreeFormat = keyof typeof FORMAT_IDS;
 
@@ -22,10 +24,12 @@ export type BattleTreeFormat = keyof typeof FORMAT_IDS;
 export const NO_PREVIEW_FORMAT_IDS: Record<BattleTreeFormat, string> = {
   singles: 'gen7battletreesinglesnopreview',
   doubles: 'gen7battletreedoublesnopreview',
+  multi: 'gen7battletreemultinopreview',
 };
 
+/** Multi Battles never use Team Preview (each trainer just brings 2). */
 export const simFormatId = (format: BattleTreeFormat, teamPreview: boolean) =>
-  teamPreview ? FORMAT_IDS[format] : NO_PREVIEW_FORMAT_IDS[format];
+  teamPreview && format !== 'multi' ? FORMAT_IDS[format] : NO_PREVIEW_FORMAT_IDS[format];
 
 /** Showdown's "you have 0 EVs" nag. Zero EVs is legal in the Battle Tree. */
 export const IGNORED_VALIDATOR_PROBLEMS = [/has exactly 0 EVs/];

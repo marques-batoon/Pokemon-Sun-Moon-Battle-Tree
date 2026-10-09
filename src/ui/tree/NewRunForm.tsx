@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { BRACKETS } from '../../data/battle-tree';
 import type { RunController, RunTeam } from '../../run/controller';
-import { DEFAULT_SETTINGS, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile } from '../../run/types';
+import { courseSchedule } from '../../run/selection';
+import {
+  BRING, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, PARTNER_BRING, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile,
+} from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
 import { courseLabel, LEGEND, splitKey } from './hooks';
+import { PartnerCard } from './PartnerCard';
+import { PartnerPokemonPicker } from './PartnerPokemonPicker';
 import { TeamSetup } from './TeamSetup';
 
 interface Props {
   controller: RunController;
   teams: readonly SavedTeam[];
-  superUnlocked: TreeProfile['superUnlocked'];
+  profile: TreeProfile;
   defaults: RunSettings;
   /** Format and course to start with (the format is fixed; the course can be changed). */
   initialKey: RunKey;
@@ -18,9 +22,15 @@ interface Props {
   onCancel: () => void;
 }
 
-export function NewRunForm({ controller, teams, superUnlocked: unlocked, defaults, initialKey, onStarted, onCancel }: Props) {
+export function NewRunForm({ controller, teams, profile, defaults, initialKey, onStarted, onCancel }: Props) {
   const [format, initialCourse] = splitKey(initialKey) as [Format, Course];
-  const superUnlocked = unlocked[format];
+  const multi = format === 'multi';
+  const superUnlocked = isSuperUnlocked(profile, format);
+  const partners = Object.entries(profile.partners.owned);
+  const [partner, setPartner] = useState<string | null>(null);
+  const [partnerPicks, setPartnerPicks] = useState<number[]>([]);
+  // Multi: choose the partner, then their two Pokémon, then yours.
+  const partnerReady = !multi || (!!partner && partnerPicks.length === PARTNER_BRING);
   const legend = LEGEND[format];
   const label = (c: Course) => courseLabel(format, c);
   const [course, setCourse] = useState<Course>(initialCourse);
@@ -32,14 +42,19 @@ export function NewRunForm({ controller, teams, superUnlocked: unlocked, default
   const { showDebugTools } = useAppSettings();
   const key = runKey(format, course);
   const existing = controller.run(key);
-  const length = BRACKETS[format][course].length;
+  const length = courseSchedule(format, course).length;
 
   const start = () => {
-    if (!team) return;
+    if (!team || !partnerReady) return;
     if (existing && (existing.status === 'ready' || existing.status === 'in-battle')
       && !confirm(`Starting a new ${label(course)} challenge ends your saved ${existing.wins}-win streak. Continue?`)) return;
     try {
-      controller.startRun({ format, course, team, settings, seedText: seedText.trim() || undefined, startBattle: startBattle > 1 ? startBattle : undefined });
+      controller.startRun({
+        format, course, team, seedText: seedText.trim() || undefined, startBattle: startBattle > 1 ? startBattle : undefined,
+        // Multi Battles have no Team Preview.
+        settings: multi ? { ...settings, teamPreviewEachBattle: false } : settings,
+        partner: multi && partner ? { name: partner, setIds: partnerPicks } : undefined,
+      });
       onStarted(key);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -51,18 +66,39 @@ export function NewRunForm({ controller, teams, superUnlocked: unlocked, default
       <h2>New challenge</h2>
       <fieldset className="course-pick">
         <legend>Course</legend>
-        {(['normal', 'super'] as const).map(c => (
+        {COURSES[format].map(c => (
           <label key={c} className={c === 'super' && !superUnlocked && startBattle <= 1 ? 'muted' : ''}>
             <input type="radio" name="course" checked={course === c} disabled={c === 'super' && !superUnlocked && startBattle <= 1} onChange={() => setCourse(c)} />
             {' '}{label(c)}
             <small className="muted">
-              {c === 'normal' ? ` · 20 battles, Battle Legend ${legend} at 20` : superUnlocked ? ` · endless, ${legend} at 50, special trainers every 10` : ` · locked: beat ${legend} in ${label('normal')}`}
+              {c === 'normal' ? ` · 20 battles, Battle Legend ${legend} at 20`
+                : multi ? (superUnlocked ? ` · endless, ${legend} together at 50, special trainers in pairs every 10` : ' · locked: unlock Super Singles and Super Doubles first')
+                : superUnlocked ? ` · endless, ${legend} at 50, special trainers every 10` : ` · locked: beat ${legend} in ${label('normal')}`}
             </small>
           </label>
         ))}
       </fieldset>
 
-      <TeamSetup key={format} format={format} teams={teams} onChange={setTeam} />
+      {multi && (
+        <fieldset className="partner-pick">
+          <legend>Partner</legend>
+          <p className="muted small">Your partner brings {PARTNER_BRING} Pokémon and you bring {BRING.multi}. Buy more partners on the Battle Tree page with BP.</p>
+          <div className="partner-grid">
+            {partners.map(([name]) => (
+              <PartnerCard key={name} name={name} selected={partner === name} onSelect={() => { if (partner !== name) { setPartner(name); setPartnerPicks([]); } }} />
+            ))}
+          </div>
+          {partner && (
+            <PartnerPokemonPicker name={partner} offer={profile.partners.owned[partner].offer} picked={partnerPicks} onChange={setPartnerPicks} />
+          )}
+        </fieldset>
+      )}
+
+      {partnerReady ? (
+        <TeamSetup key={format} format={format} teams={teams} onChange={setTeam} />
+      ) : (
+        <p className="muted small">{partner ? `Choose ${partner}'s ${PARTNER_BRING} Pokémon first, then yours.` : 'Choose your partner first, then their Pokémon, then yours.'}</p>
+      )}
 
       <fieldset className="settings">
         <legend>Settings</legend>
@@ -77,10 +113,12 @@ export function NewRunForm({ controller, teams, superUnlocked: unlocked, default
             <option value="random">Random (practice; doesn't count toward records)</option>
           </select>
         </label>
-        <label>
-          <input type="checkbox" checked={settings.teamPreviewEachBattle} onChange={e => setSettings(s => ({ ...s, teamPreviewEachBattle: e.target.checked }))} />
-          {' '}Team Preview before every battle <small className="muted">(Showdown-style; in the game you bring the same {format === 'doubles' ? 4 : 3} until you take a break, and never see the opponent's team)</small>
-        </label>
+        {!multi && (
+          <label>
+            <input type="checkbox" checked={settings.teamPreviewEachBattle} onChange={e => setSettings(s => ({ ...s, teamPreviewEachBattle: e.target.checked }))} />
+            {' '}Team Preview before every battle <small className="muted">(Showdown-style; in the game you bring the same {BRING[format]} until you take a break, and never see the opponent's team)</small>
+          </label>
+        )}
       </fieldset>
 
       {showDebugTools && <details className="debug">
@@ -98,7 +136,7 @@ export function NewRunForm({ controller, teams, superUnlocked: unlocked, default
       {error && <p className="problems">{error}</p>}
       <div className="row-actions">
         <button onClick={onCancel}>Cancel</button>
-        <button className="primary" disabled={!team} onClick={start}>Start {label(course)}</button>
+        <button className="primary" disabled={!team || !partnerReady} onClick={start}>Start {label(course)}</button>
       </div>
     </section>
   );

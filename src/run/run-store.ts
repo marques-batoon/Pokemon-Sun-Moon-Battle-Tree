@@ -1,5 +1,7 @@
 import type { KeyValueStore } from '../storage/kv';
-import { DEFAULT_SETTINGS, RUN_KEYS, type RunKey, type RunState, type TreeProfile } from './types';
+import { defaultPartnerBook, rollOffer } from './partners';
+import { Rng } from './rng';
+import { DEFAULT_SETTINGS, RUN_KEYS, type PartnerBook, type RunKey, type RunState, type TreeProfile } from './types';
 
 const KEY = 'tree.v1';
 
@@ -17,8 +19,30 @@ export const emptyProfile = (): TreeProfile => ({
   superUnlocked: { singles: false, doubles: false },
   records: Object.fromEntries(RUN_KEYS.map(k => [k, { best: 0, last: 0 }])) as TreeProfile['records'],
   bpTotal: 0,
+  bpSpent: 0,
+  partners: defaultPartnerBook(),
   settings: { ...DEFAULT_SETTINGS },
 });
+
+/** Partner books from earlier versions: partners had two fixed Pokémon (setIds) and beaten trainers a "scoutable" map. */
+type OldPartnerBook = Partial<PartnerBook> & {
+  owned?: Record<string, { offer?: number[]; setIds?: number[] }>;
+  scoutable?: Record<string, unknown>;
+};
+
+function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): PartnerBook {
+  if (!saved) return base;
+  const owned: PartnerBook['owned'] = { ...base.owned };
+  for (const [name, entry] of Object.entries(saved.owned ?? {})) {
+    try {
+      owned[name] = { offer: entry.offer ?? rollOffer(name, new Rng(`migrated-partner|${name}`)) };
+    } catch {
+      // Not a special trainer (corrupt entry): drop it.
+    }
+  }
+  const available = [...new Set([...(saved.available ?? []), ...Object.keys(saved.scoutable ?? {})])].filter(n => !owned[n]);
+  return { owned, available };
+}
 
 /**
  * Battle Tree progress (profile, records, saved runs) persisted as one
@@ -67,8 +91,17 @@ export class RunStore {
       const unlocked = file.profile.superUnlocked as TreeProfile['superUnlocked'] | boolean;
       const superUnlocked = typeof unlocked === 'boolean' ? { singles: unlocked, doubles: false } : { ...base.superUnlocked, ...unlocked };
       const runs = Object.fromEntries(Object.entries(file.runs ?? {}).map(([k, r]) => [k, { ...r, format: r.format ?? 'singles' }]));
+      // Saves from before Multi have no partners or spent BP.
       return {
-        profile: { ...base, ...file.profile, superUnlocked, records: { ...base.records, ...file.profile.records }, settings: { ...base.settings, ...file.profile.settings } },
+        profile: {
+          ...base,
+          ...file.profile,
+          superUnlocked,
+          records: { ...base.records, ...file.profile.records },
+          bpSpent: file.profile.bpSpent ?? 0,
+          partners: migratePartners(file.profile.partners, base.partners),
+          settings: { ...base.settings, ...file.profile.settings },
+        },
         runs,
       };
     } catch (err) {

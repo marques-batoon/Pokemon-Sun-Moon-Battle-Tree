@@ -42,6 +42,8 @@ id_ed25519*
 secrets/
 
 # Test and build caches
+.wrangler/
+.dev.vars*
 coverage
 .vitest
 *.tsbuildinfo

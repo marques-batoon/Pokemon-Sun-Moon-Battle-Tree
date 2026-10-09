@@ -1,0 +1,22 @@
+# Cloudflare Worker that relays online Multi Battles. See README.md in this folder.
+name = "battle-tree-relay"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+
+# No request logs or traces are kept (the relay never logs message contents either).
+[observability]
+enabled = false
+
+[vars]
+# Websites allowed to open rooms: your Netlify address and the local dev server,
+# separated by commas, no trailing slashes. Replace the example Netlify address.
+ALLOWED_ORIGINS = "https://marq-battle-tree.netlify.app"
+
+# One Durable Object per room. SQLite-backed, which the Workers Free plan supports.
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]

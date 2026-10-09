@@ -77,6 +77,12 @@ const SOURCES = {
     kind: 'community-guide',
     retrieved: RETRIEVED,
   },
+  'serebii-battle-tree': {
+    title: 'Serebii, "Pokémon Sun & Moon - The Battle Tree" (Multi Battles: two trainers per side, scouting for 10 BP)',
+    url: 'https://www.serebii.net/sunmoon/battletree.shtml',
+    kind: 'community-guide',
+    retrieved: RETRIEVED,
+  },
   'kaphotics-usum-diff': {
     title: 'Pastebin listing SM→USUM Battle Tree set changes (confirms SM had 996 sets)',
     url: 'https://pastebin.com/jt9TQEdP',
@@ -310,6 +316,7 @@ const bracketsJson = {
     specialEveryTen: 'bulbapedia-battle-tree + bulbapedia-trainers ("Special Trainers appear only in ... Super Course challenges, during every ten battles")',
     normalUsesSameTrainers: 'bulbapedia-trainers (single table, no Normal/Super split) + atsync-iv-post (tested guess)',
     doubles: 'bulbapedia-battle-tree ("Blue is the Battle Legend for Double Battles and uses four Pokémon"; "In Super Battles, special Trainers appear every ten battles"; one BP table by win streak for every format) + bulbapedia-trainers (regular trainers: one table for every format)',
+    multi: 'serebii-battle-tree (Double Battles against two Trainers, you pick two Pokémon) + smogon-guide (every trainer runs 2 Pokémon; the Battle Legends come "both at same time for Multis"; clauses apply per trainer). Only Super Multi exists in this app (app choice). APPROXIMATIONS: Red and Blue together at battle 50 (the guide only spells out battle 20 of Normal); special trainers come in pairs every ten battles (no source says how they are paired).',
   },
   trainerWeighting: {
     rule: 'uniform',
@@ -375,6 +382,24 @@ const bracketsJson = {
       specialTrainers: true,
     },
   },
+  // Multi: Super only in this app; same pools, special trainers in pairs, Red and Blue together at 50.
+  multi: {
+    super: {
+      length: null,
+      endsAfterLength: false,
+      schedule: [
+        { battles: [50, 50], boss: 'redblue-super' },
+        { everyNth: 10, special: true },
+        { battles: [1, 9], pool: 'b01-10' },
+        { battles: [11, 19], pool: 'b11-19' },
+        { battles: [21, 29], pool: 'b21-29' },
+        { battles: [31, 39], pool: 'b31-39' },
+        { battles: [41, 49], pool: 'b41-49' },
+        { battles: [51, null], pool: 'b51+' },
+      ],
+      specialTrainers: true,
+    },
+  },
   specialTrainerPool: {
     weightsSource: 'bulbapedia-trainers ("All of these Trainers are equally likely to appear except Anabel, who appears only one-seventh as frequently") + sadisticmystic-sheet ("7x rarer")',
     versionsSource: 'bulbapedia-battle-tree (Special Trainers table, S/M columns)',
@@ -401,6 +426,8 @@ const bossesJson = {
     'red-super': { trainerId: 190, format: 'singles', course: 'super', battle: 50, bp: 50, teamSize: 3, iv: 31 },
     'blue-normal': { trainerId: 204, format: 'doubles', course: 'normal', battle: 20, bp: 20, unlocks: 'doubles-super', teamSize: 4, iv: 31 },
     'blue-super': { trainerId: 191, format: 'doubles', course: 'super', battle: 50, bp: 50, teamSize: 4, iv: 31 },
+    // Multi: Red and Blue together (smogon-guide), each with 2 Pokémon from their Super rosters. Battle 50: APPROXIMATION.
+    'redblue-super': { trainerId: 190, partnerTrainerId: 191, format: 'multi', course: 'super', battle: 50, bp: 50, teamSize: 2, iv: 31 },
   },
 };
 
@@ -430,7 +457,15 @@ const rulesJson = {
   teamSize: {
     singles: { registeredMax: 6, registeredMin: 3, bring: 3 },
     doubles: { registeredMax: 6, registeredMin: 4, bring: 4 },
-    multi: { bring: 2, future: true },
+    multi: { registeredMax: 6, registeredMin: 2, bring: 2 },
+  },
+  multiPartners: {
+    scoutCost: 10,
+    scoutable: 'special Trainers you have beaten (not Battle Legends)',
+    partnerTeam: 'the first two Pokémon the Trainer used in the battle where you beat them',
+    source: 'serebii-battle-tree ("scout" a Trainer for 10 BP) + smogon-guide (scouting costs 10 BP; the partner uses "the first 2 Pokemon it had in that specific battle")',
+    defaultPartners: ['Sina', 'Dexio'],
+    defaultPartnersNote: 'App choice: the game starts you with Pokémon Breeder Rada.',
   },
   bannedSpecies: { includeAllForms: true, species: BANNED },
   battlePoints: {

@@ -1,4 +1,4 @@
-import type { Battle, Pokemon, PRNG, SideID } from '@pkmn/sim';
+import type { Battle, Pokemon, PRNG, Side, SideID } from '@pkmn/sim';
 import type { AIContext, BattleAI } from '../types';
 import { doublesTargets, hitsPartner, isSpread } from '../../engine/choices';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequest } from '../../engine/sim-types';
@@ -47,31 +47,35 @@ export class HeuristicAI implements BattleAI {
       const n = request.maxChosenTeamSize ?? request.side.pokemon.length;
       return `team ${Array.from({ length: n }, (_, i) => i + 1).join('')}`;
     }
-    const doubles = ctx.battle.gameType === 'doubles';
+    // Multi Battles play like Doubles, with one Pokémon on this side (the partner is another trainer).
+    const doubles = ctx.battle.gameType !== 'singles';
     if (isForceSwitch(request)) return doubles ? this.chooseDoublesReplacements(ctx, request) : this.chooseReplacement(ctx);
     if (isMoveRequest(request)) return doubles ? this.chooseDoublesActions(ctx, request) : this.chooseAction(ctx, request);
     return 'default';
   }
 
   /**
-   * Doubles: each active Pokémon picks its own action. Single-target moves are
-   * scored against each foe (the choice names the target), spread moves against
-   * both foes minus any damage to the partner. One Mega Evolution and one Z-Move
-   * per turn. No voluntary switching (see AI_NOTES.md).
+   * Doubles (and Multi): each active Pokémon picks its own action. Single-target
+   * moves are scored against each foe (the choice names the target), spread moves
+   * against both foes minus any damage to the partner. One Mega Evolution and
+   * one Z-Move per turn. No voluntary switching (see AI_NOTES.md). In a Multi
+   * Battle this side has one Pokémon; its partner belongs to the allied trainer.
    */
   private chooseDoublesActions(ctx: AIContext, request: Extract<SimRequest, { active: unknown }>): string {
     const { battle, side, prng } = ctx;
     const cfg = this.config;
     const mySide = battle.getSide(side);
-    const foes = mySide.foe.active.filter((f): f is Pokemon => !!f && !f.fainted && f.hp > 0);
+    const foes = fieldFoes(mySide);
     let megaUsed = false;
     let zUsed = false;
     const notes: string[] = [];
-    const choices = request.active.map((active, slot) => {
-      const me = mySide.active[slot];
-      const reqMon = request.side.pokemon[slot];
+    const choices = request.active.map((active, index) => {
+      const me = mySide.active[index];
+      const reqMon = request.side.pokemon[index];
       if (!me || me.fainted || !reqMon || isFainted(reqMon)) return 'pass';
-      const partner = mySide.active[1 - slot];
+      // Field position decides targeting (in Multi the partner's trainer holds the other spot).
+      const slot = me.position;
+      const partner = battle.gameType === 'multi' ? mySide.allySide?.active[0] : mySide.active[1 - slot];
       const partnerUp = !!partner && !partner.fainted && partner.hp > 0;
       const usable = active.moves
         .map((m, i) => ({ m, moveSlot: i + 1, dex: battle.dex.moves.get(m.id) }))
@@ -161,7 +165,7 @@ export class HeuristicAI implements BattleAI {
   /** Doubles replacements: for each empty slot, the strongest remaining Pokémon against the foes still standing. */
   private chooseDoublesReplacements({ battle, side }: AIContext, request: Extract<SimRequest, { forceSwitch: boolean[] }>): string {
     const mySide = battle.getSide(side);
-    const foe = mySide.foe.active.find(f => f && !f.fainted && f.hp > 0);
+    const foe = fieldFoes(mySide)[0];
     const taken = new Set<number>();
     return request.forceSwitch.map(needed => {
       if (!needed) return 'pass';
@@ -275,6 +279,11 @@ export class HeuristicAI implements BattleAI {
   }
 }
 
+/** The opposing Pokémon on the field: the foe side's, plus its ally trainer's in a Multi Battle. */
+function fieldFoes(mySide: Side): Pokemon[] {
+  return [...mySide.foe.active, ...(mySide.foe.allySide?.active ?? [])].filter((f): f is Pokemon => !!f && !f.fainted && f.hp > 0);
+}
+
 /** Doubles: damage to the partner (fraction of its HP) that makes a move count as hurting it badly. */
 const HEAVY_PARTNER_DAMAGE = 0.3;
 
@@ -284,13 +293,19 @@ const POINTLESS = 0.04;
 /**
  * Softmax roll over scores normalized by the best option, so the roll compares
  * relative strength: with temperature 0.12 an option at 90% of the best is
- * picked ~0.43x as often, one at 70% ~0.08x. Pointless options are dropped
- * unless nothing else is available (then the pick is uniform).
+ * picked ~0.43x as often, one at 70% ~0.08x. Pointless options are dropped.
+ * When nothing is worthwhile, the AI does the most it can (chip damage beats a
+ * move that's certain to fail, which scores 0); only if everything ties is the
+ * pick random.
  */
 export function weightedPick(options: DecisionOption[], temperature: number, prng: PRNG): string {
   if (!options.length) return 'default';
   const useful = options.filter(o => o.score > POINTLESS);
-  if (!useful.length) return options[prng.random(options.length)].choice;
+  if (!useful.length) {
+    const best = Math.max(...options.map(o => o.score));
+    const top = options.filter(o => o.score === best);
+    return top[prng.random(top.length)].choice;
+  }
   const max = Math.max(...useful.map(o => o.score));
   const weights = useful.map(o => Math.exp((o.score / max - 1) / temperature));
   const total = weights.reduce((a, b) => a + b, 0);

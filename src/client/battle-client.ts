@@ -1,13 +1,13 @@
 import { Battle as ClientBattle } from '@pkmn/client';
 import type { PokemonSet } from '@pkmn/data';
 import { Protocol } from '@pkmn/protocol';
-import { LogFormatter } from '@pkmn/view';
 import type { BattleTreeFormat } from '../engine/format-constants';
 import type { AIKind, FromEngine, OpponentSpec, TeamInput } from '../engine/protocol';
 import type { BattleResult } from '../engine/session';
 import type { SimRequest } from '../engine/sim-types';
 import { gens } from '../team/dex';
 import { nextTimers, NO_TIMERS, type FieldTimers } from './field-timers';
+import { linkMultiAllies, TreeLogFormatter } from './log-formatter';
 import { planLine, type BattleAnimation, type PlannedStep } from './playback';
 import type { EngineTransport } from './transport';
 
@@ -28,6 +28,8 @@ export interface BattleSnapshot {
   seedText: string | null;
   seed: string | null;
   opponentName: string | null;
+  /** Whose view this is: the player (p1), or the partner in an online Multi Battle (p3). */
+  perspective: 'p1' | 'p3';
   /** Battle state as the player sees it. Mutable object owned by the client; re-read on every rev. */
   battle: ClientBattle | null;
   /** The player's current request, or null if none is pending. */
@@ -67,6 +69,9 @@ export interface StartOptions {
   seedText: string;
   player: { name: string; team: TeamInput };
   opponent: OpponentSpec;
+  /** Multi Battles: the player's partner (AI, or another person online: `human`) and the second opponent. */
+  partner?: { name: string; team: PokemonSet[]; human?: boolean };
+  opponent2?: OpponentSpec;
   ai: AIKind;
 }
 
@@ -76,7 +81,7 @@ type QueueItem =
   | { kind: 'end'; result: BattleResult };
 
 const EMPTY: BattleSnapshot = {
-  rev: 0, phase: 'idle', battleId: null, seedText: null, seed: null, opponentName: null, battle: null,
+  rev: 0, phase: 'idle', battleId: null, seedText: null, seed: null, opponentName: null, perspective: 'p1', battle: null,
   request: null, awaiting: false, playing: false, animation: null, currentMove: null, caption: null, fieldTimers: NO_TIMERS, log: [], result: null, problems: [], error: null,
 };
 
@@ -90,7 +95,7 @@ const EMPTY: BattleSnapshot = {
 export class BattleClient {
   private snapshot = EMPTY;
   private readonly listeners = new Set<() => void>();
-  private formatter: LogFormatter | null = null;
+  private formatter: TreeLogFormatter | null = null;
   private logId = 0;
   private animId = 0;
   private nextBattle = 0;
@@ -102,10 +107,17 @@ export class BattleClient {
   private timer: ReturnType<typeof setTimeout> | null = null;
   /** Animation speed multiplier on durations: 0 = instant (no animations), 1 = normal, 2 = slow. */
   private speed: number;
+  private readonly perspective: 'p1' | 'p3';
 
-  constructor(transport: EngineTransport, opts: { speed?: number } = {}) {
+  /**
+   * perspective 'p3': the partner's client in an online Multi Battle. Its transport delivers the
+   * battle another player's engine runs (see attach), and its choices go back to that engine.
+   */
+  constructor(transport: EngineTransport, opts: { speed?: number; perspective?: 'p1' | 'p3' } = {}) {
     this.transport = transport;
     this.speed = opts.speed ?? 0;
+    this.perspective = opts.perspective ?? 'p1';
+    this.snapshot = { ...EMPTY, perspective: this.perspective };
     this.unlisten = transport.listen(msg => this.receive(msg));
   }
 
@@ -133,9 +145,16 @@ export class BattleClient {
     this.resetQueue();
     const battleId = `${this.idPrefix}-${++this.nextBattle}`;
     this.formatter = null;
-    this.set({ ...EMPTY, phase: 'starting', battleId, seedText: opts.seedText });
+    this.set({ ...EMPTY, perspective: this.perspective, phase: 'starting', battleId, seedText: opts.seedText });
     this.transport.send({ type: 'start', battleId, ...opts });
     return battleId;
+  }
+
+  /** Follows a battle started elsewhere (an online partner's engine): its messages arrive through the transport. */
+  attach(battleId: string): void {
+    this.resetQueue();
+    this.formatter = null;
+    this.set({ ...EMPTY, perspective: this.perspective, phase: 'starting', battleId });
   }
 
   choose(choice: string): void {
@@ -163,12 +182,15 @@ export class BattleClient {
     if (msg.battleId !== this.snapshot.battleId && msg.battleId !== '*') return;
     switch (msg.type) {
       case 'started': {
-        const battle = new ClientBattle(gens, null, [msg.playerTeam as PokemonSet[]]);
-        this.formatter = new LogFormatter('p1', battle);
+        // The known sets fill in p1's Pokémon; a partner's (p3) client doesn't need them.
+        const battle = new ClientBattle(gens, null, this.perspective === 'p1' ? [msg.playerTeam as PokemonSet[]] : undefined);
+        this.formatter = new TreeLogFormatter(this.perspective, battle);
         this.set({ ...this.snapshot, phase: 'active', battle, seed: msg.seed, opponentName: msg.opponentName });
         return;
       }
       case 'chunks': {
+        // An online partner's view (relayed to them by whoever hosts the battle).
+        if (msg.side) return;
         const items: QueueItem[] = [];
         let request: QueueItem | null = null;
         for (const chunk of msg.chunks) {
@@ -243,6 +265,7 @@ export class BattleClient {
       const json = item.line.slice('|request|'.length);
       if (json) {
         battle.add(item.line);
+        linkMultiAllies(battle);
         const parsed = JSON.parse(json) as SimRequest;
         draft.request = 'wait' in parsed && parsed.wait ? null : parsed;
         draft.awaiting = false;
@@ -275,6 +298,7 @@ export class BattleClient {
       if (args[0] === 'turn') draft.currentMove = null;
       draft.fieldTimers = nextTimers(draft.fieldTimers, args as readonly string[], kwArgs as Record<string, unknown>);
       battle.add(args, kwArgs);
+      if (args[0] === 'gametype') linkMultiAllies(battle);
     }
     const anim = step.animation;
     if (anim?.kind === 'move' && anim.moveName) {

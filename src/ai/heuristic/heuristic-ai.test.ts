@@ -288,3 +288,16 @@ describe('HeuristicAI in Doubles', () => {
     expect((counts['move 1 1'] ?? 0) / 200).toBeGreaterThan(0.8);
   });
 });
+
+describe('moves that are certain to fail', () => {
+  // Rock Slide only chips Great Tusk; Toxic and Thunder Wave fail on a paralyzed target; Roost isn't needed.
+  const DRAGONITE = `Dragonite @ Leftovers\nAbility: Multiscale\nEVs: 252 HP / 252 Def\nBold Nature\n- Rock Slide\n- Toxic\n- Thunder Wave\n- Roost`;
+  const TUSK = `Donphan @ Paradoxorb-A\nAbility: Sturdy\nEVs: 252 HP / 252 Def\nImpish Nature\n- Headlong Rush\n- Rapid Spin`;
+
+  it('never repeats Thunder Wave / Toxic on a target that already has a status, even when nothing else is worthwhile', () => {
+    const battle = scenario(TUSK, DRAGONITE, b => b.p1.active[0].setStatus('par'));
+    const counts = decide(battle, 120);
+    expect(share(counts, 'move 2') + share(counts, 'move 3')).toBe(0);
+    expect(share(counts, 'move 1')).toBe(1); // the chip damage is the most it can do
+  });
+});

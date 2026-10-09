@@ -22,6 +22,7 @@
     "@pkmn/sim": "^0.10.11",
     "@pkmn/view": "^0.7.3",
     "@smogon/calc": "^0.12.0",
+    "obscenity": "^0.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

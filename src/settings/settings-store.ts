@@ -18,6 +18,8 @@ export interface AppSettings {
   sprites: boolean;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
+  /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
+  trainerName: string;
 }
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
@@ -27,6 +29,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   showDebugTools: false,
   sprites: true,
   animationSpeed: 'normal',
+  trainerName: '',
 };
 
 export const SETTINGS_KEY = 'settings.v1';

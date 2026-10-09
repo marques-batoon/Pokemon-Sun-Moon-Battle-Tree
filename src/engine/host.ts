@@ -3,7 +3,7 @@ import { createAI } from '../ai';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats, type BattleTreeFormat } from './format';
 import { testOpponentTeam } from './fixtures';
 import type { TeamValidation } from '../team/types';
-import type { FromEngine, OpponentSpec, TeamInput, ToEngine } from './protocol';
+import type { AIKind, FromEngine, OpponentSpec, TeamInput, ToEngine } from './protocol';
 import { Rng } from '../run/rng';
 import { seedFromString } from './seed';
 import { BattleSession } from './session';
@@ -48,6 +48,7 @@ function parseTeam(input: TeamInput): PokemonSet[] {
 export class EngineHost {
   private readonly sessions = new Map<string, BattleSession>();
   private readonly pending = new Map<string, string[]>();
+  private readonly aiKinds = new Map<string, AIKind>();
   private readonly emit: (msg: FromEngine) => void;
 
   constructor(emit: (msg: FromEngine) => void) {
@@ -58,7 +59,8 @@ export class EngineHost {
     try {
       switch (msg.type) {
         case 'start': return this.start(msg);
-        case 'choose': return this.sessions.get(msg.battleId)?.choose(msg.choice);
+        case 'choose': return this.sessions.get(msg.battleId)?.choose(msg.choice, msg.side ?? 'p1');
+        case 'takeover': return this.sessions.get(msg.battleId)?.takeOver(msg.side, createAI(this.aiKinds.get(msg.battleId) ?? 'heuristic'));
         case 'stop': return this.stop(msg.battleId);
         case 'validate':
           this.emit({ type: 'validation', requestId: msg.requestId, result: validateTeamDetailed(msg.format, msg.sets) });
@@ -81,6 +83,20 @@ export class EngineHost {
     }
     const seed = seedFromString(msg.seedText);
     const opponent = this.buildOpponent(msg.opponent, msg.seedText);
+    const multi = msg.format === 'multi';
+    if (multi && (!msg.partner || !msg.opponent2)) throw new Error('A Multi Battle needs a partner and two opponents.');
+    // An online partner's team comes from another person: check it like the player's.
+    const human = multi && !!msg.partner!.human;
+    const partnerProblems = human ? validatePlayerTeam(msg.format, msg.partner!.team) : [];
+    if (partnerProblems.length) {
+      this.emit({ type: 'invalid-team', battleId: msg.battleId, problems: partnerProblems.map(p => `${msg.partner!.name}'s team: ${p}`) });
+      return;
+    }
+    this.aiKinds.set(msg.battleId, msg.ai);
+    const partner = !multi ? null : human
+      ? { name: msg.partner!.name, team: msg.partner!.team, onOutput: (chunk: string) => this.queue(msg.battleId, chunk, 'p3') }
+      : { name: msg.partner!.name, team: msg.partner!.team, ai: createAI(msg.ai) };
+    const opponent2 = multi ? this.buildOpponent(msg.opponent2!, `${msg.seedText}|second`) : null;
     const session = new BattleSession({
       format: msg.format,
       teamPreview: msg.teamPreview ?? true,
@@ -88,16 +104,19 @@ export class EngineHost {
       p1: { name: msg.player.name, team: playerTeam },
       p2: opponent,
       p2AI: createAI(msg.ai),
+      ...(multi ? { p3: partner!, p4: { ...opponent2!, ai: createAI(msg.ai) } } : {}),
       onP1Output: chunk => this.queue(msg.battleId, chunk),
       onWarning: message => this.emit({ type: 'warning', battleId: msg.battleId, message }),
     });
     this.sessions.set(msg.battleId, session);
-    this.emit({ type: 'started', battleId: msg.battleId, seed, opponentName: opponent.name, playerTeam });
+    this.emit({ type: 'started', battleId: msg.battleId, seed, opponentName: opponent2 ? `${opponent.name} & ${opponent2.name}` : opponent.name, playerTeam });
     session.start();
     void session.done.then(result => {
       this.flush(msg.battleId);
+      this.flush(msg.battleId, 'p3');
       this.emit({ type: 'end', battleId: msg.battleId, result });
       this.sessions.delete(msg.battleId);
+      this.aiKinds.delete(msg.battleId);
     });
   }
 
@@ -112,6 +131,8 @@ export class EngineHost {
     this.sessions.get(battleId)?.stop();
     this.sessions.delete(battleId);
     this.pending.delete(battleId);
+    this.pending.delete(`${battleId}|p3`);
+    this.aiKinds.delete(battleId);
   }
 
   /**
@@ -119,17 +140,19 @@ export class EngineHost {
    * |request| just before that turn's log; batching lets the UI apply the
    * request after the log it belongs with.
    */
-  private queue(battleId: string, chunk: string) {
-    const list = this.pending.get(battleId);
+  private queue(battleId: string, chunk: string, side?: 'p3') {
+    const key = side ? `${battleId}|${side}` : battleId;
+    const list = this.pending.get(key);
     if (list) { list.push(chunk); return; }
-    this.pending.set(battleId, [chunk]);
-    setTimeout(() => this.flush(battleId), 0);
+    this.pending.set(key, [chunk]);
+    setTimeout(() => this.flush(battleId, side), 0);
   }
 
-  private flush(battleId: string) {
-    const chunks = this.pending.get(battleId);
+  private flush(battleId: string, side?: 'p3') {
+    const key = side ? `${battleId}|${side}` : battleId;
+    const chunks = this.pending.get(key);
     if (!chunks?.length) return;
-    this.pending.delete(battleId);
-    this.emit({ type: 'chunks', battleId, chunks });
+    this.pending.delete(key);
+    this.emit({ type: 'chunks', battleId, chunks, ...(side && { side }) });
   }
 }
