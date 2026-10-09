@@ -18,6 +18,7 @@ import { useAppSettings } from '../useAppSettings';
 import { useBattleSnapshot } from '../useBattleClient';
 import { hashParam } from '../useHashRoute';
 import { roomStore } from './room-store';
+import { DebugOpponentPicker } from '../tree/DebugOpponentPicker';
 
 /** Online Multi Battles: team up with a friend against Battle Tree trainers. */
 export function OnlinePage({ teamStore }: { teamStore: TeamStore }) {
@@ -107,6 +108,9 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
   const teams = useTeams(teamStore);
   const { lobby, role, partnerName } = snap;
   const host = role === 'host';
+  // Debug tools are the host's alone: the guest never sees them, whatever their own settings.
+  const { showDebugTools } = useAppSettings();
+  const hostDebug = host && showDebugTools;
   const { battleFoes } = snap;
   const [copied, setCopied] = useState(false);
   const invite = `${location.origin}${location.pathname}#/online?room=${snap.code}`;
@@ -133,6 +137,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
           opponent={{ trainers: battleFoes.map(id => TRAINERS[id]), battleKey: battle.seedText ?? snap.battleId }}
           onContinue={battle.phase === 'ended' ? () => room.leaveBattleScreen() : undefined}
           continueLabel="Back to the room"
+          debugTools={hostDebug}
         />
         {snap.aiPartner && <p className="muted small">The AI is playing {host ? `${partnerName ?? 'your partner'}'s` : 'your'} Pokémon.</p>}
         {failed && <button onClick={() => room.leaveBattleScreen()}>Back to the room</button>}
@@ -182,6 +187,10 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       )}
 
       {lobby.notice && <p className="problems">{lobby.notice}</p>}
+
+      {hostDebug && !lobby.inBattle && (
+        <DebugOpponentPicker key={lobby.battle} format="multi" onApply={ids => room.debugChooseOpponents(ids)} />
+      )}
 
       <h3>Your Pokémon</h3>
       <TeamSetup format="multi" teams={teams} initial={room.teamChoice ?? undefined} onChange={team => room.setTeam(team ? team.bring.map(i => team.sets[i]) : null, team)} />

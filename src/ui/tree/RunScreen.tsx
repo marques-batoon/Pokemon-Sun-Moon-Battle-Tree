@@ -11,6 +11,8 @@ import { TeamSetup } from './TeamSetup';
 import { OpponentPortrait } from '../components/OpponentPortrait';
 import { PokemonIcon } from '../components/PokemonSprite';
 import { PartnerCard } from './PartnerCard';
+import { DebugOpponentPicker } from './DebugOpponentPicker';
+import { pairedTrainer } from '../../data/battle-tree';
 
 interface Props {
   controller: RunController;
@@ -109,6 +111,15 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
       )}
 
       {error && <p className="problems">{error}</p>}
+
+      {showDebugTools && !changing && run.status === 'ready' && (
+        <DebugOpponentPicker
+          key={`${run.id}:${run.battle}`}
+          format={run.format}
+          exclude={run.partner ? [run.partner.trainerId, ...(pairedTrainer(run.partner.trainerId) ? [pairedTrainer(run.partner.trainerId)!.partnerId] : [])] : []}
+          onApply={ids => controller.debugChooseOpponent(key, ids)}
+        />
+      )}
 
       <div className="row-actions">
         <button className="danger" onClick={() => { if (confirm(`Retire? Your ${run.wins}-win streak ends.`)) controller.retire(key); }}>Retire</button>

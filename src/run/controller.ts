@@ -1,11 +1,11 @@
 import type { BattleClient, BattleSnapshot } from '../client/battle-client';
 import type { AIKind } from '../engine/protocol';
-import { TRAINERS } from '../data/battle-tree';
+import { pairedTrainer, TRAINERS } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
 import { partnerTeam, rollOffer, runPartner } from './partners';
 import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
-import { bpForWin, courseSchedule, displayName, planOpponent } from './selection';
+import { bpForWin, courseSchedule, displayName, planChosenOpponent, planOpponent } from './selection';
 import {
   bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, partnerPrice, runKey,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
@@ -218,6 +218,20 @@ export class RunController {
   resetProgress(): void {
     this.active = null;
     this.store.reset();
+  }
+
+  /**
+   * Debug: the next battle is against special trainers you choose (one; two in a Multi Battle,
+   * not your partner or their twin). Makes the challenge unranked. Later battles are drawn as usual.
+   */
+  debugChooseOpponent(key: RunKey, trainerIds: number[]): void {
+    const run = this.requireRun(key);
+    if (run.status !== 'ready') throw new Error('Choose opponents between battles.');
+    const partnerId = run.partner?.trainerId;
+    const banned = partnerId === undefined ? [] : [partnerId, ...(pairedTrainer(partnerId) ? [pairedTrainer(partnerId)!.partnerId] : [])];
+    if (trainerIds.some(id => banned.includes(id))) throw new Error("Your partner (and their twin) can't be your opponent.");
+    const next = planChosenOpponent(run.seedText, run.format, run.battle, trainerIds);
+    this.save({ ...run, next, debug: true });
   }
 
   /** Debug helper: unlock Super Singles / Super Doubles (Multi: both) without clearing Normal. */

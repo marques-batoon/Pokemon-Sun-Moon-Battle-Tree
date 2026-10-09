@@ -28,6 +28,25 @@ describe('Gym Leaders in battle', () => {
     expect(roster(janine.id, 'x').find(s => s.species === 'Nidoqueen')!.gender).toBe('F');
   });
 
+  it('battles with the battle-50 trainers (Marques vs Thomas), Hidden Power Fire staying Fire at 31 IVs', async () => {
+    const id = (name: string) => TRAINERS.find(t => t.name === name && t.custom && t.kind === 'legend')!.id;
+    const session = new BattleSession({
+      format: 'singles',
+      teamPreview: false,
+      seed: seedFromString('b50-smoke'),
+      p1: { name: 'Marques', team: roster(id('Marques'), 'm') },
+      p2: { name: 'Thomas', team: roster(id('Thomas'), 't') },
+      p1AI: new HeuristicAI(),
+      p2AI: new HeuristicAI(),
+    });
+    session.start();
+    const venusaur = session.battle.p1.pokemon.find(p => p.species.baseSpecies === 'Venusaur')!;
+    expect(venusaur.hpType).toBe('Fire');
+    expect(Object.values(venusaur.set.ivs).every(iv => iv === 31)).toBe(true);
+    const result = await session.done;
+    expect(result.turns).toBeGreaterThan(0);
+  });
+
   // Every set's moves, items and Abilities run in the simulator: each leader's first six
   // against their last six (so 8-Pokémon rosters use everyone), heuristic AI on both sides.
   it.each(leaders.map(t => [t.name, t.id] as const))('%s battles without errors', async (_name, id) => {

@@ -20,5 +20,5 @@ export const BATTLE_TITLE: Record<Format, string> = { singles: 'Single Battles',
 export function unrankedReason(run: RunState): string | null {
   if (!run.debug) return null;
   if ((run.settings.ai ?? 'heuristic') !== 'heuristic') return 'Practice against the random AI';
-  return 'Debug run (started past battle 1)';
+  return 'Debug run (debug tools used: a later start or chosen opponents)';
 }

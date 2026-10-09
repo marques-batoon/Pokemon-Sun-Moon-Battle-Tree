@@ -1,0 +1,157 @@
+{
+ "source": "Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.",
+ "notes": [
+  "They share the Battle Legends' battle-50 slot by weight (Red / Blue are weight 7 in bosses.json); a Multi entry lists the first (left) trainer first.",
+  "IV 31 like the Battle Legends; IV lines in the exports are ignored. Sprites are the user's own pixel art in public/trainers/."
+ ],
+ "trainers": [
+  {
+   "name": "Marques",
+   "class": "Pokémon Trainer",
+   "classGender": "M",
+   "sprite": "/trainers/marques.png",
+   "sets": [
+    {
+     "species": "Venusaur",
+     "item": "Venusaurite",
+     "ability": "Chlorophyll",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 6,
+      "spa": 252,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Sludge Bomb",
+      "Giga Drain",
+      "Hidden Power Fire",
+      "Leech Seed"
+     ]
+    },
+    {
+     "species": "Poliwrath",
+     "item": "Waterium Z",
+     "ability": "Water Absorb",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 6,
+      "spe": 0
+     },
+     "moves": [
+      "Waterfall",
+      "Drain Punch",
+      "Ice Punch",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Alakazam",
+     "item": "Focus Sash",
+     "ability": "Magic Guard",
+     "nature": "Timid",
+     "evs": {
+      "hp": 6,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Psyshock",
+      "Shadow Ball",
+      "Focus Blast",
+      "Dazzling Gleam"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Thomas",
+   "class": "Pokémon Trainer",
+   "classGender": "M",
+   "sprite": "/trainers/thomas.png",
+   "sets": [
+    {
+     "species": "Ampharos",
+     "item": "Choice Specs",
+     "ability": "Static",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 6,
+      "spe": 0
+     },
+     "moves": [
+      "Thunderbolt",
+      "Dragon Pulse",
+      "Focus Blast",
+      "Volt Switch"
+     ]
+    },
+    {
+     "species": "Infernape",
+     "item": "Firium Z",
+     "ability": "Blaze",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 6,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Flare Blitz",
+      "Close Combat",
+      "Mach Punch",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Drampa",
+     "item": "Drampanite",
+     "ability": "Berserk",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 6,
+      "spe": 0
+     },
+     "moves": [
+      "Hyper Voice",
+      "Draco Meteor",
+      "Fire Blast",
+      "Roost"
+     ]
+    }
+   ]
+  }
+ ],
+ "battles": [
+  {
+   "format": "multi",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Marques",
+    "Thomas"
+   ],
+   "weight": 7
+  }
+ ]
+}

@@ -7,6 +7,7 @@ import { useTeams } from '../builder/hooks';
 import { getKeyValueStore, getRunController, getSettingsStore, getTeamStore } from '../services';
 import { keyLabel, useRunState } from '../tree/hooks';
 import { RUN_KEYS } from '../../run/types';
+import { checkDebugPassword } from '../../settings/debug-unlock';
 import { TrainerNameField } from '../components/TrainerNameField';
 import { TRAINER_NAME_MAX } from '../../online/trainer-name';
 
@@ -82,8 +83,7 @@ export function SettingsPage() {
 
       <section className="panel">
         <h2>Developer</h2>
-        <Toggle checked={settings.showDebugTools} onChange={v => store.update({ showDebugTools: v })}
-          label="Show debug tools" hint='Battle seeds and input logs, "start at battle N" and "unlock Super" when starting a challenge. Debug challenges never count toward records.' />
+        <DebugToggle on={settings.showDebugTools} onChange={v => store.update({ showDebugTools: v })} />
       </section>
 
       <DataSection
@@ -103,6 +103,47 @@ export function SettingsPage() {
         <p className="muted small">Sources, approximations and known deviations are documented in DATA_NOTES.md and AI_NOTES.md in the project.</p>
       </section>
     </div>
+  );
+}
+
+/** The debug tools switch: turning it on asks for the password (turning it off doesn't). */
+function DebugToggle({ on, onChange }: { on: boolean; onChange: (on: boolean) => void }) {
+  const [asking, setAsking] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
+  const close = () => { setAsking(false); setPassword(''); setError(null); };
+  const unlock = async () => {
+    setChecking(true);
+    try {
+      if (await checkDebugPassword(password)) { onChange(true); close(); }
+      else setError('Wrong password.');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setChecking(false);
+    }
+  };
+  return (
+    <>
+      <Toggle
+        checked={on || asking}
+        onChange={v => { if (!v) { onChange(false); close(); } else setAsking(true); }}
+        label="Show debug tools"
+        hint='Battle seeds and input logs, "start at battle N", "unlock Super" and choosing special trainer opponents. Debug challenges never count toward records. Needs the developer password.'
+      />
+      {asking && !on && (
+        <form className="debug-unlock" onSubmit={e => { e.preventDefault(); void unlock(); }}>
+          <label className="fld">
+            <span>Developer password</span>
+            <input type="password" value={password} autoFocus autoComplete="off" onChange={e => { setPassword(e.target.value); setError(null); }} />
+          </label>
+          <button type="submit" className="primary" disabled={!password || checking}>Unlock</button>
+          <button type="button" onClick={close}>Cancel</button>
+          {error && <p className="problems" role="alert">{error}</p>}
+        </form>
+      )}
+    </>
   );
 }
 

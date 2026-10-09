@@ -72,10 +72,32 @@ describe('Multi: planning opponents', () => {
     expect(planOpponent('multi-plan', 'multi', 'super', 7, DEFAULT_SETTINGS, SINA)).toEqual(planOpponent('multi-plan', 'multi', 'super', 7, DEFAULT_SETTINGS, SINA));
   });
 
-  it('puts Battle Legends Red and Blue together at battle 50', () => {
-    const plan = planOpponent('m', 'multi', 'super', 50, DEFAULT_SETTINGS, SINA);
-    expect([plan.displayName, plan.second!.displayName]).toEqual(['Battle Legend Red', 'Battle Legend Blue']);
-    expect([plan.team.length, plan.second!.team.length]).toEqual([2, 2]);
+  it('draws battle 50 between Red & Blue and Marques & Thomas (weight 7 each), Marques always first', () => {
+    const pairs = new Map<string, number>();
+    const n = 4000;
+    for (let i = 0; i < n; i++) {
+      const plan = planOpponent(`b50-${i}`, 'multi', 'super', 50, DEFAULT_SETTINGS, SINA);
+      const names = `${plan.displayName} & ${plan.second!.displayName}`;
+      pairs.set(names, (pairs.get(names) ?? 0) + 1);
+      expect([plan.team.length, plan.second!.team.length]).toEqual([2, 2]);
+      expect(plan.kind).toBe('legend');
+    }
+    expect([...pairs.keys()].sort()).toEqual(['Battle Legend Red & Battle Legend Blue', 'Pokémon Trainer Marques & Pokémon Trainer Thomas']);
+    // 7 : 7, so about half each.
+    expect(Math.abs(pairs.get('Pokémon Trainer Marques & Pokémon Trainer Thomas')! - n / 2)).toBeLessThan(4.5 * Math.sqrt(n / 4));
+    // Their teams come from their own sets, with their own moves.
+    const plan = [...Array(200).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, DEFAULT_SETTINGS, SINA)).find(p => p.displayName.endsWith('Marques'))!;
+    expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam'].includes(s.species))).toBe(true);
+    expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa'].includes(s.species))).toBe(true);
+    const venusaur = SETS.find(s => s.label === 'Venusaur (Marques 1)')!;
+    expect(venusaur.moves).toContain('Hidden Power Fire');
+  });
+
+  it('keeps Red alone at battle 50 of Super Singles and Blue in Super Doubles', () => {
+    for (let i = 0; i < 50; i++) {
+      expect(planOpponent(`s50-${i}`, 'singles', 'super', 50, DEFAULT_SETTINGS).displayName).toBe('Battle Legend Red');
+      expect(planOpponent(`d50-${i}`, 'doubles', 'super', 50, DEFAULT_SETTINGS).displayName).toBe('Battle Legend Blue');
+    }
   });
 
   it('replaces a locked Anabel with an ordinary trainer, per trainer', () => {
@@ -272,6 +294,38 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(partners.owned.Cynthia.offer.length).toBeGreaterThanOrEqual(2);
     expect(partners.beaten).toEqual({ Wally: 1, Guzma: 1 });
     expect(partnersForSale(partners).map(p => p.price)).toEqual([1000, 1000]);
+  });
+});
+
+describe('Debug: choosing the next opponents', () => {
+  const id = (name: string) => specialTrainer(name).id;
+
+  it('replaces the next opponent with the chosen special trainer and makes the run unranked', () => {
+    const { controller, battle } = setup();
+    controller.startRun({ course: 'normal', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: 'pick' });
+    controller.debugChooseOpponent('singles-normal', [id('Cynthia')]);
+    const run = controller.run('singles-normal')!;
+    expect([run.next.displayName, run.next.battle, run.next.team.length, run.debug]).toEqual(['Pokémon Trainer Cynthia', 1, 3, true]);
+    expect(() => controller.debugChooseOpponent('singles-normal', [190])).toThrow(/special trainers/);
+    // The battle after is drawn as usual.
+    winThrough(controller, battle, 'singles-normal', 1);
+    expect(controller.run('singles-normal')!.next.kind).toBe('regular');
+  });
+
+  it('takes two opponents in Multi, keeps Tate and Liza together, and never your partner', () => {
+    const { controller } = setup();
+    controller.debugUnlockSuper('multi');
+    controller.startRun({ format: 'multi', course: 'super', team: MULTI_TEAM, settings: DEFAULT_SETTINGS, seedText: 'pick-multi', partner: picks('Sina') });
+    controller.debugChooseOpponent('multi-super', [id('Brock'), id('Misty')]);
+    let next = controller.run('multi-super')!.next;
+    expect([next.displayName, next.second!.displayName]).toEqual(['Gym Leader Brock', 'Gym Leader Misty']);
+    expect([next.team.length, next.second!.team.length]).toEqual([2, 2]);
+    controller.debugChooseOpponent('multi-super', [id('Liza')]);
+    next = controller.run('multi-super')!.next;
+    expect([next.displayName, next.second!.displayName]).toEqual(['Gym Leader Liza', 'Gym Leader Tate']);
+    expect(() => controller.debugChooseOpponent('multi-super', [id('Brock'), id('Tate')])).toThrow(/only battles alongside Liza/);
+    expect(() => controller.debugChooseOpponent('multi-super', [id('Brock')])).toThrow(/two different/);
+    expect(() => controller.debugChooseOpponent('multi-super', [id('Sina'), id('Brock')])).toThrow(/partner/);
   });
 });
 

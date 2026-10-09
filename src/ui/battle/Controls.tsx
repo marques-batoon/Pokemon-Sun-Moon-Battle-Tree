@@ -253,7 +253,8 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     else setPending(p);
   };
 
-  // Target buttons, laid out like the field: the foe's b and a on top, the player's a and b below.
+  // Target buttons, laid out like the field: the foe's b and a on top (Multi: a and b, the first
+  // opponent on the left), the player's a and b below.
   const targetButton = (loc: number) => {
     const side = loc > 0 ? battle?.p2 : battle?.p1;
     const idx = Math.abs(loc) - 1;
@@ -283,7 +284,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
         <div className="target-pick">
           <span className="muted small">Choose a target for {active && (pending.z ? active.canZMove?.[pending.moveIndex]?.move : active.moves[pending.moveIndex].move)}:</span>
           <div className="target-grid">
-            {[2, 1].map(targetButton)}
+            {(battle?.gameType === 'multi' ? [1, 2] : [2, 1]).map(targetButton)}
             {[-1, -2].map(targetButton)}
           </div>
           <div className="row-actions"><button type="button" onClick={() => setPending(null)}>Cancel</button></div>

@@ -1,5 +1,5 @@
 {
- "source": "Designed by the user (2026-10-08), as Showdown exports in data-sources/custom/gym-leaders.txt; built by scripts/build-gym-leaders.mjs. Not from any game.",
+ "source": "Designed by the user (2026-10-08), as Showdown exports in data-sources/custom/gym-leaders.txt; built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
   "Each trainer is one special trainer; \"Brock 1\" and \"Brock 2\" (Misty, Lt. Surge, Erika, Blaine likewise) are merged into one eight-Pokémon roster.",
   "IVs are the special-trainer IV (31) like every Battle Tree special trainer, per the user; IV lines in the exports are ignored.",

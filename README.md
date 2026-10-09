@@ -13,7 +13,7 @@ npm run dev         # Vite dev server
 npm test            # Vitest (data integrity, engine, client integration)
 npm run build       # typecheck + production build
 npm run data:build  # regenerate src/data/battle-tree/*.json from data-sources/
-node scripts/build-gym-leaders.mjs      # rebuild the Gym Leaders from data-sources/custom/gym-leaders.txt
+npm run data:custom # rebuild custom trainers (Gym Leaders, battle-50 trainers) from data-sources/custom/ (see its README)
 node scripts/check-trainer-sprites.mjs  # verify every trainer has a sprite that exists on Showdown (network)
 ```
 

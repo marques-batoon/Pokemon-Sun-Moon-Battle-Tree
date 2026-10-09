@@ -83,6 +83,8 @@ export function trainerSpriteId(trainer: Trainer): string | null {
 }
 
 export function trainerSpriteUrl(trainer: Trainer): string | null {
+  // Custom trainers bring their own sprite, served from public/ with the app.
+  if (trainer.sprite) return `${import.meta.env.BASE_URL}${trainer.sprite.replace(/^\//, '')}`;
   const id = trainerSpriteId(trainer);
   return id ? Sprites.getAvatar(id) : null;
 }

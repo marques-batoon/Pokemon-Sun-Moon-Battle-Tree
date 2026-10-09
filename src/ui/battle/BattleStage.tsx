@@ -115,7 +115,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
   return (
     <div
       ref={stageRef}
-      className={`stage ${doubles ? 'doubles' : ''} ${WEATHER_CLASS[battle.field.weather ?? ''] ?? ''} ${battle.field.terrain ? `terrain-${battle.field.terrain.toLowerCase()}` : ''}`}
+      className={`stage ${doubles ? 'doubles' : ''} ${multi ? 'multi' : ''} ${WEATHER_CLASS[battle.field.weather ?? ''] ?? ''} ${battle.field.terrain ? `terrain-${battle.field.terrain.toLowerCase()}` : ''}`}
       style={stageStyle}
     >
       <div className={`stage-field ${shake.className}`} style={shake.style}>

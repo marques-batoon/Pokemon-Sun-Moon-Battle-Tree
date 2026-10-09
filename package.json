@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "data:build": "node scripts/build-battle-tree-data.mjs"
+    "data:build": "node scripts/build-battle-tree-data.mjs",
+    "data:custom": "node scripts/build-custom-trainers.mjs"
   },
   "dependencies": {
     "@pkmn/client": "^0.7.3",

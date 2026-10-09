@@ -4250,6 +4250,20 @@
     "trainerWins": "See, Cheren? I'm strong now!",
     "trainerLoses": "Ehehe... maybe a little clumsy still."
    }
+  ],
+  "Marques": [
+   {
+    "greeting": "Time to battle with a heart of GOLD...",
+    "trainerWins": "Like a bitch.",
+    "trainerLoses": "That was such a disa-aca-pointment"
+   }
+  ],
+  "Thomas": [
+   {
+    "greeting": "... And a soul of SILVER!",
+    "trainerWins": "Heh, smell ya later!",
+    "trainerLoses": "Naaaaaaail... gather the dragon balls..."
+   }
   ]
  },
  "multi": {
@@ -4288,5 +4302,6 @@
    }
   ]
  },
- "multiNote": "Lines for paired trainers when they battle together in a Multi Battle (Tate and Liza): the same set is used for both, so they finish each other's sentences."
+ "multiNote": "Lines for paired trainers when they battle together in a Multi Battle (Tate and Liza): the same set is used for both, so they finish each other's sentences.",
+ "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both)."
 }

@@ -20,11 +20,14 @@ interface Props {
   continueLabel?: string;
   /** The trainer(s) being fought (two in Multi) and this battle's key (seed text): they say a closing remark when it ends. */
   opponent?: { trainers: Trainer[]; battleKey: string };
+  /** Show debug info (seed, input log). Default: the debug tools setting. Online partners never get it. */
+  debugTools?: boolean;
 }
 
-export function BattleScreen({ client, onContinue, continueLabel = 'Continue', opponent }: Props) {
+export function BattleScreen({ client, onContinue, continueLabel = 'Continue', opponent, debugTools }: Props) {
   const s = useBattleSnapshot(client);
   const settings = useAppSettings();
+  const showDebug = debugTools ?? settings.showDebugTools;
   // Battle focus mode (the site header hides) while a battle is on screen.
   useBattleFocusWhile(s.phase === 'starting' || s.phase === 'active' || s.phase === 'ended');
 
@@ -70,7 +73,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
                 {opponent?.trainers.map(t => <ClosingRemark key={t.id} trainer={t} alongside={opponent.trainers} battleKey={opponent.battleKey} winner={s.result!.winner} />)}
                 <strong>{s.result.winner === 'p1' ? 'You won!' : s.result.winner === 'p2' ? 'You lost.' : 'Tie.'}</strong>
                 <span className="muted small">{s.result.turns} turns</span>
-                {settings.showDebugTools && (
+                {showDebug && (
                   <>
                     <span className="muted small">seed <code>{s.seedText}</code></span>
                     <button onClick={() => void navigator.clipboard?.writeText(s.result!.inputLog.join('\n'))}>Copy input log</button>

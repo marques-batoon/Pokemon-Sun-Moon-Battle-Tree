@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, pairedTrainer, RULES, SETS, TRAINER_PAIRS, TRAINERS, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { BOSSES, BRACKETS, pairedTrainer, RULES, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -69,7 +69,7 @@ export function chooseTrainer(
 ): TrainerChoice {
   const slot = scheduleSlot(format, course, battle);
   const allowed = (ids: number[]) => ids.filter(id => !exclude.has(id));
-  if (slot.type === 'boss') return { trainer: TRAINERS[BOSSES[slot.bossKey].trainerId], replacedAnabel: false };
+  if (slot.type === 'boss') return { trainer: TRAINERS[chooseBoss(slot.bossKey, rng).trainerId], replacedAnabel: false };
   if (slot.type === 'pool') return { trainer: TRAINERS[rng.pick(allowed(BRACKETS.pools[slot.poolKey].trainerIds))], replacedAnabel: false };
 
   const special = rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id)), t => t.weight).trainer;
@@ -78,6 +78,22 @@ export function chooseTrainer(
     return { trainer: TRAINERS[rng.pick(pool)], replacedAnabel: true };
   }
   return { trainer: special, replacedAnabel: false };
+}
+
+/**
+ * Who appears at a Battle Legend battle: the scheduled boss and every other boss for the same
+ * format, course and battle (custom battle-50 trainers), drawn by weight. With one candidate
+ * (every Normal course, and Super Singles / Doubles for now) no random number is used.
+ */
+export function bossCandidates(bossKey: string): { key: string; boss: Boss; weight: number }[] {
+  const scheduled = BOSSES[bossKey];
+  return Object.entries(BOSSES)
+    .filter(([, b]) => b.format === scheduled.format && b.course === scheduled.course && b.battle === scheduled.battle)
+    .map(([key, boss]) => ({ key, boss, weight: boss.weight ?? 7 }));
+}
+function chooseBoss(bossKey: string, rng: Rng): Boss {
+  const candidates = bossCandidates(bossKey);
+  return candidates.length === 1 ? candidates[0].boss : rng.weighted(candidates, c => c.weight).boss;
 }
 
 /** Opponents bring as many as the player: 3 in Singles, 4 in Doubles, 2 each in Multi (Battle Legends per bosses.json). */
@@ -121,6 +137,13 @@ export function planOpponent(
   const exclude = new Set(partnerId === undefined ? [] : [partnerId]);
   const partnersTwin = multi && partnerId !== undefined ? pairedTrainer(partnerId) : null;
   if (partnersTwin) exclude.add(partnersTwin.partnerId);
+  const slot = scheduleSlot(format, course, battle);
+  if (slot.type === 'boss') {
+    const boss = chooseBoss(slot.bossKey, rng);
+    const first = planTrainer({ trainer: TRAINERS[boss.trainerId], replacedAnabel: false }, format, rng);
+    if (!multi) return { battle, ...first, seedText };
+    return { battle, ...first, seedText, second: planTrainer({ trainer: TRAINERS[boss.partnerTrainerId!], replacedAnabel: false }, format, rng) };
+  }
   const firstChoice = chooseTrainer(format, course, battle, settings, rng, exclude);
   const pair = multi ? pairedTrainer(firstChoice.trainer.id) : null;
   if (pair) {
@@ -136,11 +159,36 @@ export function planOpponent(
   exclude.add(first.trainerId);
   // A paired trainer can't be the second opponent without their partner.
   for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
-  const slot = scheduleSlot(format, course, battle);
-  const second = slot.type === 'boss'
-    ? { trainer: TRAINERS[BOSSES[slot.bossKey].partnerTrainerId!], replacedAnabel: false }
-    : chooseTrainer(format, course, battle, settings, rng, exclude);
+  const second = chooseTrainer(format, course, battle, settings, rng, exclude);
   return { battle, ...first, seedText, second: planTrainer(second, format, rng) };
+}
+
+/**
+ * Debug: battle N against special trainers you choose (one; two in a Multi Battle) instead of
+ * the drawn opponent. Teams are drawn as usual. Paired trainers stay paired: choosing Tate or
+ * Liza in a Multi Battle brings the other, leading with one of their pairs.
+ */
+export function planChosenOpponent(runSeed: string, format: Format, battle: number, trainerIds: readonly number[]): PlannedOpponent {
+  const seedText = battleSeedText(runSeed, battle);
+  const rng = new Rng(`${seedText}|chosen|${trainerIds.join(',')}`);
+  const special = (id: number): TrainerChoice => {
+    const trainer = TRAINERS[id];
+    if (trainer?.kind !== 'special') throw new Error('Choose special trainers.');
+    return { trainer, replacedAnabel: false };
+  };
+  const first = special(trainerIds[0]);
+  if (format !== 'multi') return { battle, ...planTrainer(first, format, rng), seedText };
+  const pair = pairedTrainer(first.trainer.id);
+  if (pair) {
+    const leads = rng.pick(pair.pair.multiLeads);
+    const at = (id: number) => leads[pair.pair.trainerIds.indexOf(id)];
+    const second = special(pair.partnerId);
+    return { battle, ...planTrainer(first, format, rng, at(first.trainer.id)), seedText, second: planTrainer(second, format, rng, at(pair.partnerId)) };
+  }
+  const secondId = trainerIds[1];
+  if (secondId === undefined || secondId === first.trainer.id) throw new Error('Choose two different special trainers.');
+  if (pairedTrainer(secondId)) throw new Error(`${TRAINERS[secondId].name} only battles alongside ${TRAINERS[pairedTrainer(secondId)!.partnerId].name}.`);
+  return { battle, ...planTrainer(first, format, rng), seedText, second: planTrainer(special(secondId), format, rng) };
 }
 
 /** BP for winning battle N (rules.json battlePoints). */

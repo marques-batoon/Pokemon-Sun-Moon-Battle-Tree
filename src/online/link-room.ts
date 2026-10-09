@@ -2,7 +2,7 @@ import { BattleClient } from '../client/battle-client';
 import type { RunTeam } from '../run/controller';
 import type { EngineTransport } from '../client/transport';
 import type { FromEngine, ToEngine } from '../engine/protocol';
-import { planOpponent } from '../run/selection';
+import { planChosenOpponent, planOpponent } from '../run/selection';
 import { DEFAULT_SETTINGS, PARTNER_BRING, type PlannedOpponent } from '../run/types';
 import type { PokemonSet } from '../team/types';
 import {
@@ -138,6 +138,16 @@ export class OnlineRoom {
       ai: 'heuristic',
     });
     this.set({ battleId, battleFoes: [next.trainerId, next.second!.trainerId], aiPartner: false, lobby: { ...this.snapshot.lobby, inBattle: true, notice: null } });
+    this.publishLobby();
+  }
+
+  /**
+   * Host with debug tools: the next battle is against these special trainers (two; Tate and Liza
+   * come together). The guest only sees who the next opponents are, as for any battle.
+   */
+  debugChooseOpponents(trainerIds: number[]): void {
+    if (this.opts.role !== 'host' || !this.next || this.snapshot.lobby.inBattle) throw new Error('Only the host can choose opponents, between battles.');
+    this.next = planChosenOpponent(this.seedText, 'multi', this.next.battle, trainerIds);
     this.publishLobby();
   }
 

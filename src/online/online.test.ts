@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BattleClient } from '../client/battle-client';
+import { TRAINERS } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
 import { createInProcessTransport } from '../engine/in-process-transport';
 import { importShowdownText } from '../team/showdown-text';
@@ -202,6 +203,18 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     expect(end.result!.winner === 'p1' || end.result!.winner === 'p2').toBe(true);
     host.dispose();
   }, 60000);
+
+  it('lets only the host choose the next opponents (debug); the guest just sees who they are', async () => {
+    const { host, guest } = rooms();
+    await waitFor(() => guest.getSnapshot().partnerName && guest.getSnapshot().lobby.next.length);
+    const brock = TRAINERS.find(t => t.kind === 'special' && t.name === 'Brock')!.id;
+    const misty = TRAINERS.find(t => t.kind === 'special' && t.name === 'Misty')!.id;
+    host.debugChooseOpponents([brock, misty]);
+    await waitFor(() => guest.getSnapshot().lobby.next.join() === `${brock},${misty}`);
+    expect(() => guest.debugChooseOpponents([brock, misty])).toThrow(/Only the host/);
+    host.dispose();
+    guest.dispose();
+  });
 
   it('closes the guest room when the host leaves', async () => {
     const { host, guest } = rooms();

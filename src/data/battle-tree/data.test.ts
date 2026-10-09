@@ -30,8 +30,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets and 6 battle-50 sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 6);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
     // Only custom sets fix their Ability (the game rolls it).
     expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
@@ -68,15 +68,19 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders and 2 battle-50 trainers', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4]);
-    expect(TRAINERS.slice(205).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
+    expect(TRAINERS).toHaveLength(205 + 47 + 2);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4 + 2]);
+    expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
+    expect(TRAINERS.slice(252).map(t => [t.name, t.kind, t.custom, t.iv, t.sprite])).toEqual([
+      ['Marques', 'legend', true, 31, '/trainers/marques.png'],
+      ['Thomas', 'legend', true, 31, '/trainers/thomas.png'],
+    ]);
   });
 
   it("lets every Gym Leader field 4 Pokémon under the clauses (Doubles)", () => {
-    for (const t of TRAINERS.slice(205)) expect(maxClauseTeam(t.roster, 4), t.name).toBe(4);
+    for (const t of TRAINERS.filter(x => x.kind === 'special' && x.custom)) expect(maxClauseTeam(t.roster, 4), t.name).toBe(4);
   });
 
   it('only references existing sets, without duplicates', () => {
@@ -87,7 +91,11 @@ describe('trainers.json', () => {
   });
 
   it('lets every trainer field a clause-legal team of 3 (and 4 for Doubles)', () => {
-    for (const t of TRAINERS) expect(maxClauseTeam(t.roster, 4), t.name).toBe(4);
+    // Multi-only trainers (battle 50 of Super Multi) only need 2.
+    for (const t of TRAINERS) {
+      const need = t.kind === 'legend' && t.format === 'multi' ? 2 : 4;
+      expect(maxClauseTeam(t.roster, need), t.name).toBe(need);
+    }
   });
 
   it('assigns IVs by trainer tier (19 / 23 / 27 / 31)', () => {
@@ -131,7 +139,7 @@ describe('brackets.json', () => {
 
   it('special pool has the game\'s 8 trainers per version (Anabel at 1/50 of their weight), plus every Gym Leader', () => {
     const all = BRACKETS.specialTrainerPool.trainerIds.map(id => TRAINERS[id] as SpecialTrainer);
-    expect(all.filter(t => t.custom).map(t => t.id)).toEqual(TRAINERS.slice(205).map(t => t.id));
+    expect(all.filter(t => t.custom).map(t => t.id)).toEqual(TRAINERS.filter(t => t.kind === 'special' && t.custom).map(t => t.id));
     const specials = all.filter(t => !t.custom);
     for (const v of ['sun', 'moon'] as const) {
       const pool = specials.filter(t => t.versions.includes(v));
@@ -174,7 +182,8 @@ describe('bosses.json / rules.json', () => {
 describe('trainer-art.json', () => {
   it('covers every special trainer and Battle Legend (artwork or a reason why not), and nobody else', async () => {
     const art = (await import('./trainer-art.json')).default as { named: Record<string, { url: string }>; missing: Record<string, string> };
-    const named = new Set(TRAINERS.filter(t => t.kind !== 'regular').map(t => t.name));
+    // Custom trainers with their own sprite (pixel art) don't need artwork.
+    const named = new Set(TRAINERS.filter(t => t.kind !== 'regular' && !t.sprite).map(t => t.name));
     const covered = [...Object.keys(art.named), ...Object.keys(art.missing)];
     expect(new Set(covered)).toEqual(named);
     expect(covered.length).toBe(named.size); // no name in both lists
@@ -190,7 +199,13 @@ describe('trainer-quotes.json', () => {
     // Team-up lines for the paired trainers (Tate and Liza) in Multi Battles.
     expect(Object.keys(TRAINER_MULTI_QUOTES).sort()).toEqual(['Liza', 'Tate']);
     const sets = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES)];
-    for (const trainerSets of sets) expect(trainerSets).toHaveLength(3);
+    // Three sets each, except the user's battle-50 trainers (as many as they wrote; the same for both of a pair).
+    for (const [name, trainerSets] of Object.entries(TRAINER_QUOTES)) {
+      const t = TRAINERS.find(x => x.name === name)!;
+      if (t.sprite) expect(trainerSets.length, name).toBeGreaterThanOrEqual(1);
+      else expect(trainerSets, name).toHaveLength(3);
+    }
+    expect(TRAINER_QUOTES.Marques.length).toBe(TRAINER_QUOTES.Thomas.length);
     const lines = sets.flat().flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]);
     for (const text of lines) {
       expect(text.trim().length).toBeGreaterThan(0);

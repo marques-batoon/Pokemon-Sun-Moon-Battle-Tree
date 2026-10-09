@@ -1,0 +1,10 @@
+{
+  "about": "Trainers who can appear at battle 50 alongside (or instead of) the Battle Legends. Teams are in battle-50-trainers.txt. After editing either file, run: npm run data:custom",
+  "trainers": {
+    "Marques": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/marques.png" },
+    "Thomas": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/thomas.png" }
+  },
+  "battles": [
+    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Marques", "Thomas"], "weight": 7 }
+  ]
+}

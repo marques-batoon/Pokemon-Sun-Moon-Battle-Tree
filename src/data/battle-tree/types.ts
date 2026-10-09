@@ -34,6 +34,10 @@ interface TrainerBase {
   /** Indices into sets.json. */
   roster: number[];
   source: Record<string, string>;
+  /** A custom addition, not in the game (src/data/custom/). */
+  custom?: boolean;
+  /** Custom trainers' own sprite (a path under public/), instead of a Showdown one. */
+  sprite?: string;
 }
 
 export interface RegularTrainer extends TrainerBase {
@@ -51,8 +55,6 @@ export interface SpecialTrainer extends TrainerBase {
   weight: number;
   requires?: 'lookerGuzzlordChapter';
   requiresNote?: string;
-  /** A custom addition (the Gym Leaders), not in the game: src/data/custom/gym-leaders.json. */
-  custom?: boolean;
   region?: string;
 }
 
@@ -107,6 +109,8 @@ export interface Boss {
   teamSize: number;
   iv: number;
   future?: boolean;
+  /** Chance relative to the other trainers that can appear at the same battle (battle 50). */
+  weight?: number;
 }
 
 export interface BpRange {

@@ -393,6 +393,13 @@ button.danger { color: var(--bad); }
 }
 .opponent-info { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
 .quote-speaker { font-style: normal; font-weight: 600; }
+.debug-opponents { border: 1px dashed var(--border); border-radius: 8px; padding: 6px 10px; }
+.debug-opponents p { margin: 4px 0 0; }
+.debug-opponent-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; margin-top: 6px; }
+.debug-opponent-row .fld { flex: 1 1 200px; }
+.debug-unlock { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; margin-top: 8px; }
+.debug-unlock .fld { flex: 0 1 240px; }
+.debug-unlock .problems { flex-basis: 100%; margin: 0; }
 .trainer-name { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
 .trainer-name .fld { flex: 0 1 260px; }
 .trainer-name .problems, .trainer-name p { flex-basis: 100%; margin: 0; }
@@ -551,6 +558,9 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .stage.doubles .spot-p2b { left: auto; right: 24%; top: 3%; height: 48%; }
 .stage.doubles .spot-p1a { left: 2%; right: auto; bottom: 0; height: 58%; }
 .stage.doubles .spot-p1b { left: 27%; right: auto; bottom: 0; height: 55%; }
+/* Multi: each trainer has one spot; the first opponent (p2) stands on the left, as on the opponent card. */
+.stage.multi .spot-p2a { right: 24%; top: 3%; }
+.stage.multi .spot-p2b { right: 1%; top: 7%; }
 .stage.doubles .poke-sprite { max-height: 130px; }
 .stage.doubles .spot-p1 .poke-sprite { max-height: 150px; }
 .stage.doubles .sprite-wrap.is-mega .poke-sprite { max-height: 156px; }

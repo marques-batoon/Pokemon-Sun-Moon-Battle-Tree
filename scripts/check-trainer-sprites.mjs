@@ -4,7 +4,7 @@
  * exists on Pokémon Showdown's server (network required).
  * Run with: node scripts/check-trainer-sprites.mjs
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,6 +13,14 @@ const sprites = JSON.parse(readFileSync(join(DATA, 'trainer-sprites.json'), 'utf
 const { trainers: gameTrainers } = JSON.parse(readFileSync(join(DATA, 'trainers.json'), 'utf8'));
 // The Gym Leaders (custom special trainers) from src/data/custom/gym-leaders.json.
 const gymLeaders = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'gym-leaders.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+// Custom battle-50 trainers bring their own sprite file (public/...): check it's there.
+const battle50 = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'battle-50.json'), 'utf8')).trainers;
+const PUBLIC = join(DATA, '..', '..', '..', 'public');
+const missingFiles = battle50.filter(t => !existsSync(join(PUBLIC, t.sprite))).map(t => `${t.name} (${t.sprite})`);
+if (missingFiles.length) {
+  console.error('Custom sprite files missing from public/:', missingFiles.join(', '));
+  process.exitCode = 1;
+}
 const trainers = [...gameTrainers, ...gymLeaders];
 
 const missing = [];

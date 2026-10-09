@@ -420,14 +420,15 @@ const bossesJson = {
     schedule: 'bulbapedia-battle-tree ("On the 20th battle of normal challenges and the 50th battle of Super challenges, a Battle Legend will be challenged")',
     teams: 'tre-sm (cross-checked: all 20 Red sets and all 34 Sun/Moon Blue sets identical to Bulbapedia Battle Tree page)',
     teamGeneration: 'smogon-guide (same random-from-roster rule as other trainers)',
+    weight: 'App choice (2026-10-08): Battle Legends have a weight, so other trainers can share the battle-50 slot (custom ones in src/data/custom/battle-50.json). With only the game\'s, Red / Blue always appear.',
   },
   bosses: {
     'red-normal': { trainerId: 203, format: 'singles', course: 'normal', battle: 20, bp: 20, unlocks: 'singles-super', teamSize: 3, iv: 31 },
-    'red-super': { trainerId: 190, format: 'singles', course: 'super', battle: 50, bp: 50, teamSize: 3, iv: 31 },
+    'red-super': { trainerId: 190, format: 'singles', course: 'super', battle: 50, bp: 50, teamSize: 3, iv: 31, weight: 7 },
     'blue-normal': { trainerId: 204, format: 'doubles', course: 'normal', battle: 20, bp: 20, unlocks: 'doubles-super', teamSize: 4, iv: 31 },
-    'blue-super': { trainerId: 191, format: 'doubles', course: 'super', battle: 50, bp: 50, teamSize: 4, iv: 31 },
+    'blue-super': { trainerId: 191, format: 'doubles', course: 'super', battle: 50, bp: 50, teamSize: 4, iv: 31, weight: 7 },
     // Multi: Red and Blue together (smogon-guide), each with 2 Pokémon from their Super rosters. Battle 50: APPROXIMATION.
-    'redblue-super': { trainerId: 190, partnerTrainerId: 191, format: 'multi', course: 'super', battle: 50, bp: 50, teamSize: 2, iv: 31 },
+    'redblue-super': { trainerId: 190, partnerTrainerId: 191, format: 'multi', course: 'super', battle: 50, bp: 50, teamSize: 2, iv: 31, weight: 7 },
   },
 };
 
