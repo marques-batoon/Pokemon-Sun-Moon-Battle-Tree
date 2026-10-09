@@ -7,12 +7,12 @@ import { createInProcessTransport } from '../engine/in-process-transport';
 import { memoryStore, type KeyValueStore } from '../storage/kv';
 import { importShowdownText } from '../team/showdown-text';
 import { RunController, type RunTeam } from './controller';
-import { defaultPartnerBook, partnerTeam, rollOffer, specialTrainer } from './partners';
+import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, specialTrainer } from './partners';
 import { Rng } from './rng';
 import { RunStore } from './run-store';
 import { bpForWin, planOpponent } from './selection';
 import { SETS } from '../data/battle-tree';
-import { bpBalance, DEFAULT_SETTINGS, PARTNER_COST, type RunState } from './types';
+import { bpBalance, DEFAULT_SETTINGS, partnerPrice, type RunState } from './types';
 
 const PLAYER_SETS = importShowdownText(TEST_PLAYER_TEAM_TEXT).teams[0].sets;
 const SINGLES_TEAM: RunTeam = { sourceTeamId: null, name: 'Test team', sets: PLAYER_SETS, bring: [0, 1, 2] };
@@ -128,7 +128,7 @@ describe('Multi: partners and the Super Multi course', () => {
   it('starts everyone with Sina and Dexio, each offering six of their own Pokémon', () => {
     const book = defaultPartnerBook();
     expect(Object.keys(book.owned).sort()).toEqual(['Dexio', 'Sina']);
-    expect(book.available).toEqual([]);
+    expect(book.beaten).toEqual({});
     for (const [name, { offer }] of Object.entries(book.owned)) {
       expect(offer).toHaveLength(6);
       for (const id of offer) expect(specialTrainer(name).roster).toContain(id);
@@ -187,7 +187,11 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(after.bp).toBe(bpForWin('super', 1));
   });
 
-  it('lets you buy special trainers you beat for 100 BP, with six Pokémon to choose two from', () => {
+  it('prices a partner at 1000 BP after one win, 100 BP less per extra win, never below 100', () => {
+    expect([1, 2, 3, 9, 10, 11, 50].map(partnerPrice)).toEqual([1000, 900, 800, 200, 100, 100, 100]);
+  });
+
+  it('lets you buy special trainers you beat, cheaper the more you beat them, with six Pokémon to choose two from', () => {
     // A seed whose battle 10 is a special trainer you don't start with.
     const seed = Array.from({ length: 50 }, (_, i) => `scout-${i}`).find(s => {
       const p = planOpponent(s, 'singles', 'super', 10, DEFAULT_SETTINGS);
@@ -199,23 +203,37 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(() => controller.buyPartner('Cynthia')).toThrow(/Beat Cynthia/);
     const name = TRAINERS[winThrough(controller, battle, 'singles-super', 9).next.trainerId].name;
     winThrough(controller, battle, 'singles-super', 10);
-    expect(store.getState().profile.partners.available).toEqual([name]);
-    expect(() => controller.buyPartner(name)).toThrow(/costs 100 BP/);
+    expect(store.getState().profile.partners.beaten).toEqual({ [name]: 1 });
+    expect(partnersForSale(store.getState().profile.partners)).toEqual([{ name, timesBeaten: 1, price: 1000 }]);
+    expect(() => controller.buyPartner(name)).toThrow(/costs 1000 BP/);
 
-    store.updateProfile(p => ({ ...p, bpTotal: p.bpTotal + PARTNER_COST }));
+    // Beating them twice more takes 200 BP off.
+    store.updateProfile(p => ({ ...p, partners: { ...p.partners, beaten: { [name]: 3 } }, bpTotal: p.bpTotal + 800 }));
+    expect(partnersForSale(store.getState().profile.partners)[0].price).toBe(800);
     const before = store.getState().profile;
     controller.buyPartner(name);
     const after = store.getState().profile;
-    expect(after.partners.available).toEqual([]);
+    expect(partnersForSale(after.partners)).toEqual([]);
+    expect(() => controller.buyPartner(name)).toThrow(/already your partner/);
     const { offer } = after.partners.owned[name];
     expect(offer.length).toBeGreaterThanOrEqual(2);
     expect(offer.length).toBeLessThanOrEqual(6);
     for (const id of offer) expect(specialTrainer(name).roster).toContain(id);
-    expect(bpBalance(after)).toBe(bpBalance(before) - PARTNER_COST);
+    expect(bpBalance(after)).toBe(bpBalance(before) - 800);
     // Now they can be a partner, with two Pokémon from their offer.
     controller.debugUnlockSuper('multi');
     const run = controller.startRun({ format: 'multi', course: 'super', team: MULTI_TEAM, settings: DEFAULT_SETTINGS, partner: { name, setIds: [offer[1], offer[0]] } });
     expect(run.partner?.setIds).toEqual([offer[1], offer[0]]);
+  });
+
+  it('counts a win over each special trainer in a Multi Battle', () => {
+    const { controller, battle, store } = setup();
+    controller.debugUnlockSuper('multi');
+    controller.startRun({ format: 'multi', course: 'super', team: MULTI_TEAM, settings: DEFAULT_SETTINGS, seedText: 'pairs', partner: picks('Sina') });
+    const at10 = winThrough(controller, battle, 'multi-super', 9).next;
+    winThrough(controller, battle, 'multi-super', 10);
+    const names = [at10, at10.second!].map(t => TRAINERS[t.trainerId].name);
+    expect(store.getState().profile.partners.beaten).toEqual(Object.fromEntries(names.map(n => [n, 1])));
   });
 
   it("practice runs don't make anyone buyable", () => {
@@ -223,7 +241,7 @@ describe('Multi: partners and the Super Multi course', () => {
     controller.debugUnlockSuper('singles');
     controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: { ...DEFAULT_SETTINGS, ai: 'random' }, seedText: 'practice' });
     winThrough(controller, battle, 'singles-super', 10);
-    expect(store.getState().profile.partners.available).toEqual([]);
+    expect(store.getState().profile.partners.beaten).toEqual({});
   });
 
   it('migrates saves from before Multi (no partners, no BP spent)', () => {
@@ -242,41 +260,43 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(profile.records['multi-super']).toEqual({ best: 0, last: 0 });
   });
 
-  it('migrates partner books from before offers (fixed two Pokémon, "scoutable" trainers)', () => {
+  it('migrates partner books from earlier versions (fixed two Pokémon, "scoutable" or "available" trainers)', () => {
     const kv = memoryStore();
     setup(kv);
     new RunStore(kv).updateProfile(p => p);
     const file = JSON.parse(kv.get('tree.v1')!);
-    file.profile.partners = { owned: { Sina: { setIds: [1, 2] }, Cynthia: { setIds: [3, 4] } }, scoutable: { Guzma: { setIds: [5, 6] } } };
+    file.profile.partners = { owned: { Sina: { setIds: [1, 2] }, Cynthia: { setIds: [3, 4] } }, scoutable: { Guzma: { setIds: [5, 6] } }, available: ['Wally'] };
     kv.set('tree.v1', JSON.stringify(file));
     const { partners } = new RunStore(kv).getState().profile;
     expect(Object.keys(partners.owned).sort()).toEqual(['Cynthia', 'Dexio', 'Sina']);
     expect(partners.owned.Cynthia.offer.length).toBeGreaterThanOrEqual(2);
-    expect(partners.available).toEqual(['Guzma']);
+    expect(partners.beaten).toEqual({ Wally: 1, Guzma: 1 });
+    expect(partnersForSale(partners).map(p => p.price)).toEqual([1000, 1000]);
   });
 });
 
 describe('Starting at a later battle (checkpoints)', () => {
-  it('unlocks battle 20 after winning battle 50, and battle 50 after winning battle 100, per course', () => {
+  it('unlocks battle 30 after winning battle 50, and battle 50 after winning battle 100, per course', () => {
     const { controller, battle, store } = setup();
     controller.debugUnlockSuper('singles');
     const start = (checkpoint: number) => controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: `cp-${checkpoint}`, checkpoint });
-    expect(() => start(20)).toThrow(/won battle 50/);
+    expect(() => start(30)).toThrow(/won battle 50/);
     const setBest = (best: number) => store.updateProfile(p => ({ ...p, records: { ...p.records, 'singles-super': { best, last: 0 } } }));
     setBest(50);
     expect(() => start(50)).toThrow(/won battle 100/);
-    expect(() => start(30)).toThrow(/can't start at battle 30/);
-    const run = start(20);
-    expect([run.battle, run.wins, run.debug, run.next.battle]).toEqual([20, 19, false, 20]);
-    // It counts: winning battle 20 is a 20-win streak.
-    winThrough(controller, battle, 'singles-super', 20);
-    expect(controller.run('singles-super')!.wins).toBe(20);
+    expect(() => start(20)).toThrow(/can't start at battle 20/);
+    const run = start(30);
+    expect([run.battle, run.wins, run.debug, run.next.battle]).toEqual([30, 29, false, 30]);
+    // Battle 30 is a special-trainer battle; it counts: winning it is a 30-win streak.
+    expect(run.next.kind).toBe('special');
+    winThrough(controller, battle, 'singles-super', 30);
+    expect(controller.run('singles-super')!.wins).toBe(30);
     expect(store.getState().profile.records['singles-super'].best).toBe(50);
     setBest(100);
     expect(start(50).next.displayName).toBe('Battle Legend Red');
     // Other courses keep their own records.
     controller.debugUnlockSuper('doubles');
-    expect(() => controller.startRun({ format: 'doubles', course: 'super', team: { ...SINGLES_TEAM, bring: [0, 1, 2, 3] }, settings: DEFAULT_SETTINGS, checkpoint: 20 })).toThrow(/won battle 50/);
+    expect(() => controller.startRun({ format: 'doubles', course: 'super', team: { ...SINGLES_TEAM, bring: [0, 1, 2, 3] }, settings: DEFAULT_SETTINGS, checkpoint: 30 })).toThrow(/won battle 50/);
   });
 });
 

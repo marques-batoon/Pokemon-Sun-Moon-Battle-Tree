@@ -432,7 +432,7 @@ button.partner-card:hover { border-color: color-mix(in srgb, var(--accent) 50%, 
 .offer-pick.picked { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
 .offer-pick:disabled { opacity: 0.45; cursor: default; }
 .offer-pick .pick-order { position: absolute; top: 6px; right: 6px; }
-.partner-card > button { justify-self: start; }
+.partner-card > button { justify-self: start; white-space: nowrap; }
 .partner-shop { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .partner-shop h3, .partner-shop h4, .partner-shop p { margin: 0; }
 .partner-shop h4 { font-size: 0.85rem; color: var(--muted); }

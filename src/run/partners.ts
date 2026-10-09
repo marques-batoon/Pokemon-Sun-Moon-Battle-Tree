@@ -2,7 +2,7 @@ import { SETS, TRAINERS, type SpecialTrainer } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
 import { pickUpTo, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
-import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, type PartnerBook, type RunPartner } from './types';
+import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, partnerPrice, type PartnerBook, type RunPartner } from './types';
 
 /** Special trainers (the only Multi partners), by name: partners are stored by name. */
 export function specialTrainer(name: string): SpecialTrainer {
@@ -26,10 +26,17 @@ export function rollOffer(name: string, rng: Rng): number[] {
  */
 export function defaultPartnerBook(): PartnerBook {
   const owned = Object.fromEntries(DEFAULT_PARTNERS.map(name => [name, { offer: rollOffer(name, new Rng(`default-partner|${name}`)) }]));
-  return { owned, available: [] };
+  return { owned, beaten: {} };
 }
 
 /** The partner for a challenge: an owned partner and two different Pokémon from their offer, lead first. */
+/** Special trainers you can buy now (beaten, not owned yet), with their price. */
+export function partnersForSale(book: PartnerBook): { name: string; timesBeaten: number; price: number }[] {
+  return Object.entries(book.beaten)
+    .filter(([name, times]) => times > 0 && !book.owned[name])
+    .map(([name, times]) => ({ name, timesBeaten: times, price: partnerPrice(times) }));
+}
+
 export function runPartner(name: string, setIds: readonly number[], book: PartnerBook): RunPartner {
   const entry = book.owned[name];
   if (!entry) throw new Error(`You don't have ${name} as a partner yet.`);

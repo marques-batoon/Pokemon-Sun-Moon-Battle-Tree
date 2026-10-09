@@ -7,7 +7,7 @@ import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
 import { bpForWin, courseSchedule, displayName, planOpponent } from './selection';
 import {
-  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, PARTNER_COST, runKey,
+  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, partnerPrice, runKey,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
 } from './types';
 
@@ -32,8 +32,8 @@ export interface StartRunOptions {
   /** Multi (required): a partner you own and the two of their Pokémon (set ids from their offer) they bring, lead first. */
   partner?: { name: string; setIds: number[] };
   /**
-   * Start at a later battle you've unlocked (checkpointsFor): 20 after winning battle 50, 50 after
-   * winning battle 100. The streak counts from there (battle 20 = 19 wins); the run still counts.
+   * Start at a later battle you've unlocked (checkpointsFor): 30 after winning battle 50, 50 after
+   * winning battle 100. The streak counts from there (battle 30 = 29 wins); the run still counts.
    */
   checkpoint?: number;
 }
@@ -227,18 +227,22 @@ export class RunController {
   }
 
   /**
-   * Buys a special trainer you've beaten as a Multi partner for PARTNER_COST BP.
+   * Buys a special trainer you've beaten as a Multi partner: 1000 BP after one win, 100 BP less for
+   * each further win, at least 100 (partnerPrice).
    * Their offer (the six Pokémon you'll choose their two from) is rolled now.
    */
   buyPartner(name: string): void {
     const { profile } = this.store.getState();
-    if (!profile.partners.available.includes(name)) throw new Error(`Beat ${name} in a challenge before buying them as a partner.`);
-    if (bpBalance(profile) < PARTNER_COST) throw new Error(`A partner costs ${PARTNER_COST} BP.`);
+    const timesBeaten = profile.partners.beaten[name] ?? 0;
+    if (!timesBeaten) throw new Error(`Beat ${name} in a challenge before buying them as a partner.`);
+    if (profile.partners.owned[name]) throw new Error(`${name} is already your partner.`);
+    const price = partnerPrice(timesBeaten);
+    if (bpBalance(profile) < price) throw new Error(`${name} costs ${price} BP.`);
     const offer = rollOffer(name, new Rng(`partner-offer|${name}|${this.now()}`));
     this.store.updateProfile(p => ({
       ...p,
-      bpSpent: p.bpSpent + PARTNER_COST,
-      partners: { owned: { ...p.partners.owned, [name]: { offer } }, available: p.partners.available.filter(n => n !== name) },
+      bpSpent: p.bpSpent + price,
+      partners: { ...p.partners, owned: { ...p.partners.owned, [name]: { offer } } },
     }));
   }
 
@@ -274,7 +278,7 @@ export class RunController {
         // Beating the Normal course's Battle Legend unlocks that format's Super course.
         superUnlocked: run.format === 'multi' ? p.superUnlocked : { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
         records: { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } },
-        partners: withAvailable(p, run.next),
+        partners: withBeaten(p, run.next),
       }));
     }
 
@@ -332,12 +336,15 @@ const LOCKED: Record<Format, string> = {
   multi: 'Super Multi unlocks once Super Singles and Super Doubles are both unlocked.',
 };
 
-/** Special trainers just beaten can be bought as partners (Battle Legends never can). */
-function withAvailable(p: TreeProfile, next: PlannedOpponent): TreeProfile['partners'] {
-  const beaten = [next, ...(next.second ? [next.second] : [])].filter(t => t.kind === 'special').map(t => TRAINERS[t.trainerId].name);
-  const available = [...p.partners.available];
-  for (const name of beaten) if (!p.partners.owned[name] && !available.includes(name)) available.push(name);
-  return { ...p.partners, available };
+/** Counts a win over each special trainer just beaten (Battle Legends don't count): it sets their partner price. */
+function withBeaten(p: TreeProfile, next: PlannedOpponent): TreeProfile['partners'] {
+  const beaten = { ...p.partners.beaten };
+  for (const t of [next, ...(next.second ? [next.second] : [])]) {
+    if (t.kind !== 'special') continue;
+    const { name } = TRAINERS[t.trainerId];
+    beaten[name] = (beaten[name] ?? 0) + 1;
+  }
+  return { ...p.partners, beaten };
 }
 
 export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';

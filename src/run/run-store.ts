@@ -24,10 +24,14 @@ export const emptyProfile = (): TreeProfile => ({
   settings: { ...DEFAULT_SETTINGS },
 });
 
-/** Partner books from earlier versions: partners had two fixed Pokémon (setIds) and beaten trainers a "scoutable" map. */
+/**
+ * Partner books from earlier versions: partners had two fixed Pokémon (setIds), and beaten trainers
+ * were a "scoutable" map, then an "available" list (both count as beaten once).
+ */
 type OldPartnerBook = Partial<PartnerBook> & {
   owned?: Record<string, { offer?: number[]; setIds?: number[] }>;
   scoutable?: Record<string, unknown>;
+  available?: string[];
 };
 
 function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): PartnerBook {
@@ -40,8 +44,10 @@ function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): 
       // Not a special trainer (corrupt entry): drop it.
     }
   }
-  const available = [...new Set([...(saved.available ?? []), ...Object.keys(saved.scoutable ?? {})])].filter(n => !owned[n]);
-  return { owned, available };
+  const beaten: PartnerBook['beaten'] = {};
+  for (const name of [...(saved.available ?? []), ...Object.keys(saved.scoutable ?? {})]) beaten[name] = 1;
+  for (const [name, times] of Object.entries(saved.beaten ?? {})) if (Number.isInteger(times) && times > 0) beaten[name] = times;
+  return { owned, beaten };
 }
 
 /**

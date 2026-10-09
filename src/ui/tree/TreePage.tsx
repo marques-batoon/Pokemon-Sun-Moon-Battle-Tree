@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { isFinished, type RunController } from '../../run/controller';
 import {
-  bpBalance, COURSES, FORMATS, isSuperUnlocked, opponentLabel, PARTNER_COST, PARTNER_OFFER_SIZE, runKey, type Course, type Format, type RunKey, type RunState, type TreeProfile,
+  bpBalance, COURSES, FORMATS, isSuperUnlocked, opponentLabel, PARTNER_OFFER_SIZE, PARTNER_PRICE, runKey, type Course, type Format, type RunKey, type RunState, type TreeProfile,
 } from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
@@ -9,6 +9,7 @@ import { useTeams } from '../builder/hooks';
 import { BATTLE_TITLE, courseLabel, keyLabel, LEGEND, useRunState } from './hooks';
 import { NewRunForm } from './NewRunForm';
 import { PartnerCard } from './PartnerCard';
+import { partnersForSale } from '../../run/partners';
 import { RunScreen } from './RunScreen';
 import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
@@ -186,9 +187,9 @@ function PartnerShop({ controller, profile }: { controller: RunController; profi
   const [error, setError] = useState<string | null>(null);
   const balance = bpBalance(profile);
   const owned = Object.keys(profile.partners.owned);
-  const available = profile.partners.available;
-  const buy = (name: string) => {
-    if (!confirm(`Buy ${name} as a Multi partner for ${PARTNER_COST} BP?`)) return;
+  const forSale = partnersForSale(profile.partners);
+  const buy = (name: string, price: number) => {
+    if (!confirm(`Buy ${name} as a Multi partner for ${price} BP?`)) return;
     try {
       controller.buyPartner(name);
       setError(null);
@@ -203,7 +204,8 @@ function PartnerShop({ controller, profile }: { controller: RunController; profi
         <span className="bp-balance">{balance} BP</span>
       </div>
       <p className="muted small">
-        Beat a special trainer in any challenge and you can buy them as a Multi partner for {PARTNER_COST} BP.
+        Beat a special trainer in any challenge and you can buy them as a Multi partner for {PARTNER_PRICE.first} BP.
+        Each time you beat them again, their price drops by {PARTNER_PRICE.dropPerWin} BP (down to {PARTNER_PRICE.lowest} BP).
         Each partner offers {PARTNER_OFFER_SIZE} of their Pokémon; you choose two when you start a Super Multi challenge.
       </p>
       <h4>Your partners</h4>
@@ -211,11 +213,12 @@ function PartnerShop({ controller, profile }: { controller: RunController; profi
         {owned.map(name => <PartnerCard key={name} name={name} />)}
       </div>
       <h4>Buy a partner</h4>
-      {available.length ? (
+      {forSale.length ? (
         <div className="partner-grid">
-          {available.map(name => (
+          {forSale.map(({ name, timesBeaten, price }) => (
             <PartnerCard key={name} name={name}>
-              <button className="primary" disabled={balance < PARTNER_COST} onClick={() => buy(name)}>Buy · {PARTNER_COST} BP</button>
+              <span className="muted small">Beaten {timesBeaten === 1 ? 'once' : `${timesBeaten} times`}</span>
+              <button className="primary" disabled={balance < price} onClick={() => buy(name, price)}>Buy · {price} BP</button>
             </PartnerCard>
           ))}
         </div>

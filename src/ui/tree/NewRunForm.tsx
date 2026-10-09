@@ -43,7 +43,7 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
   const key = runKey(format, course);
   const existing = controller.run(key);
   const length = courseSchedule(format, course).length;
-  // Later starting battles unlocked by this course's best streak (battle 20 after winning 50, 50 after 100).
+  // Later starting battles unlocked by this course's best streak (battle 30 after winning 50, 50 after 100).
   const checkpoints = checkpointsFor(profile.records[key]);
   const [checkpointChoice, setCheckpoint] = useState(1);
   const checkpoint = checkpoints.includes(checkpointChoice) ? checkpointChoice : 1;

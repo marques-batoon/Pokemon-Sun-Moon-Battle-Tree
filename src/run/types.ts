@@ -26,8 +26,13 @@ export const MIN_REGISTERED: Record<Format, number> = {
 /** Multi partners everyone starts with (rules.json multiPartners). */
 const MULTI_PARTNERS = RULES.multiPartners as { scoutCost: number; defaultPartners: string[] };
 export const DEFAULT_PARTNERS: readonly string[] = MULTI_PARTNERS.defaultPartners;
-/** BP to buy a partner. App choice (requested 2026-10-08); the game's scouting costs 10 (rules.json multiPartners.scoutCost). */
-export const PARTNER_COST = 100;
+/**
+ * BP to buy a partner (app choice, requested 2026-10-08; the game's scouting costs 10, rules.json
+ * multiPartners.scoutCost): 1000 after beating them once, 100 less for each further win, at least 100.
+ */
+export const PARTNER_PRICE = { first: 1000, dropPerWin: 100, lowest: 100 } as const;
+export const partnerPrice = (timesBeaten: number): number =>
+  Math.max(PARTNER_PRICE.lowest, PARTNER_PRICE.first - PARTNER_PRICE.dropPerWin * (Math.max(1, timesBeaten) - 1));
 /** How many of a partner's Pokémon you choose their two from. App choice (requested 2026-10-08). */
 export const PARTNER_OFFER_SIZE = 6;
 /** Pokémon a Multi partner brings. */
@@ -137,11 +142,11 @@ export interface CourseRecord {
 }
 
 /**
- * Later battles a new challenge may start at (app feature): battle 20 once you've won
+ * Later battles a new challenge may start at (app feature): battle 30 once you've won
  * battle 50 of that course, battle 50 once you've won battle 100. `best` counts wins,
  * so it's the last battle won.
  */
-export const CHECKPOINTS: readonly { start: number; unlockedBy: number }[] = [{ start: 20, unlockedBy: 50 }, { start: 50, unlockedBy: 100 }];
+export const CHECKPOINTS: readonly { start: number; unlockedBy: number }[] = [{ start: 30, unlockedBy: 50 }, { start: 50, unlockedBy: 100 }];
 export const checkpointsFor = (record: CourseRecord | undefined): number[] =>
   CHECKPOINTS.filter(c => (record?.best ?? 0) >= c.unlockedBy).map(c => c.start);
 
@@ -155,8 +160,8 @@ export interface PartnerBook {
    * (up to PARTNER_OFFER_SIZE, rolled when you got them) you choose their two Pokémon from.
    */
   owned: Record<string, { offer: number[] }>;
-  /** Special trainers you've beaten, who can be bought for PARTNER_COST BP. */
-  available: string[];
+  /** How many times you've beaten each special trainer (ranked runs). Beaten ones you don't own can be bought (partnerPrice). */
+  beaten: Record<string, number>;
 }
 
 export interface TreeProfile {
