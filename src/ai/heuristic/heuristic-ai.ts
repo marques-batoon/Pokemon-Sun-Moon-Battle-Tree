@@ -4,7 +4,7 @@ import { doublesTargets, hitsPartner, isSpread } from '../../engine/choices';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequest } from '../../engine/sim-types';
 import { estimateDamage, type Forme } from './calc';
 import { DEFAULT_CONFIG, type HeuristicConfig } from './config';
-import { bestThreat, evaluateBench, scoreDamaging, scoreStatus, type Situation } from './evaluate';
+import { ALLY_ONLY_TARGETS, bestThreat, evaluateBench, scoreDamaging, scoreStatus, type Situation } from './evaluate';
 
 export interface DecisionOption {
   choice: string;
@@ -200,9 +200,12 @@ export class HeuristicAI implements BattleAI {
     const me = battle.getSide(side).active[0];
     const foe = battle.getSide(side).foe.active[0];
 
-    const usable = active.moves
+    const available = active.moves
       .map((m, i) => ({ m, slot: i + 1 }))
       .filter(({ m }) => !m.disabled && (m.pp === undefined || m.pp > 0));
+    // Never Helping Hand (or another partner-only move) in a Single Battle, unless it's all that's left.
+    const aimable = available.filter(({ m }) => !ALLY_ONLY_TARGETS.has(m.target ?? ''));
+    const usable = aimable.length ? aimable : available;
     const forced = usable.length <= 1 && (usable[0]?.m.id === 'recharge' || usable[0]?.m.id === 'struggle');
     if (!me || !foe || foe.hp <= 0 || forced) {
       return usable.length ? `move ${usable[0].slot}` : 'move 1';

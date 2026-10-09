@@ -89,6 +89,35 @@ describe('Multi: planning opponents', () => {
     }
   });
 
+  it('always pairs Tate with Liza, leading with Solrock + Lunatone or Gallade + Gardevoir', () => {
+    const tate = specialTrainer('Tate').id;
+    const liza = specialTrainer('Liza').id;
+    const species = (id: number) => SETS[id].species;
+    let seen = 0;
+    for (let n = 0; n < 600; n++) {
+      const plan = planOpponent(`twins-${n}`, 'multi', 'super', 10 * (1 + (n % 4)), DEFAULT_SETTINGS, SINA);
+      const ids = [plan.trainerId, plan.second!.trainerId];
+      if (!ids.includes(tate) && !ids.includes(liza)) continue;
+      seen++;
+      expect([...ids].sort()).toEqual([tate, liza].sort());
+      const leadOf = (id: number) => species((id === plan.trainerId ? plan : plan.second!).setIds[0]);
+      expect([['Solrock', 'Lunatone'], ['Gallade', 'Gardevoir']]).toContainEqual([leadOf(tate), leadOf(liza)]);
+    }
+    expect(seen).toBeGreaterThan(5);
+    // With one twin as your partner, the other never shows up as an opponent.
+    for (let n = 0; n < 300; n++) {
+      const plan = planOpponent(`twin-partner-${n}`, 'multi', 'super', 20, DEFAULT_SETTINGS, tate);
+      expect([plan.trainerId, plan.second!.trainerId]).not.toContain(liza);
+    }
+  });
+
+  it('lets Tate and Liza appear on their own in Singles', () => {
+    const tate = specialTrainer('Tate').id;
+    const plans = Array.from({ length: 2000 }, (_, n) => planOpponent(`solo-${n}`, 'singles', 'super', 10, DEFAULT_SETTINGS));
+    expect(plans.some(p => p.trainerId === tate)).toBe(true);
+    expect(plans.every(p => !p.second)).toBe(true);
+  });
+
   it("doesn't change Singles and Doubles plans", () => {
     expect(planOpponent('x', 'singles', 'super', 12, DEFAULT_SETTINGS).second).toBeUndefined();
     expect(planOpponent('x', 'doubles', 'super', 30, DEFAULT_SETTINGS).team).toHaveLength(4);
@@ -224,6 +253,30 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(Object.keys(partners.owned).sort()).toEqual(['Cynthia', 'Dexio', 'Sina']);
     expect(partners.owned.Cynthia.offer.length).toBeGreaterThanOrEqual(2);
     expect(partners.available).toEqual(['Guzma']);
+  });
+});
+
+describe('Starting at a later battle (checkpoints)', () => {
+  it('unlocks battle 20 after winning battle 50, and battle 50 after winning battle 100, per course', () => {
+    const { controller, battle, store } = setup();
+    controller.debugUnlockSuper('singles');
+    const start = (checkpoint: number) => controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: `cp-${checkpoint}`, checkpoint });
+    expect(() => start(20)).toThrow(/won battle 50/);
+    const setBest = (best: number) => store.updateProfile(p => ({ ...p, records: { ...p.records, 'singles-super': { best, last: 0 } } }));
+    setBest(50);
+    expect(() => start(50)).toThrow(/won battle 100/);
+    expect(() => start(30)).toThrow(/can't start at battle 30/);
+    const run = start(20);
+    expect([run.battle, run.wins, run.debug, run.next.battle]).toEqual([20, 19, false, 20]);
+    // It counts: winning battle 20 is a 20-win streak.
+    winThrough(controller, battle, 'singles-super', 20);
+    expect(controller.run('singles-super')!.wins).toBe(20);
+    expect(store.getState().profile.records['singles-super'].best).toBe(50);
+    setBest(100);
+    expect(start(50).next.displayName).toBe('Battle Legend Red');
+    // Other courses keep their own records.
+    controller.debugUnlockSuper('doubles');
+    expect(() => controller.startRun({ format: 'doubles', course: 'super', team: { ...SINGLES_TEAM, bring: [0, 1, 2, 3] }, settings: DEFAULT_SETTINGS, checkpoint: 20 })).toThrow(/won battle 50/);
   });
 });
 

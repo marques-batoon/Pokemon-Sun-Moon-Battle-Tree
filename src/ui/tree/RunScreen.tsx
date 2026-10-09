@@ -36,10 +36,11 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
   const preview = run.settings.teamPreviewEachBattle && !multi;
   const { showDebugTools } = useAppSettings();
   // The opposing trainer, or both in a Multi Battle, each with their greeting for this battle.
-  const foes = [run.next, ...(run.next.second ? [run.next.second] : [])].map((planned: PlannedTrainer) => ({
-    planned,
-    trainer: TRAINERS[planned.trainerId],
-    greeting: trainerQuotes(TRAINERS[planned.trainerId], run.next.seedText)?.greeting ?? null,
+  const planned = [run.next, ...(run.next.second ? [run.next.second] : [])];
+  const foes = planned.map((p: PlannedTrainer) => ({
+    planned: p,
+    trainer: TRAINERS[p.trainerId],
+    greeting: trainerQuotes(TRAINERS[p.trainerId], run.next.seedText, planned.map(o => TRAINERS[o.trainerId]))?.greeting ?? null,
   }));
   const kind = foes.some(f => f.planned.kind === 'legend') ? 'legend' : foes.some(f => f.planned.kind === 'special') ? 'special' : 'regular';
 

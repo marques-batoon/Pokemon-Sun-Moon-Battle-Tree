@@ -233,6 +233,29 @@ button.danger { color: var(--bad); }
 .combo-list li { padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
 .combo-list li.active { background: var(--surface-2); }
 .combo-empty { cursor: default !important; }
+/* Details of the highlighted option, pinned to the bottom of the list */
+.combo-list li.combo-desc {
+  position: sticky; bottom: -4px; margin: 4px -4px -4px; padding: 8px 10px; cursor: default; border-radius: 0 0 8px 8px;
+  background: var(--surface-2); border-top: 1px solid var(--border); font-size: 0.8rem; line-height: 1.35;
+}
+/* "i" buttons in the team builder (moves, Abilities) */
+.info { position: relative; display: inline-flex; vertical-align: middle; }
+.info-btn {
+  width: 22px; height: 22px; min-width: 0; padding: 0; border-radius: 50%; display: inline-grid; place-items: center;
+  font: italic 700 0.8rem Georgia, serif; line-height: 1; color: var(--muted); background: var(--surface); border: 1px solid var(--border);
+}
+.info-btn[aria-expanded="true"], .info-btn:hover { color: var(--accent); border-color: var(--accent); }
+.info-pop {
+  position: absolute; z-index: 30; top: calc(100% + 6px); right: 0; width: min(320px, 80vw); padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  font-size: 0.85rem; font-weight: 400; font-style: normal; line-height: 1.4; text-align: left; color: var(--text); white-space: normal;
+}
+.info-body { display: flex; flex-direction: column; gap: 4px; }
+.info-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; color: var(--muted); font-size: 0.78rem; }
+.info-text { display: block; }
+.fld-head { display: inline-flex; align-items: center; gap: 6px; }
+.move-row { display: flex; align-items: center; gap: 6px; }
+.move-row > .combo { flex: 1; min-width: 0; }
 .opt-row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 .opt-types, .opt-meta { display: flex; gap: 4px; align-items: center; font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
 

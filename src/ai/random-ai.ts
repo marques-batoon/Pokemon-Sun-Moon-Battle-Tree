@@ -62,9 +62,12 @@ export class RandomAI implements BattleAI {
   }
 
   private pickMove(active: SimRequestActive, slot: number, doubles: boolean, prng: PRNG, allow: { mega: boolean; z: boolean }): string {
-    const usable = active.moves
+    const available = active.moves
       .map((m, i) => ({ m, moveSlot: i + 1 }))
       .filter(({ m }) => !m.disabled && (m.pp === undefined || m.pp > 0));
+    // Partner-only moves (Helping Hand) are never picked in a Single Battle, unless nothing else is left.
+    const aimable = doubles ? available : available.filter(({ m }) => m.target !== 'adjacentAlly');
+    const usable = aimable.length ? aimable : available;
     if (!usable.length) return 'move 1'; // the sim turns this into Struggle
     const { m, moveSlot } = prng.sample(usable);
     const useZ = allow.z && !!active.canZMove?.[moveSlot - 1] && prng.random() < this.zMoveChance;

@@ -10,7 +10,10 @@ import { fileURLToPath } from 'node:url';
 
 const DATA = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'battle-tree');
 const sprites = JSON.parse(readFileSync(join(DATA, 'trainer-sprites.json'), 'utf8'));
-const { trainers } = JSON.parse(readFileSync(join(DATA, 'trainers.json'), 'utf8'));
+const { trainers: gameTrainers } = JSON.parse(readFileSync(join(DATA, 'trainers.json'), 'utf8'));
+// The Gym Leaders (custom special trainers) from src/data/custom/gym-leaders.json.
+const gymLeaders = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'gym-leaders.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+const trainers = [...gameTrainers, ...gymLeaders];
 
 const missing = [];
 for (const t of trainers) {

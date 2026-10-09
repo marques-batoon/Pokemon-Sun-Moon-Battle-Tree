@@ -1,74 +1,314 @@
 {
-  "source": "Official artwork as archived by PidgiWiki (pidgi.net), loaded at runtime from its image CDN (cdn.pidgi.net) as 400px-wide copies, not bundled; © Nintendo / Creatures / GAME FREAK. Checked on 2026-10-04 that each loads when requested from another site (scripts/check-trainer-sprites.mjs checks them too). Shown on the opponent card only; battles keep the Showdown trainer sprite.",
-  "notes": [
-    "Only special trainers and the Battle Legends have entries: Sun & Moon has no official 2D artwork for regular trainer classes (only in-game 3D 'VS' model renders, hosted by the Bulbagarden Archives, which blocks embedding on other sites).",
-    "Not from the Pokémon Wiki (Fandom) or the Bulbagarden Archives: both block images from being shown on other sites.",
-    "Cynthia and Wally appear in Sun & Moon in their Diamond and Pearl / Omega Ruby and Alpha Sapphire designs (matching their Showdown sprites), so that art is used.",
-    "Trainers without usable art fall back to the enlarged Showdown sprite (see 'missing')."
-  ],
-  "named": {
-    "Red": {
-      "url": "https://cdn.pidgi.net/images/thumb/8/87/Red_-_Pokemon_Sun_and_Moon.png/400px-Red_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 751,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Red_-_Pokemon_Sun_and_Moon.png"
-    },
-    "Blue": {
-      "url": "https://cdn.pidgi.net/images/thumb/8/82/Blue_-_Pokemon_Sun_and_Moon.png/400px-Blue_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 751,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Blue_-_Pokemon_Sun_and_Moon.png"
-    },
-    "Cynthia": {
-      "url": "https://cdn.pidgi.net/images/thumb/2/22/Cynthia_-_Pokemon_Diamond_and_Pearl.png/400px-Cynthia_-_Pokemon_Diamond_and_Pearl.png",
-      "width": 400,
-      "height": 732,
-      "game": "Diamond and Pearl",
-      "page": "https://www.pidgi.net/wiki/File:Cynthia_-_Pokemon_Diamond_and_Pearl.png"
-    },
-    "Wally": {
-      "url": "https://cdn.pidgi.net/images/thumb/4/4f/Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
-      "width": 400,
-      "height": 710,
-      "game": "Omega Ruby and Alpha Sapphire",
-      "page": "https://www.pidgi.net/wiki/File:Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
-    },
-    "Plumeria": {
-      "url": "https://cdn.pidgi.net/images/thumb/3/3f/Plumeria_-_Pokemon_Sun_and_Moon.png/400px-Plumeria_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 790,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Plumeria_-_Pokemon_Sun_and_Moon.png"
-    },
-    "Guzma": {
-      "url": "https://cdn.pidgi.net/images/thumb/7/7e/Guzma_-_Pokemon_Sun_and_Moon.png/400px-Guzma_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 668,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Guzma_-_Pokemon_Sun_and_Moon.png"
-    },
-    "Kiawe": {
-      "url": "https://cdn.pidgi.net/images/thumb/a/a0/Kiawe_-_Pokemon_Sun_and_Moon.png/400px-Kiawe_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 538,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Kiawe_-_Pokemon_Sun_and_Moon.png"
-    },
-    "Mallow": {
-      "url": "https://cdn.pidgi.net/images/thumb/4/45/Mallow_-_Pokemon_Sun_and_Moon.png/400px-Mallow_-_Pokemon_Sun_and_Moon.png",
-      "width": 400,
-      "height": 713,
-      "game": "Sun and Moon",
-      "page": "https://www.pidgi.net/wiki/File:Mallow_-_Pokemon_Sun_and_Moon.png"
-    }
+ "source": "Official artwork as archived by PidgiWiki (pidgi.net), loaded at runtime from its image CDN (cdn.pidgi.net) as 400px-wide copies, not bundled; © Nintendo / Creatures / GAME FREAK. Checked on 2026-10-04 that each loads when requested from another site (scripts/check-trainer-sprites.mjs checks them too). Shown on the opponent card only; battles keep the Showdown trainer sprite.",
+ "notes": [
+  "Only special trainers and the Battle Legends have entries: Sun & Moon has no official 2D artwork for regular trainer classes (only in-game 3D 'VS' model renders, hosted by the Bulbagarden Archives, which blocks embedding on other sites).",
+  "Not from the Pokémon Wiki (Fandom) or the Bulbagarden Archives: both block images from being shown on other sites.",
+  "Cynthia and Wally appear in Sun & Moon in their Diamond and Pearl / Omega Ruby and Alpha Sapphire designs (matching their Showdown sprites), so that art is used.",
+  "Trainers without usable art fall back to the enlarged Showdown sprite (see 'missing').",
+  "Gym Leaders (custom special trainers, 2026-10-08): artwork from each one's most recent main-series game other than Let's Go Pikachu / Eevee that has it on PidgiWiki (HeartGold and SoulSilver for Kanto and Johto, Ultra Sun and Ultra Moon for Giovanni, Omega Ruby and Alpha Sapphire for Hoenn, Brilliant Diamond and Shining Pearl for Sinnoh, Black 2 and White 2 or Black and White for Unova). Thumbnails were generated through PidgiWiki's API (iiurlwidth=400)."
+ ],
+ "named": {
+  "Red": {
+   "url": "https://cdn.pidgi.net/images/thumb/8/87/Red_-_Pokemon_Sun_and_Moon.png/400px-Red_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 751,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Red_-_Pokemon_Sun_and_Moon.png"
   },
-  "missing": {
-    "Grimsley": "Sun & Moon artwork (new outfit) is only on the Bulbagarden Archives, which blocks embedding; other hosts only have his Black and White design.",
-    "Anabel": "No embeddable official art of her Sun & Moon design (only Emerald and Pokémon Masters art).",
-    "Colress": "No official art of his Sun & Moon design (only Black 2 and White 2 art and concept sketches).",
-    "Sina": "No official art of her Sun & Moon (Alola) outfit; only concept sketches.",
-    "Dexio": "No official art of his Sun & Moon (Alola) outfit; only an in-game model render and concept sketches."
+  "Blue": {
+   "url": "https://cdn.pidgi.net/images/thumb/8/82/Blue_-_Pokemon_Sun_and_Moon.png/400px-Blue_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 751,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Blue_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Cynthia": {
+   "url": "https://cdn.pidgi.net/images/thumb/2/22/Cynthia_-_Pokemon_Diamond_and_Pearl.png/400px-Cynthia_-_Pokemon_Diamond_and_Pearl.png",
+   "width": 400,
+   "height": 732,
+   "game": "Diamond and Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Cynthia_-_Pokemon_Diamond_and_Pearl.png"
+  },
+  "Wally": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/4f/Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 710,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Wally_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Plumeria": {
+   "url": "https://cdn.pidgi.net/images/thumb/3/3f/Plumeria_-_Pokemon_Sun_and_Moon.png/400px-Plumeria_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 790,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Plumeria_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Guzma": {
+   "url": "https://cdn.pidgi.net/images/thumb/7/7e/Guzma_-_Pokemon_Sun_and_Moon.png/400px-Guzma_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 668,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Guzma_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Kiawe": {
+   "url": "https://cdn.pidgi.net/images/thumb/a/a0/Kiawe_-_Pokemon_Sun_and_Moon.png/400px-Kiawe_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 538,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Kiawe_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Mallow": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/45/Mallow_-_Pokemon_Sun_and_Moon.png/400px-Mallow_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 713,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Mallow_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Brock": {
+   "url": "https://cdn.pidgi.net/images/thumb/a/af/Brock_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Brock_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 843,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Brock_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Misty": {
+   "url": "https://cdn.pidgi.net/images/thumb/7/77/Misty_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Misty_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 834,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Misty_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Lt. Surge": {
+   "url": "https://cdn.pidgi.net/images/thumb/1/1d/Lt_Surge_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Lt_Surge_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 860,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Lt_Surge_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Erika": {
+   "url": "https://cdn.pidgi.net/images/thumb/c/c8/Erika_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Erika_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 1126,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Erika_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Janine": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/42/Janine_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Janine_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 562,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Janine_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Sabrina": {
+   "url": "https://cdn.pidgi.net/images/thumb/0/01/Sabrina_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Sabrina_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 703,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Sabrina_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Blaine": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/41/Blaine_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Blaine_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 914,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Blaine_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Giovanni": {
+   "url": "https://cdn.pidgi.net/images/thumb/1/16/Giovanni_-_Pokemon_Ultra_Sun_and_Ultra_Moon.png/400px-Giovanni_-_Pokemon_Ultra_Sun_and_Ultra_Moon.png",
+   "width": 400,
+   "height": 771,
+   "game": "Ultra Sun and Ultra Moon",
+   "page": "https://www.pidgi.net/wiki/File:Giovanni_-_Pokemon_Ultra_Sun_and_Ultra_Moon.png"
+  },
+  "Falkner": {
+   "url": "https://cdn.pidgi.net/images/thumb/b/b6/Falkner_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Falkner_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 650,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Falkner_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Bugsy": {
+   "url": "https://cdn.pidgi.net/images/thumb/f/f6/Bugsy_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Bugsy_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 756,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Bugsy_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Whitney": {
+   "url": "https://cdn.pidgi.net/images/thumb/e/e6/Whitney_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Whitney_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 580,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Whitney_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Morty": {
+   "url": "https://cdn.pidgi.net/images/thumb/6/6f/Morty_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Morty_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 783,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Morty_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Chuck": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/49/Chuck_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Chuck_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 458,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Chuck_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Jasmine": {
+   "url": "https://cdn.pidgi.net/images/thumb/b/b8/Jasmine_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Jasmine_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 907,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Jasmine_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Pryce": {
+   "url": "https://cdn.pidgi.net/images/thumb/9/91/Pryce_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Pryce_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 807,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Pryce_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Clair": {
+   "url": "https://cdn.pidgi.net/images/thumb/2/26/Clair_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Clair_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 564,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Clair_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Roxanne": {
+   "url": "https://cdn.pidgi.net/images/thumb/1/17/Roxanne_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Roxanne_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 650,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Roxanne_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Brawly": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/4d/Brawly_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Brawly_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 626,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Brawly_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Wattson": {
+   "url": "https://cdn.pidgi.net/images/thumb/a/a3/Wattson_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Wattson_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 650,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Wattson_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Flannery": {
+   "url": "https://cdn.pidgi.net/images/thumb/d/d6/Flannery_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Flannery_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 625,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Flannery_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Norman": {
+   "url": "https://cdn.pidgi.net/images/thumb/c/c7/Norman_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Norman_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 857,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Norman_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Roark": {
+   "url": "https://cdn.pidgi.net/images/thumb/0/0d/Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png/400px-Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png",
+   "width": 400,
+   "height": 594,
+   "game": "Brilliant Diamond and Shining Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Roark_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png"
+  },
+  "Gardenia": {
+   "url": "https://cdn.pidgi.net/images/thumb/d/dd/Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png/400px-Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png",
+   "width": 400,
+   "height": 695,
+   "game": "Brilliant Diamond and Shining Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Gardenia_-_Pokemon_Brilliant_Diamond_and_Shining_Pearl.png"
+  },
+  "Cheren": {
+   "url": "https://cdn.pidgi.net/images/thumb/5/51/Cheren_-_Pokemon_Black_2_and_White_2.png/400px-Cheren_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Cheren_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Roxie": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/4a/Roxie_-_Pokemon_Black_2_and_White_2.png/400px-Roxie_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Roxie_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Elesa": {
+   "url": "https://cdn.pidgi.net/images/thumb/c/c4/Elesa_-_Pokemon_Black_2_and_White_2.png/400px-Elesa_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 517,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Elesa_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Drayden": {
+   "url": "https://cdn.pidgi.net/images/thumb/9/99/Drayden_-_Pokemon_Black_and_White.png/400px-Drayden_-_Pokemon_Black_and_White.png",
+   "width": 400,
+   "height": 746,
+   "game": "Black and White",
+   "page": "https://www.pidgi.net/wiki/File:Drayden_-_Pokemon_Black_and_White.png"
+  },
+  "Marlon": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/49/Marlon_-_Pokemon_Black_2_and_White_2.png/400px-Marlon_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Marlon_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Cilan": {
+   "url": "https://cdn.pidgi.net/images/thumb/2/25/Cilan_-_Pokemon_Black_and_White.png/400px-Cilan_-_Pokemon_Black_and_White.png",
+   "width": 400,
+   "height": 667,
+   "game": "Black and White",
+   "page": "https://www.pidgi.net/wiki/File:Cilan_-_Pokemon_Black_and_White.png"
+  },
+  "Lenora": {
+   "url": "https://cdn.pidgi.net/images/thumb/b/ba/Lenora_-_Pokemon_Black_and_White.png/400px-Lenora_-_Pokemon_Black_and_White.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black and White",
+   "page": "https://www.pidgi.net/wiki/File:Lenora_-_Pokemon_Black_and_White.png"
+  },
+  "Brycen": {
+   "url": "https://cdn.pidgi.net/images/thumb/7/71/Brycen_-_Pokemon_Black_2_and_White_2.png/400px-Brycen_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Brycen_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Bianca": {
+   "url": "https://cdn.pidgi.net/images/thumb/a/ad/Bianca_-_Pokemon_Black_2_and_White_2.png/400px-Bianca_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:Bianca_-_Pokemon_Black_2_and_White_2.png"
   }
+ },
+ "missing": {
+  "Grimsley": "Sun & Moon artwork (new outfit) is only on the Bulbagarden Archives, which blocks embedding; other hosts only have his Black and White design.",
+  "Anabel": "No embeddable official art of her Sun & Moon design (only Emerald and Pokémon Masters art).",
+  "Colress": "No official art of his Sun & Moon design (only Black 2 and White 2 art and concept sketches).",
+  "Sina": "No official art of her Sun & Moon (Alola) outfit; only concept sketches.",
+  "Dexio": "No official art of his Sun & Moon (Alola) outfit; only an in-game model render and concept sketches.",
+  "Winona": "No Omega Ruby and Alpha Sapphire artwork on PidgiWiki (only Ruby and Sapphire's); her enlarged ORAS-style sprite is shown instead.",
+  "Tate": "His Omega Ruby and Alpha Sapphire artwork shows him with Liza; his ORAS-style sprite is shown instead.",
+  "Liza": "Her Omega Ruby and Alpha Sapphire artwork shows her with Tate; her ORAS-style sprite is shown instead.",
+  "Juan": "No official artwork on PidgiWiki.",
+  "Fantina": "No official artwork on PidgiWiki.",
+  "Maylene": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background, which can't stand on the card.",
+  "Crasher Wake": "No official artwork on PidgiWiki.",
+  "Byron": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background, which can't stand on the card.",
+  "Candice": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background (the PNG is a 240-pixel thumbnail).",
+  "Volkner": "Brilliant Diamond and Shining Pearl artwork on PidgiWiki is a JPEG with a white background (the PNG is a 240-pixel thumbnail).",
+  "Burgh": "No official artwork on PidgiWiki.",
+  "Clay": "No official artwork on PidgiWiki.",
+  "Skyla": "Her only artwork on PidgiWiki includes a Pokémon.",
+  "Chili": "His only artwork on PidgiWiki shows all three Striaton brothers together.",
+  "Cress": "His only artwork on PidgiWiki shows all three Striaton brothers together."
+ }
 }

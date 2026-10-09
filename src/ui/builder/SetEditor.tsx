@@ -8,6 +8,7 @@ import { TypeBadge } from '../battle/TypeBadge';
 import { useLearnset } from './hooks';
 import { StatTable } from './StatTable';
 import { PokemonSprite } from '../components/PokemonSprite';
+import { AbilityDetails, InfoButton, MoveDetails } from './InfoPopover';
 
 interface Props {
   set: PokemonSet;
@@ -112,7 +113,14 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
 
       <div className="field-grid">
         <label className="fld">
-          <span>Ability{paradox ? ' (Paradox form)' : ''}</span>
+          <span className="fld-head">
+            Ability{paradox ? ' (Paradox form)' : ''}
+            {(paradox ? shown?.abilities[0] : set.ability) && (
+              <InfoButton label={`the Ability ${paradox ? shown?.abilities[0] : set.ability}`}>
+                <AbilityDetails name={(paradox ? shown?.abilities[0] : set.ability) as string} />
+              </InfoButton>
+            )}
+          </span>
           {paradox ? (
             // The Paradox form's Ability replaces the original's before it ever activates.
             <select value="paradox" disabled title={shown?.abilities[0] ? gen7.abilities.get(shown.abilities[0])?.shortDesc : undefined}>
@@ -121,7 +129,9 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
           ) : (
             <select value={set.ability} onChange={e => update({ ability: e.target.value })}>
               {!abilities.includes(set.ability) && <option value={set.ability}>{set.ability || '—'}</option>}
-              {abilities.map(a => <option key={a} value={a}>{a}{a === species?.abilities.H ? ' (Hidden)' : ''}</option>)}
+              {abilities.map(a => (
+                <option key={a} value={a} title={gen7.abilities.get(a)?.shortDesc}>{a}{a === species?.abilities.H ? ' (Hidden)' : ''}</option>
+              ))}
             </select>
           )}
         </label>
@@ -166,8 +176,12 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
                 getKey={m => m.id}
                 getLabel={m => m.name}
                 renderOption={m => <MoveOption m={m} />}
+                describe={m => <MoveDetails move={m} brief />}
                 onSelect={m => setMove(i, m)}
               />
+              {current && gen7.moves.get(current) && (
+                <InfoButton label={`the move ${current}`}><MoveDetails move={gen7.moves.get(current)!} /></InfoButton>
+              )}
             </div>
           );
         })}

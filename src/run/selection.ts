@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, RULES, SETS, TRAINERS, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { BOSSES, BRACKETS, pairedTrainer, RULES, SETS, TRAINER_PAIRS, TRAINERS, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -93,8 +93,8 @@ export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
 /** Seed text of battle N in a run; the simulator and opponent rolls both derive from the run seed. */
 export const battleSeedText = (runSeed: string, battle: number) => `${runSeed}|battle-${battle}`;
 
-function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format, rng: Rng): PlannedTrainer {
-  const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng);
+function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
+  const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng, lead === undefined ? undefined : SETS[lead]);
   return {
     trainerId: trainer.id,
     displayName: displayName(trainer),
@@ -109,17 +109,33 @@ function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format,
  * Fully determines battle N's opponent from the run seed: trainer, team sets,
  * abilities and genders. Same inputs -> same opponent.
  * Multi: two different trainers (Red and Blue together at 50), never the player's partner.
+ * Paired trainers (Tate and Liza) only ever battle together there, leading with one of
+ * their pairs (TRAINER_PAIRS); with one of them as your partner, the other doesn't appear.
  */
 export function planOpponent(
   runSeed: string, format: Format, course: Course, battle: number, settings: RunSettings, partnerId?: number,
 ): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|opponent`);
+  const multi = format === 'multi';
   const exclude = new Set(partnerId === undefined ? [] : [partnerId]);
-  const first = planTrainer(chooseTrainer(format, course, battle, settings, rng, exclude), format, rng);
-  if (format !== 'multi') return { battle, ...first, seedText };
+  const partnersTwin = multi && partnerId !== undefined ? pairedTrainer(partnerId) : null;
+  if (partnersTwin) exclude.add(partnersTwin.partnerId);
+  const firstChoice = chooseTrainer(format, course, battle, settings, rng, exclude);
+  const pair = multi ? pairedTrainer(firstChoice.trainer.id) : null;
+  if (pair) {
+    const leads = rng.pick(pair.pair.multiLeads);
+    const at = (id: number) => leads[pair.pair.trainerIds.indexOf(id)];
+    const first = planTrainer(firstChoice, format, rng, at(firstChoice.trainer.id));
+    const second = planTrainer({ trainer: TRAINERS[pair.partnerId], replacedAnabel: false }, format, rng, at(pair.partnerId));
+    return { battle, ...first, seedText, second };
+  }
+  const first = planTrainer(firstChoice, format, rng);
+  if (!multi) return { battle, ...first, seedText };
 
   exclude.add(first.trainerId);
+  // A paired trainer can't be the second opponent without their partner.
+  for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
   const slot = scheduleSlot(format, course, battle);
   const second = slot.type === 'boss'
     ? { trainer: TRAINERS[BOSSES[slot.bossKey].partnerTrainerId!], replacedAnabel: false }

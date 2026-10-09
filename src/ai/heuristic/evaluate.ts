@@ -86,6 +86,19 @@ function canInflict(s: Situation, move: DexMove, status: string): boolean {
   return true;
 }
 
+/** Score of a move the AI must not pick (below 0, the score of a move that just fails). */
+export const RULED_OUT = -1;
+
+/** Targets that are only the user's partner. */
+export const ALLY_ONLY_TARGETS = new Set(['adjacentAlly']);
+
+/** Our side (or our Multi ally) set up the current Trick Room on the previous turn. */
+function ownTrickRoomSetLastTurn({ battle, me }: Situation): boolean {
+  const room = battle.field.pseudoWeather.trickroom as { duration?: number; source?: Pokemon } | undefined;
+  if (!room?.source || (room.duration ?? 0) < 4) return false;
+  return room.source.side === me.side || room.source.side === me.side.allySide;
+}
+
 const positiveBoosts = (p: Pokemon) => Object.values(p.boosts).reduce((s, v) => s + Math.max(0, v), 0);
 const isPhysical = (p: Pokemon) => p.getStat('atk', false, true) >= p.getStat('spa', false, true);
 const aliveBench = (side: Side) => side.pokemon.filter(p => !p.isActive && p.hp > 0).length;
@@ -133,6 +146,13 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   const out = (score: number, reason: string): ScoredMove => ({ score, ko: false, first, reason });
   const hpFrac = me.hp / me.maxhp;
   const safe = threat.frac < config.setupSafeThreat && !threat.koFirst;
+
+  // Ruled out (app rules), scored below a move that merely fails so they lose even an all-zero tie:
+  // partner-only moves (Helping Hand) in a Single Battle, and Wish / Trick Room twice in a row
+  // (a second Trick Room undoes ours; a second Wish fails while one is pending).
+  if (battle.gameType === 'singles' && ALLY_ONLY_TARGETS.has(move.target)) return out(RULED_OUT, 'no partner in Singles');
+  if (move.id === 'wish' && (me.lastMove?.id === 'wish' || me.side.slotConditions[me.position]?.wish)) return out(RULED_OUT, 'wish just used');
+  if (move.id === 'trickroom' && (me.lastMove?.id === 'trickroom' || ownTrickRoomSetLastTurn(s))) return out(RULED_OUT, 'trick room just set');
 
   if (move.status) {
     if (!canInflict(s, move, move.status)) return out(0, `can't ${move.status}`);

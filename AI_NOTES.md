@@ -100,6 +100,12 @@ The same Doubles logic, with one AI per trainer (**approximation**; the Multi AI
 - Your partner uses this AI too, so it plays like an opponent would: it won't cover your Pokémon's weaknesses or follow a plan with you.
 - **Online Multi Battles:** when a player leaves (or the host lets the AI take over), this AI plays that player's Pokémon for the rest of the battle.
 
+## App rules (not from the guide)
+
+- **No Helping Hand (or other partner-only moves) in a Single Battle**, by either AI.
+- **No Wish or Trick Room twice in a row:** Wish isn't used again the turn after (or while a Wish is pending), and Trick Room isn't used the turn after its own side set it (it would undo it). Using Trick Room to cancel the opponent's is still allowed.
+- These score below a move that just fails (`RULED_OUT`), so they lose even when every option scores 0.
+
 ## Known gaps
 
 - Doesn't model the guide's quirks:

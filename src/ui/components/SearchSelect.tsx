@@ -7,6 +7,8 @@ interface Props<T> {
   getKey: (o: T) => string;
   getLabel: (o: T) => string;
   renderOption?: (o: T) => ReactNode;
+  /** Details of the highlighted option (hovered, or picked with the arrow keys), shown under the list. */
+  describe?: (o: T) => ReactNode;
   onSelect: (o: T | null) => void;
   placeholder?: string;
   /** Show a "(none)" choice that selects null. */
@@ -22,7 +24,7 @@ interface Props<T> {
  * filters by substring (prefix matches first). Escape or blur restores the value.
  */
 export function SearchSelect<T>({
-  value, options, getKey, getLabel, renderOption, onSelect, placeholder, allowEmpty, disabled, invalid, ariaLabel, maxResults = 60,
+  value, options, getKey, getLabel, renderOption, describe, onSelect, placeholder, allowEmpty, disabled, invalid, ariaLabel, maxResults = 60,
 }: Props<T>) {
   const listId = useId();
   const [query, setQuery] = useState<string | null>(null);
@@ -91,6 +93,9 @@ export function SearchSelect<T>({
             </li>
           ))}
           {!entries.length && <li className="muted combo-empty">No matches</li>}
+          {describe && entries[active] && (
+            <li className="combo-desc" role="presentation" aria-live="polite">{describe(entries[active] as T)}</li>
+          )}
         </ul>
       )}
     </div>

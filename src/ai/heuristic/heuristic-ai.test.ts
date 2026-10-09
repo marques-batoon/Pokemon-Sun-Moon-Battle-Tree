@@ -63,6 +63,30 @@ describe('HeuristicAI move choice', () => {
     expect(decide(scenario(`Gengar @ Life Orb\nAbility: Cursed Body\n- Shadow Ball`, AMBIPOM))['move 1'] ?? 0).toBe(0);
   });
 
+  it('never uses Helping Hand in a Single Battle', () => {
+    const SOLROCK = `Solrock @ Life Orb\nAbility: Levitate\nEVs: 252 HP / 116 Atk / 142 SpD\nAdamant Nature\n- Helping Hand\n- Rock Slide\n- Zen Headbutt\n- Gyro Ball`;
+    expect(decide(scenario(CHANSEY, SOLROCK))['move 1'] ?? 0).toBe(0);
+    expect(decide(scenario(CHANSEY, SOLROCK), 200, new RandomAI() as never)['move 1'] ?? 0).toBe(0);
+  });
+
+  it("doesn't use Wish or Trick Room twice in a row", () => {
+    // Slow, frail attackers facing a fast foe: Trick Room is the obvious play, until it's just been set.
+    const CLAYDOL = `Claydol @ Light Clay\nAbility: Levitate\nEVs: 252 HP / 252 SpD\nSassy Nature\nIVs: 0 Spe\n- Trick Room\n- Psychic`;
+    const JOLTEON = `Jolteon @ Air Balloon\nAbility: Volt Absorb\nEVs: 252 HP / 252 SpD\nCalm Nature\n- Wish\n- Thunderbolt`;
+    // The foe spends the first turn setting up (Swords Dance), so both moves land.
+    const fast = `Weavile @ Life Orb\nAbility: Pressure\nEVs: 252 Atk / 252 Spe\nJolly Nature\n- Swords Dance\n- Knock Off`;
+    const tr = scenario(fast, CLAYDOL);
+    expect(share(decide(tr), 'move 1')).toBeGreaterThan(0.3);
+    tr.makeChoices('move 1', 'move 1');
+    expect(tr.field.getPseudoWeather('trickroom')).toBeTruthy();
+    expect(decide(tr)['move 1'] ?? 0).toBe(0);
+
+    const wish = scenario(fast, JOLTEON, b => { b.p2.active[0].hp = Math.floor(b.p2.active[0].maxhp * 0.4); });
+    wish.makeChoices('move 1', 'move 1');
+    expect(wish.p2.active[0].lastMove?.id).toBe('wish');
+    expect(decide(wish)['move 1'] ?? 0).toBe(0);
+  });
+
   it('sets weather when it is not up and no KO is available, but not when it already is', () => {
     const PELIPPER = `Pelipper @ Damp Rock\nAbility: Keen Eye\nEVs: 252 HP / 252 Def\nBold Nature\n- Rain Dance\n- Scald\n- Hurricane\n- Roost`;
     expect(share(decide(scenario(CHANSEY, PELIPPER)), 'move 1')).toBeGreaterThan(0.6);

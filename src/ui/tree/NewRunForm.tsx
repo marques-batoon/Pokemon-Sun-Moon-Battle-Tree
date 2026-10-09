@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { RunController, RunTeam } from '../../run/controller';
 import { courseSchedule } from '../../run/selection';
 import {
-  BRING, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, PARTNER_BRING, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile,
+  BRING, checkpointsFor, CHECKPOINTS, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, PARTNER_BRING, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile,
 } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
@@ -43,6 +43,10 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
   const key = runKey(format, course);
   const existing = controller.run(key);
   const length = courseSchedule(format, course).length;
+  // Later starting battles unlocked by this course's best streak (battle 20 after winning 50, 50 after 100).
+  const checkpoints = checkpointsFor(profile.records[key]);
+  const [checkpointChoice, setCheckpoint] = useState(1);
+  const checkpoint = checkpoints.includes(checkpointChoice) ? checkpointChoice : 1;
 
   const start = () => {
     if (!team || !partnerReady) return;
@@ -54,6 +58,7 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
         // Multi Battles have no Team Preview.
         settings: multi ? { ...settings, teamPreviewEachBattle: false } : settings,
         partner: multi && partner ? { name: partner, setIds: partnerPicks } : undefined,
+        checkpoint: checkpoint > 1 ? checkpoint : undefined,
       });
       onStarted(key);
     } catch (e) {
@@ -78,6 +83,21 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
           </label>
         ))}
       </fieldset>
+
+      {checkpoints.length > 0 && (
+        <fieldset className="start-at">
+          <legend>Start at</legend>
+          {[1, ...checkpoints].map(n => (
+            <label key={n}>
+              <input type="radio" name="start-at" checked={checkpoint === n} onChange={() => setCheckpoint(n)} />
+              {' '}Battle {n}
+              <small className="muted">
+                {n === 1 ? ' · from the beginning' : ` · unlocked by winning battle ${CHECKPOINTS.find(c => c.start === n)!.unlockedBy}; your streak starts at ${n - 1}`}
+              </small>
+            </label>
+          ))}
+        </fieldset>
+      )}
 
       {multi && (
         <fieldset className="partner-pick">

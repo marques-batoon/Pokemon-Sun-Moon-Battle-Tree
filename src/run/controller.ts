@@ -7,7 +7,7 @@ import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
 import { bpForWin, courseSchedule, displayName, planOpponent } from './selection';
 import {
-  bpBalance, BRING, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, PARTNER_COST, runKey,
+  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, PARTNER_COST, runKey,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
 } from './types';
 
@@ -31,6 +31,11 @@ export interface StartRunOptions {
   startBattle?: number;
   /** Multi (required): a partner you own and the two of their Pokémon (set ids from their offer) they bring, lead first. */
   partner?: { name: string; setIds: number[] };
+  /**
+   * Start at a later battle you've unlocked (checkpointsFor): 20 after winning battle 50, 50 after
+   * winning battle 100. The streak counts from there (battle 20 = 19 wins); the run still counts.
+   */
+  checkpoint?: number;
 }
 
 export interface ControllerSnapshot extends TreeState {
@@ -102,7 +107,12 @@ export class RunController {
     const existing = this.run(key);
     if (existing && !isFinished(existing)) this.endRun(existing, 'retired');
 
-    const battle = Math.max(1, opts.startBattle ?? 1);
+    if (opts.checkpoint && !checkpointsFor(profile.records[key]).includes(opts.checkpoint)) {
+      const by = CHECKPOINTS.find(c => c.start === opts.checkpoint)?.unlockedBy;
+      throw new Error(by ? `Starting at battle ${opts.checkpoint} unlocks once you've won battle ${by} of this course.` : `You can't start at battle ${opts.checkpoint}.`);
+    }
+    const debugStart = Math.max(1, opts.startBattle ?? 1);
+    const battle = debugStart > 1 ? debugStart : opts.checkpoint ?? 1;
     const length = courseSchedule(format, course).length;
     if (length !== null && battle > length) throw new Error(`The ${course} course has ${length} battles.`);
     const seedText = opts.seedText ?? `${this.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -122,7 +132,8 @@ export class RunController {
       next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
       ...(partner && { partner }),
       history: [],
-      debug: battle > 1 || fullSettings.ai !== 'heuristic',
+      // Checkpoint starts count; debug starts ("start at battle N") and practice runs don't.
+      debug: debugStart > 1 || fullSettings.ai !== 'heuristic',
       startedAt: t,
       updatedAt: t,
     };

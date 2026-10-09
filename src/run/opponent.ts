@@ -22,16 +22,16 @@ export function rollGender(species: string, rng: Rng): 'M' | 'F' | 'N' {
   return rng.next() < s.genderRatio.M ? 'M' : 'F';
 }
 
-/** A Battle Tree set as a Showdown set at Lv. 50 with the trainer's flat IVs. */
+/** A Battle Tree set as a Showdown set at Lv. 50 with the trainer's flat IVs (custom sets keep their Ability and gender). */
 export function treeSetToPokemonSet(set: TreeSet, iv: number, rng: Rng): PokemonSet {
   return {
     name: set.species,
     species: set.species,
     item: set.item,
-    ability: rollAbility(set.species, rng),
+    ability: set.ability ?? rollAbility(set.species, rng),
     moves: [...set.moves],
     nature: set.nature,
-    gender: rollGender(set.species, rng),
+    gender: set.gender ?? rollGender(set.species, rng),
     evs: { ...set.evs },
     ivs: { hp: iv, atk: iv, def: iv, spa: iv, spd: iv, spe: iv },
     level: 50,
@@ -53,15 +53,15 @@ const dexNum = (set: TreeSet) => gen7.species.get(set.species)!.num;
  * the team is full. Pick order is the battle order (first = lead).
  * Source: Smogon Battle Tree guide; uniform weighting assumed (DATA_NOTES.md section 4).
  */
-export function pickTeamSets(trainer: Trainer, size: number, rng: Rng): TreeSet[] {
-  const picked = pickUpTo(trainer, size, rng);
+export function pickTeamSets(trainer: Trainer, size: number, rng: Rng, lead?: TreeSet): TreeSet[] {
+  const picked = pickUpTo(trainer, size, rng, lead);
   if (picked.length < size) throw new Error(`${trainer.name} can't field ${size} Pokémon under the clauses`);
   return picked;
 }
 
-/** pickTeamSets, but stops early (with fewer) when no set fits the clauses anymore. */
-export function pickUpTo(trainer: Trainer, size: number, rng: Rng): TreeSet[] {
-  const picked: TreeSet[] = [];
+/** pickTeamSets, but stops early (with fewer) when no set fits the clauses anymore. `lead`: a set that must lead. */
+export function pickUpTo(trainer: Trainer, size: number, rng: Rng, lead?: TreeSet): TreeSet[] {
+  const picked: TreeSet[] = lead ? [lead] : [];
   let candidates = trainer.roster.map(id => SETS[id]);
   while (picked.length < size) {
     candidates = candidates.filter(c => !picked.some(p => dexNum(p) === dexNum(c) || p.item === c.item));

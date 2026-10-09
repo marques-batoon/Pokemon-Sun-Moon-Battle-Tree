@@ -67,7 +67,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
               </div>
             ) : s.phase === 'ended' && s.result ? (
               <div className={`notice result ${s.result.winner === 'p1' ? 'win' : 'loss'}`}>
-                {opponent?.trainers.map(t => <ClosingRemark key={t.id} trainer={t} battleKey={opponent.battleKey} winner={s.result!.winner} />)}
+                {opponent?.trainers.map(t => <ClosingRemark key={t.id} trainer={t} alongside={opponent.trainers} battleKey={opponent.battleKey} winner={s.result!.winner} />)}
                 <strong>{s.result.winner === 'p1' ? 'You won!' : s.result.winner === 'p2' ? 'You lost.' : 'Tie.'}</strong>
                 <span className="muted small">{s.result.turns} turns</span>
                 {settings.showDebugTools && (
@@ -101,8 +101,8 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
 }
 
 /** The opponent's last word: the closing remark (win or loss) that goes with this battle's greeting; none on a tie. */
-function ClosingRemark({ trainer, battleKey, winner }: { trainer: Trainer; battleKey: string; winner: string | null | undefined }) {
-  const quotes = trainerQuotes(trainer, battleKey);
+function ClosingRemark({ trainer, alongside, battleKey, winner }: { trainer: Trainer; alongside: readonly Trainer[]; battleKey: string; winner: string | null | undefined }) {
+  const quotes = trainerQuotes(trainer, battleKey, alongside);
   const line = winner === 'p2' ? quotes?.trainerWins : winner === 'p1' ? quotes?.trainerLoses : null;
   if (!line) return null;
   return (

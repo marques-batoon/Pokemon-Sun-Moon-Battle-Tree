@@ -30,9 +30,12 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets with sequential ids', () => {
-    expect(SETS).toHaveLength(996);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
+    // Only custom sets fix their Ability (the game rolls it).
+    expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
+    expect(SETS.slice(996).every(s => s.ability)).toBe(true);
   });
 
   it('resolves every species, move, item and nature in Gen 7', () => {
@@ -65,10 +68,15 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11, 4]);
+    expect(TRAINERS).toHaveLength(205 + 47);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4]);
+    expect(TRAINERS.slice(205).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
+  });
+
+  it("lets every Gym Leader field 4 Pokémon under the clauses (Doubles)", () => {
+    for (const t of TRAINERS.slice(205)) expect(maxClauseTeam(t.roster, 4), t.name).toBe(4);
   });
 
   it('only references existing sets, without duplicates', () => {
@@ -121,8 +129,10 @@ describe('brackets.json', () => {
     }
   });
 
-  it('special pool has 8 trainers per version with Anabel at 1/7 weight', () => {
-    const specials = BRACKETS.specialTrainerPool.trainerIds.map(id => TRAINERS[id] as SpecialTrainer);
+  it('special pool has the game\'s 8 trainers per version (Anabel at 1/50 of their weight), plus every Gym Leader', () => {
+    const all = BRACKETS.specialTrainerPool.trainerIds.map(id => TRAINERS[id] as SpecialTrainer);
+    expect(all.filter(t => t.custom).map(t => t.id)).toEqual(TRAINERS.slice(205).map(t => t.id));
+    const specials = all.filter(t => !t.custom);
     for (const v of ['sun', 'moon'] as const) {
       const pool = specials.filter(t => t.versions.includes(v));
       expect(pool).toHaveLength(8);
@@ -174,10 +184,12 @@ describe('trainer-art.json', () => {
 
 describe('trainer-quotes.json', () => {
   it('gives every trainer (by name) three sets of greeting + both closing remarks, no line shared', async () => {
-    const { TRAINER_QUOTES } = await import('./index');
+    const { TRAINER_MULTI_QUOTES, TRAINER_QUOTES } = await import('./index');
     const names = new Set(TRAINERS.map(t => t.name));
     expect(new Set(Object.keys(TRAINER_QUOTES))).toEqual(names);
-    const sets = Object.values(TRAINER_QUOTES);
+    // Team-up lines for the paired trainers (Tate and Liza) in Multi Battles.
+    expect(Object.keys(TRAINER_MULTI_QUOTES).sort()).toEqual(['Liza', 'Tate']);
+    const sets = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES)];
     for (const trainerSets of sets) expect(trainerSets).toHaveLength(3);
     const lines = sets.flat().flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]);
     for (const text of lines) {
@@ -188,11 +200,11 @@ describe('trainer-quotes.json', () => {
   });
 
   it('never names a Pokémon or a type', async () => {
-    const { TRAINER_QUOTES } = await import('./index');
+    const { TRAINER_MULTI_QUOTES, TRAINER_QUOTES } = await import('./index');
     const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
     const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?!\\w)`);
     const types = new RegExp(`\\b(${[...Dex.types.all()].map(t => t.name).join('|')})(-| )types?\\b`, 'i');
-    for (const q of Object.values(TRAINER_QUOTES).flat()) {
+    for (const q of [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES)].flat()) {
       for (const text of [q.greeting, q.trainerWins, q.trainerLoses]) {
         expect(text).not.toMatch(pokemon);
         expect(text).not.toMatch(types);
@@ -206,5 +218,19 @@ describe('trainer-quotes.json', () => {
     expect(trainerQuotes(florian, 'run-1|battle-3')).toBe(trainerQuotes(florian, 'run-1|battle-3'));
     const picked = new Set(Array.from({ length: 30 }, (_, i) => trainerQuotes(florian, `run-1|battle-${i + 1}`)?.greeting));
     expect(picked.size).toBe(3);
+  });
+
+  it('gives Tate and Liza matching team-up lines when they battle together, and their own lines apart', async () => {
+    const { trainerQuotes, TRAINER_MULTI_QUOTES, TRAINER_QUOTES } = await import('./index');
+    const tate = byName('Tate');
+    const liza = byName('Liza');
+    for (let i = 0; i < 12; i++) {
+      const key = `run|battle-${i}`;
+      const t = trainerQuotes(tate, key, [tate, liza])!;
+      const l = trainerQuotes(liza, key, [tate, liza])!;
+      expect(TRAINER_MULTI_QUOTES.Tate.indexOf(t)).toBe(TRAINER_MULTI_QUOTES.Liza.indexOf(l));
+      expect(TRAINER_QUOTES.Tate).toContain(trainerQuotes(tate, key));
+      expect(TRAINER_QUOTES.Tate).toContain(trainerQuotes(tate, key, [tate, byName('Brock')]));
+    }
   });
 });

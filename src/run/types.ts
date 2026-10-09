@@ -136,6 +136,15 @@ export interface CourseRecord {
   last: number;
 }
 
+/**
+ * Later battles a new challenge may start at (app feature): battle 20 once you've won
+ * battle 50 of that course, battle 50 once you've won battle 100. `best` counts wins,
+ * so it's the last battle won.
+ */
+export const CHECKPOINTS: readonly { start: number; unlockedBy: number }[] = [{ start: 20, unlockedBy: 50 }, { start: 50, unlockedBy: 100 }];
+export const checkpointsFor = (record: CourseRecord | undefined): number[] =>
+  CHECKPOINTS.filter(c => (record?.best ?? 0) >= c.unlockedBy).map(c => c.start);
+
 /** Formats with a Normal course whose Battle Legend unlocks Super. */
 export type UnlockFormat = Exclude<Format, 'multi'>;
 

@@ -19,6 +19,9 @@ export interface TreeSet {
   moves: string[];
   evs: StatTable;
   notes?: string[];
+  /** Custom trainers' sets fix these; Battle Tree sets roll them (opponent.ts). */
+  ability?: string;
+  gender?: 'M' | 'F';
 }
 
 interface TrainerBase {
@@ -48,6 +51,9 @@ export interface SpecialTrainer extends TrainerBase {
   weight: number;
   requires?: 'lookerGuzzlordChapter';
   requiresNote?: string;
+  /** A custom addition (the Gym Leaders), not in the game: src/data/custom/gym-leaders.json. */
+  custom?: boolean;
+  region?: string;
 }
 
 export interface LegendTrainer extends TrainerBase {

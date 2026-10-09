@@ -13,6 +13,7 @@ npm run dev         # Vite dev server
 npm test            # Vitest (data integrity, engine, client integration)
 npm run build       # typecheck + production build
 npm run data:build  # regenerate src/data/battle-tree/*.json from data-sources/
+node scripts/build-gym-leaders.mjs      # rebuild the Gym Leaders from data-sources/custom/gym-leaders.txt
 node scripts/check-trainer-sprites.mjs  # verify every trainer has a sprite that exists on Showdown (network)
 ```
 
@@ -44,6 +45,8 @@ Battles are seeded: the same seed text plus the same choices reproduce the same 
 
 - **Formats.** Single Battles (bring 3) and Double Battles (bring 4), each with a Normal course (20 battles, Battle Legend Red / Blue at 20) and an endless Super course. In Doubles you choose an action for each of your two Pokémon in turn and pick a target when the move needs one (effectiveness is shown per target); spread moves animate on every Pokémon they hit.
 - **Multi Battles.** Super Multi opens once Super Singles and Super Doubles are both unlocked: you bring 2 and an AI partner (a special trainer) brings 2 against two trainers, with Red and Blue together at battle 50. Sina and Dexio are partners from the start; special trainers you beat can be bought for 100 BP on the Battle Tree page, and you pick two of a partner's (up to six) Pokémon by picture. See DATA_NOTES.md section 13.
+- **Gym Leaders.** 47 Gym Leaders (custom teams, see DATA_NOTES.md "Custom additions") are special trainers in every Super course, with their own greetings and artwork. Tate and Liza always team up in Multi Battles.
+- **Starting further in.** After winning battle 50 of a course you can start new challenges there at battle 20; after battle 100, at battle 50.
 - **Online Multi Battles.** Team up with a friend (Online page): one player hosts the battle in their browser, and a small relay server passes messages between you. Set up the relay with `relay/README.md`; the app needs its address in `VITE_RELAY_URL` at build time (`.env.example`). Trainer names are set in Settings.
 - **Playback.** The battle client plays events one at a time (`src/client/playback.ts`). Each protocol line updates the state and the log, shows its animation, and the next line waits until that animation ends. Animated events: moves, hits and HP drain, healing, switch-out, switch-in, faints, Mega Evolution, forme changes, status, stat changes and misses. Animation speed is a setting (off / fast / normal / slow), and Skip jumps to the end of the turn.
 - **Now playing.** While events play, the bar under the stage shows the move being carried out (type, name, category and who used it) and the text of the event on screen, so you can follow along before the log catches your eye.

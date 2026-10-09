@@ -70,15 +70,15 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
   });
 
-  it('special trainers from both versions: shared trainers 7/50 (Anabel 1/50), each version exclusive 3.5/50', () => {
+  it('special trainers from both versions: shared trainers weight 7 (Anabel 1), each version exclusive 3.5; Gym Leaders 7', () => {
     const pool = specialPool();
-    expect(pool).toHaveLength(11);
+    expect(pool).toHaveLength(11 + 47);
     const weightOf = (name: string) => pool.find(p => p.trainer.name === name)!.weight;
-    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia']) expect(weightOf(name), name).toBe(7);
+    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca']) expect(weightOf(name), name).toBe(7);
     expect(weightOf('Anabel')).toBe(1);
     for (const name of ['Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio']) expect(weightOf(name), name).toBe(3.5);
     const total = pool.reduce((s, t) => s + t.weight, 0);
-    expect(total).toBe(50);
+    expect(total).toBe(50 + 47 * 7);
 
     const n = 100_000;
     const counts = drawTrainers('super', 30, SETTINGS, n, 'special');
@@ -95,11 +95,11 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
       if (trainer.versions.length === 1) byVersion[trainer.versions[0]] += counts.get(trainer.id) ?? 0;
     }
     // Each side expects 3 × 3.5/50 of the draws; the difference should be within noise.
-    const p = 10.5 / 50;
+    const p = 10.5 / specialPool().reduce((s, t) => s + t.weight, 0);
     expect(Math.abs(byVersion.sun - byVersion.moon)).toBeLessThan(4.5 * Math.sqrt(2 * n * p));
   });
 
-  it('never shows Anabel when locked; her 1/50 share goes to the previous bracket\'s trainers', () => {
+  it('never shows Anabel when locked; her share (weight 1) goes to the previous bracket\'s trainers', () => {
     const settings = { ...SETTINGS, anabelUnlocked: false };
     const rng = new Rng('anabel-locked');
     const n = 100_000;
@@ -113,7 +113,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
         replacements.set(trainer.id, (replacements.get(trainer.id) ?? 0) + 1);
       }
     }
-    const p = 1 / 50;
+    const p = 1 / specialPool().reduce((s, t) => s + t.weight, 0);
     expect(Math.abs(replaced - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
     const pool = BRACKETS.pools['b11-19'].trainerIds;
     for (const id of replacements.keys()) expect(pool).toContain(id);
