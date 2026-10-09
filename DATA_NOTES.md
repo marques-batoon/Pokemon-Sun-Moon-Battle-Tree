@@ -141,7 +141,7 @@ Smogon's guide calls the 20 and 50 a "bonus". Bulbapedia's table lists them as t
 | When the opponent is rolled | Battle N's trainer and team are derived from the run seed when battle N−1 ends, so saving and reloading doesn't reroll them | Same odds as rolling at battle start; makes runs reproducible |
 | Interrupted battle (app closed mid-battle) | You choose: count it as a loss (what the game does) or replay the battle from the start with the same opponent and seed | Replaying isn't possible in the game |
 | Retire | Ends the run; the streak is recorded | The game ends the streak on loss or retreat |
-| Debug runs | Debug tools (Settings, behind a developer password; only its hash is in the code) add "start at battle N", "unlock Super" and choosing the next battle's special trainer(s) (two in Multi; Tate and Liza stay paired). Such runs never count toward records, unlocks, BP or partner prices. An online host can choose opponents too; the joining player never sees debug tools or logs | Testing aid |
+| Debug runs | Debug tools (Settings, behind a developer password; only its hash is in the code) add "start at battle N", "unlock Super" and choosing the next battle's special trainer(s) or Battle Legends (two in Multi; Tate and Liza, and Marques and Thomas, stay paired; Battle Legends bring their Normal or Super team, sized for the format, and trainers who can't field a full team there aren't offered). Such runs never count toward records, unlocks, BP or partner prices. An online host can choose opponents too; the joining player never sees debug tools or logs | Testing aid |
 
 ## 7. Source errors found and resolved
 

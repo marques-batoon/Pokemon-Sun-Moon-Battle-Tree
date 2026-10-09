@@ -1,5 +1,5 @@
 import { BOSSES, BRACKETS, pairedTrainer, RULES, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
-import { pickTeamSets, treeSetToPokemonSet } from './opponent';
+import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
 
@@ -100,8 +100,21 @@ function chooseBoss(bossKey: string, rng: Rng): Boss {
 export function teamSizeFor(trainer: Trainer, format: Format = 'singles'): number {
   // Red and Blue reuse their Super trainers in Multi, where every trainer brings 2.
   if (format === 'multi') return RULES.teamSize.multi.bring;
-  if (trainer.kind === 'legend') return BOSSES[trainer.bossKey].teamSize;
+  // A Battle Legend brings its boss team size in its own format (debug can put one elsewhere).
+  if (trainer.kind === 'legend' && BOSSES[trainer.bossKey]?.format === format) return BOSSES[trainer.bossKey].teamSize;
   return RULES.teamSize[format].bring;
+}
+
+/**
+ * Trainers who only battle as a pair in Multi Battles, first (left) trainer first: Tate and Liza
+ * (TRAINER_PAIRS, in the order given) and custom battle-50 duos (Marques and Thomas).
+ */
+export function multiDuo(trainerId: number): [number, number] | null {
+  const twins = pairedTrainer(trainerId);
+  if (twins) return [trainerId, twins.partnerId];
+  const boss = Object.values(BOSSES).find(b => b.format === 'multi' && b.partnerTrainerId !== undefined && TRAINERS[b.trainerId].custom
+    && (b.trainerId === trainerId || b.partnerTrainerId === trainerId));
+  return boss ? [boss.trainerId, boss.partnerTrainerId!] : null;
 }
 
 export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
@@ -164,31 +177,38 @@ export function planOpponent(
 }
 
 /**
- * Debug: battle N against special trainers you choose (one; two in a Multi Battle) instead of
- * the drawn opponent. Teams are drawn as usual. Paired trainers stay paired: choosing Tate or
- * Liza in a Multi Battle brings the other, leading with one of their pairs.
+ * Debug: battle N against special trainers or Battle Legends you choose (one; two in a Multi
+ * Battle) instead of the drawn opponent. Teams are drawn as usual. Pairs stay paired in Multi:
+ * choosing Tate or Liza brings the other (leading with one of their pairs), and choosing Marques
+ * or Thomas brings the other, Marques first.
  */
 export function planChosenOpponent(runSeed: string, format: Format, battle: number, trainerIds: readonly number[]): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|chosen|${trainerIds.join(',')}`);
-  const special = (id: number): TrainerChoice => {
+  const choose = (id: number): TrainerChoice => {
     const trainer = TRAINERS[id];
-    if (trainer?.kind !== 'special') throw new Error('Choose special trainers.');
+    if (trainer?.kind !== 'special' && trainer?.kind !== 'legend') throw new Error('Choose special trainers or Battle Legends.');
+    const size = teamSizeFor(trainer, format);
+    if (!canField(trainer, size)) throw new Error(`${displayName(trainer)} can't field ${size} Pokémon here.`);
     return { trainer, replacedAnabel: false };
   };
-  const first = special(trainerIds[0]);
-  if (format !== 'multi') return { battle, ...planTrainer(first, format, rng), seedText };
-  const pair = pairedTrainer(first.trainer.id);
-  if (pair) {
-    const leads = rng.pick(pair.pair.multiLeads);
-    const at = (id: number) => leads[pair.pair.trainerIds.indexOf(id)];
-    const second = special(pair.partnerId);
-    return { battle, ...planTrainer(first, format, rng, at(first.trainer.id)), seedText, second: planTrainer(second, format, rng, at(pair.partnerId)) };
+  const chosen = choose(trainerIds[0]);
+  if (format !== 'multi') return { battle, ...planTrainer(chosen, format, rng), seedText };
+  const twins = pairedTrainer(chosen.trainer.id);
+  if (twins) {
+    const leads = rng.pick(twins.pair.multiLeads);
+    const at = (id: number) => leads[twins.pair.trainerIds.indexOf(id)];
+    return {
+      battle, ...planTrainer(chosen, format, rng, at(chosen.trainer.id)), seedText,
+      second: planTrainer(choose(twins.partnerId), format, rng, at(twins.partnerId)),
+    };
   }
-  const secondId = trainerIds[1];
-  if (secondId === undefined || secondId === first.trainer.id) throw new Error('Choose two different special trainers.');
-  if (pairedTrainer(secondId)) throw new Error(`${TRAINERS[secondId].name} only battles alongside ${TRAINERS[pairedTrainer(secondId)!.partnerId].name}.`);
-  return { battle, ...planTrainer(first, format, rng), seedText, second: planTrainer(special(secondId), format, rng) };
+  const duo = multiDuo(chosen.trainer.id);
+  const [firstId, secondId] = duo ?? [chosen.trainer.id, trainerIds[1]];
+  if (secondId === undefined || secondId === firstId) throw new Error('Choose two different trainers.');
+  const secondsDuo = duo ? null : multiDuo(secondId);
+  if (secondsDuo) throw new Error(`${TRAINERS[secondId].name} only battles alongside ${TRAINERS[secondsDuo[0] === secondId ? secondsDuo[1] : secondsDuo[0]].name}.`);
+  return { battle, ...planTrainer(choose(firstId), format, rng), seedText, second: planTrainer(choose(secondId), format, rng) };
 }
 
 /** BP for winning battle N (rules.json battlePoints). */

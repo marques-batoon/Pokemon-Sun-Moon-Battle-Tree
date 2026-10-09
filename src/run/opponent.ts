@@ -59,6 +59,21 @@ export function pickTeamSets(trainer: Trainer, size: number, rng: Rng, lead?: Tr
   return picked;
 }
 
+/** Whether a trainer's roster can field `size` Pokémon under the clauses (different species and items). */
+export function canField(trainer: Trainer, size: number): boolean {
+  const sets = trainer.roster.map(id => SETS[id]);
+  const fits = (start: number, chosen: TreeSet[]): boolean => {
+    if (chosen.length >= size) return true;
+    for (let i = start; i < sets.length; i++) {
+      const s = sets[i];
+      if (chosen.some(c => dexNum(c) === dexNum(s) || c.item === s.item)) continue;
+      if (fits(i + 1, [...chosen, s])) return true;
+    }
+    return false;
+  };
+  return fits(0, []);
+}
+
 /** pickTeamSets, but stops early (with fewer) when no set fits the clauses anymore. `lead`: a set that must lead. */
 export function pickUpTo(trainer: Trainer, size: number, rng: Rng, lead?: TreeSet): TreeSet[] {
   const picked: TreeSet[] = lead ? [lead] : [];

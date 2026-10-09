@@ -221,8 +221,9 @@ export class RunController {
   }
 
   /**
-   * Debug: the next battle is against special trainers you choose (one; two in a Multi Battle,
-   * not your partner or their twin). Makes the challenge unranked. Later battles are drawn as usual.
+   * Debug: the next battle is against special trainers or Battle Legends you choose (one; two in a
+   * Multi Battle, not your partner or their twin). Makes the challenge unranked. Later battles are
+   * drawn as usual.
    */
   debugChooseOpponent(key: RunKey, trainerIds: number[]): void {
     const run = this.requireRun(key);

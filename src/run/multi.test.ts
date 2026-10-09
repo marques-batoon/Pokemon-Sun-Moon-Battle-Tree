@@ -10,7 +10,8 @@ import { RunController, type RunTeam } from './controller';
 import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, specialTrainer } from './partners';
 import { Rng } from './rng';
 import { RunStore } from './run-store';
-import { bpForWin, planOpponent } from './selection';
+import { bpForWin, planChosenOpponent, planOpponent, teamSizeFor } from './selection';
+import { canField } from './opponent';
 import { SETS } from '../data/battle-tree';
 import { bpBalance, DEFAULT_SETTINGS, partnerPrice, type RunState } from './types';
 
@@ -306,7 +307,10 @@ describe('Debug: choosing the next opponents', () => {
     controller.debugChooseOpponent('singles-normal', [id('Cynthia')]);
     const run = controller.run('singles-normal')!;
     expect([run.next.displayName, run.next.battle, run.next.team.length, run.debug]).toEqual(['Pokémon Trainer Cynthia', 1, 3, true]);
-    expect(() => controller.debugChooseOpponent('singles-normal', [190])).toThrow(/special trainers/);
+    expect(() => controller.debugChooseOpponent('singles-normal', [0])).toThrow(/special trainers or Battle Legends/);
+    // Battle Legends too: Blue's Super team in a Single Battle brings 3.
+    controller.debugChooseOpponent('singles-normal', [191]);
+    expect([controller.run('singles-normal')!.next.displayName, controller.run('singles-normal')!.next.team.length]).toEqual(['Battle Legend Blue', 3]);
     // The battle after is drawn as usual.
     winThrough(controller, battle, 'singles-normal', 1);
     expect(controller.run('singles-normal')!.next.kind).toBe('regular');
@@ -326,6 +330,24 @@ describe('Debug: choosing the next opponents', () => {
     expect(() => controller.debugChooseOpponent('multi-super', [id('Brock'), id('Tate')])).toThrow(/only battles alongside Liza/);
     expect(() => controller.debugChooseOpponent('multi-super', [id('Brock')])).toThrow(/two different/);
     expect(() => controller.debugChooseOpponent('multi-super', [id('Sina'), id('Brock')])).toThrow(/partner/);
+    // Battle Legends: Red with anyone; Marques and Thomas together, Marques first, whichever is picked.
+    controller.debugChooseOpponent('multi-super', [190, id('Cynthia')]);
+    next = controller.run('multi-super')!.next;
+    expect([next.displayName, next.second!.displayName]).toEqual(['Battle Legend Red', 'Pokémon Trainer Cynthia']);
+    const legend = (name: string) => TRAINERS.find(t => t.kind === 'legend' && t.name === name)!.id;
+    controller.debugChooseOpponent('multi-super', [legend('Thomas')]);
+    next = controller.run('multi-super')!.next;
+    expect([next.displayName, next.second!.displayName]).toEqual(['Pokémon Trainer Marques', 'Pokémon Trainer Thomas']);
+    expect(() => controller.debugChooseOpponent('multi-super', [190, legend('Marques')])).toThrow(/only battles alongside Thomas/);
+  });
+
+  it('only offers trainers who can field a team in that format (Marques has 3 Pokémon: no Doubles)', () => {
+    const marques = TRAINERS.find(t => t.kind === 'legend' && t.name === 'Marques')!;
+    expect([teamSizeFor(marques, 'singles'), teamSizeFor(marques, 'doubles'), teamSizeFor(marques, 'multi')]).toEqual([3, 4, 2]);
+    expect([canField(marques, 3), canField(marques, 4)]).toEqual([true, false]);
+    expect(() => planChosenOpponent('x', 'doubles', 1, [marques.id])).toThrow(/can't field 4/);
+    // Red's Normal team (3 in Singles) brings 4 in Doubles.
+    expect(planChosenOpponent('x', 'doubles', 1, [203]).team).toHaveLength(4);
   });
 });
 
