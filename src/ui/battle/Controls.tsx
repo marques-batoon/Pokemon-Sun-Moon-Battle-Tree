@@ -140,14 +140,15 @@ export function Controls(props: Props) {
 }
 
 function SinglesControls({ request, awaiting, onChoose, foeTypes, showHints, shortcuts }: Props) {
-  const [mega, setMega] = useState(false);
+  // Mega Evolve / Warp Digivolve starts ticked: it only goes into the choice when the Pokémon can.
+  const [mega, setMega] = useState(true);
   const [zMove, setZMove] = useState(false);
-  const choose = (choice: string) => { setMega(false); setZMove(false); onChoose(choice); };
+  const choose = (choice: string) => { setMega(true); setZMove(false); onChoose(choice); };
 
   const forced = isForceSwitch(request);
   const active = isMoveRequest(request) ? request.active[0] : null;
   const trapped = !!(active?.trapped || active?.maybeTrapped);
-  const pickMove = (i: number, z: boolean) => choose(`move ${i + 1}${mega ? ' mega' : ''}${z ? ' zmove' : ''}`);
+  const pickMove = (i: number, z: boolean) => choose(`move ${i + 1}${mega && active?.canMegaEvo ? ' mega' : ''}${z ? ' zmove' : ''}`);
 
   // Keyboard: 1-4 moves, M Mega Evolution, Z Z-Move. Ignored while typing in a field.
   const latest = useRef({ active, pickMove, zMove });
@@ -206,7 +207,9 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
   };
   const [choices, setChoices] = useState<string[]>([]);
   const [pending, setPending] = useState<Pending | null>(null);
-  const [mega, setMega] = useState(false);
+  // Mega Evolve / Warp Digivolve starts ticked for each Pokémon: it only goes into the choice when
+  // that Pokémon can (and, for a Mega, when no earlier Pokémon this turn took the Mega).
+  const [mega, setMega] = useState(true);
   const [zMove, setZMove] = useState(false);
 
   // Advance past slots that pass automatically.
@@ -224,11 +227,11 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
   if (done) return <div className="controls waiting" role="status">Sending your choices…</div>;
 
   const record = (choice: string) => {
-    setPending(null); setMega(false); setZMove(false);
+    setPending(null); setMega(true); setZMove(false);
     setChoices([...auto, choice]);
   };
   const back = () => {
-    setPending(null); setMega(false); setZMove(false);
+    setPending(null); setMega(true); setZMove(false);
     // Drop the last real choice (and any automatic passes after it).
     const prev = [...choices];
     while (prev.length && prev[prev.length - 1] === 'pass' && !needs(prev.length - 1, prev.slice(0, -1))) prev.pop();
@@ -252,7 +255,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
   const pickMove = (moveIndex: number, z: boolean) => {
     if (!active) return;
     const targetType = z ? active.canZMove?.[moveIndex]?.target : active.moves[moveIndex].target;
-    const p: Pending = { moveIndex, z, mega, targetType };
+    const p: Pending = { moveIndex, z, mega: mega && (warp || !megaUsed) && !!active.canMegaEvo, targetType };
     const targets = doublesTargets(targetType, position);
     if (!targets) finishMove(p, null);
     else if (targets.length === 1) finishMove(p, targets[0]);
