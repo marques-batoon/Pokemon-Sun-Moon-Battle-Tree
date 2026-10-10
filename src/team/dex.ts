@@ -5,6 +5,7 @@ import { Dex, type ID, type ModdedDex } from '@pkmn/dex';
 import { RULES } from '../data/battle-tree';
 import { CHAMPIONS_MOD, championsOverrides, NEW_BASE_SPECIES, NEW_MOVE_IDS } from '../data/champions';
 import { CUSTOM_LEARNS, customOverrides, mergeModData } from '../data/custom';
+import { DIGIMON_MOVE_IDS, digimonOverrides } from '../data/custom/digimon';
 import { isParadoxForm, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxOverrides } from '../data/custom/paradox';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
@@ -15,7 +16,7 @@ import { USUM_ONLY_SPECIES } from '../engine/format-constants';
  */
 const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, {
   Scripts: { inherit: 'gen7' },
-  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true })),
+  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true }), digimonOverrides()),
 } as never);
 
 export const gens = new Generations({ ...Dex, forGen: (gen: number) => (gen === 7 ? championsDex : Dex.forGen(gen)) } as typeof Dex);
@@ -56,10 +57,13 @@ export function allItems(): Item[] {
 }
 
 let moveCache: Move[] | null = null;
-/** Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon and Paradox forms aren't for anyone else). */
+/**
+ * Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon and Paradox forms, and
+ * the Digimon's signature moves, aren't for anyone else).
+ */
 export function allMoves(): Move[] {
   moveCache ??= [...gen7.moves]
-    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id))
+    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id) && !DIGIMON_MOVE_IDS.has(m.id))
     .sort((a, b) => a.name.localeCompare(b.name));
   return moveCache;
 }

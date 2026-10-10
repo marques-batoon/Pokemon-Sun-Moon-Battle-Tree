@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { SHIELD_CONDITIONS } from '../../../client/playback';
 import {
-  ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES, Z_POWER, zMoveSpec,
+  ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  WARP_START, warpBurst, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -67,6 +68,16 @@ describe('animation catalog', () => {
     for (const spec of [MEGA_START, MEGA_BURST, Z_POWER]) expect(spec.layers.length).toBeGreaterThan(2);
     expect(MEGA_START.layers.some(l => l.kind === 'rings' && l.rainbow)).toBe(true);
     expect(MEGA_BURST.layers.some(l => l.kind === 'screen' && l.mode === 'flash')).toBe(true);
+  });
+
+  it('has its own Warp Digivolution sequence: digital space, code, a wireframe, armour, and the new form\'s name', () => {
+    const kinds = WARP_START.layers.map(l => l.kind);
+    for (const k of ['datagrid', 'code', 'wireframe', 'banner'] as const) expect(kinds).toContain(k);
+    expect(WARP_START.layers.some(l => l.kind === 'particles' && l.motion === 'converge')).toBe(true);
+    expect(key(WARP_START)).not.toBe(key(MEGA_START));
+    const burst = warpBurst('WarGreymon');
+    expect(burst.shake).toBe('strong');
+    expect(burst.layers.some(l => l.kind === 'banner' && l.text === 'WarGreymon!')).toBe(true);
   });
 
   it('animates status conditions with particles only: no filled glow, flash or dim over the Pokémon', () => {

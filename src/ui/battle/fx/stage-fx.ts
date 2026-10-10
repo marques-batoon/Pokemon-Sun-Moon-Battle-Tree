@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import type { BattleAnimation } from '../../../client/playback';
 import {
   blockedSpec, cantSpec, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
-  SUB_END, SUB_HIT, SUB_START, Z_POWER, type FxSpec,
+  SUB_END, SUB_HIT, SUB_START, WARP_START, warpBurst, Z_POWER, type FxSpec,
 } from './catalog';
 import { posKey, shakeDelay, type Pos, type Side } from './geometry';
 
@@ -64,6 +64,8 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'mega': return 'fx-mega-burst';
     case 'paradox-start': return `fx-paradox-${anim.condition === 'future' ? 'future' : 'ancient'}-start`;
     case 'paradox': return `fx-paradox-${anim.condition === 'future' ? 'future' : 'ancient'}-burst`;
+    case 'warp-start': return 'fx-warp-start';
+    case 'warp': return 'fx-warp-burst';
     case 'forme': return `fx-transform-${v}`;
     case 'miss': return `fx-dodge-${v}`;
     default: return '';
@@ -79,6 +81,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'mega': return MEGA_BURST;
     case 'paradox-start': return PARADOX_START[anim.condition === 'future' ? 'future' : 'ancient'];
     case 'paradox': return PARADOX_BURST[anim.condition === 'future' ? 'future' : 'ancient'];
+    case 'warp-start': return WARP_START;
+    case 'warp': return warpBurst(anim.condition);
     case 'sub-start': return SUB_START;
     case 'sub-hit': return SUB_HIT;
     case 'sub-end': return SUB_END;

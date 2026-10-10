@@ -1,5 +1,6 @@
 import type { AIContext, BattleAI } from './types';
 import { doublesTargets } from '../engine/choices';
+import { isWarpItem } from '../data/custom/digimon';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequestActive, type SimRequestSide } from '../engine/sim-types';
 import type { PRNG } from '@pkmn/sim';
 
@@ -51,8 +52,10 @@ export class RandomAI implements BattleAI {
           bench.splice(bench.indexOf(pick), 1);
           return `switch ${pick}`;
         }
-        const choice = this.pickMove(active, position(slot), doubles, prng, { mega: !megaUsed, z: !zUsed });
-        if (choice.endsWith(' mega')) megaUsed = true;
+        // Warp Digivolution goes through the Mega choice but doesn't use up the turn's Mega.
+        const warp = isWarpItem(mon.item);
+        const choice = this.pickMove(active, position(slot), doubles, prng, { mega: warp || !megaUsed, z: !zUsed });
+        if (choice.endsWith(' mega') && !warp) megaUsed = true;
         if (choice.endsWith(' zmove')) zUsed = true;
         return choice;
       }).join(', ');

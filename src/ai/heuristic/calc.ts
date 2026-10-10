@@ -118,12 +118,14 @@ function rangeOf(d: number | number[] | number[][]): [number, number] {
   return [rolls[0], rolls[rolls.length - 1]];
 }
 
-/** Gen 8-9 moves (made available for the Champions Pokémon) aren't in the calc's Gen 7 data. */
+/** Gen 8-9 moves (made available for the Champions Pokémon) and the custom moves aren't in the calc's Gen 7 data. */
 function moveOverrides(move: ReturnType<Battle['dex']['moves']['get']>) {
   if (gen.moves.get(move.id as never)) return undefined;
   return {
     name: move.name, basePower: move.basePower, type: move.type, category: move.category, target: move.target,
     priority: move.priority, flags: { ...move.flags }, multihit: move.multihit, drain: move.drain, recoil: move.recoil,
+    // Sheer Force (WarGreymon) boosts moves with secondary effects.
+    secondaries: move.secondaries ? true : undefined,
   };
 }
 

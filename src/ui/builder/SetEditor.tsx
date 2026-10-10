@@ -1,8 +1,9 @@
 import type { Item, Move, Specie } from '@pkmn/data';
 import { allItems, eligibleSpecies, gen7, speciesAbilities } from '../../team/dex';
 import { canHoldItem, PARADOX_LABELS, paradoxFormForSet, paradoxKindOfItem } from '../../data/custom/paradox';
-import { changeSpecies, hiddenPowerType } from '../../team/sets';
-import { STAT_LABELS, type PokemonSet } from '../../team/types';
+import { isWarpForm } from '../../data/custom/digimon';
+import { changeSpecies, hiddenPowerType, megaFormForSet } from '../../team/sets';
+import { STAT_IDS, STAT_LABELS, type PokemonSet } from '../../team/types';
 import { SearchSelect } from '../components/SearchSelect';
 import { TypeBadge } from '../battle/TypeBadge';
 import { useLearnset } from './hooks';
@@ -25,6 +26,48 @@ const natureLabel = (name: string) => {
   return n?.plus && n.minus ? `${n.name} (+${STAT_LABELS[n.plus]} −${STAT_LABELS[n.minus]})` : `${name} (neutral)`;
 };
 const NATURES = [...gen7.natures].map(n => n.name).sort();
+const bst = (s: Specie) => Object.values(s.baseStats).reduce((a, b) => a + b, 0);
+
+/**
+ * What the Pokémon becomes when it Mega Evolves (or Warp Digivolves) with its held item: the new
+ * form's look, types, Ability and base stats (with the change from the base form).
+ */
+function MegaFormSection({ base, form }: { base: Specie; form: Specie }) {
+  const warp = isWarpForm(form.name);
+  const ability = form.abilities[0];
+  return (
+    <section className={`mega-form${warp ? ' warp' : ''}`} aria-label={`${base.name} after ${warp ? 'Warp Digivolution' : 'Mega Evolution'}`}>
+      <div className="mega-form-sprite"><PokemonSprite key={form.name} species={form.name} side="p2" /></div>
+      <div className="mega-form-body">
+        <div className="mega-form-head">
+          <span className="mega-form-kicker">{warp ? 'Warp Digivolves into' : 'Mega Evolves into'}</span>
+          <strong>{form.name}</strong>
+          {form.types.map(t => <TypeBadge key={t} type={t} />)}
+        </div>
+        <div className="mega-form-ability">
+          <span className="fld-head">
+            <span className="muted small">Ability after {warp ? 'Warp Digivolving' : 'Mega Evolving'}:</span>
+            <strong>{ability}</strong>
+            {ability && <InfoButton label={`the Ability ${ability}`}><AbilityDetails name={ability} /></InfoButton>}
+          </span>
+          {ability && gen7.abilities.get(ability)?.shortDesc && <span className="muted small">{gen7.abilities.get(ability)!.shortDesc}</span>}
+        </div>
+        <dl className="mega-form-stats">
+          {STAT_IDS.map(stat => {
+            const diff = form.baseStats[stat] - base.baseStats[stat];
+            return (
+              <div key={stat}>
+                <dt>{STAT_LABELS[stat]}</dt>
+                <dd>{form.baseStats[stat]}{diff !== 0 && <span className={diff > 0 ? 'up' : 'down'}>{diff > 0 ? `+${diff}` : diff}</span>}</dd>
+              </div>
+            );
+          })}
+          <div className="total"><dt>BST</dt><dd>{bst(form)}<span className="up">{bst(form) - bst(base) > 0 ? `+${bst(form) - bst(base)}` : ''}</span></dd></div>
+        </dl>
+      </div>
+    </section>
+  );
+}
 
 export function SpeciesOption({ s }: { s: Specie }) {
   return (
@@ -50,6 +93,9 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
   const paradox = paradoxFormForSet(set.species, set.item);
   const paradoxKind = paradox ? paradoxKindOfItem(set.item) : null;
   const shown = paradox ? gen7.species.get(paradox) : species;
+  // Holding its Mega Stone (or a Digimon its warp item), its BST is the new form's, and a section shows that form.
+  const megaForm = paradox ? null : megaFormForSet(set);
+  const megaSpecies = megaForm ? gen7.species.get(megaForm) : undefined;
   const learnset = useLearnset(set.species, set.item);
   const abilities = speciesAbilities(set.species);
   const learnable = new Set<string>(learnset?.map(m => m.name));
@@ -72,7 +118,13 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
             </span>
           )}
           {shown?.types.map(t => <TypeBadge key={t} type={t} />)}
-          <span className="muted small">BST {shown ? Object.values(shown.baseStats).reduce((a, b) => a + b, 0) : '—'}</span>
+          {megaSpecies && shown ? (
+            <span className="muted small" title={`Base stat total after ${isWarpForm(megaSpecies.name) ? 'Warp Digivolving' : 'Mega Evolving'} (${shown.name}: ${bst(shown)})`}>
+              BST {bst(megaSpecies)} <span className="bst-form">as {megaSpecies.name}</span>
+            </span>
+          ) : (
+            <span className="muted small">BST {shown ? bst(shown) : '—'}</span>
+          )}
         </div>
       </div>
       <div className="field-grid">
@@ -156,6 +208,8 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
           </select>
         </label>
       </div>
+
+      {megaSpecies && species && <MegaFormSection base={species} form={megaSpecies} />}
 
       <fieldset className="moves">
         <legend>Moves {learnset === null && <span className="muted small">(loading learnset…)</span>}</legend>

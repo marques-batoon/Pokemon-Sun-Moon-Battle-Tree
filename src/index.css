@@ -539,6 +539,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .controls.playing { flex-direction: row; align-items: center; }
 .switch-name { display: flex; align-items: center; gap: 2px; }
 .poke-icon { flex-shrink: 0; margin: -6px 2px -4px -4px; }
+/* The Digimon have no icon sheet entry: their sprite, shrunk to the icon box. */
+.poke-icon-img { width: 40px; height: 30px; object-fit: contain; display: inline-block; vertical-align: middle; }
 @media (max-width: 520px) {
   .stage { height: 320px; }
   .poke-sprite { max-height: 105px; }
@@ -696,6 +698,31 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   70% { transform: translateX(-2px) }
   100% { transform: none; filter: none; clip-path: inset(0 0 0 0) }
 }
+/* Warp Digivolution: a glow, then a light silhouette surging bigger through the in-between forms
+   (three pulses), held white until the new form bursts out with a roar. */
+.fx-warp-start { animation: warp-start calc(2600ms * var(--spd, 1)) ease-in-out forwards; }
+@keyframes warp-start {
+  0% { filter: none; transform: none }
+  12% { filter: brightness(1.7) drop-shadow(0 0 10px #ffb000); transform: none }
+  22% { filter: brightness(0) invert(1) drop-shadow(0 0 12px #ffb000); transform: scale(1) }
+  34% { transform: scale(1.12) }
+  42% { filter: brightness(0) invert(1) drop-shadow(0 0 14px #5ec8ff); transform: scale(1.03) }
+  56% { transform: scale(1.24) }
+  64% { filter: brightness(0) invert(1) drop-shadow(0 0 16px #7dffb0); transform: scale(1.13) }
+  78% { transform: scale(1.36) }
+  86% { filter: brightness(0) invert(1) drop-shadow(0 0 20px #ffd54a); transform: scale(1.26) }
+  100% { filter: brightness(0) invert(1) drop-shadow(0 0 28px #fff); transform: scale(1.3) }
+}
+.fx-warp-burst { animation: warp-burst calc(1300ms * var(--spd, 1)) cubic-bezier(.2, .8, .2, 1); }
+@keyframes warp-burst {
+  0% { transform: scale(1.1); filter: brightness(0) invert(1) drop-shadow(0 0 28px #fff) }
+  18% { transform: scale(0.95); filter: brightness(1.8) drop-shadow(0 0 18px #ff9a1f) }
+  32% { transform: scale(1.05) translateY(-3px) }
+  42% { transform: scale(1) translateX(-3px) }
+  50% { transform: translateX(3px) }
+  58% { transform: translateX(-2px); filter: brightness(1.2) drop-shadow(0 0 10px #ff9a1f) }
+  100% { transform: none; filter: none }
+}
 /* Screen shake on heavy hits */
 .fx-shake-light-a { animation: shake-light-a calc(380ms * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)); }
 .fx-shake-light-b { animation: shake-light-b calc(380ms * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)); }
@@ -828,6 +855,26 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes screen-flash { 0% { opacity: 0; } 15% { opacity: 0.55; } 100% { opacity: 0; } }
 @keyframes screen-dim { 0% { opacity: 0; } 15%, 80% { opacity: 0.5; } 100% { opacity: 0; } }
 @keyframes screen-tint { 0% { opacity: 0; } 30% { opacity: 0.28; } 100% { opacity: 0; } }
+
+/* Warp Digivolution: digital space, code streams, a wireframe of data, banner text */
+.fx-datagrid { inset: 0; background-image: linear-gradient(color-mix(in srgb, var(--c) 55%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent) 1px, transparent 1px); background-size: calc(30px * var(--k, 1)) calc(30px * var(--k, 1)); -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 78%); mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 78%); animation-name: datagrid, datagrid-scroll; animation-timing-function: ease-out, linear; }
+.fx-datagrid::after { content: ''; position: absolute; left: 0; right: 0; height: 18%; background: linear-gradient(transparent, color-mix(in srgb, var(--c) 45%, transparent), transparent); animation: datagrid-scan calc(var(--dur) * 0.5 * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)) 2 both; }
+@keyframes datagrid { 0% { opacity: 0; } 15%, 82% { opacity: 0.85; } 100% { opacity: 0; } }
+@keyframes datagrid-scroll { from { background-position: 0 0; } to { background-position: 0 calc(-120px * var(--k, 1)); } }
+@keyframes datagrid-scan { from { top: -20%; } to { top: 100%; } }
+.fx-code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-weight: 700; font-size: calc(13px * var(--k, 1)); line-height: 1; writing-mode: vertical-rl; text-orientation: upright; letter-spacing: -1px; color: var(--c); text-shadow: 0 0 4px var(--c), 0 0 10px var(--c); white-space: nowrap; animation-name: code-stream; animation-timing-function: linear; }
+@keyframes code-stream { 0% { transform: translate(-50%, 10%); opacity: 0; clip-path: inset(100% 0 0 0); } 20% { opacity: 1; } 45% { clip-path: inset(0 0 0 0); } 80% { opacity: 0.9; } 100% { transform: translate(-50%, -130%); opacity: 0; clip-path: inset(0 0 0 0); } }
+.fx-wire { width: var(--s); height: var(--s); perspective: calc(600px * var(--k, 1)); animation-name: wire-close; animation-timing-function: cubic-bezier(.3, .7, .3, 1); }
+.fx-wire .wire { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--c); box-shadow: 0 0 6px var(--c), inset 0 0 6px var(--c); }
+.fx-wire .lon { animation: wire-spin calc(900ms * var(--spd, 1)) linear infinite; }
+.fx-wire .lon.two { animation-delay: calc(-300ms * var(--spd, 1)); }
+.fx-wire .lon.three { animation-delay: calc(-600ms * var(--spd, 1)); }
+.fx-wire .lat { transform: rotateX(72deg); }
+.fx-wire .lat.two { inset: 16%; transform: translateY(-28%) rotateX(72deg); }
+@keyframes wire-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
+.fx-banner { width: 100%; text-align: center; font-weight: 900; font-style: italic; text-transform: uppercase; font-size: calc(30px * var(--k, 1)); letter-spacing: 0.06em; color: #fff; -webkit-text-stroke: 1px color-mix(in srgb, var(--c) 60%, #000); text-shadow: 0 0 6px var(--c), 0 0 18px var(--c), 3px 3px 0 rgb(0 0 0 / 0.55); white-space: nowrap; animation-name: banner; animation-timing-function: cubic-bezier(.2, .9, .2, 1); }
+@keyframes banner { 0% { transform: translate(60%, -50%) skewX(-18deg); opacity: 0; } 18% { transform: translate(0, -50%) skewX(-10deg); opacity: 1; } 78% { transform: translate(-4%, -50%) skewX(-10deg); opacity: 1; } 100% { transform: translate(-60%, -50%) skewX(-18deg); opacity: 0; } }
 
 /* ---------- Lasting states on the field ---------- */
 
@@ -1040,6 +1087,28 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .brought-list li { display: flex; align-items: center; }
 .preview-card strong { display: flex; align-items: center; }
 .set-hero { display: flex; align-items: flex-end; gap: 12px; }
+.bst-form { font-weight: 600; }
+/* Builder: what a Mega Stone (or warp item) holder turns into */
+.mega-form { display: flex; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, #ff5ea8 8%, transparent), color-mix(in srgb, #5ec8ff 8%, transparent)); }
+.mega-form.warp { background: linear-gradient(135deg, color-mix(in srgb, #ff9a1f 12%, transparent), color-mix(in srgb, #2bd9ff 10%, transparent)); }
+.mega-form-sprite { width: 92px; height: 84px; flex-shrink: 0; display: flex; align-items: flex-end; justify-content: center; }
+.mega-form-sprite .poke-sprite { max-height: 84px; }
+.mega-form-sprite .poke-sprite.placeholder { width: 64px; height: 64px; font-size: 1.1rem; }
+.mega-form-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.mega-form-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.mega-form-kicker { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.mega-form-ability { display: flex; flex-direction: column; gap: 2px; }
+.mega-form-ability .fld-head { flex-wrap: wrap; row-gap: 0; }
+.mega-form-ability strong { white-space: nowrap; }
+.mega-form-stats { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin: 0; }
+.mega-form-stats > div { display: flex; flex-direction: column; align-items: center; padding: 2px 0; border-radius: 6px; background: var(--surface-2); }
+.mega-form-stats .total { font-weight: 700; }
+.mega-form-stats dt { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+.mega-form-stats dd { margin: 0; font-weight: 700; font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
+.mega-form-stats dd span { font-size: 0.68rem; font-weight: 700; }
+.mega-form-stats .up { color: #2f9e44; }
+.mega-form-stats .down { color: #e03131; }
+@media (max-width: 520px) { .mega-form { align-items: flex-start; } .mega-form-sprite { width: 64px; height: 64px; } .mega-form-sprite .poke-sprite { max-height: 64px; } .mega-form-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .set-hero-sprite { width: 120px; height: 110px; display: flex; align-items: flex-end; justify-content: center; background: radial-gradient(ellipse at 50% 92%, rgb(0 0 0 / 0.12), transparent 60%); }
 .set-hero-sprite .poke-sprite { max-height: 110px; }
 .set-hero-types { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding-bottom: 8px; }

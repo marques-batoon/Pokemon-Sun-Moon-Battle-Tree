@@ -43,6 +43,19 @@ export function changeSpecies(set: PokemonSet, species: string): PokemonSet {
 /** The species a set battles as: its Paradox form when holding the matching Paradoxorb, else itself. */
 export const battleSpecies = (set: Pick<PokemonSet, 'species' | 'item'>): string => paradoxFormForSet(set.species, set.item) ?? set.species;
 
+/**
+ * The form a set changes into mid-battle with its held item: its Mega Evolution with a matching Mega
+ * Stone, or its warp form with a Digimon's warp item (Wargreyite works like a Mega Stone). Null
+ * otherwise. (Paradoxorbs aren't this: the Paradox form is what battles from the start; see battleSpecies.)
+ */
+export function megaFormForSet(set: Pick<PokemonSet, 'species' | 'item'>): string | null {
+  const species = gen7.species.get(set.species);
+  const stone = set.item ? gen7.items.get(set.item)?.megaStone : undefined;
+  if (!species || !stone) return null;
+  const form = (stone as Record<string, string>)[species.name] ?? (stone as Record<string, string>)[species.baseSpecies];
+  return form && form !== species.name && gen7.species.get(form) ? form : null;
+}
+
 /** Level the Pokémon actually battles at: above 50 is lowered to 50, lower levels stay. */
 export const battleLevel = (set: PokemonSet) => Math.min(set.level || DEFAULT_LEVEL, DEFAULT_LEVEL);
 

@@ -1,9 +1,11 @@
 // Sprite URLs. Images are loaded at runtime from Pokémon Showdown's sprite
 // server (via @pkmn/img), never bundled; © Nintendo / Creatures / GAME FREAK.
+// The custom Digimon bring their own images (public/pokemon).
 import type { CSSProperties } from 'react';
 import { Icons, Sprites } from '@pkmn/img';
 import { CHAMPIONS_SPRITES } from '../data/champions';
 import { SPRITE_ALIASES } from '../data/custom';
+import { DIGIMON_SPRITES } from '../data/custom/digimon';
 import { PARADOX_SPRITES } from '../data/custom/paradox';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
@@ -42,9 +44,24 @@ function championsSprite(species: string, side: SpriteSide, preferStatic: boolea
   return mirrored ? { ...mirrored, mirrored: true } : null;
 }
 
+/** A sprite shipped with the app (the Digimon): the image faces left, so the back view is it flipped. */
+function localSprite(species: string, side: SpriteSide): SpriteInfo | null {
+  const s = DIGIMON_SPRITES[species];
+  if (!s) return null;
+  return { url: localSpriteUrl(species)!, w: s.w, h: s.h, pixelated: false, ...(side === 'p1' ? { mirrored: true } : {}) };
+}
+
+/** URL of a sprite shipped with the app, or null if the species has none. */
+export function localSpriteUrl(species: string): string | null {
+  const s = DIGIMON_SPRITES[species];
+  return s ? `${import.meta.env.BASE_URL}${s.file}` : null;
+}
+
 /** Animated 3D sprite (XY/SM style); `p1` = back sprite, `p2` = front sprite. */
 export function animatedSprite(name: string, side: SpriteSide, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo {
   const species = SPRITE_ALIASES[name] ?? name; // custom Megas use their base Pokémon's sprites
+  const local = localSprite(species, side);
+  if (local) return local;
   const champions = championsSprite(species, side, false);
   if (champions) return champions;
   const s = Sprites.getPokemon(species, { gen: 'ani', side, shiny: opts.shiny, gender: opts.gender });
@@ -54,6 +71,8 @@ export function animatedSprite(name: string, side: SpriteSide, opts: { shiny?: b
 /** Static Gen 5 sprite, used if the animated one fails to load. */
 export function staticSprite(name: string, side: SpriteSide): SpriteInfo {
   const species = SPRITE_ALIASES[name] ?? name;
+  const local = localSprite(species, side);
+  if (local) return local;
   const champions = championsSprite(species, side, true);
   if (champions) return champions;
   const s = Sprites.getPokemon(species, { gen: 'gen5', side });

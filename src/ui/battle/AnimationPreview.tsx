@@ -2,7 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
 import {
   BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
-  SUB_START_MS, type BattleAnimation,
+  SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { gen7 } from '../../team/dex';
@@ -27,11 +27,15 @@ const GROUPS: { label: string; moves: string[] }[] = [
   { label: 'Z-Moves', moves: ['Tectonic Rage', 'Inferno Overdrive', 'Hydro Vortex', 'Gigavolt Havoc', 'Devastating Drake', 'Never-Ending Nightmare', 'Shattered Psyche', 'Twinkle Tackle'] },
 ];
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
+/** Warp Digivolution preview: Agumon steps in, then becomes WarGreymon. */
+const WARP = { base: 'Agumon', form: 'WarGreymon' };
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
 interface FieldState {
   mega: Record<Side, boolean>;
+  /** Warp Digivolution preview: Agumon (1) or WarGreymon (2) stands in. */
+  digimon: Record<Side, 0 | 1 | 2>;
   sub: Record<Side, boolean>;
   seeded: Record<Side, boolean>;
   shields: Record<Side, string[]>;
@@ -43,7 +47,7 @@ interface FieldState {
   rooms: string[];
 }
 const EMPTY: FieldState = {
-  mega: { p1: false, p2: false }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
+  mega: { p1: false, p2: false }, digimon: { p1: 0, p2: 0 }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
   status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
   protect: { p1: null, p2: null }, terrain: null, rooms: [],
 };
@@ -63,6 +67,8 @@ function applyStep(f: FieldState, step: Step): FieldState {
     case 'confused': return { ...f, confused: { ...f.confused, [s]: true } };
     case 'infatuated': return { ...f, infatuated: { ...f.infatuated, [s]: true } };
     case 'mega': return { ...f, mega: { ...f.mega, [s]: true } };
+    case 'warp-start': return { ...f, digimon: { ...f.digimon, [s]: 1 } };
+    case 'warp': return { ...f, digimon: { ...f.digimon, [s]: 2 } };
     case 'sub-start': return { ...f, sub: { ...f.sub, [s]: true } };
     case 'sub-end': return { ...f, sub: { ...f.sub, [s]: false } };
     case 'seeded': return { ...f, seeded: { ...f.seeded, [s]: true } };
@@ -210,6 +216,10 @@ export function AnimationPreview() {
           { kind: 'mega-start', side, target: null, durationMs: MEGA_START_MS },
           { kind: 'mega', side, target: null, durationMs: 900 },
         ])}>Mega Evolve</button>
+        <button disabled={field.digimon[side] === 2} onClick={() => play([
+          { kind: 'warp-start', side, target: null, condition: WARP.form, durationMs: WARP_START_MS },
+          { kind: 'warp', side, target: null, condition: WARP.form, durationMs: WARP_MS },
+        ])}>Warp Digivolve</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
           Inflict on {side === 'p1' ? 'opponent' : 'you'}{' '}
@@ -230,7 +240,7 @@ export function AnimationPreview() {
           <FieldLayers terrain={field.terrain} rooms={field.rooms} anim={anim} />
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
-              key={s} side={s} pokemon={{ species: SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
+              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s] === 2 ? WARP.form : WARP.base) : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
               substitute={field.sub[s]} seeded={field.seeded[s]} status={field.status[s]} confused={field.confused[s]}
               infatuated={field.infatuated[s]} protect={field.protect[s]}
             />

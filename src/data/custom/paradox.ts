@@ -6,6 +6,7 @@
 // thread and the worker both build their data from this.
 import paradoxData from './paradox.json';
 import type { SpriteAvailability } from '../champions';
+import { canHoldWarpItem } from './digimon';
 
 export type ParadoxKind = 'ancient' | 'future';
 
@@ -46,10 +47,13 @@ export function paradoxFormForSet(species: string, item: string | undefined | nu
   const kind = paradoxKindOfItem(item);
   return kind ? paradoxFormOf(species, kind) : null;
 }
-/** Whether the species may hold this item: Paradoxorbs only go on Pokémon with that kind of Paradox form. */
+/**
+ * Whether the species may hold this item: Paradoxorbs only go on Pokémon with that kind of Paradox
+ * form, and a warp item (Wargreyite) only on its own Digimon.
+ */
 export function canHoldItem(species: string, item: string): boolean {
   const kind = paradoxKindOfItem(item);
-  return !kind || !!paradoxFormOf(species, kind);
+  return (!kind || !!paradoxFormOf(species, kind)) && canHoldWarpItem(species, item);
 }
 
 const ABILITY_DESC = 'Raises this Pokemon\'s highest stat (not HP) by 1.3x, or Speed by 1.5x, while it is on the field. Ties go Atk > Def > SpA > SpD > Spe. Not a stat stage; no weather or terrain needed.';

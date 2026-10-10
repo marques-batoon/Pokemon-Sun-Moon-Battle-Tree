@@ -17,13 +17,13 @@ The AI implements the same `BattleAI` interface as the random AI (`src/ai/types.
 
 Like the in-game AI, it sees the whole battle state. That includes your Pokémon's real stats, moves, item and ability. The guide's AI behaviour (Lightning Rod / Levitate awareness, switching to absorb your attack) implies the game reads that information too. Damage numbers come from `@smogon/calc`: expected damage is the midpoint of the roll range, crits are ignored, and a "KO" means every roll knocks the target out.
 
-The calc reports 0 for OHKO moves (Sheer Cold, Fissure...) and Endeavor, so those are worked out directly: an OHKO move kills unless the target is immune, has Sturdy or is a higher level. Showdown species names are mapped to the calc's: "Aegislash" becomes "Aegislash-Shield", and cosmetic formes fall back to their base species. A test checks every Battle Tree set, every builder species and every Gen 7 Mega. A Paradox form's Protosynthesis / Quark Drive boost is passed to the calc as its `boostedStat`, so the 1.3x counts in the estimates. Calc errors are counted in `calcErrors` (tests assert zero) rather than silently scoring a move as useless.
+The calc reports 0 for OHKO moves (Sheer Cold, Fissure...) and Endeavor, so those are worked out directly: an OHKO move kills unless the target is immune, has Sturdy or is a higher level. Showdown species names are mapped to the calc's: "Aegislash" becomes "Aegislash-Shield", and cosmetic formes fall back to their base species. A test checks every Battle Tree set, every builder species and every Gen 7 Mega. A Paradox form's Protosynthesis / Quark Drive boost is passed to the calc as its `boostedStat`, so the 1.3x counts in the estimates. Moves the calc doesn't know (Gen 8-9 moves, Pepper Breath, Gaia Force) are described from the simulator's data, including whether they have a secondary effect, so Sheer Force (WarGreymon) applies. Calc errors are counted in `calcErrors` (tests assert zero) rather than silently scoring a move as useless.
 
 ## Turning scores into a choice
 
 Each usable move is scored, along with Z-Move versions of damaging moves. A damaging move scores the expected damage as a fraction of the target's remaining HP, capped at 1. A guaranteed KO scores `koScore` (1.4), plus 0.2 if it lands before the foe acts.
 
-1. **Mega Evolution:** always used when available. Damage is evaluated as the Mega forme.
+1. **Mega Evolution:** always used when available. Damage is evaluated as the Mega forme. Warp Digivolution (Agumon with Wargreyite, a custom addition) is treated the same way.
 2. **Z-Moves:** offered on a turn with probability `zMoveChance` (0.8).
 3. **Switch check:** see "Switching" below.
 4. **KO:** if any option is a guaranteed KO, it's taken with probability `koBias` (0.9). The AI prefers a KO that lands first, then a plain move over spending the Z-Move. The guide: the AI "appears to be able to calculate when it can OHKO".
@@ -85,7 +85,7 @@ The guide documents the Singles AI; the Doubles logic is an **approximation** bu
 - **Targets:** a single-target move is scored against each foe still standing, and the choice names the target. So the AI aims at whichever foe it hurts most, usually the one it can knock out.
 - **Spread moves** (Rock Slide, Heat Wave, Earthquake...) are scored against every foe they hit. The calc gets the Doubles field, so the spread damage reduction is included. A move that also hits the partner (Earthquake, Surf, Explosion...) loses `partnerDamagePenalty` (1.5) per fraction of the partner's HP. A KO that also does 30%+ to the partner isn't taken automatically; it goes to the weighted roll.
 - **Partner-only moves** (Helping Hand and other moves aimed only at the ally) score `partnerSupportScore` (0.25) while the partner is up.
-- **One Mega Evolution and one Z-Move per turn**, the first Pokémon that picks one.
+- **One Mega Evolution and one Z-Move per turn**, the first Pokémon that picks one. Warp Digivolution doesn't count as the Mega.
 - **No voluntary switching** in Doubles. Replacements after a faint: the strongest remaining Pokémon against a foe still standing, never the same one twice.
 - Not modelled: redirection (Follow Me, Rage Powder, Lightning Rod pulling moves), Wide Guard / Quick Guard decisions, targeting a foe that is likely to Protect, or coordinating the two actions (e.g. Trick Room plus a slow attacker).
 

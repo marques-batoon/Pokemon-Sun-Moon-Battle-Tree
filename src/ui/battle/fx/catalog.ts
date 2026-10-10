@@ -39,7 +39,15 @@ export type Layer =
   /** Whole-stage flash, dim or tint. */
   | { kind: 'screen'; color: string; mode: 'flash' | 'dim' | 'tint'; delay?: number; dur?: number }
   /** A wave of colour sweeping across the ground (terrains spreading). */
-  | { kind: 'ground'; color: string; delay?: number; dur?: number };
+  | { kind: 'ground'; color: string; delay?: number; dur?: number }
+  /** Digital space: a glowing grid over the whole stage with a scan line, behind the sprites (Warp Digivolution). */
+  | { kind: 'datagrid'; color: string; delay?: number; dur?: number }
+  /** Columns of digital code streaming up around a spot. */
+  | { kind: 'code'; at: Anchor; color: string; columns: number; spread: number; delay?: number; dur?: number }
+  /** A spinning wireframe sphere of data closing in around a spot. */
+  | { kind: 'wireframe'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
+  /** Big text sweeping across the stage. */
+  | { kind: 'banner'; text: string; color: string; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -323,6 +331,36 @@ export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
     { kind: 'rings', at: 'user', color: '#7ff6ff', count: 2, size: 230 },
   ] },
 };
+
+/**
+ * Warp Digivolution (the Digimon anime's sequence, in this app's style): the stage drops into a
+ * digital space of grid and streaming code, "WARP DIGIVOLVE" flashes across, the Digimon becomes a
+ * light silhouette that surges bigger through its in-between forms (sprite class fx-warp-start)
+ * inside a spinning wireframe of data, armour pieces fly in, and a white flash. Then the new form
+ * bursts out in fire with its name.
+ */
+export const WARP_START: FxSpec = { layers: [
+  { kind: 'screen', color: '#00040e', mode: 'dim', dur: 2600 },
+  { kind: 'datagrid', color: '#2bd9ff', delay: 100, dur: 2500 },
+  { kind: 'rings', at: 'user', color: '#ffffff', count: 3, size: 210, rainbow: true, delay: 60, dur: 620 },
+  { kind: 'code', at: 'user', color: '#7dffb0', columns: 11, spread: 120, delay: 150, dur: 1500 },
+  { kind: 'banner', text: 'Warp Digivolve!', color: '#ff9a1f', delay: 250, dur: 1500 },
+  { kind: 'code', at: 'user', color: '#5ec8ff', columns: 9, spread: 95, delay: 850, dur: 1400 },
+  { kind: 'wireframe', at: 'user', color: '#5ec8ff', size: 190, delay: 700, dur: 1700 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'swirl', color: '#7dffb0', color2: '#5ec8ff', count: 14, size: 9, spread: 80, delay: 900, dur: 1200 },
+  { kind: 'particles', at: 'user', shape: 'shard', motion: 'converge', color: '#ffd54a', color2: '#e6edf5', count: 14, size: 20, spread: 170, delay: 1550, dur: 650 },
+  { kind: 'aura', at: 'user', color: '#ffffff', size: 210, delay: 1850, dur: 750 },
+  { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 2300, dur: 320 },
+] };
+export function warpBurst(form = ''): FxSpec {
+  return { shake: 'strong', layers: [
+    { kind: 'screen', color: '#fff1c2', mode: 'flash', dur: 450 },
+    { kind: 'rings', at: 'user', color: '#ff9a1f', count: 2, size: 260 },
+    { kind: 'particles', at: 'user', shape: 'flame', motion: 'burst', color: '#ff6a00', color2: '#ffd23f', count: 16, size: 20, spread: 150 },
+    { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#ffd54a', color2: '#ffffff', count: 10, size: 14, spread: 120, delay: 80 },
+    ...(form ? [{ kind: 'banner', text: `${form}!`, color: '#ff6a00', delay: 180, dur: 1050 } as Layer] : []),
+  ] };
+}
 
 /** Substitute: a puff of smoke while the user builds its decoy... */
 export const SUBSTITUTE_MOVE: FxSpec = { layers: [

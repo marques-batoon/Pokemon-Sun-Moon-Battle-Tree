@@ -1,4 +1,5 @@
 import { useState, type CSSProperties } from 'react';
+import { isWarpForm } from '../../data/custom/digimon';
 import type { BattleAnimation } from '../../client/playback';
 import { PokemonSprite } from '../components/PokemonSprite';
 import { substituteSprite } from '../sprites';
@@ -9,7 +10,7 @@ import { actsAt, spriteClass } from './fx/stage-fx';
 
 type Side = 'p1' | 'p2';
 
-/** Size of a Mega Evolved Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
+/** Size of a Mega Evolved (or Warp Digivolved) Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
 const MEGA_SCALE = 1.2;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
@@ -139,7 +140,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : substitute && !peeking ? 'subbed' : '';
   const showDoll = substitute || mine?.kind === 'sub-end';
   // Mega Evolved Pokémon are drawn 20% larger.
-  const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
+  const mega = !!pokemon && (/-Mega(-[XYZ])?$/.test(pokemon.species) || isWarpForm(pokemon.species));
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
     : mine?.kind === 'sub-end' ? 'fx-doll-break'

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { gen7 } from '../../team/dex';
-import { animatedSprite, iconStyle, staticSprite, type SpriteSide } from '../sprites';
+import { animatedSprite, iconStyle, localSpriteUrl, staticSprite, type SpriteSide } from '../sprites';
 import { typeColor } from '../types';
 import { useAppSettings } from '../useAppSettings';
 
@@ -50,9 +50,11 @@ export function SpritePlaceholder({ species, className = '' }: { species: string
   );
 }
 
-/** Small menu icon; renders nothing when images are turned off. */
+/** Small menu icon; renders nothing when images are turned off. The Digimon use their sprite, shrunk. */
 export function PokemonIcon({ species, className = '' }: { species: string; className?: string }) {
   const { sprites } = useAppSettings();
   if (!sprites) return null;
+  const local = localSpriteUrl(species);
+  if (local) return <img className={`poke-icon poke-icon-img ${className}`} src={local} alt="" width={40} height={30} draggable={false} aria-hidden="true" />;
   return <span className={`poke-icon ${className}`} style={iconStyle(species)} aria-hidden="true" />;
 }

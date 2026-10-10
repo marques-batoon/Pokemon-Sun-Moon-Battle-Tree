@@ -2,6 +2,7 @@
 // them one at a time: apply the line (state + log), show its animation, wait
 // its duration, then move to the next line.
 import type { Battle as ClientBattle } from '@pkmn/client';
+import { isWarpForm } from '../data/custom/digimon';
 import { paradoxKindOfForm } from '../data/custom/paradox';
 import { classifyMove, type MoveFx } from './move-class';
 
@@ -10,6 +11,8 @@ export type AnimationKind =
   | 'mega-start' | 'mega' | 'forme' | 'status' | 'boost' | 'unboost' | 'miss' | 'text'
   /** Paradox Evolution: the charge-up, then the change; `condition` is "ancient" or "future". */
   | 'paradox-start' | 'paradox'
+  /** Warp Digivolution: the digital charge-up, then the new form bursts out; `condition` is the form's name. */
+  | 'warp-start' | 'warp'
   /** Substitute: the doll appears, takes a hit, or breaks. */
   | 'sub-start' | 'sub-hit' | 'sub-end'
   /** Leech Seed takes hold of the target. */
@@ -96,6 +99,8 @@ const TEXT_DURATION = 350;
 export const SWITCH_OUT_MS = 400;
 export const MEGA_START_MS = 1000;
 export const PARADOX_START_MS = 1100;
+export const WARP_START_MS = 2600;
+export const WARP_MS = 1300;
 export const SUB_START_MS = 900;
 export const SUB_END_MS = 750;
 export const SUB_HIT_MS = 500;
@@ -155,8 +160,8 @@ export interface PlannedStep {
 /**
  * Plans the steps for one protocol line given the battle state *before* it is
  * applied. Most lines are one step; a switch-in replacing a healthy Pokémon
- * first plays a switch-out, and Mega Evolution plays a charge-up before the
- * sprite changes.
+ * first plays a switch-out, and Mega Evolution (Paradox Evolution, Warp
+ * Digivolution) plays a charge-up before the sprite changes.
  */
 export function planLine(args: readonly string[], kwArgs: Record<string, unknown>, battle: ClientBattle, hasText: boolean): PlannedStep[] {
   const cmd = args[0];
@@ -217,7 +222,14 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       return [step({ kind: 'faint', ...at(args[1]), target: null, durationMs: base })];
     case 'detailschange': {
       const who = at(args[1]);
-      const paradox = paradoxKindOfForm((args[2] ?? '').split(',')[0]);
+      const form = (args[2] ?? '').split(',')[0];
+      if (isWarpForm(form)) {
+        return [
+          { animation: { kind: 'warp-start', ...who, target: null, condition: form, durationMs: WARP_START_MS }, applyLine: false },
+          step({ kind: 'warp', ...who, target: null, condition: form, durationMs: WARP_MS }),
+        ];
+      }
+      const paradox = paradoxKindOfForm(form);
       if (paradox) {
         return [
           { animation: { kind: 'paradox-start', ...who, target: null, condition: paradox, durationMs: PARADOX_START_MS }, applyLine: false },

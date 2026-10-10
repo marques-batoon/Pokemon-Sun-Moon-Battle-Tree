@@ -1,6 +1,7 @@
 import type { Battle, Pokemon, PRNG, Side, SideID } from '@pkmn/sim';
 import type { AIContext, BattleAI } from '../types';
 import { doublesTargets, hitsPartner, isSpread } from '../../engine/choices';
+import { isWarpForm } from '../../data/custom/digimon';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequest } from '../../engine/sim-types';
 import { estimateDamage, type Forme } from './calc';
 import { DEFAULT_CONFIG, type HeuristicConfig } from './config';
@@ -90,7 +91,9 @@ export class HeuristicAI implements BattleAI {
         return usable.length ? withTarget(usable[0].moveSlot, usable[0].m.target, firstFoeLoc) : 'move 1';
       }
 
-      const mega = !megaUsed && active.canMegaEvo ? ' mega' : '';
+      // Warp Digivolution goes through the Mega choice but doesn't use up the turn's Mega.
+      const warp = isWarpForm(typeof me.canMegaEvo === 'string' ? me.canMegaEvo : null);
+      const mega = (warp || !megaUsed) && active.canMegaEvo ? ' mega' : '';
       const myForme = mega ? megaForme(battle, me) : undefined;
       const situation = (foe: Pokemon): Situation => ({
         battle, me, foe, myForme, config: cfg,
@@ -152,7 +155,7 @@ export class HeuristicAI implements BattleAI {
       const choice = kos.length && prng.random() < cfg.koBias
         ? [...kos].sort((a, b) => Number(b.first) - Number(a.first) || Number(a.choice.includes('zmove')) - Number(b.choice.includes('zmove')) || b.score - a.score)[0].choice
         : weightedPick(options, cfg.temperature, prng);
-      if (choice.endsWith(' mega')) megaUsed = true;
+      if (choice.endsWith(' mega') && !warp) megaUsed = true;
       if (choice.endsWith(' zmove')) zUsed = true;
       notes.push(`${me.name}: ${choice}`);
       return choice;

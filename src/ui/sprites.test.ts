@@ -30,3 +30,12 @@ describe('Pokémon Champions sprites', () => {
     expect(animatedSprite('Garchomp', 'p2').url).toBe('https://play.pokemonshowdown.com/sprites/ani/garchomp.gif');
   });
 });
+
+describe('Digimon sprites', () => {
+  it('uses the images shipped with the app, flipped for the back view', () => {
+    expect(animatedSprite('Agumon', 'p2')).toMatchObject({ url: '/pokemon/agumon.png', pixelated: false });
+    expect(animatedSprite('Agumon', 'p2').mirrored).toBeUndefined();
+    expect(animatedSprite('Agumon', 'p1')).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
+    expect(staticSprite('WarGreymon', 'p1')).toMatchObject({ url: '/pokemon/wargreymon.png', mirrored: true });
+  });
+});

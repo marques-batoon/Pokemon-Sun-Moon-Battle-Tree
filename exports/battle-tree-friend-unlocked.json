@@ -1,0 +1,28 @@
+{
+  "app": "battle-tree-simulator",
+  "version": 1,
+  "exportedAt": "2026-10-09T00:00:00.000Z",
+  "data": {
+    "teams.v1": {
+      "version": 1,
+      "teams": []
+    },
+    "tree.v1": {
+      "version": 1,
+      "profile": {
+        "superUnlocked": { "singles": true, "doubles": true },
+        "records": {
+          "singles-normal": { "best": 20, "last": 20 },
+          "singles-super": { "best": 0, "last": 0 },
+          "doubles-normal": { "best": 20, "last": 20 },
+          "doubles-super": { "best": 0, "last": 0 },
+          "multi-super": { "best": 0, "last": 0 }
+        },
+        "bpTotal": 0,
+        "bpSpent": 0,
+        "settings": { "anabelUnlocked": true, "teamPreviewEachBattle": false, "ai": "heuristic" }
+      },
+      "runs": {}
+    }
+  }
+}

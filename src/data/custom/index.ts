@@ -2,6 +2,7 @@
 // user and documented in DATA_NOTES.md ("Custom additions"). No simulator
 // imports: the worker adds the battle logic (src/engine/custom.ts), and the UI
 // uses the same data for the builder, battle display and AI estimates.
+import { DIGIMON_SPECIES } from './digimon';
 
 type StatID = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 type Stats = Record<StatID, number>;
@@ -79,7 +80,7 @@ export const isCustomLearn = (species: string, move: string) => !!customLearnIds
 /** Mega formes whose sprites are another Pokémon's (Mega Politoed uses Politoed's). */
 export const SPRITE_ALIASES: Record<string, string> = Object.fromEntries(CUSTOM_MEGAS.map(m => [m.species, m.sprite]));
 /** Names the AI's damage calculator doesn't know (it gets their stats passed in). */
-export const CUSTOM_SPECIES = CUSTOM_MEGAS.map(m => m.species);
+export const CUSTOM_SPECIES = [...CUSTOM_MEGAS.map(m => m.species), ...DIGIMON_SPECIES];
 
 interface ParentData {
   /** Species data by id (the simulator calls this table Pokedex). */

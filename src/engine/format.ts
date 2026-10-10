@@ -2,8 +2,9 @@ import { Dex, type ActiveMove, type Battle, type Move, type Pokemon, type Pokemo
 import { RULES } from '../data/battle-tree';
 import { AURA_GUARD, CHAMPIONS_MOD, championsOverrides, NEW_LEARNSET_IDS, NEW_MOVE_IDS } from '../data/champions';
 import { customOverrides, isCustomLearn, mergeModData } from '../data/custom';
+import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem } from '../data/custom/digimon';
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
-import { addCustomBattleLogic, CUSTOM_ACTIONS } from './custom';
+import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_SIDE } from './custom';
 import { USUM_ONLY_SPECIES } from './format-constants';
 
 export { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, NO_PREVIEW_FORMAT_IDS, simFormatId, USUM_ONLY_SPECIES, type BattleTreeFormat } from './format-constants';
@@ -36,7 +37,7 @@ let registered = false;
  */
 function registerChampionsMod(): void {
   const gen7 = Dex.mod('gen7').data;
-  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false })) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
+  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false }), digimonOverrides()) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
   addCustomBattleLogic(data as never, { Conditions: gen7.Conditions as never, Moves: gen7.Moves as never });
   Object.assign(data.Abilities[AURA_GUARD.id], {
     onSourceModifyDamage(this: Battle, _damage: number, source: Pokemon, target: Pokemon, move: ActiveMove) {
@@ -47,7 +48,7 @@ function registerChampionsMod(): void {
       }
     },
   });
-  Dex.mod(CHAMPIONS_MOD, { Scripts: { inherit: 'gen7', gen: 7, actions: CUSTOM_ACTIONS }, ...data } as never);
+  Dex.mod(CHAMPIONS_MOD, { Scripts: { inherit: 'gen7', gen: 7, actions: CUSTOM_ACTIONS, side: CUSTOM_SIDE }, ...data } as never);
 }
 
 /**
@@ -55,6 +56,7 @@ function registerChampionsMod(): void {
  * from their newest learnsets; everyone else uses the Gen 7 rules, plus the
  * app's custom extra moves (CUSTOM_LEARNS). A Pokémon holding a Paradoxorb
  * learns its Paradox form's moves instead (newest learnset, no restrictions).
+ * The Digimon learn exactly their own lists, and only they get their signature moves.
  */
 // Problems start with a space: the validator puts the Pokémon's name in front.
 function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSources: Parameters<TeamValidator['checkCanLearn']>[2], set: PokemonSet): string | null {
@@ -64,23 +66,27 @@ function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSou
     const learnset = Dex.species.getLearnsetData(toId(paradox) as never).learnset ?? {};
     return move.id in learnset ? null : ` can't learn ${move.name} (its Paradox form ${paradox} doesn't).`;
   }
+  const digimon = digimonCanLearn(id, move.id);
+  if (digimon !== null) return digimon ? null : ` can't learn ${move.name}.`;
   if (isCustomLearn(id, move.id)) return null;
   if (NEW_LEARNSET_IDS.has(id)) {
     const learnset = Dex.species.getLearnsetData(id).learnset ?? {};
     return move.id in learnset ? null : ` can't learn ${move.name}.`;
   }
-  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
+  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id) || DIGIMON_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
   return this.checkCanLearn(move, species, setSources, set);
 }
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-/** Paradoxorbs only go on Pokémon with that kind of Paradox form. */
+/** Paradoxorbs only go on Pokémon with that kind of Paradox form; a warp item only on its own Digimon. */
 function onValidateSet(this: TeamValidator, set: PokemonSet): string[] | undefined {
   const kind = paradoxKindOfItem(set.item);
   const species = this.dex.species.get(set.species);
-  if (!kind || canHoldItem(species.name, set.item)) return undefined;
-  return [`${species.name} can't hold ${this.dex.items.get(set.item).name}: it has no ${PARADOX_LABELS[kind]} Paradox form.`];
+  if ((!kind && !isWarpItem(set.item)) || canHoldItem(species.name, set.item)) return undefined;
+  const item = this.dex.items.get(set.item);
+  if (!kind) return [`${species.name} can't hold ${item.name}: only ${item.itemUser?.join(' or ')} can Warp Digivolve with it.`];
+  return [`${species.name} can't hold ${item.name}: it has no ${PARADOX_LABELS[kind]} Paradox form.`];
 }
 
 /**

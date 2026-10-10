@@ -165,4 +165,11 @@ describe('planLine: Paradox Evolution', () => {
     // Mega Evolution keeps its own animation.
     expect(steps('|detailschange|p1a: Salamence|Salamence-Mega, L50, M')[0].animation?.kind).toBe('mega-start');
   });
+
+  it('plays the Warp Digivolution sequence for a Digimon, naming the new form', () => {
+    const warp = steps('|detailschange|p2a: Agumon|WarGreymon, L50, M');
+    expect(warp.map(s => [s.animation?.kind, s.animation?.condition, s.animation?.side, s.applyLine])).toEqual([
+      ['warp-start', 'WarGreymon', 'p2', false], ['warp', 'WarGreymon', 'p2', true],
+    ]);
+  });
 });

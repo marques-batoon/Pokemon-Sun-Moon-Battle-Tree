@@ -62,6 +62,30 @@ function Particles({ layer, ctx }: { layer: Extract<Layer, { kind: 'particles' }
   return <>{items}</>;
 }
 
+const GLYPHS = '0123456789ABCDEF';
+
+/** Streams of digital code (hex and binary) rising in columns around a spot. */
+function CodeStreams({ layer, ctx }: { layer: Extract<Layer, { kind: 'code' }>; ctx: Ctx }) {
+  const at = ctx[layer.at];
+  const spread = layer.spread * ctx.k;
+  const dur = layer.dur ?? 1400;
+  return (
+    <>
+      {Array.from({ length: layer.columns }, (_, c) => {
+        const r1 = rand(ctx.seed, c, 11), r2 = rand(ctx.seed, c, 12), r3 = rand(ctx.seed, c, 13);
+        const x = at.x + ((layer.columns > 1 ? c / (layer.columns - 1) : 0.5) - 0.5) * spread * 2 + (r1 - 0.5) * 14 * ctx.k;
+        const text = Array.from({ length: 7 + Math.floor(r2 * 5) }, (_, g) => GLYPHS[Math.floor(rand(ctx.seed, c * 31 + g, 14) * (r3 < 0.5 ? 2 : 16))]).join('');
+        return (
+          <span key={c} className="fxl fx-code" style={css({
+            '--x': px(x), '--y': px(at.y + (r2 - 0.3) * 40 * ctx.k), '--c': layer.color,
+            '--delay': ms((layer.delay ?? 0) + r3 * 450), '--dur': ms(dur * (0.75 + r1 * 0.4)),
+          })}>{text}</span>
+        );
+      })}
+    </>
+  );
+}
+
 function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx }) {
   const count = layer.count ?? 1;
   const dx = ctx.target.x - ctx.user.x, dy = ctx.target.y - ctx.user.y;
@@ -199,6 +223,19 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
     case 'ground':
       // The ground starts where the sky ends (46% down, as in the .stage background).
       return <span key={i} className="fxl fx-ground" style={css({ '--x': '0px', '--y': px(ctx.h * 0.46), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 700) })} />;
+    case 'datagrid':
+      return <span key={i} className="fxl fx-datagrid" style={css({ '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 2000) })} />;
+    case 'code': return <CodeStreams key={i} layer={layer} ctx={ctx} />;
+    case 'wireframe': {
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-wire" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1500) })}>
+          <span className="wire lon" /><span className="wire lon two" /><span className="wire lon three" /><span className="wire lat" /><span className="wire lat two" />
+        </span>
+      );
+    }
+    case 'banner':
+      return <span key={i} className="fxl fx-banner" style={css({ '--x': '0px', '--y': px(ctx.h * 0.4), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1200) })}>{layer.text}</span>;
   }
 }
 
@@ -236,8 +273,8 @@ export function MoveEffects({ spec, user, targets = [], size, points = {}, doubl
   const at = (p: Pos) => points[p] ?? spotPoint(p, size.w, size.h, doubles);
   const ctxFor = (target: Pos, i: number): Ctx => ({ user: at(user), target: at(target), seed: seed + i * 17, w: size.w, h: size.h, k });
   const style = { '--k': k } as CSSProperties;
-  // Dimming goes behind the sprites (the Pokémon stay lit); everything else is drawn over them.
-  const isBack = (l: Layer) => l.kind === 'screen' && l.mode === 'dim';
+  // Dimming and the digital grid go behind the sprites (the Pokémon stay lit); everything else is drawn over them.
+  const isBack = (l: Layer) => (l.kind === 'screen' && l.mode === 'dim') || l.kind === 'datagrid';
   const front = spec.layers.filter(l => !isBack(l));
   return (
     <>

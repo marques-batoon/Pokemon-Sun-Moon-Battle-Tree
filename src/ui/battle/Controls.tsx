@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Battle } from '@pkmn/client';
 import { gen7 } from '../../team/dex';
+import { isWarpItem } from '../../data/custom/digimon';
 import { effectivenessLabel } from '../../team/effectiveness';
 import { doublesTargets, needsReplacement } from '../../engine/choices';
 import {
@@ -33,9 +34,13 @@ interface Props {
 
 const HINT_CLASS = { 'Super effective': 'hint-super', 'Not very effective': 'hint-weak', 'No effect': 'hint-none' } as const;
 
-/** The four move buttons plus the Mega / Z toggles for one active Pokémon. */
-function MoveGrid({ active, mega, setMega, megaAllowed, zMove, setZMove, zAllowed, hintTypes, showHints, shortcuts, onPick }: {
+/**
+ * The four move buttons plus the Mega / Z toggles for one active Pokémon. A Digimon holding its
+ * warp item gets Warp Digivolve in place of Mega Evolve (same choice for the engine).
+ */
+function MoveGrid({ active, warp = false, mega, setMega, megaAllowed, zMove, setZMove, zAllowed, hintTypes, showHints, shortcuts, onPick }: {
   active: SimRequestActive;
+  warp?: boolean;
   mega: boolean; setMega: (v: boolean) => void; megaAllowed: boolean;
   zMove: boolean; setZMove: (v: boolean) => void; zAllowed: boolean;
   hintTypes?: readonly string[]; showHints: boolean; shortcuts: boolean;
@@ -88,7 +93,7 @@ function MoveGrid({ active, mega, setMega, megaAllowed, zMove, setZMove, zAllowe
       {(canMega || canZ) && (
         <div className="gimmicks">
           {canMega && (
-            <label className={mega ? 'on' : ''}><input type="checkbox" checked={mega} onChange={e => setMega(e.target.checked)} /> Mega Evolve{shortcuts && <kbd>M</kbd>}</label>
+            <label className={`${mega ? 'on' : ''}${warp ? ' warp' : ''}`}><input type="checkbox" checked={mega} onChange={e => setMega(e.target.checked)} /> {warp ? 'Warp Digivolve' : 'Mega Evolve'}{shortcuts && <kbd>M</kbd>}</label>
           )}
           {canZ && (
             <label className={zMove ? 'on' : ''}><input type="checkbox" checked={zMove} onChange={e => setZMove(e.target.checked)} /> Z-Move{shortcuts && <kbd>Z</kbd>}</label>
@@ -168,7 +173,7 @@ function SinglesControls({ request, awaiting, onChoose, foeTypes, showHints, sho
     <div className="controls">
       {active && (
         <MoveGrid
-          active={active} mega={mega} setMega={setMega} megaAllowed zMove={zMove} setZMove={setZMove} zAllowed
+          active={active} warp={isWarpItem(request.side.pokemon[0]?.item)} mega={mega} setMega={setMega} megaAllowed zMove={zMove} setZMove={setZMove} zAllowed
           hintTypes={foeTypes} showHints={showHints} shortcuts={shortcuts} onPick={pickMove}
         />
       )}
@@ -185,8 +190,8 @@ interface Pending { moveIndex: number; z: boolean; mega: boolean; targetType: st
 /**
  * Double Battles: choose for each active Pokémon in turn (moves needing a
  * target ask which one), then send both choices together. Only one Mega
- * Evolution and one Z-Move per turn; a Pokémon picked to switch in can't be
- * picked again.
+ * Evolution and one Z-Move per turn (Warp Digivolution doesn't count as the
+ * Mega); a Pokémon picked to switch in can't be picked again.
  */
 function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Props) {
   const forced = isForceSwitch(request);
@@ -230,7 +235,8 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     prev.pop();
     setChoices(prev);
   };
-  const megaUsed = auto.some(c => c.endsWith(' mega'));
+  const megaUsed = auto.some((c, i) => c.endsWith(' mega') && !isWarpItem(request.side.pokemon[i]?.item));
+  const warp = isWarpItem(request.side.pokemon[slot]?.item);
   const zUsed = auto.some(c => c.endsWith(' zmove'));
   const switchedIn = auto.flatMap(c => (c.startsWith('switch ') ? [Number(c.slice(7))] : []));
   const me = request.side.pokemon[slot];
@@ -293,7 +299,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
         <>
           {active && (
             <MoveGrid
-              active={active} mega={mega} setMega={setMega} megaAllowed={!megaUsed} zMove={zMove} setZMove={setZMove} zAllowed={!zUsed}
+              active={active} warp={warp} mega={mega} setMega={setMega} megaAllowed={warp || !megaUsed} zMove={zMove} setZMove={setZMove} zAllowed={!zUsed}
               showHints={false} shortcuts={shortcuts} onPick={pickMove}
             />
           )}

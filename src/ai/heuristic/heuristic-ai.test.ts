@@ -211,10 +211,13 @@ describe('calc bridge', () => {
     const names = new Set([...SETS.map(s => s.species), ...eligibleSpecies().map(s => s.name)]);
     // Mega formes the AI evaluates when Mega Evolving.
     for (const s of Dex.forGen(7).species.all()) if (s.isMega && s.exists && s.gen <= 7 && !s.isNonstandard) names.add(s.name);
-    // Pokémon Champions Megas and Gen 8-9 Pokémon aren't in the calc's Gen 7 data: calcPokemon passes their stats.
+    // Pokémon Champions Megas, Gen 8-9 Pokémon and the custom species (Digimon) aren't in the calc's Gen 7 data:
+    // calcPokemon passes their stats.
     const { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } = await import('../../data/champions');
-    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES]);
+    const { CUSTOM_SPECIES } = await import('../../data/custom');
+    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES]);
     const missing = [...names].filter(n => {
+      if (described.has(n)) return false;
       const s = Dex.forGen(7).species.get(n);
       const name = calcSpeciesName(s.name, s.baseSpecies, s.baseForme);
       return !described.has(name) && !calcGen.species.get(name.toLowerCase().replace(/[^a-z0-9]/g, '') as never);
@@ -246,6 +249,32 @@ describe('calc bridge', () => {
     const mega = estimateDamage(b, glimmora, snorlax, 'powergem', { attackerForme: { species: 'Glimmora-Mega', ability: 'Adaptability' } }).frac;
     expect(mega).toBeGreaterThan(base);
     expect(calcErrors.count).toBe(before);
+  });
+
+  it('estimates damage for the Digimon and their signature moves, with Sheer Force as WarGreymon', async () => {
+    const { calcErrors, estimateDamage } = await import('./calc');
+    const before = calcErrors.count;
+    const b = scenario(
+      `Agumon @ Wargreyite\nAbility: Blaze\nEVs: 252 SpA\nModest Nature\n- Pepper Breath\n- Gaia Force\n- Dragon Pulse`,
+      `Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP\n- Body Slam`,
+    );
+    const agumon = b.p1.active[0];
+    const snorlax = b.p2.active[0];
+    const base = estimateDamage(b, agumon, snorlax, 'gaiaforce').frac;
+    expect(base).toBeGreaterThan(0.02);
+    const warGreymon = { species: 'WarGreymon', ability: 'Sheer Force' };
+    const warped = estimateDamage(b, agumon, snorlax, 'gaiaforce', { attackerForme: warGreymon }).frac;
+    expect(warped).toBeGreaterThan(base * 1.5);
+    // Sheer Force boosts Gaia Force (it can burn) but not Dragon Pulse (no secondary effect).
+    const noSheer = estimateDamage(b, agumon, snorlax, 'gaiaforce', { attackerForme: { ...warGreymon, ability: 'Blaze' } }).frac;
+    expect(warped).toBeGreaterThan(noSheer * 1.2);
+    expect(calcErrors.count, calcErrors.last ?? '').toBe(before);
+  });
+
+  it('Warp Digivolves its Agumon', () => {
+    const b = scenario(CHANSEY, `Agumon @ Wargreyite\nAbility: Blaze\nEVs: 252 SpA\nModest Nature\n- Pepper Breath\n- Gaia Force`);
+    const counts = decide(b, 30);
+    expect(Object.keys(counts).every(c => c.endsWith(' mega'))).toBe(true);
   });
 
   it('raises no calc errors during full battles', async () => {

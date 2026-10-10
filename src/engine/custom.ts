@@ -1,7 +1,8 @@
 // Battle logic for the custom content in src/data/custom (and the field-effect
 // turn counts the battle screen shows). Runs where the simulator runs.
-import type { ActiveMove, Battle, Effect, Move, Pokemon } from '@pkmn/sim';
+import type { ActiveMove, Battle, Effect, Move, Pokemon, Side } from '@pkmn/sim';
 import { CUSTOM_MEGAS, POLIWRATHIUM_Z } from '../data/custom';
+import { isWarpForm, isWarpItem, WARP_DIGIMON } from '../data/custom/digimon';
 import { PARADOX_ABILITIES, PARADOX_ITEMS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -46,9 +47,9 @@ function tagTurns(original: Handler | undefined): Handler {
 
 /** Adds handlers (functions can't live in the shared data) to the mod data built from the shared layers. */
 export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>, parent: { Conditions: Record<string, Entry>; Moves: Record<string, Entry> }) {
-  // Mega Stones can't be knocked off or swapped away from the Pokémon that uses them.
-  for (const m of CUSTOM_MEGAS) {
-    Object.assign(data.Items[toId(m.megaStone)], {
+  // Mega Stones (and warp items) can't be knocked off or swapped away from the Pokémon that uses them.
+  for (const stone of [...CUSTOM_MEGAS.map(m => m.megaStone), ...WARP_DIGIMON.map(d => d.item)]) {
+    Object.assign(data.Items[toId(stone)], {
       onTakeItem(item: { megaStone?: Record<string, string> }, source: Pokemon) {
         return !item.megaStone?.[source.baseSpecies.baseSpecies];
       },
@@ -143,7 +144,7 @@ function paradoxEvolve(battle: Battle, pokemon: Pokemon) {
   const form = paradoxFormForSet(pokemon.species.name, pokemon.item);
   if (!kind || !form) return; // no orb, or already evolved
   const item = pokemon.getItem();
-  const who = pokemon.side.id === 'p1' ? pokemon.name : `The opposing ${pokemon.name}`;
+  const who = displayName(pokemon);
   battle.add('-activate', pokemon, `item: ${item.name}`, '[silent]');
   battle.add('message', `${who}'s ${item.name} is resonating with ${kind === 'ancient' ? 'the ancient past' : 'the distant future'}!`);
   // Paradox Pokémon are genderless.
@@ -152,6 +153,26 @@ function paradoxEvolve(battle: Battle, pokemon: Pokemon) {
   pokemon.formeChange(form, battle.dex.conditions.get('paradoxevolution'), true);
   pokemon.m.paradoxEvolving = false;
   battle.add('message', `${who} Paradox Evolved into ${form}!`);
+}
+
+/** How the messages name a Pokémon: the player's side (p1, and the partner's p3) without "The opposing". */
+const displayName = (pokemon: Pokemon) => (pokemon.side.n % 2 === 0 ? pokemon.name : `The opposing ${pokemon.name}`);
+
+/**
+ * Warp Digivolution: Mega Evolution for the Digimon (custom addition). Same timing (before moves,
+ * on the turn it's chosen) and the same lasting forme change, with its own messages; no "-mega"
+ * line, so the battle screen plays the warp animation instead of the Mega one.
+ */
+function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
+  const item = pokemon.getItem();
+  const who = displayName(pokemon);
+  battle.add('-activate', pokemon, `item: ${item.name}`, '[silent]');
+  battle.add('message', `${who}'s ${item.name} is overflowing with power!`);
+  pokemon.formeChange(form, battle.dex.conditions.get('warpdigivolution'), true);
+  // As for Mega Evolution: it counts as an action for Truant, and there's no going back.
+  pokemon.moveThisTurnResult = true;
+  pokemon.formeRegression = true;
+  battle.add('message', `${who} warp-digivolve to... ${form}!`);
 }
 
 type Actions = Battle['actions'];
@@ -164,6 +185,23 @@ const proto = (self: Actions) => Object.getPrototypeOf(self) as Actions;
  * Everything else is unchanged.
  */
 export const CUSTOM_ACTIONS = {
+  /**
+   * Warp Digivolution goes through the Mega Evolution action, but every Digimon on a team can do
+   * it, and it doesn't use up the team's one Mega Evolution (nor does a Mega use up the warps).
+   */
+  runMegaEvo(this: Actions, pokemon: Pokemon): boolean {
+    const form = pokemon.canMegaEvo;
+    if (typeof form === 'string' && isWarpForm(form)) {
+      warpDigivolve(this.battle, pokemon, form);
+      pokemon.canMegaEvo = false;
+      this.battle.runEvent('AfterMega', pokemon);
+      return true;
+    }
+    const warps = pokemon.side.pokemon.filter(p => p !== pokemon && isWarpForm(p.canMegaEvo || null)).map(p => [p, p.canMegaEvo] as const);
+    const done = proto(this).runMegaEvo.call(this, pokemon);
+    for (const [p, canMegaEvo] of warps) p.canMegaEvo = canMegaEvo;
+    return done;
+  },
   /** Paradox Evolution happens as a Pokémon holding a Paradoxorb comes in, before its switch-in effects. */
   runSwitch(this: Actions, pokemon: Pokemon): boolean {
     const switchers = [pokemon];
@@ -193,5 +231,24 @@ export const CUSTOM_ACTIONS = {
     zMove.priority = move.priority;
     zMove.isZOrMaxPowered = true;
     return zMove;
+  },
+};
+
+/**
+ * Side hooks: choosing Warp Digivolution doesn't count as the turn's (or battle's) one Mega
+ * Evolution, so a Digimon can warp alongside a Mega, or alongside another Digimon.
+ */
+export const CUSTOM_SIDE = {
+  chooseMove(this: Side, ...args: Parameters<Side['chooseMove']>): boolean {
+    const original = (Object.getPrototypeOf(this) as Side).chooseMove;
+    const pokemon = this.active[this.getChoiceIndex()];
+    if (args[2] !== 'mega' || !pokemon || !isWarpItem(pokemon.item)) return original.apply(this, args);
+    const megaChosen = this.choice.mega;
+    this.choice.mega = false;
+    try {
+      return original.apply(this, args);
+    } finally {
+      this.choice.mega = megaChosen;
+    }
   },
 };
