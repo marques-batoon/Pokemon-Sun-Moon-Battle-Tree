@@ -31,6 +31,14 @@ describe('TeamStore', () => {
     expect(store.getTeams()).not.toBe(before);
   });
 
+  it('loads saved teams with renamed moves under their new names (Blue Blaster is now Fox Fire)', () => {
+    const kv = memoryStore();
+    new TeamStore(kv).create('Old', [{ ...newSet('Gabumon'), moves: ['Blue Blaster', 'Ice Beam'] }]);
+    expect(new TeamStore(kv).getTeams()[0].sets[0].moves).toEqual(['Fox Fire', 'Ice Beam']);
+    const restored = new TeamStore(memoryStore()).replaceAll([{ name: 'Backup', sets: [{ ...newSet('Gabumon'), moves: ['Blue Blaster'] }] }]);
+    expect(restored[0].sets[0].moves).toEqual(['Fox Fire']);
+  });
+
   it('backs up unreadable data instead of discarding it', () => {
     const kv = memoryStore({ 'teams.v1': '{not json' });
     const store = new TeamStore(kv, () => 42);

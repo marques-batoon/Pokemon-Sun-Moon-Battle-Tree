@@ -69,7 +69,7 @@ describe('Agumon and WarGreymon', () => {
 });
 
 describe('Gabumon and MetalGarurumon', () => {
-  const gabumon = (moves = ['Blue Blaster'], item = 'Metalgaruruite') => mon('Gabumon', item, 'Thick Fat', moves, 'EVs: 252 SpA\nModest Nature\n');
+  const gabumon = (moves = ['Fox Fire'], item = 'Metalgaruruite') => mon('Gabumon', item, 'Thick Fat', moves, 'EVs: 252 SpA\nModest Nature\n');
 
   it('has the custom species data', () => {
     const g = dex.species.get('Gabumon');
@@ -89,11 +89,11 @@ describe('Gabumon and MetalGarurumon', () => {
     expect(dex.items.get('Metalgaruruite').megaStone).toEqual({ Gabumon: 'MetalGarurumon' });
   });
 
-  it('has Blue Blaster and Cocytus Pulse (a pulse move)', () => {
-    const blue = dex.moves.get('Blue Blaster');
-    expect([blue.type, blue.category, blue.basePower, blue.accuracy, blue.pp, blue.target]).toEqual(['Fire', 'Special', 70, 100, 10, 'normal']);
-    expect(blue.flags.contact).toBeUndefined();
-    expect(blue.secondary).toEqual({ chance: 20, boosts: { spd: -1 } });
+  it('has Fox Fire and Cocytus Pulse (a pulse move)', () => {
+    const fox = dex.moves.get('Fox Fire');
+    expect([fox.type, fox.category, fox.basePower, fox.accuracy, fox.pp, fox.target]).toEqual(['Fire', 'Special', 70, 100, 10, 'normal']);
+    expect(fox.flags.contact).toBeUndefined();
+    expect(fox.secondary).toEqual({ chance: 20, boosts: { spd: -1 } });
     const cocytus = dex.moves.get('Cocytus Pulse');
     expect([cocytus.type, cocytus.category, cocytus.basePower, cocytus.accuracy, cocytus.pp]).toEqual(['Ice', 'Special', 85, 100, 10]);
     expect(cocytus.flags.pulse).toBe(1);
@@ -101,12 +101,12 @@ describe('Gabumon and MetalGarurumon', () => {
   });
 
   it('learns its own list (Gen 8-9 TMs included), and only it gets its signature moves', () => {
-    expect(validate(team(gabumon(['Blue Blaster', 'Cocytus Pulse', 'Chilling Water', 'Steel Beam'])))).toEqual([]);
+    expect(validate(team(gabumon(['Fox Fire', 'Cocytus Pulse', 'Chilling Water', 'Steel Beam'])))).toEqual([]);
     expect(validate(team(gabumon(['Ice Spinner', 'Snowscape', 'Tera Blast', 'Heavy Slam'])))).toEqual([]);
     expect(validate(team(mon('Gabumon', 'Charcoal', 'Flash Fire', ['Powder Snow'], 'EVs: 252 HP\n')))).toEqual([]);
     expect(validate(team(gabumon(['Flamethrower']))).join(' ')).toMatch(/can't learn Flamethrower/);
     // Each Digimon's moves are its own.
-    expect(validate(team(agumon(['Blue Blaster']))).join(' ')).toMatch(/Blue Blaster/);
+    expect(validate(team(agumon(['Fox Fire']))).join(' ')).toMatch(/Fox Fire/);
     expect(validate(team(gabumon(['Pepper Breath']))).join(' ')).toMatch(/Pepper Breath/);
     expect(validate(team(mon('Glalie', 'Leftovers', 'Inner Focus', ['Cocytus Pulse'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/Cocytus Pulse/);
     expect(validate(team(agumon(['Pepper Breath'], 'Metalgaruruite'))).join(' ')).toMatch(/can't hold Metalgaruruite/);
@@ -180,7 +180,7 @@ describe('Warp Digivolution', () => {
 
   it('lets every Digimon on a team warp, on the same turn, and still Mega Evolve after (Doubles)', () => {
     const b = new Battle({ formatid: 'gen7battletreedoublesnopreview' as never, seed: '1,2,3,4' });
-    const p1 = [agumon(), mon('Gabumon', 'Metalgaruruite', 'Thick Fat', ['Blue Blaster']), mon('Venusaur', 'Venusaurite', 'Overgrow', ['Synthesis'], 'EVs: 252 HP\n'), BENCH[1]].join('\n\n');
+    const p1 = [agumon(), mon('Gabumon', 'Metalgaruruite', 'Thick Fat', ['Fox Fire']), mon('Venusaur', 'Venusaurite', 'Overgrow', ['Synthesis'], 'EVs: 252 HP\n'), BENCH[1]].join('\n\n');
     const p2 = [target, mon('Chansey', 'Eviolite', 'Natural Cure', ['Splash']), ...BENCH].join('\n\n');
     b.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(p1)) });
     b.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(p2)) });

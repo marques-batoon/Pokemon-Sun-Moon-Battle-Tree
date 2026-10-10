@@ -275,7 +275,7 @@ describe('calc bridge', () => {
     const { calcErrors, estimateDamage } = await import('./calc');
     const before = calcErrors.count;
     const b = scenario(
-      `Gabumon @ Metalgaruruite\nAbility: Thick Fat\nEVs: 252 SpA\nModest Nature\n- Cocytus Pulse\n- Blue Blaster`,
+      `Gabumon @ Metalgaruruite\nAbility: Thick Fat\nEVs: 252 SpA\nModest Nature\n- Cocytus Pulse\n- Fox Fire`,
       `Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP\n- Body Slam`,
     );
     const [gabumon, snorlax] = [b.p1.active[0], b.p2.active[0]];
@@ -283,7 +283,7 @@ describe('calc bridge', () => {
     const launched = estimateDamage(b, gabumon, snorlax, 'cocytuspulse', { attackerForme: metal }).frac;
     const plain = estimateDamage(b, gabumon, snorlax, 'cocytuspulse', { attackerForme: { ...metal, ability: 'Thick Fat' } }).frac;
     expect(launched).toBeGreaterThan(plain * 1.4);
-    expect(estimateDamage(b, gabumon, snorlax, 'blueblaster').frac).toBeGreaterThan(0);
+    expect(estimateDamage(b, gabumon, snorlax, 'foxfire').frac).toBeGreaterThan(0);
     expect(calcErrors.count, calcErrors.last ?? '').toBe(before);
   });
 

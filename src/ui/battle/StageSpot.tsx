@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from 'react';
-import { isWarpForm } from '../../data/custom/digimon';
+import { warpStageScale } from '../../data/custom/digimon';
 import type { BattleAnimation } from '../../client/playback';
 import { PokemonSprite } from '../components/PokemonSprite';
 import { substituteSprite } from '../sprites';
@@ -12,8 +12,6 @@ type Side = 'p1' | 'p2';
 
 /** Size of a Mega Evolved Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
 const MEGA_SCALE = 1.2;
-/** Same for a Warp Digivolved Digimon (keep in sync with .is-warp in index.css). */
-const WARP_SCALE = 1.3;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
 function DollSvg({ side }: { side: Side }) {
@@ -141,8 +139,9 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : mine?.kind === 'sub-end' ? 'fx-sub-show'
     : substitute && !peeking ? 'subbed' : '';
   const showDoll = substitute || mine?.kind === 'sub-end';
-  // Mega Evolved Pokémon are drawn 20% larger.
-  const warp = !!pokemon && isWarpForm(pokemon.species);
+  // Mega Evolved Pokémon are drawn 20% larger; each Warp Digivolved Digimon has its own size (--warp-scale in index.css).
+  const warpScale = pokemon ? warpStageScale(pokemon.species) : 1;
+  const warp = warpScale !== 1;
   const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
@@ -153,14 +152,14 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
       <div className="platform" />
       {pokemon && (
         <div className={`sprite-sub ${subClass}`}>
-          <div className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''}`}>
+          <div className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''}`} style={warp ? { '--warp-scale': warpScale } as CSSProperties : undefined}>
             <PokemonSprite
               key={pokemon.species}
               species={pokemon.species}
               side={side}
               gender={pokemon.gender}
               shiny={pokemon.shiny}
-              scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? WARP_SCALE : mega ? MEGA_SCALE : 1)}
+              scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? warpScale : mega ? MEGA_SCALE : 1)}
             />
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />

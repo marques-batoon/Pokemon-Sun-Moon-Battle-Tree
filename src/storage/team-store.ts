@@ -1,3 +1,4 @@
+import { RENAMED_MOVES } from '../data/custom/digimon';
 import type { SavedTeam } from '../team/types';
 import type { KeyValueStore } from './kv';
 
@@ -64,7 +65,7 @@ export class TeamStore {
   /** Replace every saved team (e.g. restoring a full backup). Returns the new teams. */
   replaceAll(teams: readonly { name: string; sets: SavedTeam['sets'] }[]): SavedTeam[] {
     const t = this.now();
-    const next = teams.map(({ name, sets }) => ({ id: newId(), name: name.trim() || 'Untitled team', format: 'singles' as const, sets, createdAt: t, updatedAt: t }));
+    const next = teams.map(({ name, sets }) => ({ id: newId(), name: name.trim() || 'Untitled team', format: 'singles' as const, sets: withNewMoveNames(sets), createdAt: t, updatedAt: t }));
     this.commit(next);
     return next;
   }
@@ -75,7 +76,7 @@ export class TeamStore {
     try {
       const file = JSON.parse(raw) as TeamsFileV1;
       if (file.version !== 1 || !Array.isArray(file.teams)) throw new Error('unexpected shape');
-      return file.teams;
+      return file.teams.map(team => ({ ...team, sets: withNewMoveNames(team.sets) }));
     } catch (err) {
       console.error('Saved teams are unreadable; keeping a backup and starting empty.', err);
       this.kv.set(`${KEY}.corrupt-${this.now()}`, raw);
@@ -89,6 +90,11 @@ export class TeamStore {
     this.kv.set(KEY, JSON.stringify(file));
     this.listeners.forEach(l => l());
   }
+}
+
+/** Renamed custom moves (Blue Blaster is now Fox Fire) under their new names. */
+function withNewMoveNames(sets: SavedTeam['sets']): SavedTeam['sets'] {
+  return sets.map(set => (set.moves?.some(m => m in RENAMED_MOVES) ? { ...set, moves: set.moves.map(m => RENAMED_MOVES[m] ?? m) } : set));
 }
 
 function newId(): string {

@@ -69,7 +69,7 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   itemDesc: 'If held by a Gabumon, this item allows it to Warp Digivolve into MetalGarurumon in battle.',
   moves: [
     // Level-up
-    'Scratch', 'Growl', 'Powder Snow', 'Metal Claw', 'Bite', 'Tail Whip', 'Quick Attack', 'Icy Wind', 'Blue Blaster', 'Ice Fang',
+    'Scratch', 'Growl', 'Powder Snow', 'Metal Claw', 'Bite', 'Tail Whip', 'Quick Attack', 'Icy Wind', 'Fox Fire', 'Ice Fang',
     'Metal Sound', 'Scary Face', 'Crunch', 'Ice Beam', 'Flash Cannon', 'Agility', 'Dark Pulse', 'Cocytus Pulse', 'Aura Sphere',
     'Blizzard', 'Iron Defense', 'Steel Beam', 'Hyper Beam',
     // TMs
@@ -107,7 +107,7 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target.',
   },
   {
-    name: 'Blue Blaster', type: 'Fire', category: 'Special', basePower: 70, accuracy: 100, pp: 10, contact: false,
+    name: 'Fox Fire', type: 'Fire', category: 'Special', basePower: 70, accuracy: 100, pp: 10, contact: false,
     secondary: { chance: 20, boosts: { spd: -1 } }, desc: '20% chance to lower the target\'s Sp. Def by 1.',
   },
   {
@@ -116,17 +116,24 @@ export const DIGIMON_MOVES: DigimonMove[] = [
   },
 ];
 
-/** Sprites shipped with the app (public/pokemon), facing left; the back view is the front one flipped. */
-export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: number }> = {
+/**
+ * Sprites shipped with the app (public/pokemon), facing left; the back view is the front one flipped.
+ * `stageScale`: how much larger a warp form is drawn on the battle stage (Megas are drawn 1.2x).
+ */
+export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: number; stageScale?: number }> = {
   Agumon: { file: 'pokemon/agumon.png', w: 84, h: 84 },
-  WarGreymon: { file: 'pokemon/wargreymon.png', w: 132, h: 132 },
+  WarGreymon: { file: 'pokemon/wargreymon.png', w: 132, h: 132, stageScale: 1.4 },
   Gabumon: { file: 'pokemon/gabumon.png', w: 84, h: 84 },
-  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.3 },
 };
+/** How much larger a warp form is drawn on the battle stage (1 for anything else). */
+export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 export const DIGIMON_MOVE_IDS = new Set(DIGIMON_MOVES.map(m => toId(m.name)));
+/** Signature moves that were renamed (old name -> new), so saved teams keep them. */
+export const RENAMED_MOVES: Record<string, string> = { 'Blue Blaster': 'Fox Fire' };
 const BY_ITEM = new Map(WARP_DIGIMON.map(d => [toId(d.item), d]));
 const BY_BASE = new Map(WARP_DIGIMON.map(d => [toId(d.base.name), d]));
 const WARP_FORMS = new Set(WARP_DIGIMON.map(d => d.warp.name));

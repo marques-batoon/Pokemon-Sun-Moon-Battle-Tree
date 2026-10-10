@@ -45,12 +45,12 @@ describe('Gabumon in the team builder', () => {
     expect(speciesAbilities('Gabumon')).toEqual(['Thick Fat', 'Snow Cloak', 'Flash Fire']);
   });
 
-  it('learns its own list, and only it gets Blue Blaster and Cocytus Pulse', async () => {
+  it('learns its own list, and only it gets Fox Fire and Cocytus Pulse', async () => {
     const moves = (await learnableMoves('Gabumon')).map(m => m.name);
-    for (const m of ['Blue Blaster', 'Cocytus Pulse', 'Powder Snow', 'Steel Beam', 'Chilling Water', 'Ice Spinner', 'Snowscape', 'Zen Headbutt']) expect(moves).toContain(m);
+    for (const m of ['Fox Fire', 'Cocytus Pulse', 'Powder Snow', 'Steel Beam', 'Chilling Water', 'Ice Spinner', 'Snowscape', 'Zen Headbutt']) expect(moves).toContain(m);
     expect(moves).toHaveLength(new Set(WARP_DIGIMON[1].moves).size);
     expect(moves).not.toContain('Pepper Breath');
-    expect((await learnableMoves('Agumon')).map(m => m.name)).not.toContain('Blue Blaster');
+    expect((await learnableMoves('Agumon')).map(m => m.name)).not.toContain('Fox Fire');
     expect(allMoves().map(m => m.name)).not.toContain('Cocytus Pulse');
   });
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
+import { warpStageScale } from '../data/custom/digimon';
 import { animatedSprite, staticSprite } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
@@ -39,5 +40,12 @@ describe('Digimon sprites', () => {
     expect(staticSprite('WarGreymon', 'p1')).toMatchObject({ url: '/pokemon/wargreymon.png', mirrored: true });
     expect(animatedSprite('Gabumon', 'p2')).toMatchObject({ url: '/pokemon/gabumon.png' });
     expect(animatedSprite('MetalGarurumon', 'p1')).toMatchObject({ url: '/pokemon/metalgarurumon.png', mirrored: true });
+  });
+
+  it('draws each warp form at its own size on the stage', () => {
+    expect(warpStageScale('WarGreymon')).toBe(1.4);
+    expect(warpStageScale('MetalGarurumon')).toBe(1.3);
+    expect(warpStageScale('Agumon')).toBe(1);
+    expect(warpStageScale('Charizard-Mega-X')).toBe(1);
   });
 });
