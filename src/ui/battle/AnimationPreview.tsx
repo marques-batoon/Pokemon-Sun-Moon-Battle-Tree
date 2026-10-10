@@ -25,7 +25,12 @@ const GROUPS: { label: string; moves: string[] }[] = [
   { label: 'Special', moves: ['Hyper Voice', 'Flamethrower', 'Hydro Pump', 'Thunderbolt', 'Energy Ball', 'Ice Beam', 'Aura Sphere', 'Sludge Bomb', 'Earth Power', 'Air Slash', 'Psychic', 'Bug Buzz', 'Power Gem', 'Shadow Ball', 'Dragon Pulse', 'Dark Pulse', 'Flash Cannon', 'Moonblast'] },
   { label: 'Status', moves: ['Swords Dance', 'Calm Mind', 'Growl', 'Screech', 'Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract', 'Leech Seed', 'Substitute', 'Protect', 'Detect', "King's Shield", 'Spiky Shield', 'Baneful Bunker', 'Recover', 'Roost', 'Rain Dance', 'Sunny Day', 'Electric Terrain', 'Grassy Terrain', 'Psychic Terrain', 'Misty Terrain', 'Trick Room', 'Magic Room', 'Wonder Room', 'Gravity', 'Reflect', 'Light Screen', 'Aurora Veil', 'Safeguard', 'Mist', 'Stealth Rock', 'Spikes', 'Tailwind', 'Roar'] },
   { label: 'Draining', moves: ['Giga Drain', 'Drain Punch', 'Draining Kiss', 'Leech Life', 'Horn Leech'] },
-  { label: 'Z-Moves', moves: ['Tectonic Rage', 'Inferno Overdrive', 'Hydro Vortex', 'Gigavolt Havoc', 'Devastating Drake', 'Never-Ending Nightmare', 'Shattered Psyche', 'Twinkle Tackle'] },
+  {
+    label: 'Z-Moves',
+    moves: ['Breakneck Blitz', 'Inferno Overdrive', 'Hydro Vortex', 'Gigavolt Havoc', 'Bloom Doom', 'Subzero Slammer', 'All-Out Pummeling', 'Acid Downpour', 'Tectonic Rage',
+      'Supersonic Skystrike', 'Shattered Psyche', 'Savage Spin-Out', 'Continental Crush', 'Never-Ending Nightmare', 'Devastating Drake', 'Black Hole Eclipse', 'Corkscrew Crash', 'Twinkle Tackle'],
+  },
+  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire'] },
 ];
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
 /** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
@@ -79,8 +84,10 @@ function applyStep(f: FieldState, step: Step): FieldState {
   }
 }
 
-function moveSteps(name: string, side: Side, f: FieldState): Step[] {
-  const fx = classifyMove(name);
+/** `zCategory`: a type Z-Move's category comes from its base move (Physical or Special). */
+function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical' | 'Special' = 'Physical'): Step[] {
+  const classified = classifyMove(name);
+  const fx = classified.kind === 'z' ? { ...classified, category: zCategory } : classified;
   const foe = other(side);
   const target = fx.category === 'Status' && ['powerup', 'protect', 'heal', 'substitute', 'field'].includes(fx.kind) && fx.field !== 'hazard' ? side : foe;
   const steps: Step[] = [];
@@ -154,6 +161,7 @@ export function AnimationPreview() {
   const settings = useAppSettings();
   const speed = ANIMATION_SPEED_FACTOR[settings.animationSpeed] || 1;
   const [move, setMove] = useState('Earthquake');
+  const [zCategory, setZCategory] = useState<'Physical' | 'Special'>('Physical');
   const [side, setSide] = useState<Side>('p1');
   const [warpForm, setWarpForm] = useState(WARP_DIGIMON[0].warp.name);
   const [field, setField] = useState<FieldState>(EMPTY);
@@ -213,7 +221,16 @@ export function AnimationPreview() {
             <option value="p2">Opponent</option>
           </select>
         </label>
-        <button className="primary" onClick={() => play(moveSteps(move, side, field))}>Play</button>
+        {classifyMove(move).kind === 'z' && (
+          <label>
+            Z-Move from a{' '}
+            <select value={zCategory} onChange={e => setZCategory(e.target.value as 'Physical' | 'Special')}>
+              <option value="Physical">physical</option>
+              <option value="Special">special</option>
+            </select>{' '}move
+          </label>
+        )}
+        <button className="primary" onClick={() => play(moveSteps(move, side, field, zCategory))}>Play</button>
         <button disabled={field.mega[side]} onClick={() => play([
           { kind: 'mega-start', side, target: null, durationMs: MEGA_START_MS },
           { kind: 'mega', side, target: null, durationMs: 900 },

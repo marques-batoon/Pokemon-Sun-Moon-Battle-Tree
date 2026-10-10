@@ -100,6 +100,10 @@ export const SWITCH_OUT_MS = 400;
 export const MEGA_START_MS = 1000;
 export const PARADOX_START_MS = 1100;
 export const WARP_START_MS = 2600;
+/** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
+export const SIGNATURE_MS: Record<string, number> = { gaiaforce: 1500, cocytuspulse: 1300 };
+/** A damaging Z-Move's category (Physical or Special, from its base move), from the engine's silent hint line, until its move line. */
+const zCategories = new WeakMap<ClientBattle, 'Physical' | 'Special'>();
 export const WARP_MS = 1300;
 export const SUB_START_MS = 900;
 export const SUB_END_MS = 750;
@@ -130,6 +134,7 @@ const PROTECTIONS = new Set(['protect', 'detect', 'kingsshield', 'spikyshield', 
 /** Move animation length (normal speed) by what the move does. */
 export function moveDuration(fx: MoveFx): number {
   if (fx.kind === 'z') return 1700;
+  if (SIGNATURE_MS[fx.moveId]) return SIGNATURE_MS[fx.moveId];
   if (fx.kind === 'attack') return fx.category === 'Special' ? 1000 : 900;
   return 800;
 }
@@ -178,7 +183,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const spread = typeof kwArgs.spread === 'string' && kwArgs.spread
         ? kwArgs.spread.split(',').map(id => at(id.trim())).filter((t): t is { side: 'p1' | 'p2'; slot: number } => !!t.side)
         : undefined;
-      const fx = classifyMove(args[2]);
+      let fx = classifyMove(args[2]);
+      const zCategory = zCategories.get(battle);
+      if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
+      zCategories.delete(battle);
       // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed).
       const still = 'still' in kwArgs || 'miss' in kwArgs;
       return [step({
@@ -250,6 +258,11 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
     case '-activate': {
       const effect = toId(args[2]);
       const who = at(args[1]);
+      // The engine's hint "Z-Move: Physical" / "Z-Move: Special" for the Z-Move about to be used.
+      if (cmd === '-activate' && (effect === 'zmovephysical' || effect === 'zmovespecial')) {
+        zCategories.set(battle, effect === 'zmovespecial' ? 'Special' : 'Physical');
+        return [step(null)];
+      }
       if (effect === 'substitute') {
         if (cmd === '-start') return [step({ kind: 'sub-start', ...who, target: null, durationMs: SUB_START_MS })];
         if (cmd === '-end') return [step({ kind: 'sub-end', ...who, target: null, durationMs: SUB_END_MS })];

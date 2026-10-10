@@ -51,6 +51,19 @@ describe('Politoedite / Mega Politoed', () => {
   });
 });
 
+describe('Z-Move category hint (for the battle screen)', () => {
+  it('says whether a damaging Z-Move is Physical or Special, from its base move', () => {
+    const user = (move: string) => mon('Charizard', 'Firium Z', 'Blaze', [move], 'EVs: 252 SpA\n');
+    for (const [move, category] of [['Flamethrower', 'Special'], ['Flare Blitz', 'Physical']] as const) {
+      const b = battle(user(move), target);
+      b.makeChoices('move 1 zmove', 'move 1');
+      const log = b.log.join('\n');
+      expect(log).toContain(`|-activate|p1a: Charizard|Z-Move: ${category}|[silent]`);
+      expect(log.indexOf('|Z-Move: ')).toBeLessThan(log.indexOf('|move|p1a: Charizard|Inferno Overdrive'));
+    }
+  });
+});
+
 describe('Poliwrathium Z', () => {
   const poliwrath = (moves: string[], item = 'Poliwrathium Z', species = 'Poliwrath') =>
     battle(mon(species, item, 'Water Absorb', moves, 'EVs: 252 Atk\nAdamant Nature\n'), target);

@@ -6,6 +6,7 @@ import {
   SUB_END, SUB_HIT, SUB_START, WARP_START, warpBurst, Z_POWER, type FxSpec,
 } from './catalog';
 import { posKey, shakeDelay, type Pos, type Side } from './geometry';
+import { typeColor } from '../../types';
 
 /** Is the animation's acting Pokémon at this position? */
 export const actsAt = (anim: BattleAnimation | null, side: Side, slot = 0) => !!anim && anim.side === side && (anim.slot ?? 0) === slot;
@@ -30,7 +31,8 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
       if (anim.still || !fx) return `fx-power-${v}`;
       const atFoe = anim.target && anim.target !== side;
       switch (fx.kind) {
-        case 'z': return `fx-zuser-${side}`;
+        // Physical Z-Moves charge at the target; special ones are unleashed from where the user stands.
+        case 'z': return fx.category === 'Special' ? `fx-zcast-${side}` : `fx-zuser-${side}`;
         case 'attack': return fx.category === 'Physical' && atFoe ? `fx-lunge-${side}-${v}` : `fx-cast-${v}`;
         case 'powerup': return `fx-powerup-${v}`;
         case 'heal': return `fx-heal-${v}`;
@@ -75,7 +77,13 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
 /** The catalog animation for an event, if it has one. */
 export function effectSpec(anim: BattleAnimation): FxSpec | null {
   switch (anim.kind) {
-    case 'move': return anim.fx && !anim.still ? moveSpec(anim.fx) : null;
+    case 'move': {
+      if (!anim.fx || anim.still) return null;
+      const spec = moveSpec(anim.fx);
+      // Z-Moves announce themselves: the name sweeps across the stage.
+      if (anim.fx.kind !== 'z' || !anim.moveName) return spec;
+      return { ...spec, layers: [...spec.layers, { kind: 'banner', text: `${anim.moveName}!`, color: typeColor(anim.fx.type).bg, dur: 1000 }] };
+    }
     case 'zpower': return Z_POWER;
     case 'mega-start': return MEGA_START;
     case 'mega': return MEGA_BURST;

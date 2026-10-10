@@ -256,24 +256,338 @@ export const ATTACKS: Record<TypeName, { physical: FxSpec; special: FxSpec }> = 
 };
 
 const asType = (t: string): TypeName => (TYPES as readonly string[]).includes(t) ? t as TypeName : 'Normal';
-const delayed = (l: Layer, by: number): Layer => ({ ...l, delay: (l.delay ?? 0) + by });
 
-/** Damaging Z-Move: a charged-up giant orb crashes into the target, then the type's own effect, bigger. */
-export function zMoveSpec(type: string): FxSpec {
+/**
+ * Damaging Z-Moves: an oversized animation per type, different for a physical Z-Move (the user's
+ * charge ends in a crash at the target) and a special one (a huge blast from the user). The category
+ * is the base move's, from the engine's hint (playback). Each opens dim and ends in a flash.
+ */
+type ZPair = { physical: Layer[]; special: Layer[] };
+const Z_MOVES: Record<TypeName, ZPair> = {
+  Normal: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffffff', color2: '#ffe9a8', count: 16, size: 10, spread: 110 },
+      { kind: 'rings', at: 'path', color: '#ffffff', count: 4, size: 90, delay: 350, dur: 600 },
+      { kind: 'impact', color: '#ffffff', size: 200, star: true, delay: 900 },
+      { kind: 'impact', color: '#ffe9a8', size: 270, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffffff', color2: '#ffe066', count: 16, size: 16, spread: 140, delay: 950 },
+    ],
+    special: [
+      { kind: 'aura', at: 'user', color: '#ffffff', size: 240, dur: 700 },
+      { kind: 'orb', color: '#ffffff', color2: '#ffe9a8', size: 130, delay: 600, dur: 600 },
+      { kind: 'rings', at: 'target', color: '#ffffff', count: 3, size: 260, delay: 1150, dur: 600 },
+      { kind: 'impact', color: '#ffe9a8', size: 280, delay: 1150 },
+    ],
+  },
+  Fire: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'flame', motion: 'rise', color: '#ff5a00', color2: '#ffd23f', count: 14, size: 22, spread: 60, dur: 700 },
+      { kind: 'rings', at: 'path', color: '#ff8c1a', count: 3, size: 80, delay: 400, dur: 550 },
+      { kind: 'column', color: '#ff6a00', color2: '#ffe066', delay: 900 },
+      { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 20, size: 26, spread: 150, delay: 950 },
+      { kind: 'ground', color: '#ff6a00', delay: 950, dur: 600 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff6a00', color2: '#ffd23f', count: 18, size: 18, spread: 160 },
+      { kind: 'aura', at: 'user', color: '#ff8c1a', size: 260, delay: 200, dur: 700 },
+      { kind: 'orb', color: '#ff6a00', color2: '#ffe066', size: 150, shape: 'flame', delay: 650, dur: 600 },
+      { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 24, size: 28, spread: 170, delay: 1200 },
+      { kind: 'impact', color: '#ff6a00', size: 300, delay: 1200 },
+      { kind: 'screen', color: '#ff6a00', mode: 'tint', delay: 1150, dur: 500 },
+    ],
+  },
+  Water: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'drop', motion: 'swirl', color: '#5aa2ff', color2: '#cfe6ff', count: 14, size: 14, spread: 70, dur: 600 },
+      { kind: 'rings', at: 'target', color: '#3b7cff', count: 4, size: 220, delay: 650, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'swirl', color: '#9ad0ff', count: 18, size: 16, spread: 110, delay: 700, dur: 900 },
+      { kind: 'column', color: '#3b7cff', color2: '#cfe8ff', delay: 1000 },
+      { kind: 'impact', color: '#5aa2ff', size: 240, delay: 1100 },
+    ],
+    special: [
+      { kind: 'beam', color: '#3b7cff', color2: '#cfe8ff', width: 46, wavy: true, delay: 450, dur: 900 },
+      { kind: 'beam', color: '#ffffff', color2: '#9ad0ff', width: 18, wavy: true, delay: 500, dur: 850 },
+      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#5aa2ff', color2: '#cfe6ff', count: 22, size: 14, spread: 120, delay: 900 },
+      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'burst', color: '#9ad0ff', count: 14, size: 18, spread: 110, delay: 1000 },
+      { kind: 'screen', color: '#3b7cff', mode: 'tint', delay: 900, dur: 600 },
+    ],
+  },
+  Electric: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe14d', color2: '#ffffff', count: 18, size: 16, spread: 120 },
+      { kind: 'aura', at: 'user', color: '#ffe14d', size: 220, dur: 600 },
+      { kind: 'bolt', color: '#ffe14d', delay: 700 },
+      { kind: 'bolt', color: '#fff7a8', delay: 900 },
+      { kind: 'impact', color: '#fff07a', size: 240, star: true, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14d', color2: '#ffffff', count: 20, size: 20, spread: 140, delay: 950 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe14d', color2: '#ffffff', count: 22, size: 16, spread: 150 },
+      { kind: 'beam', color: '#ffe14d', color2: '#ffffff', width: 40, delay: 600, dur: 700 },
+      { kind: 'bolt', color: '#ffe14d', delay: 1000 },
+      { kind: 'bolt', color: '#ffffff', delay: 1150 },
+      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14d', count: 24, size: 20, spread: 160, delay: 1050 },
+    ],
+  },
+  Grass: {
+    physical: [
+      { kind: 'ground', color: '#5fb83a', delay: 200, dur: 900 },
+      { kind: 'column', color: '#5fb83a', color2: '#c6f08a', delay: 800 },
+      { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#7ac74c', color2: '#c6f08a', count: 20, size: 18, spread: 140, delay: 900 },
+      { kind: 'particles', at: 'target', shape: 'heart', motion: 'rise', color: '#ff9ccf', color2: '#ffffff', count: 12, size: 14, spread: 90, delay: 1000 },
+      { kind: 'impact', color: '#7ac74c', size: 240, delay: 950 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'leaf', motion: 'converge', color: '#7ac74c', color2: '#c6f08a', count: 18, size: 16, spread: 150 },
+      { kind: 'aura', at: 'user', color: '#7ac74c', size: 230, delay: 150, dur: 650 },
+      { kind: 'beam', color: '#5fb83a', color2: '#e6ffd0', width: 36, wavy: true, delay: 600, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ccf', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
+      { kind: 'particles', at: 'target', shape: 'leaf', motion: 'swirl', color: '#7ac74c', count: 14, size: 16, spread: 100, delay: 1100 },
+    ],
+  },
+  Ice: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'shard', motion: 'converge', color: '#bff3ff', color2: '#ffffff', count: 14, size: 16, spread: 120 },
+      { kind: 'particles', at: 'target', shape: 'shard', motion: 'fall', color: '#bff3ff', color2: '#ffffff', count: 16, size: 26, spread: 80, delay: 500 },
+      { kind: 'crack', color: '#9fe8ff', delay: 950 },
+      { kind: 'impact', color: '#96d9d6', size: 240, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#cdf6ff', color2: '#ffffff', count: 18, size: 18, spread: 140, delay: 1000 },
+      { kind: 'screen', color: '#bfefff', mode: 'tint', delay: 950, dur: 500 },
+    ],
+    special: [
+      { kind: 'aura', at: 'user', color: '#9fe8ff', size: 230, dur: 600 },
+      { kind: 'beam', color: '#7fe3ff', color2: '#ffffff', width: 40, delay: 500, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#cdf6ff', color2: '#ffffff', count: 22, size: 18, spread: 150, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#e6fbff', count: 10, size: 26, spread: 80, delay: 1100 },
+      { kind: 'rings', at: 'target', color: '#ffffff', count: 2, size: 240, delay: 1050 },
+    ],
+  },
+  Fighting: {
+    physical: [
+      { kind: 'aura', at: 'user', color: '#e0503a', size: 220, dur: 600 },
+      { kind: 'impact', color: '#ff7a3d', size: 150, star: true, delay: 500 },
+      { kind: 'impact', color: '#ff7a3d', size: 170, star: true, delay: 650 },
+      { kind: 'impact', color: '#ffb36b', size: 190, star: true, delay: 800 },
+      { kind: 'slash', color: '#e0503a', count: 2, angle: 35, cross: true, width: 8, delay: 700 },
+      { kind: 'impact', color: '#ffffff', size: 240, star: true, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffb36b', color2: '#ffffff', count: 16, size: 16, spread: 140, delay: 1000 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#6b8cff', color2: '#ffffff', count: 20, size: 12, spread: 150 },
+      { kind: 'orb', color: '#4d6bff', color2: '#ffffff', size: 120, delay: 600, dur: 600 },
+      { kind: 'rings', at: 'target', color: '#6b8cff', count: 3, size: 240, delay: 1150 },
+      { kind: 'impact', color: '#6b8cff', size: 260, delay: 1150 },
+    ],
+  },
+  Poison: {
+    physical: [
+      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'fall', color: '#b45fd6', color2: '#e0a8ff', count: 20, size: 18, spread: 90, delay: 300, dur: 900 },
+      { kind: 'ground', color: '#a040c0', delay: 700, dur: 700 },
+      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#a040c0', color2: '#e0a8ff', count: 16, size: 14, spread: 120, delay: 1000 },
+      { kind: 'impact', color: '#b45fd6', size: 220, delay: 1050 },
+      { kind: 'screen', color: '#a040c0', mode: 'tint', delay: 900, dur: 600 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'bubble', motion: 'converge', color: '#b45fd6', count: 16, size: 16, spread: 140 },
+      { kind: 'beam', color: '#a040c0', color2: '#e0a8ff', width: 42, wavy: true, delay: 550, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'burst', color: '#b45fd6', color2: '#e0a8ff', count: 22, size: 18, spread: 150, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#a040c0', count: 14, size: 14, spread: 110, delay: 1050 },
+      { kind: 'screen', color: '#a040c0', mode: 'tint', delay: 1000, dur: 500 },
+    ],
+  },
+  Ground: {
+    physical: [
+      { kind: 'ground', color: '#c8a050', delay: 100, dur: 900 },
+      { kind: 'crack', color: '#7a5a2a', delay: 600 },
+      { kind: 'column', color: '#b07a3a', color2: '#e8c890', delay: 800 },
+      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b07a3a', color2: '#6b4a2b', count: 18, size: 22, spread: 150, delay: 900 },
+      { kind: 'impact', color: '#c8a050', size: 260, delay: 950 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'rock', motion: 'rise', color: '#b07a3a', color2: '#e8c890', count: 14, size: 18, spread: 90 },
+      { kind: 'rings', at: 'target', color: '#c8a050', count: 3, size: 260, delay: 700, dur: 700 },
+      { kind: 'ground', color: '#c8a050', delay: 900, dur: 700 },
+      { kind: 'crack', color: '#7a5a2a', delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b07a3a', color2: '#e8c890', count: 22, size: 22, spread: 160, delay: 1000 },
+    ],
+  },
+  Flying: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'feather', motion: 'rise', color: '#cfe0ff', color2: '#ffffff', count: 12, size: 18, spread: 70 },
+      { kind: 'particles', at: 'target', shape: 'feather', motion: 'fall', color: '#cfe0ff', color2: '#ffffff', count: 14, size: 18, spread: 90, delay: 650 },
+      { kind: 'slash', color: '#ffffff', count: 2, angle: 45, cross: true, width: 8, delay: 900 },
+      { kind: 'impact', color: '#9ab8ff', size: 240, star: true, delay: 950 },
+      { kind: 'rings', at: 'target', color: '#cfe0ff', count: 2, size: 240, delay: 1000 },
+    ],
+    special: [
+      { kind: 'rings', at: 'path', color: '#cfe0ff', count: 5, size: 80, delay: 300, dur: 900 },
+      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'swirl', color: '#e6efff', count: 16, size: 24, spread: 110, delay: 900 },
+      { kind: 'particles', at: 'target', shape: 'feather', motion: 'burst', color: '#cfe0ff', color2: '#ffffff', count: 16, size: 18, spread: 140, delay: 1000 },
+      { kind: 'impact', color: '#9ab8ff', size: 250, delay: 1050 },
+    ],
+  },
+  Psychic: {
+    physical: [
+      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 3, size: 200, delay: 300, dur: 700 },
+      { kind: 'particles', at: 'target', shape: 'gem', motion: 'converge', color: '#ff8fbf', color2: '#ffffff', count: 14, size: 14, spread: 140, delay: 500 },
+      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#ff5f9e', color2: '#ffd0e4', count: 20, size: 18, spread: 150, delay: 1000 },
+      { kind: 'impact', color: '#ff5f9e', size: 230, star: true, delay: 1000 },
+      { kind: 'screen', color: '#ff5f9e', mode: 'tint', delay: 900, dur: 500 },
+    ],
+    special: [
+      { kind: 'aura', at: 'user', color: '#ff5f9e', size: 240, dur: 700 },
+      { kind: 'beam', color: '#ff5f9e', color2: '#ffd0e4', width: 40, wavy: true, delay: 600, dur: 800 },
+      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 3, size: 250, rainbow: true, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'gem', motion: 'burst', color: '#ff8fbf', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
+    ],
+  },
+  Bug: {
+    physical: [
+      { kind: 'rings', at: 'target', color: '#a8c040', count: 4, size: 160, delay: 400, dur: 800 },
+      { kind: 'slash', color: '#8aa82a', count: 3, angle: -20, width: 7, delay: 800 },
+      { kind: 'impact', color: '#c8e060', size: 220, star: true, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#a8c040', color2: '#e8ff9a', count: 16, size: 16, spread: 130, delay: 1000 },
+    ],
+    special: [
+      { kind: 'orb', color: '#a8c040', color2: '#e8ff9a', size: 26, count: 6, gap: 70, arc: true, delay: 400, dur: 600 },
+      { kind: 'particles', at: 'target', shape: 'spark', motion: 'swirl', color: '#a8c040', color2: '#e8ff9a', count: 18, size: 16, spread: 110, delay: 900 },
+      { kind: 'impact', color: '#a8c040', size: 240, delay: 1100 },
+      { kind: 'rings', at: 'target', color: '#c8e060', count: 2, size: 230, delay: 1100 },
+    ],
+  },
+  Rock: {
+    physical: [
+      { kind: 'particles', at: 'target', shape: 'rock', motion: 'fall', color: '#b8a038', color2: '#7a6a2a', count: 10, size: 42, spread: 70, delay: 300 },
+      { kind: 'impact', color: '#b8a038', size: 280, delay: 950 },
+      { kind: 'crack', color: '#6b5a2a', delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b8a038', color2: '#7a6a2a', count: 18, size: 20, spread: 160, delay: 1000 },
+    ],
+    special: [
+      { kind: 'orb', color: '#b8a038', color2: '#e8d890', size: 42, shape: 'rock', count: 5, gap: 90, arc: true, delay: 400, dur: 600 },
+      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b8a038', color2: '#e8d890', count: 20, size: 22, spread: 150, delay: 1100 },
+      { kind: 'impact', color: '#d0b850', size: 250, delay: 1100 },
+      { kind: 'rings', at: 'target', color: '#b8a038', count: 2, size: 230, delay: 1150 },
+    ],
+  },
+  Ghost: {
+    physical: [
+      { kind: 'screen', color: '#2a1840', mode: 'dim', delay: 200, dur: 1300 },
+      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'converge', color: '#8a5cc8', color2: '#c8a8ff', count: 18, size: 24, spread: 160, delay: 300, dur: 800 },
+      { kind: 'jaws', color: '#8a5cc8', delay: 900 },
+      { kind: 'impact', color: '#8a5cc8', size: 240, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'crescent', motion: 'burst', color: '#c8a8ff', count: 12, size: 18, spread: 140, delay: 1000 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'wisp', motion: 'rise', color: '#8a5cc8', color2: '#c8a8ff', count: 14, size: 22, spread: 80 },
+      { kind: 'orb', color: '#5b3e8f', color2: '#c8a8ff', size: 90, shape: 'crescent', delay: 600, dur: 650 },
+      { kind: 'rings', at: 'target', color: '#8a5cc8', count: 3, size: 240, delay: 1150 },
+      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'burst', color: '#c8a8ff', color2: '#8a5cc8', count: 18, size: 22, spread: 150, delay: 1150 },
+    ],
+  },
+  Dragon: {
+    physical: [
+      { kind: 'aura', at: 'user', color: '#6f35fc', size: 260, dur: 700 },
+      { kind: 'rings', at: 'path', color: '#8f6bff', count: 3, size: 90, delay: 500, dur: 500 },
+      { kind: 'slash', color: '#c9b8ff', count: 2, angle: 30, cross: true, width: 9, delay: 950 },
+      { kind: 'impact', color: '#6f35fc', size: 260, star: true, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'scale', motion: 'burst', color: '#8f6bff', color2: '#c9b8ff', count: 20, size: 18, spread: 150, delay: 1000 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'scale', motion: 'converge', color: '#8f6bff', color2: '#c9b8ff', count: 18, size: 16, spread: 150 },
+      { kind: 'beam', color: '#6f35fc', color2: '#c9b8ff', width: 50, delay: 600, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'scale', motion: 'burst', color: '#8f6bff', color2: '#c9b8ff', count: 22, size: 18, spread: 160, delay: 1050 },
+      { kind: 'impact', color: '#6f35fc', size: 280, delay: 1100 },
+    ],
+  },
+  Dark: {
+    physical: [
+      { kind: 'particles', at: 'target', shape: 'dot', motion: 'converge', color: '#3a2f45', color2: '#7b5cff', count: 20, size: 14, spread: 180, delay: 300, dur: 800 },
+      { kind: 'slash', color: '#7b5cff', count: 2, angle: -35, cross: true, width: 8, delay: 900 },
+      { kind: 'impact', color: '#5a4870', size: 240, delay: 1000 },
+      { kind: 'particles', at: 'target', shape: 'crescent', motion: 'burst', color: '#7b5cff', color2: '#3a2f45', count: 12, size: 18, spread: 140, delay: 1000 },
+    ],
+    special: [
+      { kind: 'screen', color: '#000000', mode: 'dim', delay: 300, dur: 1200 },
+      { kind: 'rings', at: 'target', color: '#7b5cff', count: 4, size: 280, delay: 400, dur: 900 },
+      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'converge', color: '#3a2f45', color2: '#7b5cff', count: 20, size: 22, spread: 180, delay: 500, dur: 800 },
+      { kind: 'orb', color: '#1c1c28', color2: '#7b5cff', size: 140, delay: 700, dur: 500 },
+      { kind: 'impact', color: '#7b5cff', size: 300, delay: 1150 },
+    ],
+  },
+  Steel: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'spark', motion: 'swirl', color: '#d0d0e0', color2: '#ffffff', count: 14, size: 14, spread: 70 },
+      { kind: 'slash', color: '#d0d0e0', count: 4, angle: 30, width: 6, delay: 800 },
+      { kind: 'impact', color: '#e0e0f0', size: 240, star: true, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#d0d0e0', color2: '#ffffff', count: 18, size: 16, spread: 140, delay: 950 },
+    ],
+    special: [
+      { kind: 'aura', at: 'user', color: '#d0d0e0', size: 230, dur: 600 },
+      { kind: 'beam', color: '#b8b8d0', color2: '#ffffff', width: 44, delay: 550, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'gem', motion: 'burst', color: '#d0d0e0', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1000 },
+      { kind: 'impact', color: '#e0e0f0', size: 260, delay: 1100 },
+    ],
+  },
+  Fairy: {
+    physical: [
+      { kind: 'particles', at: 'user', shape: 'star', motion: 'swirl', color: '#ff9ff3', color2: '#ffffff', count: 12, size: 14, spread: 70 },
+      { kind: 'rings', at: 'path', color: '#ff9ff3', count: 3, size: 80, delay: 400, dur: 550 },
+      { kind: 'impact', color: '#ff9ff3', size: 240, star: true, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ff3', color2: '#ffffff', count: 18, size: 16, spread: 140, delay: 950 },
+      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffe066', count: 14, size: 14, spread: 120, delay: 1000 },
+    ],
+    special: [
+      { kind: 'particles', at: 'user', shape: 'star', motion: 'converge', color: '#ff9ff3', color2: '#ffffff', count: 18, size: 14, spread: 150 },
+      { kind: 'beam', color: '#ff9ff3', color2: '#ffffff', width: 40, wavy: true, delay: 600, dur: 800 },
+      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ff3', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
+      { kind: 'rings', at: 'target', color: '#ff9ff3', count: 2, size: 240, rainbow: true, delay: 1050 },
+    ],
+  },
+};
+
+/** Damaging Z-Move of a type, physical or special (see Z_MOVES). */
+export function zMoveSpec(type: string, category: 'Physical' | 'Special' = 'Physical'): FxSpec {
   const t = asType(type);
   const c = typeColor(t).bg;
   return {
     shake: 'strong',
     layers: [
       { kind: 'screen', color: '#000000', mode: 'dim', dur: 1700 },
-      { kind: 'aura', at: 'user', color: c, size: 220, dur: 700 },
-      { kind: 'orb', color: c, color2: '#ffffff', size: 110, delay: 450, dur: 650 },
-      ...ATTACKS[t].special.layers.filter(l => l.kind !== 'screen').map(l => delayed(l, 700)),
-      { kind: 'impact', color: c, size: 240, star: true, delay: 1080 },
-      { kind: 'screen', color: c, mode: 'flash', delay: 1080, dur: 350 },
+      ...Z_MOVES[t][category === 'Special' ? 'special' : 'physical'],
+      { kind: 'screen', color: c, mode: 'flash', delay: 1080, dur: 380 },
     ],
   };
 }
+
+/**
+ * Signature moves with their own animation, after the Digimon attacks they're named for.
+ * Gaia Force (WarGreymon's Terra Force): energy gathers into a giant sun over the user, which is
+ * hurled at the target and explodes in fire. Cocytus Pulse (MetalGarurumon's Cocytus Breath): a
+ * freezing blast of breath that frosts the field and shatters into ice at the target.
+ */
+export const SIGNATURE_MOVES: Record<string, FxSpec> = {
+  gaiaforce: { shake: 'strong', layers: [
+    { kind: 'screen', color: '#1a0800', mode: 'dim', dur: 1500 },
+    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff9a1f', color2: '#fff3b0', count: 22, size: 16, spread: 170, dur: 700 },
+    { kind: 'aura', at: 'user', color: '#ffb000', size: 280, delay: 100, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#ffd27f', count: 3, size: 230, delay: 150, dur: 650 },
+    { kind: 'orb', color: '#ff9a1f', color2: '#fff3b0', size: 160, arc: true, delay: 850, dur: 450 },
+    { kind: 'impact', color: '#ff6a00', size: 320, star: true, delay: 1300 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 22, size: 28, spread: 160, delay: 1300 },
+    { kind: 'ground', color: '#ff6a00', delay: 1300, dur: 500 },
+    { kind: 'screen', color: '#ffd27f', mode: 'flash', delay: 1300, dur: 400 },
+  ] },
+  cocytuspulse: { shake: 'light', layers: [
+    { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 1300 },
+    { kind: 'particles', at: 'user', shape: 'wisp', motion: 'converge', color: '#e6fbff', color2: '#9fe8ff', count: 12, size: 24, spread: 90, dur: 500 },
+    { kind: 'beam', color: '#9fe8ff', color2: '#ffffff', width: 38, wavy: true, delay: 350, dur: 800 },
+    { kind: 'beam', color: '#ffffff', color2: '#e6fbff', width: 14, delay: 400, dur: 750 },
+    { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#e6fbff', count: 10, size: 28, spread: 90, delay: 800 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#cdf6ff', color2: '#ffffff', count: 18, size: 20, spread: 110, delay: 850 },
+    { kind: 'impact', color: '#c9f6ff', size: 220, delay: 850 },
+    { kind: 'screen', color: '#e6fbff', mode: 'flash', delay: 900, dur: 350 },
+  ] },
+};
 
 /** Z-Power charge-up before any Z-Move. */
 export const Z_POWER: FxSpec = { layers: [
@@ -446,9 +760,9 @@ export function moveSpec(fx: MoveFx): FxSpec {
   const c = typeColor(t).bg;
   switch (fx.kind) {
     case 'attack':
-      return ATTACKS[t][fx.category === 'Physical' ? 'physical' : 'special'];
+      return SIGNATURE_MOVES[fx.moveId] ?? ATTACKS[t][fx.category === 'Physical' ? 'physical' : 'special'];
     case 'z':
-      return zMoveSpec(t);
+      return zMoveSpec(t, fx.category === 'Special' ? 'Special' : 'Physical');
     case 'powerup':
       return { layers: [
         { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffd36b', color2: c, count: 12, size: 8, spread: 80 },

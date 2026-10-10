@@ -3,7 +3,7 @@ import { classifyMove } from '../../../client/move-class';
 import { SHIELD_CONDITIONS } from '../../../client/playback';
 import {
   ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  WARP_START, warpBurst, Z_POWER, zMoveSpec,
+  SIGNATURE_MOVES, WARP_START, warpBurst, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -62,6 +62,35 @@ describe('animation catalog', () => {
     expect(z).toEqual(zMoveSpec('Ground'));
     expect(z.shake).toBe('strong');
     expect(z.layers.length).toBeGreaterThan(ATTACKS.Ground.special.layers.length);
+  });
+
+  it('has its own Z-Move animation for every type, different for physical and special, all different', () => {
+    const specs = TYPES.flatMap(t => [zMoveSpec(t, 'Physical'), zMoveSpec(t, 'Special')]);
+    expect(new Set(specs.map(key)).size).toBe(TYPES.length * 2);
+    for (const spec of specs) {
+      expect(spec.shake).toBe('strong');
+      expect(spec.layers.length).toBeGreaterThanOrEqual(6);
+      // Each opens dim and ends in a flash of the type's colour.
+      expect(spec.layers[0]).toMatchObject({ kind: 'screen', mode: 'dim' });
+      expect(spec.layers.at(-1)).toMatchObject({ kind: 'screen', mode: 'flash' });
+    }
+    // The category comes from the base move (playback), not the Z-Move's data.
+    expect(moveSpec({ ...classifyMove('Inferno Overdrive'), category: 'Special' })).toEqual(zMoveSpec('Fire', 'Special'));
+    expect(moveSpec(classifyMove('Inferno Overdrive'))).toEqual(zMoveSpec('Fire', 'Physical'));
+  });
+
+  it('gives Gaia Force (Terra Force) and Cocytus Pulse (Cocytus Breath) their own animations', () => {
+    const gaia = moveSpec(classifyMove('Gaia Force'));
+    const cocytus = moveSpec(classifyMove('Cocytus Pulse'));
+    expect(gaia).toBe(SIGNATURE_MOVES.gaiaforce);
+    expect(cocytus).toBe(SIGNATURE_MOVES.cocytuspulse);
+    expect(key(gaia)).not.toBe(key(ATTACKS.Fire.special));
+    expect(key(cocytus)).not.toBe(key(ATTACKS.Ice.special));
+    // Terra Force: a giant sun hurled at the target; Cocytus Breath: a freezing blast of breath.
+    expect(gaia.layers.some(l => l.kind === 'orb' && l.size >= 150)).toBe(true);
+    expect(cocytus.layers.filter(l => l.kind === 'beam').length).toBe(2);
+    // Other moves of those types keep the usual look.
+    expect(moveSpec(classifyMove('Flamethrower'))).toBe(ATTACKS.Fire.special);
   });
 
   it('has special Mega Evolution and Z-Power sequences', () => {

@@ -151,6 +151,27 @@ describe('planLine: single lines', () => {
   });
 });
 
+describe('planLine: Z-Moves and signature moves', () => {
+  const battle = new ClientBattle(new Generations(Dex));
+  const plan = (line: string) => {
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    return planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, false);
+  };
+
+  it("takes a Z-Move's category from the engine's silent hint (Physical without one)", () => {
+    expect(plan('|-activate|p1a: Charizard|Z-Move: Special|[silent]')).toEqual([{ animation: null, applyLine: true }]);
+    expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax').map(s => s.animation?.fx?.category)).toEqual(['Special']);
+    // The hint only covers the next move line.
+    expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax').map(s => s.animation?.fx?.category)).toEqual(['Physical']);
+    expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax')[0].animation?.durationMs).toBe(1700);
+  });
+
+  it('gives Gaia Force and Cocytus Pulse their longer animations', () => {
+    expect(plan('|move|p1a: Agumon|Gaia Force|p2a: Snorlax')[0].animation?.durationMs).toBe(1500);
+    expect(plan('|move|p1a: Gabumon|Cocytus Pulse|p2a: Snorlax')[0].animation?.durationMs).toBe(1300);
+  });
+});
+
 describe('planLine: Paradox Evolution', () => {
   const steps = (line: string) => {
     const { args, kwArgs } = Protocol.parseBattleLine(line);

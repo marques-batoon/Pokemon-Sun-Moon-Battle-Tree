@@ -178,6 +178,18 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
 type Actions = Battle['actions'];
 const proto = (self: Actions) => Object.getPrototypeOf(self) as Actions;
 
+/** Poliwrathium Z: the Z-Move a damaging Fighting / Water / Ice move becomes, with the base move's power and category. */
+function poliwrathZMove(actions: Actions, move: Move, pokemon: Pokemon): ActiveMove | null {
+  const z = pokemon?.getItem().id === POLIWRATHIUM_ID && move.category !== 'Status' ? POLIWRATHIUM_Z.moves[move.type] : undefined;
+  if (!z) return null;
+  const zMove = actions.dex.getActiveMove(z.name);
+  zMove.basePower = move.zMove!.basePower!;
+  zMove.category = move.category;
+  zMove.priority = move.priority;
+  zMove.isZOrMaxPowered = true;
+  return zMove;
+}
+
 /**
  * Engine hooks for the custom content. Poliwrathium Z: Poliwrath's damaging
  * Fighting / Water / Ice moves become its own Z-Moves, with the base move's Z
@@ -223,13 +235,10 @@ export const CUSTOM_ACTIONS = {
     return z && move.category !== 'Status' && move.zMove?.basePower ? z.name : undefined;
   },
   getActiveZMove(this: Actions, move: Move, pokemon: Pokemon): ActiveMove {
-    const z = pokemon?.getItem().id === POLIWRATHIUM_ID && move.category !== 'Status' ? POLIWRATHIUM_Z.moves[move.type] : undefined;
-    if (!z) return proto(this).getActiveZMove.call(this, move, pokemon);
-    const zMove = this.dex.getActiveMove(z.name);
-    zMove.basePower = move.zMove!.basePower!;
-    zMove.category = move.category;
-    zMove.priority = move.priority;
-    zMove.isZOrMaxPowered = true;
+    const zMove = poliwrathZMove(this, move, pokemon) ?? proto(this).getActiveZMove.call(this, move, pokemon);
+    // A damaging Z-Move is Physical or Special by its base move, which the protocol doesn't say:
+    // a silent line tells the battle screen, for the animation (the sim asks twice per use; same answer).
+    if (pokemon && zMove.category !== 'Status') this.battle.add('-activate', pokemon, `Z-Move: ${zMove.category}`, '[silent]');
     return zMove;
   },
 };
