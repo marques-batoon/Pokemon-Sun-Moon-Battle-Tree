@@ -167,12 +167,13 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
   const item = pokemon.getItem();
   const who = displayName(pokemon);
   battle.add('-activate', pokemon, `item: ${item.name}`, '[silent]');
-  battle.add('message', `${who}'s ${item.name} is overflowing with power!`);
+  // The anime's call, split around the warp animation: "Agumon warp-digivolve to..." ... "WarGreymon!"
+  battle.add('message', `${who} warp-digivolve to...`);
   pokemon.formeChange(form, battle.dex.conditions.get('warpdigivolution'), true);
   // As for Mega Evolution: it counts as an action for Truant, and there's no going back.
   pokemon.moveThisTurnResult = true;
   pokemon.formeRegression = true;
-  battle.add('message', `${who} warp-digivolve to... ${form}!`);
+  battle.add('message', `${form}!`);
 }
 
 type Actions = Battle['actions'];

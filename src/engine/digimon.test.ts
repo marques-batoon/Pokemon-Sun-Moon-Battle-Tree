@@ -119,7 +119,7 @@ describe('Gabumon and MetalGarurumon', () => {
     b.makeChoices('move 1 mega', 'move 1');
     expect(b.p1.active[0].species.name).toBe('MetalGarurumon');
     expect(b.p1.active[0].ability).toBe('megalauncher');
-    expect(b.log.join('\n')).toMatch(/Gabumon warp-digivolve to\.\.\. MetalGarurumon!/);
+    expect(b.log.join('\n')).toMatch(/\|message\|Gabumon warp-digivolve to\.\.\.\n[^]*\|message\|MetalGarurumon!/);
     // Mega Launcher: 1.5x on Cocytus Pulse (85 -> 127), nothing on Ice Beam.
     const [user, foe] = [b.p1.active[0], b.p2.active[0]];
     const power = (id: string) => b.runEvent('BasePower', user, foe, b.dex.getActiveMove(id), b.dex.moves.get(id).basePower, true);
@@ -140,8 +140,9 @@ describe('Warp Digivolution', () => {
     expect(p.canMegaEvo).toBeFalsy();
     const log = b.log.join('\n');
     expect(log).toMatch(/\|detailschange\|p1a: Agumon\|WarGreymon/);
-    expect(log).toMatch(/Agumon's Wargreyite is overflowing with power!/);
-    expect(log).toMatch(/Agumon warp-digivolve to\.\.\. WarGreymon!/);
+    // Two lines around the warp: "Agumon warp-digivolve to..." then "WarGreymon!".
+    expect(log).toMatch(/\|message\|Agumon warp-digivolve to\.\.\.\n[^]*?\|detailschange\|p1a: Agumon\|WarGreymon[^]*?\|message\|WarGreymon!/);
+    expect(log).not.toMatch(/overflowing with power/);
     expect(log).not.toMatch(/\|-mega\|/);
     // It warps before moving, and stays WarGreymon after switching out and back in.
     expect(log.indexOf('detailschange')).toBeLessThan(log.indexOf('|move|p1a: Agumon|Pepper Breath'));
@@ -153,7 +154,7 @@ describe('Warp Digivolution', () => {
   it('names the foe\'s Agumon as the opposing one', () => {
     const b = singles([target], [agumon()]);
     b.makeChoices('move 1', 'move 1 mega');
-    expect(b.log.join('\n')).toMatch(/The opposing Agumon warp-digivolve to\.\.\. WarGreymon!/);
+    expect(b.log.join('\n')).toMatch(/\|message\|The opposing Agumon warp-digivolve to\.\.\.\n[^]*\|message\|WarGreymon!/);
   });
 
   it('needs Wargreyite', () => {

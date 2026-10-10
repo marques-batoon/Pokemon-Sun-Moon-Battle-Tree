@@ -66,8 +66,10 @@ describe('Gym Leaders in battle', () => {
       session.start();
       const result = await session.done;
       const log = session.battle.log.join('\n');
-      expect(log.indexOf('Agumon warp-digivolve to... WarGreymon!')).toBeLessThan(log.indexOf('|turn|2'));
-      expect(log.indexOf('Gabumon warp-digivolve to... MetalGarurumon!')).toBeLessThan(log.indexOf('|turn|2'));
+      for (const text of ['Agumon warp-digivolve to...', '|message|WarGreymon!', 'Gabumon warp-digivolve to...', '|message|MetalGarurumon!']) {
+        expect(log.indexOf(text), text).toBeGreaterThan(-1);
+        expect(log.indexOf(text), text).toBeLessThan(log.indexOf('|turn|2'));
+      }
       expect(warnings).toEqual([]);
       expect(result.turns).toBeGreaterThan(0);
     }
