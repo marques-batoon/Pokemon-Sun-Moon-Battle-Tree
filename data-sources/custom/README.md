@@ -41,3 +41,10 @@ team, ...).
 
 - **Teams:** `gym-leaders.txt`, same format; "Brock 1" and "Brock 2" are both Brock.
 - **Lines:** `trainer-quotes.json` under their names (three entries each).
+- **Pair greetings (Multi Battles):** `trainer-quotes.json` under `"pairs"`. When two
+  special trainers who share a region or a type (Brock and Misty, Misty and Juan...)
+  are drawn together, each greets you with their line from the pair's entry instead
+  of their usual greeting; their closing remarks stay their usual ones. Each entry is
+  `"Brock & Misty": { "Brock": "...", "Misty": "..." }` (the label is just for you; the
+  two names inside are what count). To add a pair, add an entry like that. At most 120
+  characters each, no Pokémon names (their shared type is fine). `npm test` checks them.

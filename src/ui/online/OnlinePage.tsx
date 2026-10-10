@@ -1,15 +1,15 @@
 import { useState, useSyncExternalStore } from 'react';
-import { TRAINERS } from '../../data/battle-tree';
+import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
 import type { OnlineRoom } from '../../online/link-room';
 import { RELAY_URL } from '../../online/relay-client';
 import { newRoomCode, ROOM_CODE } from '../../online/relay-protocol';
 import { checkTrainerName } from '../../online/trainer-name';
-import { displayName } from '../../run/selection';
 import { BRING, isSuperUnlocked } from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
 import { useTeams } from '../builder/hooks';
 import { TrainerNameField } from '../components/TrainerNameField';
+import { OpponentCard } from '../components/OpponentCard';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { getRunController } from '../services';
 import { TeamSetup } from '../tree/TeamSetup';
@@ -112,6 +112,11 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
   const { showDebugTools } = useAppSettings();
   const hostDebug = host && showDebugTools;
   const { battleFoes } = snap;
+  // The next opponents and their greetings (the host picks which lines; the guest gets the pick in the lobby).
+  const nextFoes = lobby.next.map(id => TRAINERS[id]);
+  const greetings = nextFoes.map(t => (lobby.quotePick === null ? null : trainerQuotes(t, lobby.quotePick, nextFoes)?.greeting ?? null));
+  // One key per upcoming battle, the same for both players: the special-battle entrance plays once each.
+  const nextKey = `online:${snap.code}:${lobby.battle}:${lobby.next.join('-')}:${lobby.quotePick ?? ''}`;
   const [copied, setCopied] = useState(false);
   const invite = `${location.origin}${location.pathname}#/online?room=${snap.code}`;
 
@@ -134,7 +139,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
         </div>
         <BattleScreen
           client={room.client}
-          opponent={{ trainers: battleFoes.map(id => TRAINERS[id]), battleKey: battle.seedText ?? snap.battleId }}
+          opponent={{ trainers: battleFoes.map(id => TRAINERS[id]), battleKey: snap.battleQuotePick ?? battle.seedText ?? snap.battleId }}
           onContinue={battle.phase === 'ended' ? () => room.leaveBattleScreen() : undefined}
           continueLabel="Back to the room"
           debugTools={hostDebug}
@@ -176,14 +181,20 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       </ul>
 
       {lobby.next.length > 0 && (
-        <div className="online-next">
-          <span className="muted small">Streak {lobby.streak} · next: battle {lobby.battle}</span>
-          <div className="online-next-foes">
-            {lobby.next.map(id => (
-              <span key={id} className="online-foe"><TrainerSprite trainer={TRAINERS[id]} size={56} />{displayName(TRAINERS[id])}</span>
+        <OpponentCard trainers={nextFoes} greetings={greetings} detail={`Battle ${lobby.battle} · streak ${lobby.streak}`} battleKey={nextKey} />
+      )}
+
+      {host && !lobby.inBattle && snap.fresh && (
+        <label className="fld online-start">
+          <span>Start the streak from</span>
+          <select value={lobby.battle} onChange={e => room.setStartBattle(Number(e.target.value))}>
+            {room.startOptions().map(b => (
+              <option key={b} value={b}>
+                Battle {b}{b > 1 ? ` (counts as ${b - 1} wins)` : ''}{b === snap.retryFrom ? ' · just lost: start again here' : ''}
+              </option>
             ))}
-          </div>
-        </div>
+          </select>
+        </label>
       )}
 
       {lobby.notice && <p className="problems">{lobby.notice}</p>}

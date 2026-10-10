@@ -7,7 +7,7 @@ import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
 import { bpForWin, courseSchedule, displayName, planChosenOpponent, planOpponent } from './selection';
 import {
-  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, partnerPrice, runKey,
+  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, partnerPrice, retryStart, runKey,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
 } from './types';
 
@@ -36,11 +36,21 @@ export interface StartRunOptions {
    * winning battle 100. The streak counts from there (battle 30 = 29 wins); the run still counts.
    */
   checkpoint?: number;
+  /**
+   * Start again from the last multiple of 10 before the battle just lost (retryOffer): offered for
+   * this session only, right after a loss. Counts like a checkpoint start (unranked if the lost run was).
+   */
+  retry?: number;
 }
+
+/** A session-only offer to start a course again from battle `battle`, after losing battle `lostAt`. */
+export interface RetryOffer { battle: number; lostAt: number; debug: boolean }
 
 export interface ControllerSnapshot extends TreeState {
   /** Battle currently being played in this session. */
   active: { key: RunKey; battleId: string } | null;
+  /** Courses lost this session at battle 10 or later: a new challenge can start again from the last multiple of 10. */
+  retries: Partial<Record<RunKey, RetryOffer>>;
   /** Last problem starting a battle (e.g. the engine rejected the team). */
   error: string | null;
 }
@@ -59,6 +69,8 @@ export class RunController {
   private readonly playerName: () => string;
   private active: ControllerSnapshot['active'] = null;
   private error: string | null = null;
+  /** Kept in memory only: the offer lasts for this session (until the page is closed or reloaded). */
+  private retries: ControllerSnapshot['retries'] = {};
   private snapshot: ControllerSnapshot;
   private readonly listeners = new Set<() => void>();
 
@@ -111,8 +123,10 @@ export class RunController {
       const by = CHECKPOINTS.find(c => c.start === opts.checkpoint)?.unlockedBy;
       throw new Error(by ? `Starting at battle ${opts.checkpoint} unlocks once you've won battle ${by} of this course.` : `You can't start at battle ${opts.checkpoint}.`);
     }
+    const offer = this.retries[key];
+    if (opts.retry && opts.retry !== offer?.battle) throw new Error(`You can only start again from battle ${offer?.battle ?? '…'} right after losing there.`);
     const debugStart = Math.max(1, opts.startBattle ?? 1);
-    const battle = debugStart > 1 ? debugStart : opts.checkpoint ?? 1;
+    const battle = debugStart > 1 ? debugStart : opts.retry ?? opts.checkpoint ?? 1;
     const length = courseSchedule(format, course).length;
     if (length !== null && battle > length) throw new Error(`The ${course} course has ${length} battles.`);
     const seedText = opts.seedText ?? `${this.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -132,14 +146,32 @@ export class RunController {
       next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
       ...(partner && { partner }),
       history: [],
-      // Checkpoint starts count; debug starts ("start at battle N") and practice runs don't.
-      debug: debugStart > 1 || fullSettings.ai !== 'heuristic',
+      // Checkpoint and retry starts count; debug starts ("start at battle N") and practice runs don't,
+      // and neither does a retry of a run that didn't.
+      debug: debugStart > 1 || fullSettings.ai !== 'heuristic' || (!!opts.retry && !!offer?.debug),
       startedAt: t,
       updatedAt: t,
     };
+    // A new challenge on this course uses up (or passes on) the retry offer.
+    if (offer) {
+      const { [key]: _used, ...rest } = this.retries;
+      this.retries = rest;
+    }
     this.store.updateProfile(p => ({ ...p, settings: fullSettings }));
     this.save(run);
     return this.requireRun(key);
+  }
+
+  /** Right after a loss at battle 10 or later (this session): start again from the last multiple of 10, same team, settings and partner. */
+  retryFromOffer(key: RunKey): RunState {
+    const offer = this.retries[key];
+    const lost = this.run(key);
+    if (!offer || !lost) throw new Error('There is no challenge to start again.');
+    return this.startRun({
+      format: lost.format, course: lost.course, team: lost.team, settings: lost.settings,
+      partner: lost.partner ? { name: lost.partner.name, setIds: lost.partner.setIds } : undefined,
+      retry: offer.battle,
+    });
   }
 
   /**
@@ -308,6 +340,8 @@ export class RunController {
 
   private recordLoss(run: RunState, turns: number) {
     const history = [...run.history, { battle: run.battle, opponent: opponentLabel(run.next), result: 'loss' as const, bp: 0, turns, seedText: run.next.seedText }];
+    const start = retryStart(run.battle);
+    if (start) this.retries = { ...this.retries, [runKey(run.format, run.course)]: { battle: start, lostAt: run.battle, debug: run.debug } };
     this.finish({ ...run, history, status: 'lost' });
   }
 
@@ -336,7 +370,7 @@ export class RunController {
   }
 
   private build(): ControllerSnapshot {
-    return { ...this.store.getState(), active: this.active, error: this.error };
+    return { ...this.store.getState(), active: this.active, error: this.error, retries: this.retries };
   }
 
   private refresh() {

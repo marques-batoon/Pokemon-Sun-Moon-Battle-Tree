@@ -104,6 +104,7 @@ The same Doubles logic, with one AI per trainer (**approximation**; the Multi AI
 
 - **No Helping Hand (or other partner-only moves) in a Single Battle**, by either AI.
 - **No Wish or Trick Room twice in a row:** Wish isn't used again the turn after (or while a Wish is pending), and Trick Room isn't used the turn after its own side set it (it would undo it). Using Trick Room to cancel the opponent's is still allowed.
+- **No Future Sight (or Doom Desire) again until it hits** (added 2026-10-09): not aimed at a spot one is already headed for, so after using it the AI waits until it lands (two turns later) before using it there again. In Doubles it can still aim one at the other foe.
 - These score below a move that just fails (`RULED_OUT`), so they lose even when every option scores 0.
 
 ## Known gaps

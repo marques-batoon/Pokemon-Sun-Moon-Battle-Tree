@@ -1164,9 +1164,7 @@ select { max-width: 100%; text-overflow: ellipsis; }
 .online-room-head h2, .online-room-head p, .online-room h3 { margin: 0; }
 .room-code { font-size: 1.1em; letter-spacing: 0.12em; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); }
 .online-members { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 2px; }
-.online-next { display: flex; flex-direction: column; gap: 4px; }
-.online-next-foes { display: flex; gap: 16px; flex-wrap: wrap; }
-.online-foe { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.online-start { max-width: 280px; }
 .online-safety { margin: 0; }
 .online-link { margin: 8px 0 0; font-weight: 600; }
 .online-name { display: flex; flex-direction: column; gap: 8px; }

@@ -1,9 +1,10 @@
 import { BattleClient } from '../client/battle-client';
+import { quotePick } from '../data/battle-tree';
 import type { RunTeam } from '../run/controller';
 import type { EngineTransport } from '../client/transport';
 import type { FromEngine, ToEngine } from '../engine/protocol';
 import { planChosenOpponent, planOpponent } from '../run/selection';
-import { DEFAULT_SETTINGS, PARTNER_BRING, type PlannedOpponent } from '../run/types';
+import { DEFAULT_SETTINGS, PARTNER_BRING, retryStart, type PlannedOpponent } from '../run/types';
 import type { PokemonSet } from '../team/types';
 import {
   parseToGuest, parseToHost, withoutNicknames, type GuestEngineMessage, type LobbyView, type ToGuest, type ToHost,
@@ -32,9 +33,20 @@ export interface RoomSnapshot {
   battleId: string | null;
   /** That battle's opposing trainers (Battle Tree ids); the lobby moves on to the next pair when it ends. */
   battleFoes: number[];
+  /** Which of their lines that battle uses (greeting and closing remark; see quotePick). */
+  battleQuotePick: number | null;
   /** Host: the AI is playing for the partner in this battle. */
   aiPartner: boolean;
+  /** Host: the battle each streak starts from (ONLINE_START_BATTLES). */
+  startFrom: number;
+  /** Host: no battle won yet since this streak started, so where it starts can still change. */
+  fresh: boolean;
+  /** Host: just lost at battle 10 or later, so the next streak can also start from the last multiple of 10. */
+  retryFrom: number | null;
 }
+
+/** Battles an online streak can start from (host's choice; online streaks earn no records or BP). */
+export const ONLINE_START_BATTLES = [1, 20] as const;
 
 export interface RoomOptions {
   role: Role;
@@ -52,7 +64,7 @@ export interface RoomOptions {
 
 const newSeed = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
-const EMPTY_LOBBY: LobbyView = { streak: 0, battle: 1, next: [], hostReady: false, guestReady: false, inBattle: false, notice: null };
+const EMPTY_LOBBY: LobbyView = { streak: 0, battle: 1, next: [], quotePick: null, hostReady: false, guestReady: false, inBattle: false, notice: null };
 
 /**
  * One online Multi Battle room for one of its two players. Two friends team up
@@ -88,7 +100,8 @@ export class OnlineRoom {
     this.seedText = opts.seedText ?? newSeed();
     this.snapshot = {
       role: opts.role, code: opts.code, status: 'connecting', error: null, seat: null, members: [], partnerName: null,
-      ready: false, lobby: EMPTY_LOBBY, battleId: null, battleFoes: [], aiPartner: false,
+      ready: false, lobby: EMPTY_LOBBY, battleId: null, battleFoes: [], battleQuotePick: null, aiPartner: false,
+      startFrom: 1, fresh: true, retryFrom: null,
     };
     if (opts.role === 'host') {
       if (!opts.engine) throw new Error('The host needs the battle engine.');
@@ -137,7 +150,10 @@ export class OnlineRoom {
       opponent2: { kind: 'team', name: next.second!.displayName, team: next.second!.team },
       ai: 'heuristic',
     });
-    this.set({ battleId, battleFoes: [next.trainerId, next.second!.trainerId], aiPartner: false, lobby: { ...this.snapshot.lobby, inBattle: true, notice: null } });
+    this.set({
+      battleId, battleFoes: [next.trainerId, next.second!.trainerId], battleQuotePick: quotePick(next.seedText), aiPartner: false, retryFrom: null,
+      lobby: { ...this.snapshot.lobby, inBattle: true, notice: null },
+    });
     this.publishLobby();
   }
 
@@ -148,6 +164,29 @@ export class OnlineRoom {
   debugChooseOpponents(trainerIds: number[]): void {
     if (this.opts.role !== 'host' || !this.next || this.snapshot.lobby.inBattle) throw new Error('Only the host can choose opponents, between battles.');
     this.next = planChosenOpponent(this.seedText, 'multi', this.next.battle, trainerIds);
+    this.publishLobby();
+  }
+
+  /** Host: the battles the next streak can start from (1, 20, and after a loss the last multiple of 10). */
+  startOptions(): number[] {
+    const { retryFrom } = this.snapshot;
+    return [...new Set([...ONLINE_START_BATTLES, ...(retryFrom ? [retryFrom] : [])])].sort((a, b) => a - b);
+  }
+
+  /**
+   * Host: start the streak from this battle instead, with the wins before it counted, as when a
+   * local challenge starts at a later battle: 1 or 20 (a lost streak starts again from that one too),
+   * or right after a loss at battle 10 or later, the last multiple of 10 before it (that time only).
+   * Only before the streak's first win.
+   */
+  setStartBattle(battle: number): void {
+    const { lobby, fresh } = this.snapshot;
+    if (this.opts.role !== 'host' || lobby.inBattle || !fresh) throw new Error('Only the host can choose where a streak starts, before its first battle.');
+    const options = this.startOptions();
+    if (!options.includes(battle)) throw new Error(`A streak can start from battle ${options.join(', ').replace(/, (\d+)$/, ' or $1')}.`);
+    this.planNext(battle);
+    const sticky = (ONLINE_START_BATTLES as readonly number[]).includes(battle);
+    this.set({ ...(sticky ? { startFrom: battle } : {}), lobby: { ...lobby, battle, streak: battle - 1, notice: null } });
     this.publishLobby();
   }
 
@@ -236,6 +275,7 @@ export class OnlineRoom {
       ...this.snapshot.lobby,
       battle: this.next.battle,
       next: [this.next.trainerId, this.next.second!.trainerId],
+      quotePick: quotePick(this.next.seedText),
       hostReady: !!this.myTeam,
       guestReady: !!this.guestTeam,
     };
@@ -273,11 +313,19 @@ export class OnlineRoom {
         this.relay({ type: 'end', battleId: msg.battleId, result: { ...msg.result, inputLog: [], seed: '' as never } });
         const won = msg.result.winner === 'p1';
         const ended = this.snapshot.lobby.streak;
-        // A lost streak starts over at battle 1 against new opponents.
+        const lostAt = this.next!.battle;
+        const { startFrom } = this.snapshot;
+        // A lost streak starts over (at the chosen starting battle) against new opponents; after a loss
+        // at battle 10 or later, the host can also start again from the last multiple of 10.
         if (!won) this.seedText = newSeed();
-        this.planNext(won ? this.next!.battle + 1 : 1);
-        const notice = won ? null : ended ? `The streak ended at ${ended}. Start again from battle 1.` : 'You lost battle 1. Try again!';
-        this.set({ lobby: { ...this.snapshot.lobby, streak: won ? ended + 1 : 0, inBattle: false, notice } });
+        this.planNext(won ? lostAt + 1 : startFrom);
+        const retry = won ? null : retryStart(lostAt);
+        const restart = ended > startFrom - 1 ? `The streak ended at ${ended}. Start again from battle ${startFrom}` : `You lost battle ${lostAt}. Try again from battle ${startFrom}`;
+        const notice = won ? null : `${restart}${retry && retry !== startFrom ? `, or from battle ${retry}` : ''}.`;
+        this.set({
+          fresh: !won, retryFrom: retry && retry !== startFrom ? retry : null,
+          lobby: { ...this.snapshot.lobby, streak: won ? ended + 1 : startFrom - 1, inBattle: false, notice },
+        });
         this.publishLobby();
         return;
       }
@@ -313,7 +361,7 @@ export class OnlineRoom {
       // A new battle opens with its first message (or with the host's engine turning it down).
       if (engineMsg.type !== 'started' && engineMsg.type !== 'invalid-team' && engineMsg.type !== 'error') return;
       this.client.attach(engineMsg.battleId);
-      this.set({ battleId: engineMsg.battleId, battleFoes: this.snapshot.lobby.next });
+      this.set({ battleId: engineMsg.battleId, battleFoes: this.snapshot.lobby.next, battleQuotePick: this.snapshot.lobby.quotePick });
     }
     this.relayed.forEach(h => h(engineMsg));
   }

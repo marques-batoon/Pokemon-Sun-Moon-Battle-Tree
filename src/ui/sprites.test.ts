@@ -43,8 +43,8 @@ describe('Digimon sprites', () => {
   });
 
   it('draws each warp form at its own size on the stage', () => {
-    expect(warpStageScale('WarGreymon')).toBe(1.4);
-    expect(warpStageScale('MetalGarurumon')).toBe(1.3);
+    expect(warpStageScale('WarGreymon')).toBe(1.5);
+    expect(warpStageScale('MetalGarurumon')).toBe(1.27);
     expect(warpStageScale('Agumon')).toBe(1);
     expect(warpStageScale('Charizard-Mega-X')).toBe(1);
   });

@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { BattleClient } from '../client/battle-client';
-import { TRAINERS } from '../data/battle-tree';
+import { QUOTE_PICKS, TRAINERS, trainerQuotes } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
 import { createInProcessTransport } from '../engine/in-process-transport';
 import { importShowdownText } from '../team/showdown-text';
 import type { PokemonSet } from '../team/types';
 import { cleanSet, parseToGuest, parseToHost } from './link-protocol';
 import { OnlineRoom } from './link-room';
+import type { EngineTransport } from '../client/transport';
+import type { FromEngine } from '../engine/protocol';
 import type { ConnectRelay, RelayHandlers } from './relay-client';
 import { newRoomCode, ROOM_CODE, type Member } from './relay-protocol';
 import { battleName, checkTrainerName } from './trainer-name';
@@ -63,6 +65,11 @@ describe('online messages', () => {
     expect(parseToGuest({ k: 'engine', msg: { type: 'start', battleId: 'b' } })).toBeNull();
     expect(parseToGuest({ k: 'lobby', lobby: { streak: -1, battle: 1, next: [] } })).toBeNull();
     expect(parseToGuest({ k: 'lobby', lobby: { streak: 0, battle: 1, next: [190, 191], notice: 'hi' } })?.k).toBe('lobby');
+    // The quote pick is a small number; anything else is ignored (no greetings shown).
+    const lobby = (quotePick: unknown) => parseToGuest({ k: 'lobby', lobby: { streak: 0, battle: 1, next: [190, 191], quotePick } });
+    expect(lobby(7)).toMatchObject({ lobby: { quotePick: 7 } });
+    expect(lobby(QUOTE_PICKS)).toMatchObject({ lobby: { quotePick: null } });
+    expect(lobby('a greeting')).toMatchObject({ lobby: { quotePick: null } });
   });
 });
 
@@ -130,6 +137,13 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     guest.setTeam([{ ...SETS[3], name: 'My Nickname' }, SETS[5]]);
     await waitFor(() => host.getSnapshot().lobby.guestReady && guest.getSnapshot().lobby.hostReady);
     expect(guest.getSnapshot().lobby.next).toHaveLength(2);
+    // Both see the same greetings for the next battle, without the guest learning the seed.
+    const guestLobby = guest.getSnapshot().lobby;
+    expect(guestLobby.quotePick).not.toBeNull();
+    expect(guestLobby.quotePick).toBe(host.getSnapshot().lobby.quotePick);
+    expect(JSON.stringify(guestLobby)).not.toMatch(/online-test/);
+    const foes = guestLobby.next.map(id => TRAINERS[id]);
+    expect(foes.every(t => trainerQuotes(t, guestLobby.quotePick!, foes)?.greeting)).toBe(true);
 
     // On the guest's first request: both of the guest's side on the field, each in its own slot.
     let field: string[] | null = null;
@@ -163,6 +177,9 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     // Same result for both, and the lobby moved on.
     expect(guestEnd.result!.winner).toBe(hostEnd.result!.winner);
     expect(guestEnd.result!.inputLog).toEqual([]);
+    // The closing remarks go with the greetings shown before the battle, for both players.
+    expect(guest.getSnapshot().battleQuotePick).toBe(guestLobby.quotePick);
+    expect(host.getSnapshot().battleQuotePick).toBe(guestLobby.quotePick);
     await waitFor(() => !guest.getSnapshot().lobby.inBattle);
     const won = hostEnd.result!.winner === 'p1';
     expect(host.getSnapshot().lobby.streak).toBe(won ? 1 : 0);
@@ -212,6 +229,69 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     host.debugChooseOpponents([brock, misty]);
     await waitFor(() => guest.getSnapshot().lobby.next.join() === `${brock},${misty}`);
     expect(() => guest.debugChooseOpponents([brock, misty])).toThrow(/Only the host/);
+    host.dispose();
+    guest.dispose();
+  });
+
+  it('lets the host start a streak from battle 20, before its first battle only', async () => {
+    const { host, guest } = rooms();
+    await waitFor(() => guest.getSnapshot().partnerName && guest.getSnapshot().lobby.next.length);
+    expect(() => guest.setStartBattle(20)).toThrow(/Only the host/);
+    expect(() => host.setStartBattle(7)).toThrow(/battle 1 or 20/);
+    host.setStartBattle(20);
+    await waitFor(() => guest.getSnapshot().lobby.battle === 20);
+    expect(guest.getSnapshot().lobby.streak).toBe(19);
+    expect(host.getSnapshot().startFrom).toBe(20);
+    // Battle 20 is a special-trainer battle in Super Multi.
+    expect(guest.getSnapshot().lobby.next.every(id => TRAINERS[id].kind !== 'regular')).toBe(true);
+    host.setStartBattle(1);
+    await waitFor(() => guest.getSnapshot().lobby.battle === 1);
+    expect(guest.getSnapshot().lobby.streak).toBe(0);
+    // No retry offer until a loss at battle 10 or later.
+    expect(host.startOptions()).toEqual([1, 20]);
+    expect(() => host.setStartBattle(30)).toThrow(/battle 1 or 20/);
+    host.dispose();
+    guest.dispose();
+  });
+
+  it('after a loss at battle 10 or later, lets the host start again from the last multiple of 10', async () => {
+    // A stand-in engine: the test decides each battle's result.
+    const handlers = new Set<(msg: FromEngine) => void>();
+    const engine: EngineTransport = { send: () => {}, listen: h => { handlers.add(h); return () => { handlers.delete(h); }; }, dispose: () => {} };
+    const relay = memoryRelay();
+    const makeClient = (t: EngineTransport, perspective: 'p1' | 'p3') => new BattleClient(t, { perspective });
+    const host = new OnlineRoom({ role: 'host', code: 'ABCDEFGH', name: 'Hau', connect: relay.connect(0, 'Hau'), engine, makeClient, seedText: 'retry' });
+    const guest = new OnlineRoom({ role: 'guest', code: 'ABCDEFGH', name: 'Lillie', connect: relay.connect(1, 'Lillie'), makeClient });
+    await waitFor(() => host.getSnapshot().partnerName === 'Lillie');
+    host.setTeam(pair(0, 1));
+    guest.setTeam(pair(3, 5));
+    await waitFor(() => host.getSnapshot().lobby.guestReady);
+    const play = (winner: 'p1' | 'p2') => {
+      host.startBattle();
+      const battleId = host.getSnapshot().battleId!;
+      handlers.forEach(h => h({ type: 'end', battleId, result: { winner, turns: 3, seed: [0, 0, 0, 0] as never, inputLog: [] } }));
+      host.leaveBattleScreen();
+    };
+
+    host.setStartBattle(20);
+    for (let i = 0; i < 13; i++) play('p1');
+    expect(host.getSnapshot().lobby.battle).toBe(33);
+    expect(host.getSnapshot().fresh).toBe(false);
+    expect(() => host.setStartBattle(1)).toThrow(/before its first battle/);
+    play('p2');
+    // Lost battle 33: next streak from 20 (the host's choice) or 30 (the last multiple of 10).
+    const snap = host.getSnapshot();
+    expect([snap.lobby.battle, snap.lobby.streak, snap.retryFrom, snap.fresh]).toEqual([20, 19, 30, true]);
+    expect(host.startOptions()).toEqual([1, 20, 30]);
+    expect(snap.lobby.notice).toMatch(/ended at 32\. Start again from battle 20, or from battle 30/);
+    host.setStartBattle(30);
+    await waitFor(() => guest.getSnapshot().lobby.battle === 30);
+    expect(guest.getSnapshot().lobby.streak).toBe(29);
+    // The streak's default stays 20; the offer is gone once the battle starts.
+    expect(host.getSnapshot().startFrom).toBe(20);
+    play('p1');
+    expect(host.getSnapshot().retryFrom).toBeNull();
+    expect(host.getSnapshot().lobby.battle).toBe(31);
     host.dispose();
     guest.dispose();
   });

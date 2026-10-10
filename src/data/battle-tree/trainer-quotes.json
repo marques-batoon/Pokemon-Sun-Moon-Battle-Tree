@@ -4303,5 +4303,1276 @@
   ]
  },
  "multiNote": "Lines for paired trainers when they battle together in a Multi Battle (Tate and Liza): the same set is used for both, so they finish each other's sentences.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each.",
+ "pairs": {
+  "Brock & Misty": {
+   "Brock": "Misty and I go way back. Pewter and Cerulean, rock and water. We know each other's moves by heart.",
+   "Misty": "Brock, if you start flirting with the Pokémon Center nurse mid-battle, I'm soaking you myself!"
+  },
+  "Brock & Lt. Surge": {
+   "Brock": "Surge says his Electric types will carry us. My Rock types say they'll be the ones standing at the end.",
+   "Lt. Surge": "Hey, kid! Pewter's rock wall and Vermilion's lightning, together. Your team won't know what hit it!"
+  },
+  "Brock & Erika": {
+   "Brock": "Erika keeps watering the plants by the stairs. Rock and Grass get along better than you'd think.",
+   "Erika": "Brock offered to carry my flower arrangements up the tree. Such a sturdy gentleman. Now, shall we?"
+  },
+  "Brock & Janine": {
+   "Brock": "Janine was standing behind me this whole time? Kanto's ninja is good. I'll handle the front line.",
+   "Janine": "Brock never even noticed me. Kanto's rock is strong, but my poison strikes from the shadows!"
+  },
+  "Brock & Sabrina": {
+   "Brock": "Sabrina says she already knows how this ends. As a Kanto Leader, I prefer to earn it the hard way.",
+   "Sabrina": "Brock's defense and my foresight. I have seen this battle, and Kanto does not lose it."
+  },
+  "Brock & Blaine": {
+   "Brock": "Blaine asked me a quiz question on the way up. I got it wrong. Let's hope my battling goes better.",
+   "Blaine": "Hah! Brock's rocks don't melt, but my fire will melt your hopes! Kanto's quiz is in session!"
+  },
+  "Brock & Giovanni": {
+   "Brock": "I'm teaming up with Giovanni? Viridian's Gym Leader... and Team Rocket's boss. Just this once.",
+   "Giovanni": "The Pewter Gym Leader. Reliable, like the bedrock under Viridian. He'll do as a shield."
+  },
+  "Misty & Lt. Surge": {
+   "Misty": "Surge, if your Electric attack hits my Water Pokémon, you're buying the whole team dinner!",
+   "Lt. Surge": "Ha! Misty's afraid I'll zap her team. Don't worry, kid, I only aim at the enemy. Mostly!"
+  },
+  "Misty & Erika": {
+   "Misty": "Erika's Grass types and my Water types? Cerulean and Celadon's cutest combo. Let's go!",
+   "Erika": "Misty keeps my garden watered and my battles lively. Kanto's flowers bloom brightest together."
+  },
+  "Misty & Janine": {
+   "Misty": "Janine snuck up on me in the lobby! I almost threw a Water Gun at her. We're on the same team, right?",
+   "Janine": "Misty's temper is louder than a thunderstorm. Good. It keeps you looking at her while I strike."
+  },
+  "Misty & Sabrina": {
+   "Misty": "Sabrina gives me the chills, but she's on my side today. Saffron and Cerulean. Bring it!",
+   "Sabrina": "Misty's fire burns hotter than her Water types. I foresee her splashing you out of this battle."
+  },
+  "Misty & Blaine": {
+   "Misty": "Blaine's fire and my water. We'll make so much steam you won't see a thing!",
+   "Blaine": "Hah! Water and fire, side by side! Even my hot springs can't match Misty's temper!"
+  },
+  "Misty & Giovanni": {
+   "Misty": "Giovanni? You'd better not try anything funny. I'll be watching you, Team Rocket!",
+   "Giovanni": "The Cerulean Gym Leader has a fiery spirit. Aim it at our opponent, and we'll get along."
+  },
+  "Lt. Surge & Erika": {
+   "Lt. Surge": "Erika, take a nap if you want. I'll electrify 'em before you wake up! Kanto's strongest, coming through!",
+   "Erika": "Lt. Surge is so loud. Still, Vermilion and Celadon make quite the bouquet. Let's battle."
+  },
+  "Lt. Surge & Janine": {
+   "Lt. Surge": "Janine's a sneaky little ninja. Me? I come in loud, like a thunderclap. Kanto covers both!",
+   "Janine": "The Lieutenant made so much noise climbing up, they'll never notice me slipping in."
+  },
+  "Lt. Surge & Sabrina": {
+   "Lt. Surge": "Saffron's right next door to Vermilion. Sabrina predicts, I electrocute. Easy mission, soldier!",
+   "Sabrina": "Surge's lightning is predictable. That is why it works so well with my power. Kanto will win."
+  },
+  "Lt. Surge & Blaine": {
+   "Lt. Surge": "Blaine, old man! You burn 'em, I zap 'em! What's left is a pile of ashes and sparks!",
+   "Blaine": "Hah! Surge's sparks and my blaze! Quiz time: what's left of your team after this? Nothing!"
+  },
+  "Lt. Surge & Giovanni": {
+   "Lt. Surge": "Giovanni and I go way back. Two Kanto Leaders who don't mess around. Prepare yourself, kid!",
+   "Giovanni": "Lt. Surge follows orders well. Today, my orders are simple: crush this challenger."
+  },
+  "Erika & Janine": {
+   "Erika": "Janine wanted to borrow some of my Grass Pokémon's sleep powder. I believe she has a plan.",
+   "Janine": "Erika's flowers smell lovely. Mine smell lovely too... right before the poison sets in."
+  },
+  "Erika & Sabrina": {
+   "Erika": "Sabrina says she foresaw me falling asleep. How rude. I was merely resting my eyes. Shall we?",
+   "Sabrina": "Erika's garden is calm. My mind is calm. Your defeat will be quite peaceful."
+  },
+  "Erika & Blaine": {
+   "Erika": "Blaine, please mind my flowers with your fire. Kanto's Leaders must work together, after all.",
+   "Blaine": "Hah! Erika's worried about her flowers. Don't fret! I only burn challengers. Quiz time!"
+  },
+  "Erika & Giovanni": {
+   "Erika": "Giovanni... I remember Team Rocket's Game Corner in Celadon. Very well. Just for today.",
+   "Giovanni": "Celadon's Gym Leader. Elegant, and far tougher than she looks. Let's see what she can do."
+  },
+  "Janine & Sabrina": {
+   "Janine": "Sabrina read my mind before I could sneak up on her. Fine. Then you'll be the one surprised!",
+   "Sabrina": "Janine moves without a sound. I move without moving. Kanto's quiet Leaders are its deadliest."
+  },
+  "Janine & Blaine": {
+   "Janine": "Blaine's quizzes are so loud! Okay, Blaine, here's mine: where am I hiding? Exactly. Let's go!",
+   "Blaine": "Hah! Janine's poison and my fire. Here's a quiz: how fast can a challenger fall? Very!"
+  },
+  "Janine & Giovanni": {
+   "Janine": "Father worked for Giovanni once. I'll show him what Koga's daughter can do on her own!",
+   "Giovanni": "Koga's daughter. Her father served me well. Let's see if she has his talent."
+  },
+  "Sabrina & Blaine": {
+   "Sabrina": "Blaine's next quiz question: how will this battle end? I already know the answer.",
+   "Blaine": "Hah! Sabrina knows all my quiz answers. No fair! Still, a psychic partner's a fine thing to have!"
+  },
+  "Sabrina & Giovanni": {
+   "Sabrina": "Team Rocket once took over Saffron's Silph Co. I foresaw today's alliance. I didn't like it.",
+   "Giovanni": "The Saffron Gym Leader. Her power is genuine. Together, Kanto's might is beyond your reach."
+  },
+  "Blaine & Giovanni": {
+   "Blaine": "Hah! Giovanni! I quit working for Team Rocket's lab years ago! Today, we're just Kanto Leaders!",
+   "Giovanni": "Blaine. Hot-tempered, but brilliant. Viridian and Cinnabar will scorch this challenger to the ground."
+  },
+  "Falkner & Bugsy": {
+   "Falkner": "Bugsy loves Bug types. I love Flying types. Johto's first two Gyms will show you the way up!",
+   "Bugsy": "Falkner's Flying types eat Bug types in the wild... but in battle, we're the best of friends!"
+  },
+  "Falkner & Whitney": {
+   "Falkner": "Whitney's team is fearsome when she's not crying. My father taught me to soar above any trouble. Johto takes flight!",
+   "Whitney": "Falkner's birds are so cute! Teaming up with them is gonna be super fun. No crying today!"
+  },
+  "Falkner & Morty": {
+   "Falkner": "Morty's ghosts and my birds both rule the Johto skies. We'll show you the mystic heights!",
+   "Morty": "Falkner's wings over Violet City, my visions over Ecruteak. Johto's skies favor us today."
+  },
+  "Falkner & Chuck": {
+   "Falkner": "Chuck's been doing pushups since we got here. I'll keep the skies clear while he punches!",
+   "Chuck": "Falkner, your birds are tough! But can they lift boulders? Wahahah! Johto's strength, together!"
+  },
+  "Falkner & Jasmine": {
+   "Falkner": "Jasmine's Steel types can take my Flying types' hits... so it's a good thing we're partners.",
+   "Jasmine": "Falkner's birds flew me from Olivine. The view from the lighthouse is nothing like this tree."
+  },
+  "Falkner & Pryce": {
+   "Falkner": "Pryce has trained longer than I've been alive. Johto's youngest and oldest Leaders, side by side.",
+   "Pryce": "Young Falkner flies so freely. I remember those days. Let's show this challenger winter's chill."
+  },
+  "Falkner & Clair": {
+   "Falkner": "Clair's dragons fly higher than my birds. Don't tell her I said that. Johto, take wing!",
+   "Clair": "Falkner's birds are adequate. My dragons rule the skies. Johto's skies, that is. Let's go."
+  },
+  "Bugsy & Whitney": {
+   "Bugsy": "Whitney cried when I showed her my bug collection. But today, she's going to make you cry instead!",
+   "Whitney": "Bugsy's bugs gave me a fright, but they're tough! Our Johto team-up is gonna be the best!"
+  },
+  "Bugsy & Morty": {
+   "Bugsy": "Morty says there are ghost bugs in Ecruteak's Burned Tower. I need to research that! After this!",
+   "Morty": "Bugsy researches everything. I research the unseen. Between us, Johto knows your every move."
+  },
+  "Bugsy & Chuck": {
+   "Bugsy": "Chuck says bugs are too small to be strong. Just watch my team, Chuck! Johto power!",
+   "Chuck": "Bugsy's bugs are tougher than they look! Like a waterfall's spray. Wahahah! Let's go!"
+  },
+  "Bugsy & Jasmine": {
+   "Bugsy": "Jasmine's Steel types are hard to research. They're so shiny! Let's study this battle together!",
+   "Jasmine": "Bugsy told me all about Bug types on the way up. I... learned a lot. Let's do our best."
+  },
+  "Bugsy & Pryce": {
+   "Bugsy": "Pryce says bugs don't survive Mahogany's winters. Mine do! I bred them myself!",
+   "Pryce": "Bugsy's enthusiasm reminds me of my youth. Johto's oldest and youngest. Let's show you what we know."
+  },
+  "Bugsy & Clair": {
+   "Bugsy": "Clair says dragons outclass bugs. My research says otherwise! Johto's Gyms, together!",
+   "Clair": "A bug researcher as my partner? Fine. Just stay out of my dragons' way, Bugsy."
+  },
+  "Whitney & Morty": {
+   "Whitney": "Morty's ghosts are spooky! But with them on my side, nothing can scare me. Johto's cutest Leader is here!",
+   "Morty": "Whitney cried at the Burned Tower. Today, I foresee her laughing. Ecruteak and Goldenrod, together."
+  },
+  "Whitney & Chuck": {
+   "Whitney": "Chuck's all muscles and I'm all heart! Goldenrod and Cianwood, let's roll right over 'em!",
+   "Chuck": "Whitney's team rolls in like a boulder down a waterfall! Wahahah! We're unbeatable!"
+  },
+  "Whitney & Jasmine": {
+   "Whitney": "Jasmine and I go shopping in Goldenrod sometimes! Today, we're shopping for a win!",
+   "Jasmine": "Whitney is my friend. She's very... energetic. I'll do my best to keep up. Let's battle."
+  },
+  "Whitney & Pryce": {
+   "Whitney": "Pryce is like a grumpy grandpa. But he's super strong! Johto's not losing today!",
+   "Pryce": "Whitney's tears could freeze in Mahogany's cold. Let's make sure she has nothing to cry about."
+  },
+  "Whitney & Clair": {
+   "Whitney": "Clair's so cool and scary! I bet her dragons and my cuties make the strongest Johto team ever!",
+   "Clair": "Whitney's team is the one thing in Goldenrod I respect. Don't slow me down."
+  },
+  "Morty & Chuck": {
+   "Morty": "Chuck punches what he can see. My ghosts strike what you can't. Johto has you surrounded.",
+   "Chuck": "Morty's ghosts give me goosebumps! But Fighting moves don't touch them... so they're perfect partners!"
+  },
+  "Morty & Jasmine": {
+   "Morty": "Jasmine's Steel types stand firm against my ghosts. Today, they stand beside them. Shall we?",
+   "Jasmine": "Morty told me Ecruteak's legends about a rainbow-winged guardian. I hope I see it over the Olivine lighthouse someday."
+  },
+  "Morty & Pryce": {
+   "Morty": "Pryce has seen many winters, and I have seen many spirits. Johto's wisdom is on our side.",
+   "Pryce": "Morty, the Ecruteak mystic. Young, but he sees deeply. Together, we'll see this through."
+  },
+  "Morty & Clair": {
+   "Morty": "Clair's dragons are legendary in Blackthorn. In Ecruteak, we have our own legends. Let's battle.",
+   "Clair": "Morty's still waiting for his rainbow legend, isn't he? Fine. I'll show you a real legend: my dragons."
+  },
+  "Chuck & Jasmine": {
+   "Chuck": "Jasmine's from Olivine, just across the sea from Cianwood! I'll swim over to help any time!",
+   "Jasmine": "Chuck is very loud. But strong. Cianwood and Olivine's Gym Leaders will make a sturdy team."
+  },
+  "Chuck & Pryce": {
+   "Chuck": "Pryce trains under ice! I train under waterfalls! Johto's toughest training, combined!",
+   "Pryce": "Chuck's waterfall training is impressive. Try it in Mahogany's winter, young man."
+  },
+  "Chuck & Clair": {
+   "Chuck": "Clair, your dragons are strong! But can they do a hundred pushups? Mine can! Johto power!",
+   "Clair": "Chuck's fists won't scratch my dragons. Good thing they're aimed at you today."
+  },
+  "Jasmine & Pryce": {
+   "Jasmine": "Pryce is very wise. He told me Steel types can stand any winter. I'll trust him.",
+   "Pryce": "Jasmine is gentle, but her Steel types never bend. Johto's strongest, together."
+  },
+  "Jasmine & Clair": {
+   "Jasmine": "Clair... looks scary. But her dragons protected me on the way up. Let's battle together.",
+   "Clair": "Jasmine's Steel types can take a dragon's hit. Useful. Stay behind me, Olivine."
+  },
+  "Pryce & Clair": {
+   "Pryce": "Clair. Your dragons once fell to my ice. Today, they'll rise beside it. Johto stands strong.",
+   "Clair": "Pryce's ice is the only thing I've ever feared. Today, it's your problem. Let's go."
+  },
+  "Roxanne & Brawly": {
+   "Roxanne": "Brawly surfs, I study. Rustboro and Dewford are neighbors by boat, and our strategies fit together.",
+   "Brawly": "Roxanne's got the notes, I've got the waves! Hoenn's first two Gyms are gonna wipe you out!"
+  },
+  "Roxanne & Wattson": {
+   "Roxanne": "Wattson laughs through every battle. I took notes on why it works. Hoenn's lesson starts now.",
+   "Wattson": "Wahahahah! Roxanne's the smartest Leader in Hoenn, and I'm the most electrifying! Ready?"
+  },
+  "Roxanne & Flannery": {
+   "Roxanne": "Flannery's fire meets my Rock types' defense. According to my notes, that's an excellent pairing.",
+   "Flannery": "Roxanne's so put together! I'm trying to be, too. Lavaridge and Rustboro, let's heat things up!"
+  },
+  "Roxanne & Norman": {
+   "Roxanne": "Norman is the most respected Leader in Hoenn. I studied his battles at the Trainers' School.",
+   "Norman": "Roxanne taught at the Trainers' School. Her students learn well. Let's give you a lesson, too."
+  },
+  "Roxanne & Winona": {
+   "Roxanne": "Winona's Flying types cover the sky; my Rock types hold the ground. Hoenn has you surrounded.",
+   "Winona": "Roxanne's Rock types are sturdy, like Fortree's treetops. Let's soar to victory."
+  },
+  "Roxanne & Juan": {
+   "Roxanne": "Juan taught Wallace, and Wallace became Champion. I'd like to take notes on his battling today.",
+   "Juan": "Ahh, Roxanne! A scholar of stone. Let our Hoenn art, rock and water, sculpt your defeat."
+  },
+  "Roxanne & Wally": {
+   "Roxanne": "Wally earned my badge, didn't he? He's grown so much. I'm happy to battle alongside him.",
+   "Wally": "Roxanne was my very first Gym battle! Now we're partners. I want to make Hoenn proud!"
+  },
+  "Roxanne & Anabel": {
+   "Roxanne": "Anabel was a Frontier Brain in Hoenn. I studied the Battle Frontier's records for months.",
+   "Anabel": "Roxanne's bond with her Pokémon is very steady. Like stone. Hoenn's Trainers won't fall easily."
+  },
+  "Brawly & Wattson": {
+   "Brawly": "Wattson's got energy like a big wave! Dewford and Mauville, let's ride this one together!",
+   "Wattson": "Wahahahah! Brawly's sea breeze and my lightning! Hoenn's having a thunderstorm today!"
+  },
+  "Brawly & Flannery": {
+   "Brawly": "Flannery's hot, I'm cool, like the ocean breeze. Hoenn's big wave is coming for you!",
+   "Flannery": "Brawly surfed all the way here? I'll bring the heat, Brawly. You bring the waves!"
+  },
+  "Brawly & Norman": {
+   "Brawly": "Norman's the strongest guy in Hoenn. Teaming up with him? That's the biggest wave I've caught!",
+   "Norman": "Brawly's Fighting types and my Normal types share one thing: strength. Let's show it."
+  },
+  "Brawly & Winona": {
+   "Brawly": "Winona's birds ride the wind, I ride the waves. Hoenn's sky and sea, coming at you!",
+   "Winona": "Brawly's Fighting types hit hard. My Flying types hit from above. Shall we?"
+  },
+  "Brawly & Juan": {
+   "Brawly": "Juan's the Water master of Sootopolis! Me, I just love the ocean. Let's make a splash!",
+   "Juan": "Brawly surfs with such passion! Ahh, Hoenn's seas inspire us both. Let's make art of this battle."
+  },
+  "Brawly & Wally": {
+   "Brawly": "Wally's not that frail kid anymore! He hits like a wave now. Let's show 'em, partner!",
+   "Wally": "Brawly's Gym was my second badge. Now we're teammates! I'll fight with all I've got!"
+  },
+  "Brawly & Anabel": {
+   "Brawly": "Anabel can sense my team's spirit? Then she knows it's huge! Hoenn's coming for you!",
+   "Anabel": "Brawly's bond with his Pokémon is strong and wild, like the sea. I like it. Let's battle."
+  },
+  "Wattson & Flannery": {
+   "Wattson": "Wahahahah! Flannery's fire and my thunder! Hoenn's volcano and storm, all in one battle!",
+   "Flannery": "Wattson laughs so much, it's contagious! Mauville and Lavaridge, let's light this place up!"
+  },
+  "Wattson & Norman": {
+   "Wattson": "Wahahahah! Norman's so serious! Lighten up, partner. Hoenn's going to win anyway!",
+   "Norman": "Wattson's laughter fills the room. His Electric types fill the battle. Let's go, old friend."
+  },
+  "Wattson & Winona": {
+   "Wattson": "Wahahahah! Winona's birds are in for a shock... no, wait, we're on the same side! Go!",
+   "Winona": "Wattson, please aim away from my Flying types. Hoenn's sky will be ours together."
+  },
+  "Wattson & Juan": {
+   "Wattson": "Wahahahah! Juan's water conducts my electricity beautifully! Hoenn's shocking art show begins!",
+   "Juan": "Wattson, your thunder makes my waters sparkle. Ahh, together we are a masterpiece."
+  },
+  "Wattson & Wally": {
+   "Wattson": "Wahahahah! Wally once battled right outside my Mauville Gym! Gutsy kid! Let's go!",
+   "Wally": "Wattson is so cheerful! It makes me feel brave. Hoenn's going to win this!"
+  },
+  "Wattson & Anabel": {
+   "Wattson": "Wahahahah! Anabel, the Frontier Brain! Hoenn's Battle Frontier and Mauville, together!",
+   "Anabel": "Wattson's energy is shocking. I sense his Pokémon love him dearly. Let's battle together."
+  },
+  "Flannery & Norman": {
+   "Flannery": "Norman's so cool and calm. I'm trying to be like that! Hoenn's fiercest, let's go!",
+   "Norman": "Flannery has her grandfather's fire. Use it well, Lavaridge. Hoenn will win this battle."
+  },
+  "Flannery & Winona": {
+   "Flannery": "Winona's so graceful. Me? I'm all fire! Lavaridge and Fortree, let's heat up the sky!",
+   "Winona": "Flannery's flames light up Hoenn's sky. Let's soar above this challenger together."
+  },
+  "Flannery & Juan": {
+   "Flannery": "Juan's water could put my fire out... but today we're teammates! Hoenn, here we come!",
+   "Juan": "Ahh, Flannery! Fire and water dance together. A Hoenn masterpiece of steam and splendor!"
+  },
+  "Flannery & Wally": {
+   "Flannery": "Wally came to Lavaridge's hot springs to build up his health, and look at him now! Let's heat things up!",
+   "Wally": "Flannery's hot springs helped me get stronger. Now I'll repay her with a win!"
+  },
+  "Flannery & Anabel": {
+   "Flannery": "Anabel's so calm and collected! I'm all fired up! Hoenn's ready to win this one!",
+   "Anabel": "Flannery's bond with her Pokémon burns brightly. I can feel it from here. Let's battle."
+  },
+  "Norman & Winona": {
+   "Norman": "Winona's birds are a sight to behold. Petalburg and Fortree, let's show Hoenn's strength.",
+   "Winona": "Norman's strength is legendary in Hoenn. With him on the ground, my birds rule the sky."
+  },
+  "Norman & Juan": {
+   "Norman": "Juan taught the Champion. I taught my child. Hoenn's teachers don't lose easily.",
+   "Juan": "Norman, ahh, such quiet strength. Let us show this challenger Hoenn's grace and might."
+  },
+  "Norman & Wally": {
+   "Norman": "Wally caught his first Pokémon with my help in Petalburg. Look at him now. Let's battle, Wally.",
+   "Wally": "Norman helped me catch my very first Pokémon when I was just starting out. I'll make him proud today!"
+  },
+  "Norman & Anabel": {
+   "Norman": "Anabel was a Frontier Brain. Hoenn's toughest facility. I'm glad she's on our side.",
+   "Anabel": "Norman's bond with his Pokémon is steady, like a father's. Hoenn's Trainers are strong."
+  },
+  "Winona & Juan": {
+   "Winona": "Juan's art and my birds' grace. Hoenn's sky and sea will move together.",
+   "Juan": "Winona's wings and my waters. Ahh, a duet of sky and sea! Hoenn's finest art!"
+  },
+  "Winona & Wally": {
+   "Winona": "Wally used to be too weak to climb Fortree's treetops. Now he's climbed the Battle Tree.",
+   "Wally": "Winona's birds are so beautiful! I'll fight hard so they can soar!"
+  },
+  "Winona & Anabel": {
+   "Winona": "Anabel senses bonds, and my birds feel the wind. Hoenn's quiet Trainers are its strongest.",
+   "Anabel": "Winona's bond with her birds is light, like feathers. But strong. Let's battle together."
+  },
+  "Juan & Wally": {
+   "Juan": "Ahh, Wally! You battled through Victory Road itself. A Hoenn star is born! Let us shine together!",
+   "Wally": "Juan taught Wallace, and Wallace inspired me! I want to show Juan how far I've come!"
+  },
+  "Juan & Anabel": {
+   "Juan": "Anabel, the Salon Maiden! Ahh, Hoenn's Battle Frontier and Sootopolis, an elegant duet!",
+   "Anabel": "Juan's bond with his Pokémon is like a dance. I sense harmony. Let's battle together."
+  },
+  "Wally & Anabel": {
+   "Wally": "Anabel was a Frontier Brain when I was still training! Hoenn's not losing today!",
+   "Anabel": "Wally's bond with his Pokémon grew as he did. I can sense how strong it is now. Let's go."
+  },
+  "Roark & Gardenia": {
+   "Roark": "Gardenia's Grass types grow right out of my rocks. Oreburgh and Eterna, Sinnoh's first two badges!",
+   "Gardenia": "Roark spends all day underground? No thanks. Just keep any Old Chateau ghosts away from me, okay?"
+  },
+  "Roark & Fantina": {
+   "Roark": "Fantina's ghosts give me the creeps. Still, Oreburgh's rocks can anchor any Hearthome show.",
+   "Fantina": "Roark, mon ami! Your team is so... how you say... rugged! Let us put on a Sinnoh spectacle!"
+  },
+  "Roark & Maylene": {
+   "Roark": "Maylene's Fighting types smash boulders for training. Glad my Rock types are on her side today!",
+   "Maylene": "Roark's rocks are tough. My fists are tougher. I... I think. Let's do this for Sinnoh!"
+  },
+  "Roark & Crasher Wake": {
+   "Roark": "Crasher Wake shook the whole mine just by shouting hello. My Rock types are ready, Wake!",
+   "Crasher Wake": "The miner of Oreburgh! Rock and Water, the Crasher Wake tag team is on! WAHAHAH!"
+  },
+  "Roark & Byron": {
+   "Roark": "Dad's my partner?! Fine, Byron. Let's see whose Rock and Steel team is really number one!",
+   "Byron": "Gahahah! My boy Roark! Oreburgh's rocks and Canalave's steel, father and son! Nothing breaks us!"
+  },
+  "Roark & Candice": {
+   "Roark": "Candice keeps yelling 'focus!' at me. I'm focused! Snowpoint ice on Oreburgh rock, let's go!",
+   "Candice": "Roark, FOCUS! Rock types don't mind the cold, right? Then Snowpoint and Oreburgh can't lose!"
+  },
+  "Roark & Volkner": {
+   "Roark": "Volkner's Sinnoh's last Gym and I'm its first. Together, we cover every badge you could earn.",
+   "Volkner": "The first badge of Sinnoh. Let's see if Oreburgh can make this more interesting than Sunyshore."
+  },
+  "Roark & Cynthia": {
+   "Roark": "Teaming up with Champion Cynthia? Oreburgh's fossil fanatic won't let Sinnoh down!",
+   "Cynthia": "Roark digs up fossils, and I dig up legends. Sinnoh's history is on our side. Shall we?"
+  },
+  "Gardenia & Fantina": {
+   "Gardenia": "F-F-Fantina's my partner?! Your ghosts aren't from the Old Chateau, are they?! Are they?!",
+   "Fantina": "Gardenia, ma chérie, you tremble! My ghosts are friends. Eterna and Hearthome, together, oui?"
+  },
+  "Gardenia & Maylene": {
+   "Gardenia": "Maylene walks barefoot through Eterna Forest with me. We're both nature girls at heart!",
+   "Maylene": "Gardenia's flowers look delicate, but they're tough, like Veilstone's fighters. Let's battle!"
+  },
+  "Gardenia & Crasher Wake": {
+   "Gardenia": "Crasher Wake's rain makes my Grass types grow big and strong! Pastoria's marsh would be jealous!",
+   "Crasher Wake": "Gardenia's Grass types love the Great Marsh! Water and Grass, the Crasher Wake jungle match!"
+  },
+  "Gardenia & Byron": {
+   "Gardenia": "Byron says the Old Chateau is just an old house. Easy for a guy made of steel to say!",
+   "Byron": "Gahahah! Gardenia's scared of ghosts? My Steel types fear nothing! Canalave's got your back!"
+  },
+  "Gardenia & Candice": {
+   "Gardenia": "Candice's ice is gonna be gentle with my Grass types, right? Right?! Okay, let's go, Sinnoh!",
+   "Candice": "Gardenia, focus! Grass under snow grows back stronger! Snowpoint and Eterna, team spirit!"
+  },
+  "Gardenia & Volkner": {
+   "Gardenia": "Volkner looks so bored. Don't worry, my Grass types will make this battle fun for both of us!",
+   "Volkner": "Gardenia's energy is... a lot. Maybe that's what this battle needs. Let's see."
+  },
+  "Gardenia & Cynthia": {
+   "Gardenia": "Cynthia studies the old statue in Eterna City, right by my Gym! The Champion and Eterna's Leader, let's grow a win!",
+   "Cynthia": "Gardenia keeps Eterna Forest safe while I study the statue in her city. Eterna's pride, together."
+  },
+  "Fantina & Maylene": {
+   "Fantina": "Maylene, such strength in such a small Trainer! Ghost and Fighting, a duet magnifique!",
+   "Maylene": "Fantina's dance moves are amazing. My moves are... punches. But together, I think we can win!"
+  },
+  "Fantina & Crasher Wake": {
+   "Fantina": "Crasher Wake, you are so loud! But on stage, loud is good! Hearthome and Pastoria, allons-y!",
+   "Crasher Wake": "Fantina's contest flair and the Crasher Wake! Ghost and Water, the dramatic tag team! WAHAHAH!"
+  },
+  "Fantina & Byron": {
+   "Fantina": "Byron, your Steel types shine like contest costumes! Together, we are a très grand show!",
+   "Byron": "Gahahah! Fantina's ghosts and my steel! I don't understand half of what she says, but let's win!"
+  },
+  "Fantina & Candice": {
+   "Fantina": "Candice, your Ice types dance on snow like my ghosts dance in the dark! A chilling ballet!",
+   "Candice": "Fantina, FOCUS! Ghost and Ice, a snowy haunted stage! We'll share the spotlight! Let's go!"
+  },
+  "Fantina & Volkner": {
+   "Fantina": "Volkner, you are bored? Non, non! With me, every battle is a spectacle! Sunyshore will shine!",
+   "Volkner": "Fantina makes everything a performance. Fine. Let's give this challenger a show worth watching."
+  },
+  "Fantina & Cynthia": {
+   "Fantina": "Cynthia, the Champion! Ahh, Sinnoh's grace and my ghosts' charm. Une bataille magnifique!",
+   "Cynthia": "Fantina's Ghost types know the old Sinnoh tales as well as I do. Let's add a new one."
+  },
+  "Maylene & Crasher Wake": {
+   "Maylene": "Crasher Wake's a wrestler, I'm a fighter! He says my punches could go pro. Let's prove it!",
+   "Crasher Wake": "Maylene's fists and my wrestling moves! The Crasher Wake tag team title match! WAHAHAH!"
+  },
+  "Maylene & Byron": {
+   "Maylene": "Byron told me to wear shoes up the tree. I didn't. Veilstone and Canalave, let's go!",
+   "Byron": "Gahahah! Barefoot on this tree?! That's guts! Maylene's fists and my steel, unstoppable!"
+  },
+  "Maylene & Candice": {
+   "Maylene": "Candice says toughness is all in your head. I go barefoot, she wears a skirt in blizzards. Let's win!",
+   "Candice": "Maylene, FOCUS! Barefoot on a tree, a skirt in a blizzard: Sinnoh girls don't feel the cold! Let's go!"
+  },
+  "Maylene & Volkner": {
+   "Maylene": "Volkner's the strongest Leader in Sinnoh. I'll do my best to make him take us seriously!",
+   "Volkner": "Maylene's gotten stronger since Veilstone. Let's see if she can keep this battle from being dull."
+  },
+  "Maylene & Cynthia": {
+   "Maylene": "Fighting alongside Champion Cynthia! I can feel her team's aura from here! Sinnoh's shining today!",
+   "Cynthia": "Maylene's team has a fine aura, as fierce as her fists. Let's see if you can feel it."
+  },
+  "Crasher Wake & Byron": {
+   "Crasher Wake": "Byron! The steel giant of Canalave! Water and Steel, Sinnoh's heavyweight tag team! WAHAHAH!",
+   "Byron": "Gahahah! Crasher Wake's loud! But I'm louder! Canalave and Pastoria, let's crush this kid!"
+  },
+  "Crasher Wake & Candice": {
+   "Crasher Wake": "Candice! The Crasher Wake hails from Pastoria's marsh, she hails from the snow! Water and Ice!",
+   "Candice": "Crasher Wake, FOCUS! Your waves and my snow, a Snowpoint storm! Let's go!"
+  },
+  "Crasher Wake & Volkner": {
+   "Crasher Wake": "Volkner! Sunyshore's lightning and the Crasher Wake's waves! Don't zap me, partner! WAHAHAH!",
+   "Volkner": "Crasher Wake's water and my lightning. Stand clear, Wake. This might actually be fun."
+  },
+  "Crasher Wake & Cynthia": {
+   "Crasher Wake": "Cynthia! The Champion of Sinnoh! The Crasher Wake tag team just went legendary! WAHAHAH!",
+   "Cynthia": "Crasher Wake brings the energy. I'll bring the Champion's resolve. Sinnoh's strength, together. Shall we?"
+  },
+  "Byron & Candice": {
+   "Byron": "Gahahah! Candice's ice and my steel! Snowpoint and Canalave, Sinnoh's coldest, hardest team!",
+   "Candice": "Byron, FOCUS! Steel doesn't crack in the cold! Canalave and Snowpoint, unbreakable!"
+  },
+  "Byron & Volkner": {
+   "Byron": "Gahahah! Volkner's bored? Watch my steel wall tank everything! That'll wake you up!",
+   "Volkner": "Byron's loud enough to keep me awake. His steel holds the line, my lightning finishes. Let's go."
+  },
+  "Byron & Cynthia": {
+   "Byron": "Gahahah! Cynthia, the Champion! Sinnoh's steel and Sinnoh's legends, together!",
+   "Cynthia": "Byron digs up Sinnoh's past in the mines. I study its legends. A fine match. Let's battle."
+  },
+  "Candice & Volkner": {
+   "Candice": "Volkner, FOCUS! Ice and Electric, Snowpoint and Sunyshore! We're gonna win, I know it!",
+   "Volkner": "Candice's focus is exhausting. Maybe that's the point. Sinnoh's shock and chill, let's go."
+  },
+  "Candice & Cynthia": {
+   "Candice": "Cynthia, the Champion! FOCUS, Candice! Snowpoint's best won't let Sinnoh's Champion down!",
+   "Cynthia": "Candice's focus is admirable. Snowpoint's ice and the Champion's resolve. Let's show you Sinnoh's strength."
+  },
+  "Volkner & Cynthia": {
+   "Volkner": "Cynthia. The only Trainer in Sinnoh who never bores me. This might be fun after all.",
+   "Cynthia": "Volkner finally looks interested. Sunyshore's lightning and the Champion of Sinnoh. Let's begin."
+  },
+  "Cheren & Roxie": {
+   "Cheren": "Roxie's Gym is the second one new Trainers face after mine. Today's lesson: Unova teamwork.",
+   "Roxie": "Cheren's a teacher? Ugh, school. Fine, Teach. Let's make this loud and poisonous! Virbank rocks!"
+  },
+  "Cheren & Burgh": {
+   "Cheren": "Burgh sees art in every battle. I see logic. Either way, Unova's Leaders will see your defeat.",
+   "Burgh": "Cheren's battles are so precise, like a sketch with no wasted lines! A Unova masterpiece awaits!"
+  },
+  "Cheren & Elesa": {
+   "Cheren": "Elesa's battles dazzle. Mine teach. Between Nimbasa and Aspertia, you'll learn something today.",
+   "Elesa": "Cheren's a bit serious for the runway, but he's sharp! Unova's Leaders, strike a pose!"
+  },
+  "Cheren & Clay": {
+   "Cheren": "Clay built Driftveil with hard work and stubbornness. I teach my students the first one. Let's battle.",
+   "Clay": "Cheren, the schoolteacher! Teach this kid that Unova don't hand out wins for free!"
+  },
+  "Cheren & Skyla": {
+   "Cheren": "Skyla delivers cargo across Unova; I deliver lessons. Today, we'll deliver a defeat.",
+   "Skyla": "Cheren's so serious! Loosen up, flyboy! Mistralton and Aspertia are taking off together!"
+  },
+  "Cheren & Drayden": {
+   "Cheren": "Drayden taught Iris everything. I hope to teach my students half as well. Let's battle, sir.",
+   "Drayden": "Cheren has grown into a fine teacher. Opelucid and Aspertia, Unova's wisdom, together."
+  },
+  "Cheren & Marlon": {
+   "Cheren": "Marlon's Gym is the last in Unova, and mine is the first. Together, we cover a Trainer's whole journey.",
+   "Marlon": "Cheren, dude, you gotta relax! Aspertia's first and Humilau's last, the whole Unova wave!"
+  },
+  "Cheren & Chili": {
+   "Cheren": "Chili, please don't rush in before I explain the plan. Unova's Leaders work best with a strategy.",
+   "Chili": "Cheren's got a plan? Cool! I'll just set everything on fire while he explains it! Let's go!"
+  },
+  "Cheren & Cress": {
+   "Cheren": "Cress analyzes everything, like I do. Unova's most logical Leaders. Shall we begin?",
+   "Cress": "Cheren and I both value clear thinking. A refined Unova partnership. Let's battle elegantly."
+  },
+  "Cheren & Cilan": {
+   "Cheren": "Cilan says he can taste the flavor of a battle. I'll trust his palate and my plan.",
+   "Cilan": "Cheren! Your battle style has a crisp, logical flavor! Paired with my Grass types, a fine Unova course!"
+  },
+  "Cheren & Lenora": {
+   "Cheren": "Lenora's Normal types taught me how strong 'ordinary' can be. Two Unova Normal-type Leaders, together.",
+   "Lenora": "Cheren uses Normal types too! History says the simplest tools last longest. Let's prove it, Teacher!"
+  },
+  "Cheren & Brycen": {
+   "Cheren": "Brycen was an action star. I'm a teacher. We both believe in discipline. Let's battle.",
+   "Brycen": "Cheren's discipline rivals any Pokéstar Studios stunt crew. Unova's resolve, together. Hm!"
+  },
+  "Cheren & Bianca": {
+   "Cheren": "Bianca and I have been friends since we were kids in Nuvema. Don't trip on the stairs, Bianca.",
+   "Bianca": "Cheren! You're my partner! Just like old times! I promise I won't drop my Poké Balls this time!"
+  },
+  "Cheren & Grimsley": {
+   "Cheren": "Grimsley gambles. I calculate. Strange partners for Unova, but the math says we win.",
+   "Grimsley": "The teacher from Aspertia. I'll bet on your lesson plan, Cheren. Unova's Elite and its finest Leader."
+  },
+  "Cheren & Colress": {
+   "Cheren": "Colress worked with Team Plasma. Today he's on my side. Unova has changed a lot, hasn't it?",
+   "Colress": "Cheren, the logical Leader. Your Normal types are an excellent control group for my research."
+  },
+  "Roxie & Burgh": {
+   "Roxie": "Burgh paints, I sing! Unova's art scene is taking over this battle! Get ready for the encore!",
+   "Burgh": "Roxie's music is so raw! Her poison and my bugs, a punk-rock painting! Unova, inspire me!"
+  },
+  "Roxie & Elesa": {
+   "Roxie": "Elesa's a supermodel, I'm a rock star! Unova's celebrities are on tour, and you're the opening act!",
+   "Elesa": "Roxie's stage presence is electrifying! Nimbasa's runway and Virbank's stage, together!"
+  },
+  "Roxie & Clay": {
+   "Roxie": "Clay's a grumpy old miner. I'm a grumpy young singer. Unova's grumpiest team, let's go!",
+   "Clay": "Roxie's music is too loud for an old miner! But she's tough. Driftveil and Virbank, let's dig in!"
+  },
+  "Roxie & Skyla": {
+   "Roxie": "Skyla flies cargo, I fly on stage! Unova's coolest girls are taking off! Get hyped!",
+   "Skyla": "Roxie's poison and my birds! We're gonna fly circles and leave a toxic trail! Unova, takeoff!"
+  },
+  "Roxie & Drayden": {
+   "Roxie": "Drayden's a mayor, so he's probably gonna lecture me. Whatever. Unova's toughest, let's rock!",
+   "Drayden": "Roxie, the young singer from Virbank. Unova's spirit comes in many forms. Let's battle."
+  },
+  "Roxie & Marlon": {
+   "Roxie": "Marlon's a surfer, I'm a singer! Unova's chillest and loudest Leaders! Let's make some noise!",
+   "Marlon": "Roxie's got some serious vibes, dude! Poison and Water, the Unova wave! Let's ride!"
+  },
+  "Roxie & Chili": {
+   "Roxie": "Chili's as loud as my band! Fire and poison, the hottest show in Unova! Let's go!",
+   "Chili": "Roxie's songs are FIRE! Literally, if I'm in the crowd! Unova's loudest team-up starts now!"
+  },
+  "Roxie & Cress": {
+   "Roxie": "Cress is too fancy for a punk show. But he's on my team today, so let's poison 'em!",
+   "Cress": "Roxie's music is quite... unrefined. Yet strangely invigorating. Shall we, Unova's punk?"
+  },
+  "Roxie & Cilan": {
+   "Roxie": "Cilan says my battles taste spicy. Cool! Grass and poison, the Unova special!",
+   "Cilan": "Roxie's battle style is a bold, toxic flavor! Paired with Grass, a perfect Unova pairing!"
+  },
+  "Roxie & Lenora": {
+   "Roxie": "Lenora's a museum director. Kinda old school. But she hits hard! Unova's best, let's go!",
+   "Lenora": "Roxie, Virbank's rock star! History will remember this Unova team-up. Let's battle!"
+  },
+  "Roxie & Brycen": {
+   "Roxie": "Brycen was a movie star! I'm a rock star! Unova's celebrity team-up! Get ready!",
+   "Brycen": "Roxie's stage energy rivals any film set. Unova's performers, together. Hm!"
+  },
+  "Roxie & Bianca": {
+   "Roxie": "Bianca's so clumsy, she tripped on my guitar cable! Still, she's tough. Unova, let's rock!",
+   "Bianca": "Roxie's band is so cool! I'm gonna battle super hard so she plays at our victory party!"
+  },
+  "Roxie & Grimsley": {
+   "Roxie": "Grimsley's a gambler? Cool. Bet on my poison, old man! Unova's toughest team!",
+   "Grimsley": "Roxie's poison is a sure thing. I'll bet it all on this Unova partnership."
+  },
+  "Roxie & Colress": {
+   "Roxie": "Colress is a total nerd. But his Steel types are tough! Unova's weirdest team, let's go!",
+   "Colress": "Roxie's poison could be an interesting variable. Let's test this Unova combination."
+  },
+  "Burgh & Elesa": {
+   "Burgh": "Elesa turns every battle into a runway, and I turn it into a canvas! Castelia and Nimbasa, inspire me!",
+   "Elesa": "Burgh promised to paint me mid-battle. Hold still, challenger. You're in the picture too."
+  },
+  "Burgh & Clay": {
+   "Burgh": "Clay's mines are full of the most wonderful earthy colors! Bugs and Ground, a Unova landscape!",
+   "Clay": "Burgh wants to paint my mine. Fine, after we bury this challenger. Driftveil don't do art breaks."
+  },
+  "Burgh & Skyla": {
+   "Burgh": "Skyla's birds keep eyeing my bugs! Ladies, eyes on the challenger, please. Unova's sky and garden!",
+   "Skyla": "Burgh's team sewed me a new scarf for flying! Bugs and birds, let's take this battle to the skies!"
+  },
+  "Burgh & Drayden": {
+   "Burgh": "Drayden's dragons are pure sculpture. Bugs and dragons, the smallest and grandest of Unova's art!",
+   "Drayden": "Burgh sees beauty everywhere, even in a challenger's defeat. Opelucid and Castelia, let us begin."
+  },
+  "Burgh & Marlon": {
+   "Burgh": "Marlon's waves have such rhythm! I've painted Humilau's sea three times. Today, I'll paint a win!",
+   "Marlon": "Burgh paints the sea, I ride it! Bugs on the waves, man. That's art you can surf on!"
+  },
+  "Burgh & Chili": {
+   "Burgh": "Chili, my bugs are a little nervous about your fire. Aim it at the challenger, my friend!",
+   "Chili": "Don't worry, Burgh, I'll keep my flames on the other side of the field! Castelia, let's heat it up!"
+  },
+  "Burgh & Cress": {
+   "Burgh": "Cress has the grace of a watercolor. Bugs and Water, a calm Castelia harbor scene!",
+   "Cress": "Burgh's artistry is refreshing. Allow me to add a splash of Striaton Water to his canvas."
+  },
+  "Burgh & Cilan": {
+   "Burgh": "Cilan's Grass types would be my Bug types' lunch, but today they share a table! Unova's garden party!",
+   "Cilan": "Burgh! Bugs and Grass, the freshest farm-to-battle pairing in Unova! It's evaluation time!"
+  },
+  "Burgh & Lenora": {
+   "Burgh": "Lenora promised to hang one of my paintings in her museum if we win. Inspiration, overflowing!",
+   "Lenora": "Burgh's paintings belong in a museum, and mine has the room! Castelia and Nacrene, let's make history!"
+  },
+  "Burgh & Brycen": {
+   "Burgh": "Brycen starred in films I sketched as a boy! Bugs and Ice, a frosty Unova masterpiece!",
+   "Brycen": "Burgh's art has heart. Like a good film. Let's give this challenger a scene to remember. Hm!"
+  },
+  "Burgh & Bianca": {
+   "Burgh": "Bianca's enthusiasm is a burst of yellow paint! Bugs and boundless energy, here we come!",
+   "Bianca": "Burgh said he'd draw my portrait if we win! I'll try to make a cool face! Okay, let's battle!"
+  },
+  "Burgh & Grimsley": {
+   "Burgh": "Grimsley says art is a gamble. He's not wrong! Bugs and Dark, bold strokes on a Unova canvas!",
+   "Grimsley": "An artist knows when to take a risk. I'll bet on Burgh's brush and my own dark hand. Shall we?"
+  },
+  "Burgh & Colress": {
+   "Burgh": "Colress studies Pokémon potential. I study Pokémon beauty. Maybe those are the same thing!",
+   "Colress": "Burgh's Bug types show remarkable adaptation. Art and science, let's see what the data says."
+  },
+  "Elesa & Clay": {
+   "Elesa": "Clay's Ground types laugh off my Electric moves. Luckily, today they're laughing at you.",
+   "Clay": "Elesa's got the whole Driftveil crowd swooning. Hmph. Long as her sparks miss my side of the field."
+  },
+  "Elesa & Skyla": {
+   "Elesa": "Skyla lights up the sky with her jets; I light up the stage. Unova's brightest are taking off!",
+   "Skyla": "Elesa's sparks light the sky almost as well as my jet trails! Nimbasa and Mistralton, cleared for takeoff!"
+  },
+  "Elesa & Drayden": {
+   "Elesa": "Drayden's dragons shine without even trying. I'll add a little sparkle. Unova's finest, together.",
+   "Drayden": "Elesa brings the spotlight. My dragons bring the strength. Opelucid and Nimbasa, let's begin."
+  },
+  "Elesa & Marlon": {
+   "Elesa": "Marlon, keep your Water types out of my lightning's way, sweetie. We don't need a short circuit!",
+   "Marlon": "Elesa's lightning plus my waves? That's a shocking forecast, man! Humilau and Nimbasa, let's go!"
+  },
+  "Elesa & Chili": {
+   "Elesa": "Chili wants to be in my next photo shoot. Win this battle first, and we'll talk.",
+   "Chili": "Elesa said I've got star quality! Fire and lightning, the flashiest show in Unova! Ta-da!"
+  },
+  "Elesa & Cress": {
+   "Elesa": "Cress is so polished he could walk my runway. Electric and Water, a stylish, shocking Unova look.",
+   "Cress": "Elesa's elegance is matched only by her lightning. Allow me to accompany her on Striaton's behalf."
+  },
+  "Elesa & Cilan": {
+   "Elesa": "Cilan says my battles taste like a sparkling soda. I'll take that as a compliment!",
+   "Cilan": "Elesa's style has a bright, crackling flavor! Like a fizzy berry spritz! It's evaluation time!"
+  },
+  "Elesa & Lenora": {
+   "Elesa": "Lenora's museum is full of old fashions. Maybe someday my outfits will be on display too!",
+   "Lenora": "Elesa, today we make a page in Unova's history. Something more lasting than fashion. Let's go!"
+  },
+  "Elesa & Brycen": {
+   "Elesa": "Brycen was a movie star before I was on magazine covers. Unova's two celebrities, together!",
+   "Brycen": "Elesa's spotlight shines brighter than any film set's. Let's give this challenger a premiere. Hm!"
+  },
+  "Elesa & Bianca": {
+   "Elesa": "Bianca keeps asking for my autograph. Let's win first, then I'll sign anything you like!",
+   "Bianca": "Elesa's my partner?! She's sooo pretty! Okay, Bianca, stay focused! Let's battle!"
+  },
+  "Elesa & Grimsley": {
+   "Elesa": "Grimsley thinks my battles are all flash. Let's show him the substance, too. Unova, shine!",
+   "Grimsley": "Elesa's lightning strikes like a lucky draw. With her on my side, I'll raise the stakes."
+  },
+  "Elesa & Colress": {
+   "Elesa": "Colress wants to measure my team's voltage. Measure this battle instead, darling!",
+   "Colress": "Elesa's Electric types generate fascinating readings. Let's see how far this charge can go."
+  },
+  "Clay & Skyla": {
+   "Clay": "Skyla's planes haul my ore all over Unova. Today we haul this challenger outta here!",
+   "Skyla": "Clay's my best customer! Mistralton Cargo delivers again. Ground and sky, Unova's supply line!"
+  },
+  "Clay & Drayden": {
+   "Clay": "Drayden runs Opelucid, I run Driftveil. Two Unova Leaders who know what hard work means.",
+   "Drayden": "Clay's grit built Driftveil. My dragons built Opelucid's legend. Unova's foundations, together."
+  },
+  "Clay & Marlon": {
+   "Clay": "Marlon's been surfin' since sunrise, I've been minin' since sunrise. Only one of us is workin'!",
+   "Marlon": "Clay's always so serious, man! Ground and Water, let's make some Unova mud and roll!"
+  },
+  "Clay & Chili": {
+   "Clay": "Chili's louder than a dynamite blast in my mine. Fine. Point that noise at the challenger!",
+   "Chili": "Clay digs, my fire burns! We'll make this battlefield a volcano! Let's go!"
+  },
+  "Clay & Cress": {
+   "Clay": "Cress serves fancy tea in Striaton. I drink mine black in the mines. We'll make it work.",
+   "Cress": "Clay's manners need polish, but his Ground types are pure gold. A sturdy Unova partnership."
+  },
+  "Clay & Cilan": {
+   "Clay": "Cilan says I taste like a hearty stew. I'll take it. Let's dig in!",
+   "Cilan": "Clay's battles have such a rich, earthy flavor! Like roasted root vegetables! It's evaluation time!"
+  },
+  "Clay & Lenora": {
+   "Clay": "Lenora gets first pick of every fossil from my mines. Unova's diggers, together!",
+   "Lenora": "Clay's mines found half the fossils in my museum! Driftveil and Nacrene, let's dig up a win!"
+  },
+  "Clay & Brycen": {
+   "Clay": "Brycen's tougher than the cold storage in Driftveil. Ground and Ice, let's freeze 'em and bury 'em!",
+   "Brycen": "Clay's hard work is admirable. Unova's mountains and mines, standing together. Hm!"
+  },
+  "Clay & Bianca": {
+   "Clay": "Bianca dropped her Pokédex in my mine shaft once. Took me an hour to find it. Let's just battle.",
+   "Bianca": "Clay's so grumpy, but he found my Pokédex! He's actually super nice! Let's win for Unova!"
+  },
+  "Clay & Grimsley": {
+   "Clay": "Grimsley gambles, I invest. Either way, we're cashin' in on this battle!",
+   "Grimsley": "Clay's business instincts are sharp. I'll wager his Ground types and my Dark types clean up."
+  },
+  "Clay & Colress": {
+   "Clay": "Colress, I chased Team Plasma outta Driftveil once. Don't make me regret this, egghead.",
+   "Colress": "Clay's Ground types dig like remarkable machines. Let's test what they can do beside my work."
+  },
+  "Skyla & Drayden": {
+   "Skyla": "Drayden's dragons fly higher than my cargo planes! Mistralton and Opelucid, let's ride the jet stream!",
+   "Drayden": "Skyla's birds clear the skies, my dragons rule them. Let us show you Unova's heights."
+  },
+  "Skyla & Marlon": {
+   "Skyla": "Marlon surfs the waves, I ride the winds! Unova's sky and sea, coming at you!",
+   "Marlon": "Skyla's birds and my waves, man! That's the whole horizon right there. Let's ride!"
+  },
+  "Skyla & Chili": {
+   "Skyla": "Chili's fire keeps my birds warm at high altitude! Mistralton and Striaton, take off!",
+   "Chili": "Skyla's birds and my flames! We're gonna light up the sky like fireworks!"
+  },
+  "Skyla & Cress": {
+   "Skyla": "Cress is calm, like smooth flying weather! Mistralton and Striaton, cleared for landing!",
+   "Cress": "Skyla's spirit is uplifting. Water and wind, a graceful Unova voyage. Shall we?"
+  },
+  "Skyla & Cilan": {
+   "Skyla": "Cilan says my battles taste airy, like a soufflé! Mistralton's on the menu today!",
+   "Cilan": "Skyla's battles are light and soaring! Like a perfectly risen soufflé! It's evaluation time!"
+  },
+  "Skyla & Lenora": {
+   "Skyla": "Lenora's museum has an old cargo plane exhibit! Maybe mine will be in there someday!",
+   "Lenora": "Skyla's flights will make history! Let's start today, Mistralton and Nacrene!"
+  },
+  "Skyla & Brycen": {
+   "Skyla": "Brycen's Icirrus is so cold, my birds get frostbite! But today, Ice and Flying soar together!",
+   "Brycen": "Skyla's birds glide through Twist Mountain's winds. Unova's cold skies, together. Hm!"
+  },
+  "Skyla & Bianca": {
+   "Skyla": "Bianca wants a ride in my cargo plane! Win this, and I'll take you up, Bianca!",
+   "Bianca": "Skyla's gonna take me flying! Okay, Bianca, win this battle! Let's go!"
+  },
+  "Skyla & Grimsley": {
+   "Skyla": "Grimsley says flying is a gamble. Nope! It's a sure thing with my birds! Unova, takeoff!",
+   "Grimsley": "Skyla's birds are a sure bet. I'll wager on Mistralton's skies and Dark Unova nights."
+  },
+  "Skyla & Colress": {
+   "Skyla": "Colress wants to study my cargo planes! Study this battle, Colress. Unova's flying high!",
+   "Colress": "Skyla's aerial maneuvers are remarkable data. Flying and Steel, let's see how high we go."
+  },
+  "Drayden & Marlon": {
+   "Drayden": "Marlon's Humilau sits at Unova's edge, Opelucid at its heart. Steady, young man. Let us begin.",
+   "Marlon": "Drayden's a mayor and a dragon master? That's a lot of responsibility, man. I'll handle the waves!"
+  },
+  "Drayden & Chili": {
+   "Drayden": "Chili's spirit burns hot. Temper it, and it becomes strength. Opelucid and Striaton, together.",
+   "Chili": "Drayden's dragons are so cool! Fire and Dragon, the hottest combo in Unova! Let's go!"
+  },
+  "Drayden & Cress": {
+   "Drayden": "Cress's composure is admirable. A calm mind and a dragon's strength. Let us show you both.",
+   "Cress": "Mayor Drayden, it is an honor. Allow Striaton's Water types to support your dragons."
+  },
+  "Drayden & Cilan": {
+   "Drayden": "Cilan tells me my battles have the flavor of aged tradition. An apt description.",
+   "Cilan": "Drayden's battles taste of deep, aged wisdom! Like a fine tea steeped for years! Evaluation time!"
+  },
+  "Drayden & Lenora": {
+   "Drayden": "Lenora preserves Unova's history; I govern its present. Together, we guard its future.",
+   "Lenora": "Drayden knows more about Unova's dragon legends than any book in my museum. Let's make a new chapter!"
+  },
+  "Drayden & Brycen": {
+   "Drayden": "Brycen and I both stepped away from fame to guard our cities. Opelucid and Icirrus, together.",
+   "Brycen": "Drayden's dragons fear my ice. Today, they fight beside it. Unova's elders, side by side. Hm!"
+  },
+  "Drayden & Bianca": {
+   "Drayden": "Bianca's cheer reminds me of Iris when she was small. Steady yourself, child. We begin.",
+   "Bianca": "Mayor Drayden is my partner?! I'll be super careful not to trip over his dragons! Let's go!"
+  },
+  "Drayden & Grimsley": {
+   "Drayden": "Grimsley, an Elite Four member who lives for risk. I prefer certainty. Together, we have both.",
+   "Grimsley": "Drayden never bluffs, and his dragons never fold. I'll gladly bet on this hand."
+  },
+  "Drayden & Colress": {
+   "Drayden": "Colress once served Team Plasma, who threatened my city. Today, he redeems himself.",
+   "Colress": "Drayden's dragons are magnificent specimens. Let's see their full potential beside my machines."
+  },
+  "Marlon & Chili": {
+   "Marlon": "Chili's all fired up, and I'm all chilled out! Hot and cold, man, that's balance!",
+   "Chili": "Marlon, you're too relaxed! Let me heat things up! Fire and Water, Unova's steamiest team!"
+  },
+  "Marlon & Cress": {
+   "Marlon": "Cress and I both love Water types! He's way fancier about it, though. Let's ride!",
+   "Cress": "Marlon's approach to Water types is... casual. Still, the sea is the sea. Let's flow together."
+  },
+  "Marlon & Cilan": {
+   "Marlon": "Cilan says my battles taste like sea salt. Righteous! Water and Grass, the island buffet!",
+   "Cilan": "Marlon's battle style has a fresh, salty, ocean-breeze flavor! It's evaluation time!"
+  },
+  "Marlon & Lenora": {
+   "Marlon": "Lenora wants to explore the Abyssal Ruins under Undella Bay. I'll be her surf guide, man!",
+   "Lenora": "Marlon knows every current around Undella Bay, and the ruins beneath it! Let's dive into this battle!"
+  },
+  "Marlon & Brycen": {
+   "Marlon": "Brycen's ice and my waves? Let's make a frozen tide, man! Unova's coldest wave!",
+   "Brycen": "Marlon's sea is strong. My ice is stronger. Together, an unstoppable glacier. Hm!"
+  },
+  "Marlon & Bianca": {
+   "Marlon": "Bianca's got so much energy, she'd make a great surfer! Water and research, let's catch a wave!",
+   "Bianca": "Marlon said he'd teach me to surf! I'll probably fall in a lot... but first, let's win!"
+  },
+  "Marlon & Grimsley": {
+   "Marlon": "Grimsley bets on everything. Bet on the tide, man. It always comes in!",
+   "Grimsley": "Marlon's tide is a sure bet. Humilau's waves and Dark Unova nights, together."
+  },
+  "Marlon & Colress": {
+   "Marlon": "Colress used to sail around on that huge Plasma Frigate. Now he's on my team? Wild, man!",
+   "Colress": "Marlon reads the sea the way I read data. Let's measure the full potential of the tide."
+  },
+  "Chili & Cress": {
+   "Chili": "Cress! Fire and Water, the Striaton Gym's whole menu! Pick any starter, and one of us has it covered!",
+   "Cress": "Chili, please do not set the tablecloth on fire this time. The Striaton brothers, at your service."
+  },
+  "Chili & Cilan": {
+   "Chili": "Cilan! Fire and Grass, together again! Just don't let my flames toast your salad!",
+   "Cilan": "Chili's fire gives this pairing a spicy kick! The Striaton brothers serve again! It's evaluation time!"
+  },
+  "Cress & Cilan": {
+   "Cress": "Cilan, my brother. Water and Grass, a refreshing course from the Striaton kitchen. Shall we serve?",
+   "Cilan": "Cress keeps my Grass types well watered! The Striaton brothers' signature dish! It's evaluation time!"
+  },
+  "Chili & Lenora": {
+   "Chili": "Lenora's museum is right next to my favorite café in Nacrene! Fire and Normal, let's make history!",
+   "Lenora": "Chili's got the energy of a whole tour group! Let's put it to work, Striaton. History awaits!"
+  },
+  "Chili & Brycen": {
+   "Chili": "Brycen's ice and my fire! Hot, cold, hot, cold! They won't know what hit 'em!",
+   "Brycen": "Chili's flames could melt Icirrus in a day. Point them at the challenger, young man. Hm!"
+  },
+  "Chili & Bianca": {
+   "Chili": "Bianca orders the same dessert every time she visits our restaurant! Let's earn another one, Bianca!",
+   "Bianca": "Chili's restaurant makes the best cake in Unova! Okay, win first, cake later! Let's go!"
+  },
+  "Chili & Grimsley": {
+   "Chili": "Grimsley says he'll bet his lunch money on us! Good thing I'm never gonna lose! Let's go!",
+   "Grimsley": "Chili charges in like a gambler with a hot streak. I'll ride it as long as it lasts."
+  },
+  "Chili & Colress": {
+   "Chili": "Colress asked how hot my flames get. Hotter than his lab equipment, I bet! Let's go!",
+   "Colress": "Chili's flames could forge steel. Fire and machinery: a furnace and its gears."
+  },
+  "Cress & Lenora": {
+   "Cress": "Lenora's museum café serves a superb Unova blend. Today, I'll serve a superb victory alongside her.",
+   "Lenora": "Cress has such lovely manners! The Nacrene Museum would hire him in a heartbeat. Let's battle!"
+  },
+  "Cress & Brycen": {
+   "Cress": "Brycen's ice and my water, a cool composure from both of us. A most elegant pairing.",
+   "Brycen": "Cress keeps a calm head, like a good stunt performer. Water and Ice, a cold, clean finish. Hm!"
+  },
+  "Cress & Bianca": {
+   "Cress": "Bianca, please mind the stairs, and your Poké Balls. Very good. Now, shall we begin?",
+   "Bianca": "Cress always pulls out my chair at the restaurant! He's such a gentleman! Let's win for him!"
+  },
+  "Cress & Grimsley": {
+   "Cress": "Grimsley's gambles are more calculated than they appear. I can respect a careful risk.",
+   "Grimsley": "Cress plays every hand with perfect composure. A partner who never shows his cards. Splendid."
+  },
+  "Cress & Colress": {
+   "Cress": "Colress analyzes battles as carefully as I steep tea. A precise partnership, I'd say.",
+   "Colress": "Cress has a methodical mind. Water and Steel, an elegant experiment awaits."
+  },
+  "Cilan & Lenora": {
+   "Cilan": "Lenora's battles have the flavor of history! Like an heirloom recipe! It's evaluation time!",
+   "Lenora": "Cilan is evaluating everything again! Then evaluate this: a historic win for Unova!"
+  },
+  "Cilan & Brycen": {
+   "Cilan": "Brycen's battles taste cool and crisp, like a mint sorbet! Grass and Ice, a refreshing course!",
+   "Brycen": "Cilan's Grass types and my Ice types. A garden in winter. An unusual scene, but a strong one. Hm!"
+  },
+  "Cilan & Bianca": {
+   "Cilan": "Bianca's battles are sweet and bubbly, like berry soda! It's evaluation time!",
+   "Bianca": "Cilan says I taste like berry soda! Hehe! I'll take it! Let's do our best!"
+  },
+  "Cilan & Grimsley": {
+   "Cilan": "Grimsley's battles taste bold and bitter, like dark chocolate! A daring flavor! Evaluation time!",
+   "Grimsley": "Cilan's palate reads people better than any poker face. I'll trust his taste in partners."
+  },
+  "Cilan & Colress": {
+   "Cilan": "Colress's battles taste precise and a little metallic! A molecular gastronomy! Evaluation time!",
+   "Colress": "Cilan evaluates battles by flavor. Unscientific, yet often correct. Let's test his method."
+  },
+  "Lenora & Brycen": {
+   "Lenora": "Brycen's old films are part of our museum's Unova culture exhibit! Let's make a new classic!",
+   "Brycen": "Lenora preserves Unova's past. I once played it on screen. Today we make it real. Hm!"
+  },
+  "Lenora & Bianca": {
+   "Lenora": "Bianca's research for Professor Juniper is important work! Let's battle for science and history!",
+   "Bianca": "Lenora gave me a museum tour once! I tripped on a fossil... it was fine! Let's win!"
+  },
+  "Lenora & Grimsley": {
+   "Lenora": "Grimsley, history is full of risky bets. Let's make sure this one ends up in the history books!",
+   "Grimsley": "Lenora's research is thorough. A partner who studies the odds is a partner worth betting on."
+  },
+  "Lenora & Colress": {
+   "Lenora": "Colress, your research once served Team Plasma. Today, let's research a victory together.",
+   "Colress": "Lenora's museum holds Unova's past. I study Pokémon's future. Together, we cover all of time."
+  },
+  "Brycen & Bianca": {
+   "Brycen": "Bianca's cheer is like a fan at a film premiere. Let's give her a show worth watching. Hm!",
+   "Bianca": "Brycen was Brycen-Man! I watched all his movies with my dad! Let's win, partner!"
+  },
+  "Brycen & Grimsley": {
+   "Brycen": "Grimsley's gambles are like a stunt with no safety net. Thrilling, as long as it lands. Hm!",
+   "Grimsley": "Brycen faced danger on film sets for years. Cold nerves. My favorite kind of partner."
+  },
+  "Brycen & Colress": {
+   "Brycen": "Colress's machines would make fine movie props. Ice and Steel, a cold, hard scene. Hm!",
+   "Colress": "Brycen's Ice types endure extreme conditions. Remarkable resilience. Let's push it further."
+  },
+  "Bianca & Grimsley": {
+   "Bianca": "Grimsley's an Elite Four member! Eek! I'm so nervous! But I'll do my very best!",
+   "Grimsley": "Bianca's luck is completely unpredictable. In a gamble, that's the best kind. Let's play."
+  },
+  "Bianca & Colress": {
+   "Bianca": "Colress is a scientist too! Professor Juniper would love to hear about his research!",
+   "Colress": "Bianca works for Professor Juniper? Then she understands. Let's draw out our Pokémon's potential."
+  },
+  "Grimsley & Colress": {
+   "Grimsley": "Colress calls every battle an experiment. I call it a gamble. In Alola, we're both far from home.",
+   "Colress": "Grimsley thrives on uncertainty. I thrive on reducing it. Together, an interesting result."
+  },
+  "Sina & Dexio": {
+   "Sina": "Dexio and I came from Kalos together, and we battle together too! Professor Sycamore would be proud!",
+   "Dexio": "Sina is cheerful enough for both of us. I'll handle the strategy. Kalos's research team, ready."
+  },
+  "Plumeria & Guzma": {
+   "Plumeria": "Guzma, try not to wreck the tree before we wreck this kid. Team Skull's taking this one.",
+   "Guzma": "Plumeria's got my back! Team Skull's boss and big sister! Nobody squashes us!"
+  },
+  "Plumeria & Kiawe": {
+   "Plumeria": "A Trial Captain on my team? Don't tell my grunts. Just keep that fire pointed at the kid.",
+   "Kiawe": "Plumeria, Team Skull and a Trial Captain? Fine! For Alola, I'll dance the fire dance at your side!"
+  },
+  "Plumeria & Mallow": {
+   "Plumeria": "Mallow, huh? My grunts can't stop talking about your cooking. Make this kid eat their words.",
+   "Mallow": "Plumeria's tough, but she protects her friends. I respect that! Today's special: Alolan teamwork!"
+  },
+  "Guzma & Kiawe": {
+   "Guzma": "A Trial Captain?! Big bad Guzma never needed your trials! But fine, let's wreck this kid together!",
+   "Kiawe": "Guzma once tried to take the trials too. Show me what you've got now. Akala's flames are with you!"
+  },
+  "Guzma & Mallow": {
+   "Guzma": "The Lush Jungle captain, huh? Big bad Guzma'll smash 'em, you clean up the mess. Deal?",
+   "Mallow": "Guzma, if you wreck my jungle again, I'm feeding you my spiciest dish! Now, let's battle!"
+  },
+  "Kiawe & Mallow": {
+   "Kiawe": "Mallow and I are both Akala Trial Captains! Fire and Grass, Alola's island spirit burns bright!",
+   "Mallow": "Kiawe, your fire would make perfect grilled Alolan sausages! Akala's captains, let's cook!"
+  },
+  "Brock & Roxanne": {
+   "Brock": "Roxanne studied my Gym's battles in her textbooks. Two Rock-type Leaders, rock-solid together!",
+   "Roxanne": "Brock's battles were in my study notes! Today, Kanto and Hoenn's Rock types write a new chapter."
+  },
+  "Brock & Roark": {
+   "Brock": "Roark digs up fossils, just like Pewter's museum! Rock types from Kanto and Sinnoh, let's go!",
+   "Roark": "Brock's the original Rock-type Leader! I'm honored. Oreburgh and Pewter, rock-hard teamwork!"
+  },
+  "Roxanne & Roark": {
+   "Roxanne": "Roark revives living fossils! I've read all about them. Rock types from Hoenn and Sinnoh, together!",
+   "Roark": "Roxanne's notes on Rock types are better than my mining manuals! Let's dig in, Rustboro!"
+  },
+  "Misty & Juan": {
+   "Misty": "Juan taught Wallace everything about Water types! I want to learn his secrets, after we win!",
+   "Juan": "Ahh, Misty! The Cerulean mermaid! Kanto's waters and Hoenn's, a sparkling duet!"
+  },
+  "Misty & Crasher Wake": {
+   "Misty": "Crasher Wake's so loud! But he loves Water types as much as I do. Cerulean and Pastoria, splash!",
+   "Crasher Wake": "Misty! The Cerulean tomboy mermaid! Water-type tag team, Crasher Wake style! WAHAHAH!"
+  },
+  "Misty & Marlon": {
+   "Misty": "Marlon surfs better than I swim, and I swim like a mermaid! Cerulean and Humilau, Water types forever!",
+   "Marlon": "Misty's a total Water-type pro! Kanto's waves and Unova's waves, man, that's a tsunami!"
+  },
+  "Misty & Cress": {
+   "Misty": "Cress is so fancy! But his Water types are legit. Cerulean and Striaton, let's make a splash!",
+   "Cress": "Misty's devotion to Water types is admirable. Allow me to serve alongside Cerulean's finest."
+  },
+  "Juan & Crasher Wake": {
+   "Juan": "Ahh, Crasher Wake! Such powerful waves! Sootopolis elegance and Pastoria strength, a Water ballet!",
+   "Crasher Wake": "Juan! The master of Water types! The Crasher Wake bows! Then we crush! WAHAHAH!"
+  },
+  "Juan & Marlon": {
+   "Juan": "Ahh, Marlon! A surfer of Unova's seas! Let us make waves into art, my young friend.",
+   "Marlon": "Juan's so fancy with his Water types, man! Sootopolis and Humilau, the biggest wave yet!"
+  },
+  "Juan & Cress": {
+   "Juan": "Ahh, Cress! Such refinement in a Water-type master! A duet of elegance, Hoenn and Unova!",
+   "Cress": "Juan's artistry with Water types is unmatched. I would be honored to learn from him. Shall we?"
+  },
+  "Crasher Wake & Marlon": {
+   "Crasher Wake": "Marlon! The Humilau surfer! Water-type tag team, Sinnoh and Unova! The Crasher Wake rides!",
+   "Marlon": "Crasher Wake's wave is massive, man! Pastoria and Humilau, ride it all the way!"
+  },
+  "Crasher Wake & Cress": {
+   "Crasher Wake": "Cress! The fancy waiter! Water-type tag team, the Crasher Wake serves up a win! WAHAHAH!",
+   "Cress": "Crasher Wake's enthusiasm is overwhelming. Still, Water types are Water types. Shall we?"
+  },
+  "Lt. Surge & Wattson": {
+   "Lt. Surge": "Wattson, you old sparkplug! Vermilion and Mauville, the most electrifying team on the planet!",
+   "Wattson": "Wahahahah! Lt. Surge! Kanto's lightning and Hoenn's thunder! Shocking, isn't it?!"
+  },
+  "Lt. Surge & Volkner": {
+   "Lt. Surge": "Volkner looks bored, kid! Let's give him a jolt! Vermilion and Sunyshore, full voltage!",
+   "Volkner": "Lt. Surge never stops shouting. At least his team's strong. Kanto and Sinnoh's lightning, go."
+  },
+  "Lt. Surge & Elesa": {
+   "Lt. Surge": "Elesa's a supermodel AND an Electric-type pro! Vermilion and Nimbasa, maximum voltage, kid!",
+   "Elesa": "Lt. Surge's thunder and my sparks! Kanto's lightning and Unova's spotlight, dazzling!"
+  },
+  "Wattson & Volkner": {
+   "Wattson": "Wahahahah! Volkner! Mauville's power and Sunyshore's solar panels! A shocking team!",
+   "Volkner": "Wattson's Mauville and my Sunyshore both run on electricity. Fitting. Let's light this up."
+  },
+  "Wattson & Elesa": {
+   "Wattson": "Wahahahah! Elesa's runway glows brighter than Mauville's arcade! Both our cities run on electricity!",
+   "Elesa": "Wattson's laugh is pure static! Mauville and Nimbasa, let's give them a dazzling shock!"
+  },
+  "Volkner & Elesa": {
+   "Volkner": "Elesa. Unova's Electric-type star. Finally, someone who might make this interesting.",
+   "Elesa": "Volkner looks bored? I'll fix that. Sunyshore's lighthouse and Nimbasa's spotlight, full charge!"
+  },
+  "Erika & Gardenia": {
+   "Erika": "Gardenia's flowers have the loveliest fragrance. Celadon and Eterna, a garden in full bloom.",
+   "Gardenia": "Erika's flower arrangements are famous! Grass types from Kanto and Sinnoh, let's bloom!"
+  },
+  "Erika & Cilan": {
+   "Erika": "Cilan says my battles taste like jasmine tea. How lovely. Celadon and Striaton, shall we?",
+   "Cilan": "Erika's battles have a delicate floral flavor, like jasmine tea! It's evaluation time!"
+  },
+  "Erika & Mallow": {
+   "Erika": "Mallow's cooking uses herbs from her Grass types. How clever. Celadon and Akala, together.",
+   "Mallow": "Erika's flowers smell amazing! I wanna use them in a recipe! Grass types, Kanto and Alola!"
+  },
+  "Gardenia & Cilan": {
+   "Gardenia": "Cilan says my battles taste fresh, like a forest salad! Eterna and Striaton, let's grow!",
+   "Cilan": "Gardenia's battles have a fresh, forest-green flavor! A Grass-type feast! Evaluation time!"
+  },
+  "Gardenia & Mallow": {
+   "Gardenia": "Mallow's Lush Jungle is like Eterna Forest, but sunnier! Grass types, Sinnoh and Alola!",
+   "Mallow": "Gardenia's forest is beautiful! I wanna cook with its berries! Grass types, let's bloom!"
+  },
+  "Cilan & Mallow": {
+   "Cilan": "Mallow is a chef AND a Grass-type Trainer?! A kindred spirit! It's evaluation time!",
+   "Mallow": "Cilan's a connoisseur? Let's cook up a win! Grass types, Unova and Alola, the ultimate menu!"
+  },
+  "Janine & Roxie": {
+   "Janine": "Roxie's poison is loud, mine is silent. Fuchsia's ninja and Virbank's rock star, the deadliest duo!",
+   "Roxie": "Janine's a ninja?! So cool! Poison types, Kanto and Unova, let's make some noise!"
+  },
+  "Janine & Plumeria": {
+   "Janine": "Plumeria's toxic swagger and my ninja poison! Kanto and Alola, the most toxic team-up!",
+   "Plumeria": "Janine's a ninja, huh? Fine. Just don't hide when it's time to fight. Poison types, let's go."
+  },
+  "Roxie & Plumeria": {
+   "Roxie": "Plumeria's Team Skull? That's so punk! Poison types, Unova and Alola, let's rock!",
+   "Plumeria": "Roxie's got attitude. I like it. Poison types, let's show this kid what toxic really means."
+  },
+  "Sabrina & Dexio": {
+   "Sabrina": "Dexio's mind has potential. I foresee it, and our victory. Kanto and Kalos, together.",
+   "Dexio": "Sabrina's psychic powers are legendary. I'm honored to battle beside her. Kalos and Kanto, focus."
+  },
+  "Sabrina & Anabel": {
+   "Sabrina": "Anabel senses bonds; I see the future. Together, nothing escapes us. Kanto and Hoenn's psychics.",
+   "Anabel": "Sabrina's mind is sharp as a blade. I can sense her Pokémon's trust. Let's battle together."
+  },
+  "Dexio & Anabel": {
+   "Dexio": "Anabel was a Frontier Brain. Her Psychic types are formidable. Kalos and Hoenn, let's begin.",
+   "Anabel": "Dexio's bond with his Pokémon is quiet but strong. I sense it. Let's battle together."
+  },
+  "Blaine & Flannery": {
+   "Blaine": "Hah! Flannery took over her grandpa's Gym, and I rebuilt mine after a volcano blew it up! Fire-type Leaders never quit!",
+   "Flannery": "Blaine kept his Gym going even after Cinnabar's volcano erupted! That's the Leader I want to be! Let's heat it up!"
+  },
+  "Blaine & Chili": {
+   "Blaine": "Hah! Quiz time, Chili! Which burns hotter, Cinnabar's volcano or Striaton's kitchen? Let's test it on the challenger!",
+   "Chili": "Blaine's quizzes are awesome! Answer: the challenger's about to get roasted! Fire types, let's go!"
+  },
+  "Blaine & Kiawe": {
+   "Blaine": "Hah! Kiawe dances on Wela Volcano, and I built my Gym on Cinnabar's! Two volcano men, burning bright!",
+   "Kiawe": "Blaine's Gym survived an eruption, and his fire never went out! Akala's captain salutes you! Let's burn!"
+  },
+  "Flannery & Chili": {
+   "Flannery": "Chili's even more fired up than me! Lavaridge's hot springs and Striaton's hot sauce, let's get spicy!",
+   "Chili": "Flannery gets it! Fire's all about passion! Lavaridge and Striaton, crank up the heat!"
+  },
+  "Flannery & Kiawe": {
+   "Flannery": "Kiawe's fire dance is so cool! Maybe I'll try it at the Lavaridge hot springs! Let's burn it up!",
+   "Kiawe": "Flannery's spirit burns like Wela Volcano itself! Lavaridge and Akala, volcano Trainers unite!"
+  },
+  "Chili & Kiawe": {
+   "Chili": "Kiawe's a fire dancer, and I'm a fire waiter! Same energy! Let's serve up some flames!",
+   "Kiawe": "Chili's passion rivals the flames of Wela Volcano! Fire types, our blaze will not die out!"
+  },
+  "Giovanni & Clay": {
+   "Giovanni": "Clay built an empire from his mines. I built mine by... other means. Ground types respect only strength.",
+   "Clay": "Team Rocket's boss, huh? Hmph. Business is business, and my Ground types don't care who's watchin'. Let's dig."
+  },
+  "Falkner & Winona": {
+   "Falkner": "Winona's birds fly like clouds. My father would have loved to see them. Violet and Fortree, take wing!",
+   "Winona": "Falkner defends the honor of Flying types, as I do. Johto's skies and Hoenn's, soaring as one."
+  },
+  "Falkner & Skyla": {
+   "Falkner": "Skyla flies real planes! My birds are a little jealous. Flying-type Leaders, let's soar!",
+   "Skyla": "Falkner's birds are so well trained! Violet City's finest and Mistralton Cargo, cleared for takeoff!"
+  },
+  "Winona & Skyla": {
+   "Winona": "Skyla's cargo planes and my birds ride the same winds. Fortree and Mistralton, together in the sky.",
+   "Skyla": "Winona's so graceful in the air! I'm more of a loop-the-loop flyer. Fortree and Mistralton, let's take off!"
+  },
+  "Bugsy & Burgh": {
+   "Bugsy": "Burgh paints Bug types, and I research them! Azalea and Castelia, the Bug-type experts' summit!",
+   "Burgh": "Bugsy knows every Bug type by heart, and I know them by color! Together, a Bug-type masterpiece!"
+  },
+  "Bugsy & Guzma": {
+   "Bugsy": "Guzma's Bug types are amazing! Can I take notes on them after the battle? Bug types, let's go!",
+   "Guzma": "A Bug-type nerd, huh? Fine. Watch big bad Guzma and write this down: destruction!"
+  },
+  "Burgh & Guzma": {
+   "Burgh": "Guzma's Bug types are a sculpture of pure power! How inspiring!",
+   "Guzma": "An artist with Bug types? Whatever. Paint a picture of big bad Guzma smashin' this kid!"
+  },
+  "Whitney & Norman": {
+   "Whitney": "Norman's team is huge! Me and my cuties are gonna roll right alongside 'em! Normal types, go!",
+   "Norman": "Whitney's team has humbled many challengers. Goldenrod and Petalburg, let's show what Normal types can do."
+  },
+  "Whitney & Cheren": {
+   "Whitney": "Cheren's so serious! Are you gonna grade me, Teach? Normal types are cute AND strong!",
+   "Cheren": "Whitney's team is the textbook example of underestimated Normal types. Today's lesson begins."
+  },
+  "Whitney & Lenora": {
+   "Whitney": "Lenora runs a museum AND a Normal-type Gym? That's so cool! Goldenrod and Nacrene, let's go!",
+   "Lenora": "Whitney's Gym is famous for humbling new Trainers! Let's add that to the history books! Normal types, together!"
+  },
+  "Norman & Cheren": {
+   "Norman": "Cheren teaches young Trainers. I raised one. Normal types, like students, show their strength with patience.",
+   "Cheren": "Norman's team is a lesson in raw power. Petalburg and Aspertia, Normal types, side by side."
+  },
+  "Norman & Lenora": {
+   "Norman": "Lenora understands that Normal types are anything but ordinary. Petalburg and Nacrene, let's prove it.",
+   "Lenora": "Norman's battles are the stuff of Hoenn legend! Let's make some Unova history too! Normal types, together!"
+  },
+  "Morty & Fantina": {
+   "Morty": "Fantina's Ghost types move like dancers. Ecruteak and Hearthome, a mystical pairing.",
+   "Fantina": "Morty, the Ecruteak mystic! Ghost types of Johto and Sinnoh, a séance magnifique!"
+  },
+  "Chuck & Brawly": {
+   "Chuck": "Brawly trains in the sea, I train under waterfalls! Same water, same spirit! Fighting types, HYAH!",
+   "Brawly": "Chuck's waterfall training is legendary! Cianwood's surf and Dewford's waves, let's knock 'em out!"
+  },
+  "Chuck & Maylene": {
+   "Chuck": "Maylene trains barefoot! Excellent! Toughen those soles! Fighting types, Cianwood and Veilstone!",
+   "Maylene": "Chuck's training is so intense... I want to try the waterfall too! After we win! Fighting types, let's go!"
+  },
+  "Brawly & Maylene": {
+   "Brawly": "Maylene's team has some serious aura! Dewford's waves and Veilstone's fists, let's do this!",
+   "Maylene": "Brawly's so cool and confident. I'll do my best too! Fighting types from Hoenn and Sinnoh, together!"
+  },
+  "Jasmine & Byron": {
+   "Jasmine": "Byron's steel and mine... we'll be like a wall. Olivine and Canalave are both harbor towns, too.",
+   "Byron": "Gahahah! Jasmine! Two harbor-town Steel-type Leaders! Our defense is unbreakable!"
+  },
+  "Jasmine & Colress": {
+   "Jasmine": "Colress says my Steel types have great potential. I... think so too. Let's do our best together.",
+   "Colress": "Jasmine's bond with her Steel types is quiet but powerful. Let's see how far it can go."
+  },
+  "Byron & Colress": {
+   "Byron": "Gahahah! A scientist who loves Steel types! Canalave's mines could use your gadgets, Colress!",
+   "Colress": "Byron's Steel types were forged by years in the mines. Fascinating. Let's measure their full potential."
+  },
+  "Pryce & Candice": {
+   "Pryce": "Candice is full of youthful fire, for an Ice-type Trainer. Mahogany and Snowpoint, winter's might.",
+   "Candice": "Pryce! The Ice-type grandmaster! FOCUS, Candice! Let's give 'em a blizzard!"
+  },
+  "Pryce & Brycen": {
+   "Pryce": "Brycen, the actor who chose the mountains over the screen. I understand that choice. Ice types, together.",
+   "Brycen": "Pryce has endured more winters than I have. I'll follow his lead. Hm!"
+  },
+  "Pryce & Sina": {
+   "Pryce": "Young Sina's cheer melts even an old man's frost. Ice types, Johto and Kalos.",
+   "Sina": "Pryce is an Ice-type legend! I'm going to study how he battles! Let's freeze 'em!"
+  },
+  "Candice & Brycen": {
+   "Candice": "Brycen-Man was my favorite movie hero! FOCUS! Snowpoint and Icirrus, ice cold!",
+   "Brycen": "Candice's energy could melt a glacier. Point it at the challenger. Hm!"
+  },
+  "Candice & Sina": {
+   "Candice": "Sina loves Ice types as much as I do! FOCUS! Snowpoint and Kalos, let's make it snow!",
+   "Sina": "Candice's energy is contagious! Ice types from Sinnoh and Kalos, let's freeze this battle!"
+  },
+  "Brycen & Sina": {
+   "Brycen": "Sina's cheer warms even an icy heart. Icirrus and Kalos, together. Hm!",
+   "Sina": "Brycen was in movies? Dexio has to see this! Ice types, let's go!"
+  },
+  "Clair & Drayden": {
+   "Clair": "Drayden. Opelucid's dragon master. Finally, a partner worthy of Blackthorn's dragons.",
+   "Drayden": "Clair has the pride of a true dragon tamer. Blackthorn and Opelucid, let us show you a dragon's might."
+  }
+ },
  "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both)."
 }

@@ -1,7 +1,7 @@
 // Option scoring for the heuristic AI. Every rule below is listed, with its
 // source, in AI_NOTES.md.
 import type { Battle, Pokemon, Side } from '@pkmn/sim';
-import { estimateDamage, type DamageEstimate, type Forme } from './calc';
+import { estimateDamage, NO_DAMAGE, type DamageEstimate, type Forme } from './calc';
 import type { HeuristicConfig } from './config';
 
 type DexMove = ReturnType<Battle['dex']['moves']['get']>;
@@ -103,10 +103,18 @@ const positiveBoosts = (p: Pokemon) => Object.values(p.boosts).reduce((s, v) => 
 const isPhysical = (p: Pokemon) => p.getStat('atk', false, true) >= p.getStat('spa', false, true);
 const aliveBench = (side: Side) => side.pokemon.filter(p => !p.isActive && p.hp > 0).length;
 
+/** Moves that hit two turns later (a slot condition on the target's spot until then). */
+const FUTURE_MOVES = new Set(['futuresight', 'doomdesire']);
+
 /** Scores a damaging move (optionally as a Z-Move). */
 export function scoreDamaging(s: Situation, moveId: string, useZ: boolean): ScoredMove & { est: DamageEstimate } {
   const { battle, me, foe, config } = s;
   const move = battle.dex.moves.get(moveId);
+  // App rule: no Future Sight (or Doom Desire) at a spot one is already headed for, until it hits
+  // (the game makes it fail then anyway). Below 0, like the other ruled-out moves.
+  if (FUTURE_MOVES.has(move.id) && !useZ && foe.side.slotConditions[foe.position]?.futuremove) {
+    return { score: RULED_OUT, ko: false, first: false, reason: 'future attack already coming', est: NO_DAMAGE };
+  }
   const est = estimateDamage(battle, me, foe, moveId, { useZ, attackerForme: s.myForme });
   const first = actsFirst(battle, me, movePriority(me, move), foe, s.threat.moveId ? battle.dex.moves.get(s.threat.moveId).priority : 0);
   let score = est.frac;

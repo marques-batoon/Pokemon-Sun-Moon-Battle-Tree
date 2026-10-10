@@ -110,22 +110,56 @@ export const RULES = rulesJson as unknown as RulesFile;
 export const TRAINER_QUOTES = quotesJson.quotes as Record<string, TrainerQuotes[]>;
 /** Paired trainers' lines when they battle together in a Multi Battle (Tate and Liza), three sets each. */
 export const TRAINER_MULTI_QUOTES = quotesJson.multi as Record<string, TrainerQuotes[]>;
+/**
+ * Greetings for two special trainers drawn together in a Multi Battle who share a region or a type
+ * (written for this app): each entry holds one greeting per trainer, by name.
+ */
+export const TRAINER_PAIR_GREETINGS = quotesJson.pairs as Record<string, Record<string, string>>;
+const pairKey = (a: string, b: string) => [a, b].sort().join('|');
+const PAIR_GREETINGS = new Map(Object.values(TRAINER_PAIR_GREETINGS).map(entry => {
+  const [a, b] = Object.keys(entry);
+  return [pairKey(a, b), entry] as const;
+}));
+/** What `trainer` says to greet you when battling alongside `other` (null: no special greeting for this pair). */
+export function pairGreeting(trainer: Trainer, other: Trainer): string | null {
+  if (trainer.name === other.name) return null;
+  return PAIR_GREETINGS.get(pairKey(trainer.name, other.name))?.[trainer.name] ?? null;
+}
+
+/** Number of distinct quote picks: divisible by every list length up to 10, so each line is equally likely. */
+export const QUOTE_PICKS = 2520;
+
+/**
+ * Which lines a battle uses, as a small number (0 to QUOTE_PICKS - 1) from its
+ * seed text. Online, the host sends this instead of the seed, which stays secret
+ * (it decides the opponents' teams), so both players see the same lines.
+ */
+export function quotePick(battleKey: string): number {
+  // FNV-1a: a small, stable string hash.
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < battleKey.length; i++) hash = Math.imul(hash ^ battleKey.charCodeAt(i), 0x01000193);
+  return (hash >>> 0) % QUOTE_PICKS;
+}
 
 /**
  * The set of lines a trainer uses in one battle: picked from their three by
- * `battleKey` (the battle's seed text), so the greeting on the opponent card,
- * the special-battle intro and the closing remark always belong together, and
- * a replayed battle gets the same lines. `alongside`: the other opposing trainer
- * in a Multi Battle; paired trainers fighting together use their team-up lines
- * (the same set for both, so they answer each other).
+ * `battleKey` (the battle's seed text, or its quotePick), so the greeting on the
+ * opponent card, the special-battle intro and the closing remark always belong
+ * together, and a replayed battle gets the same lines. `alongside`: the other
+ * opposing trainer in a Multi Battle; paired trainers fighting together use their
+ * team-up lines (the same set for both, so they answer each other), and two
+ * special trainers who share a region or a type greet you with lines about each
+ * other (TRAINER_PAIR_GREETINGS; their closing remarks stay their usual ones).
  */
-export function trainerQuotes(trainer: Trainer, battleKey: string, alongside: readonly Trainer[] = []): TrainerQuotes | null {
+export function trainerQuotes(trainer: Trainer, battleKey: string | number, alongside: readonly Trainer[] = []): TrainerQuotes | null {
   const paired = pairedTrainer(trainer.id);
   const together = !!paired && alongside.some(t => t.id === paired.partnerId);
   const sets = (together ? TRAINER_MULTI_QUOTES[trainer.name] : undefined) ?? TRAINER_QUOTES[trainer.name];
   if (!sets?.length) return null;
-  // FNV-1a: a small, stable string hash.
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < battleKey.length; i++) hash = Math.imul(hash ^ battleKey.charCodeAt(i), 0x01000193);
-  return sets[(hash >>> 0) % sets.length];
+  const pick = typeof battleKey === 'number' ? battleKey : quotePick(battleKey);
+  const lines = sets[pick % sets.length];
+  if (together || trainer.kind !== 'special') return lines;
+  const other = alongside.find(t => t.id !== trainer.id && t.kind === 'special');
+  const greeting = other ? pairGreeting(trainer, other) : null;
+  return greeting ? { ...lines, greeting } : lines;
 }

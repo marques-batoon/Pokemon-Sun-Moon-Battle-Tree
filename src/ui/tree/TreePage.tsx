@@ -74,7 +74,17 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
     const key = view.key;
     const run = state.runs[key];
     if (!run) return <TreeHomeFallback onHome={() => setView({ kind: 'home' })} />;
-    if (isFinished(run)) return <RunResult run={run} best={profile.records[key].best} superUnlocked={isSuperUnlocked(profile, run.format)} onDone={() => { controller.dismiss(key); setView({ kind: 'home' }); }} />;
+    if (isFinished(run)) {
+      const retry = run.status === 'lost' ? state.retries[key] : undefined;
+      return (
+        <RunResult
+          run={run} best={profile.records[key].best} superUnlocked={isSuperUnlocked(profile, run.format)}
+          retryFrom={retry?.battle ?? null}
+          onRetry={() => { controller.retryFromOffer(key); setView({ kind: 'run', key }); }}
+          onDone={() => { controller.dismiss(key); setView({ kind: 'home' }); }}
+        />
+      );
+    }
     if (controller.isInterrupted(key)) return <Interrupted controller={controller} run={run} onBack={() => setView({ kind: 'home' })} />;
     return (
       <RunScreen
@@ -250,8 +260,16 @@ function Interrupted({ controller, run, onBack }: { controller: RunController; r
   );
 }
 
-function RunResult({ run, best, superUnlocked, onDone }: { run: RunState; best: number; superUnlocked: boolean; onDone: () => void }) {
+function RunResult({ run, best, superUnlocked, retryFrom, onRetry, onDone }: {
+  run: RunState; best: number; superUnlocked: boolean;
+  /** Just lost at battle 10 or later: start again from this battle (last multiple of 10). */
+  retryFrom: number | null; onRetry: () => void; onDone: () => void;
+}) {
   const last = run.history.at(-1);
+  const [error, setError] = useState<string | null>(null);
+  const retry = () => {
+    try { onRetry(); } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+  };
   return (
     <section className="panel run-result">
       {run.status === 'cleared' && (
@@ -273,7 +291,16 @@ function RunResult({ run, best, superUnlocked, onDone }: { run: RunState; best: 
         <div><dt>Best</dt><dd>{best}</dd></div>
       </dl>
       {run.debug && <p className="muted small">Unranked run: not counted toward records or unlocks.</p>}
-      <button className="primary" onClick={onDone}>Back to the Battle Tree</button>
+      {retryFrom !== null && (
+        <p className="muted small">
+          Start a new challenge from battle {retryFrom} with the same team{run.partner ? ` and partner (${run.partner.name})` : ''}: your streak starts at {retryFrom - 1}. Only offered right after a loss (this session).
+        </p>
+      )}
+      {error && <p className="problems">{error}</p>}
+      <div className="row-actions">
+        <button className={retryFrom === null ? 'primary' : ''} onClick={onDone}>Back to the Battle Tree</button>
+        {retryFrom !== null && <button className="primary" onClick={retry}>Start again from battle {retryFrom}</button>}
+      </div>
     </section>
   );
 }

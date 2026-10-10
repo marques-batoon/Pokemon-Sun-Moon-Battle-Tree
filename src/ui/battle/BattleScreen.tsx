@@ -19,7 +19,8 @@ interface Props {
   onContinue?: () => void;
   continueLabel?: string;
   /** The trainer(s) being fought (two in Multi) and this battle's key (seed text): they say a closing remark when it ends. */
-  opponent?: { trainers: Trainer[]; battleKey: string };
+  /** `battleKey`: the battle's seed text, or its quote pick (online), choosing the closing remark that goes with its greeting. */
+  opponent?: { trainers: Trainer[]; battleKey: string | number };
   /** Show debug info (seed, input log). Default: the debug tools setting. Online partners never get it. */
   debugTools?: boolean;
 }
@@ -104,7 +105,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
 }
 
 /** The opponent's last word: the closing remark (win or loss) that goes with this battle's greeting; none on a tie. */
-function ClosingRemark({ trainer, alongside, battleKey, winner }: { trainer: Trainer; alongside: readonly Trainer[]; battleKey: string; winner: string | null | undefined }) {
+function ClosingRemark({ trainer, alongside, battleKey, winner }: { trainer: Trainer; alongside: readonly Trainer[]; battleKey: string | number; winner: string | null | undefined }) {
   const quotes = trainerQuotes(trainer, battleKey, alongside);
   const line = winner === 'p2' ? quotes?.trainerWins : winner === 'p1' ? quotes?.trainerLoses : null;
   if (!line) return null;

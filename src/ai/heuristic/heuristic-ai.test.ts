@@ -87,6 +87,23 @@ describe('HeuristicAI move choice', () => {
     expect(decide(wish)['move 1'] ?? 0).toBe(0);
   });
 
+  it("doesn't use Future Sight again until the last one has hit", () => {
+    // Future Sight is its strongest attack (Water Gun is the other), so it's the pick, except while one is on its way.
+    const SLOWBRO = `Slowbro @ Leftovers\nAbility: Regenerator\nEVs: 252 HP / 252 SpA\nModest Nature\n- Future Sight\n- Water Gun`;
+    const SNORLAX = `Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP / 252 SpD\nCareful Nature\n- Rest\n- Sleep Talk`;
+    const b = scenario(SNORLAX, SLOWBRO);
+    expect(share(decide(b), 'move 1')).toBeGreaterThan(0.3);
+    b.makeChoices('move 1', 'move 1');
+    expect(b.p1.slotConditions[0].futuremove).toBeTruthy();
+    expect(decide(b)['move 1'] ?? 0).toBe(0);
+    b.makeChoices('move 1', 'move 2');
+    expect(decide(b)['move 1'] ?? 0).toBe(0);
+    // It hits at the end of this turn; then Future Sight is fair game again.
+    b.makeChoices('move 1', 'move 2');
+    expect(b.p1.slotConditions[0].futuremove).toBeFalsy();
+    expect(decide(b)['move 1'] ?? 0).toBeGreaterThan(0);
+  });
+
   it('sets weather when it is not up and no KO is available, but not when it already is', () => {
     const PELIPPER = `Pelipper @ Damp Rock\nAbility: Keen Eye\nEVs: 252 HP / 252 Def\nBold Nature\n- Rain Dance\n- Scald\n- Hurricane\n- Roost`;
     expect(share(decide(scenario(CHANSEY, PELIPPER)), 'move 1')).toBeGreaterThan(0.6);
@@ -271,7 +288,7 @@ describe('calc bridge', () => {
     expect(calcErrors.count, calcErrors.last ?? '').toBe(before);
   });
 
-  it('counts Mega Launcher on Cocytus Pulse as MetalGarurumon', async () => {
+  it('counts Mega Launcher on Cocytus Pulse and Fox Fire as MetalGarurumon', async () => {
     const { calcErrors, estimateDamage } = await import('./calc');
     const before = calcErrors.count;
     const b = scenario(
@@ -283,7 +300,8 @@ describe('calc bridge', () => {
     const launched = estimateDamage(b, gabumon, snorlax, 'cocytuspulse', { attackerForme: metal }).frac;
     const plain = estimateDamage(b, gabumon, snorlax, 'cocytuspulse', { attackerForme: { ...metal, ability: 'Thick Fat' } }).frac;
     expect(launched).toBeGreaterThan(plain * 1.4);
-    expect(estimateDamage(b, gabumon, snorlax, 'foxfire').frac).toBeGreaterThan(0);
+    const fox = (ability: string) => estimateDamage(b, gabumon, snorlax, 'foxfire', { attackerForme: { ...metal, ability } }).frac;
+    expect(fox('Mega Launcher')).toBeGreaterThan(fox('Thick Fat') * 1.4);
     expect(calcErrors.count, calcErrors.last ?? '').toBe(before);
   });
 

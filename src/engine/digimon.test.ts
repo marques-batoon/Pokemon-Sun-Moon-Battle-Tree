@@ -89,10 +89,11 @@ describe('Gabumon and MetalGarurumon', () => {
     expect(dex.items.get('Metalgaruruite').megaStone).toEqual({ Gabumon: 'MetalGarurumon' });
   });
 
-  it('has Fox Fire and Cocytus Pulse (a pulse move)', () => {
+  it('has Fox Fire and Cocytus Pulse (both boosted by Mega Launcher)', () => {
     const fox = dex.moves.get('Fox Fire');
     expect([fox.type, fox.category, fox.basePower, fox.accuracy, fox.pp, fox.target]).toEqual(['Fire', 'Special', 70, 100, 10, 'normal']);
     expect(fox.flags.contact).toBeUndefined();
+    expect(fox.flags.pulse).toBe(1);
     expect(fox.secondary).toEqual({ chance: 20, boosts: { spd: -1 } });
     const cocytus = dex.moves.get('Cocytus Pulse');
     expect([cocytus.type, cocytus.category, cocytus.basePower, cocytus.accuracy, cocytus.pp]).toEqual(['Ice', 'Special', 85, 100, 10]);
@@ -123,6 +124,7 @@ describe('Gabumon and MetalGarurumon', () => {
     const [user, foe] = [b.p1.active[0], b.p2.active[0]];
     const power = (id: string) => b.runEvent('BasePower', user, foe, b.dex.getActiveMove(id), b.dex.moves.get(id).basePower, true);
     expect(power('cocytuspulse')).toBe(127);
+    expect(power('foxfire')).toBe(105);
     expect(power('icebeam')).toBe(90);
   });
 });

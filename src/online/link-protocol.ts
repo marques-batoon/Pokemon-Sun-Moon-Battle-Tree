@@ -4,7 +4,7 @@
 //
 // Everything received comes from another person's browser, so it's checked
 // against these shapes before use and anything else is dropped.
-import { TRAINERS } from '../data/battle-tree';
+import { QUOTE_PICKS, TRAINERS } from '../data/battle-tree';
 import type { FromEngine } from '../engine/protocol';
 import { STAT_IDS, type PokemonSet } from '../team/types';
 import { PARTNER_BRING } from '../run/types';
@@ -17,6 +17,8 @@ export interface LobbyView {
   battle: number;
   /** The next opposing trainers (Battle Tree trainer ids). */
   next: number[];
+  /** Which of their greetings and closing remarks the next battle uses (see quotePick; the seed itself stays with the host). */
+  quotePick: number | null;
   hostReady: boolean;
   guestReady: boolean;
   /** A battle is on. */
@@ -115,6 +117,7 @@ function parseLobby(v: unknown): LobbyView | null {
   if (streak === null || battle === null || !next) return null;
   return {
     streak, battle, next,
+    quotePick: int(v.quotePick, 0, QUOTE_PICKS - 1),
     hostReady: v.hostReady === true,
     guestReady: v.guestReady === true,
     inBattle: v.inBattle === true,

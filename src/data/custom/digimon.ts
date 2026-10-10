@@ -107,8 +107,8 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target.',
   },
   {
-    name: 'Fox Fire', type: 'Fire', category: 'Special', basePower: 70, accuracy: 100, pp: 10, contact: false,
-    secondary: { chance: 20, boosts: { spd: -1 } }, desc: '20% chance to lower the target\'s Sp. Def by 1.',
+    name: 'Fox Fire', type: 'Fire', category: 'Special', basePower: 70, accuracy: 100, pp: 10, contact: false, pulse: true,
+    secondary: { chance: 20, boosts: { spd: -1 } }, desc: '20% chance to lower the target\'s Sp. Def by 1. Boosted by Mega Launcher.',
   },
   {
     name: 'Cocytus Pulse', type: 'Ice', category: 'Special', basePower: 85, accuracy: 100, pp: 10, contact: false, pulse: true,
@@ -118,13 +118,15 @@ export const DIGIMON_MOVES: DigimonMove[] = [
 
 /**
  * Sprites shipped with the app (public/pokemon), facing left; the back view is the front one flipped.
+ * `w`/`h` must match the image's shape (WarGreymon's is cropped to its wide body, not padded to a
+ * square, so height limits on the stage measure the body, not empty space).
  * `stageScale`: how much larger a warp form is drawn on the battle stage (Megas are drawn 1.2x).
  */
 export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: number; stageScale?: number }> = {
   Agumon: { file: 'pokemon/agumon.png', w: 84, h: 84 },
-  WarGreymon: { file: 'pokemon/wargreymon.png', w: 132, h: 132, stageScale: 1.4 },
+  WarGreymon: { file: 'pokemon/wargreymon.png', w: 126, h: 96, stageScale: 1.5 },
   Gabumon: { file: 'pokemon/gabumon.png', w: 84, h: 84 },
-  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.3 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.27 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);

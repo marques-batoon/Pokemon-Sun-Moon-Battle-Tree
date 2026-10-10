@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
 import type { RunController, RunTeam } from '../../run/controller';
 import { bpForWin, courseSchedule } from '../../run/selection';
-import { BRING, opponentLabel, runKey, type PlannedTrainer, type RunState } from '../../run/types';
+import { BRING, runKey, type PlannedTrainer, type RunState } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
 import { courseLabel } from './hooks';
 import { UnrankedTag } from './UnrankedTag';
 import { TeamSetup } from './TeamSetup';
-import { OpponentPortrait } from '../components/OpponentPortrait';
+import { OpponentCard } from '../components/OpponentCard';
 import { PokemonIcon } from '../components/PokemonSprite';
 import { PartnerCard } from './PartnerCard';
 import { DebugOpponentPicker } from './DebugOpponentPicker';
@@ -24,8 +24,6 @@ interface Props {
   onBattle: () => void;
   onLeave: () => void;
 }
-
-const KIND_LABEL = { regular: null, special: 'Special trainer', legend: 'Battle Legend battle' } as const;
 
 /** Between battles: streak, BP, next opponent(s), partner, team, save & quit. */
 export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave }: Props) {
@@ -44,7 +42,6 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
     trainer: TRAINERS[p.trainerId],
     greeting: trainerQuotes(TRAINERS[p.trainerId], run.next.seedText, planned.map(o => TRAINERS[o.trainerId]))?.greeting ?? null,
   }));
-  const kind = foes.some(f => f.planned.kind === 'legend') ? 'legend' : foes.some(f => f.planned.kind === 'special') ? 'special' : 'regular';
 
   return (
     <section className="panel run-screen">
@@ -58,26 +55,12 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
         </dl>
       </header>
 
-      <div className={`opponent-card kind-${kind}`}>
-        <div className="opponent-stage">
-          <OpponentPortrait
-            key={`${run.id}:${run.battle}`}
-            trainers={foes.map(f => f.trainer)}
-            intro={kind !== 'regular' ? `${run.id}:${run.battle}` : null}
-            captions={foes.map(f => ({ name: f.planned.displayName, quote: f.greeting }))}
-          />
-        </div>
-        <div className="opponent-info">
-          <span className="muted small">Battle {run.battle} · win for {bpForWin(run.course, run.battle)} BP</span>
-          <strong className="opponent-name">{opponentLabel(run.next)}</strong>
-          {KIND_LABEL[kind] && <span className="tag">{multi && kind === 'legend' ? 'Battle Legends battle' : KIND_LABEL[kind]}</span>}
-          {foes.map(f => f.greeting && (
-            <q key={f.trainer.id} className="opponent-quote">
-              {multi && <span className="quote-speaker">{f.trainer.name}: </span>}{f.greeting}
-            </q>
-          ))}
-        </div>
-      </div>
+      <OpponentCard
+        trainers={foes.map(f => f.trainer)}
+        greetings={foes.map(f => f.greeting)}
+        detail={`Battle ${run.battle} · win for ${bpForWin(run.course, run.battle)} BP`}
+        battleKey={`${run.id}:${run.battle}`}
+      />
 
       {run.partner && (
         <div className="run-partner">

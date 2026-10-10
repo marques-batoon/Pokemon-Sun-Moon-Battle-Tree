@@ -227,10 +227,60 @@ describe('trainer-quotes.json', () => {
     }
   });
 
+  it('has pair greetings for special trainers who share a region or a type: one per trainer, no Pokémon named', async () => {
+    const { TRAINER_PAIR_GREETINGS, TRAINER_QUOTES } = await import('./index');
+    const special = new Set(TRAINERS.filter(t => t.kind === 'special').map(t => t.name));
+    const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
+    const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?!\\w)`);
+    const seen = new Set<string>();
+    const lines: string[] = [];
+    for (const [label, entry] of Object.entries(TRAINER_PAIR_GREETINGS)) {
+      const who = Object.keys(entry);
+      expect(who, label).toHaveLength(2);
+      for (const name of who) expect(special.has(name), `${label}: ${name}`).toBe(true);
+      // Tate and Liza only ever battle together (they have their own team-up lines).
+      expect(who.some(n => n === 'Tate' || n === 'Liza'), label).toBe(false);
+      const key = [...who].sort().join('|');
+      expect(seen.has(key), label).toBe(false);
+      seen.add(key);
+      lines.push(...Object.values(entry));
+    }
+    expect(seen.size).toBeGreaterThanOrEqual(317);
+    const usual = Object.values(TRAINER_QUOTES).flat().map(q => q.greeting);
+    for (const text of lines) {
+      expect(text.trim().length).toBeGreaterThan(0);
+      expect(text.length).toBeLessThanOrEqual(120);
+      // Their shared type may come up (that's the point), but never a Pokémon on their team.
+      expect(text).not.toMatch(pokemon);
+      expect(usual).not.toContain(text);
+    }
+    expect(new Set(lines).size).toBe(lines.length);
+  });
+
+  it('greets you with pair lines when two such special trainers battle together, keeping their usual closing remarks', async () => {
+    const { trainerQuotes, TRAINER_PAIR_GREETINGS } = await import('./index');
+    const [brock, misty, surge, cynthia, florian] = ['Brock', 'Misty', 'Lt. Surge', 'Cynthia', 'Florian'].map(byName);
+    const key = 'run-9|battle-10';
+    const together = trainerQuotes(brock, key, [brock, misty])!;
+    const alone = trainerQuotes(brock, key)!;
+    expect(together.greeting).toBe(TRAINER_PAIR_GREETINGS['Brock & Misty'].Brock);
+    expect(trainerQuotes(misty, key, [brock, misty])!.greeting).toBe(TRAINER_PAIR_GREETINGS['Brock & Misty'].Misty);
+    expect(together.trainerWins).toBe(alone.trainerWins);
+    expect(together.trainerLoses).toBe(alone.trainerLoses);
+    // Same type, different regions.
+    expect(trainerQuotes(surge, key, [surge, byName('Volkner')])!.greeting).toMatch(/Volkner/);
+    // Nothing in common (Kanto Leader and Sinnoh's Champion), or a regular trainer: their usual lines.
+    expect(trainerQuotes(brock, key, [brock, cynthia])).toBe(alone);
+    expect(trainerQuotes(brock, key, [brock, florian])).toBe(alone);
+  });
+
   it('picks one set per battle, the same every time for that battle, and uses all three', async () => {
     const { trainerQuotes } = await import('./index');
     const florian = TRAINERS[0];
     expect(trainerQuotes(florian, 'run-1|battle-3')).toBe(trainerQuotes(florian, 'run-1|battle-3'));
+    // The quote pick (sent online instead of the secret seed) chooses the same lines as the seed text.
+    const { quotePick } = await import('./index');
+    for (let i = 1; i <= 20; i++) expect(trainerQuotes(florian, quotePick(`run-1|battle-${i}`))).toBe(trainerQuotes(florian, `run-1|battle-${i}`));
     const picked = new Set(Array.from({ length: 30 }, (_, i) => trainerQuotes(florian, `run-1|battle-${i + 1}`)?.greeting));
     expect(picked.size).toBe(3);
   });

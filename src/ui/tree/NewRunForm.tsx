@@ -6,7 +6,7 @@ import {
 } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
-import { courseLabel, LEGEND, splitKey } from './hooks';
+import { courseLabel, LEGEND, splitKey, useRunState } from './hooks';
 import { PartnerCard } from './PartnerCard';
 import { PartnerPokemonPicker } from './PartnerPokemonPicker';
 import { TeamSetup } from './TeamSetup';
@@ -45,8 +45,12 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
   const length = courseSchedule(format, course).length;
   // Later starting battles unlocked by this course's best streak (battle 30 after winning 50, 50 after 100).
   const checkpoints = checkpointsFor(profile.records[key]);
+  // Just lost this course at battle 10 or later (this session): it can start again from the last multiple of 10.
+  const retry = useRunState(controller).retries[key] ?? null;
+  const starts = [...new Set([1, ...checkpoints, ...(retry ? [retry.battle] : [])])].sort((a, b) => a - b);
   const [checkpointChoice, setCheckpoint] = useState(1);
-  const checkpoint = checkpoints.includes(checkpointChoice) ? checkpointChoice : 1;
+  const checkpoint = starts.includes(checkpointChoice) ? checkpointChoice : 1;
+  const useRetry = !!retry && checkpoint === retry.battle && !checkpoints.includes(checkpoint);
 
   const start = () => {
     if (!team || !partnerReady) return;
@@ -58,7 +62,8 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
         // Multi Battles have no Team Preview.
         settings: multi ? { ...settings, teamPreviewEachBattle: false } : settings,
         partner: multi && partner ? { name: partner, setIds: partnerPicks } : undefined,
-        checkpoint: checkpoint > 1 ? checkpoint : undefined,
+        checkpoint: checkpoint > 1 && !useRetry ? checkpoint : undefined,
+        retry: useRetry ? checkpoint : undefined,
       });
       onStarted(key);
     } catch (e) {
@@ -84,15 +89,17 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
         ))}
       </fieldset>
 
-      {checkpoints.length > 0 && (
+      {starts.length > 1 && (
         <fieldset className="start-at">
           <legend>Start at</legend>
-          {[1, ...checkpoints].map(n => (
+          {starts.map(n => (
             <label key={n}>
               <input type="radio" name="start-at" checked={checkpoint === n} onChange={() => setCheckpoint(n)} />
               {' '}Battle {n}
               <small className="muted">
-                {n === 1 ? ' · from the beginning' : ` · unlocked by winning battle ${CHECKPOINTS.find(c => c.start === n)!.unlockedBy}; your streak starts at ${n - 1}`}
+                {n === 1 ? ' · from the beginning'
+                  : checkpoints.includes(n) ? ` · unlocked by winning battle ${CHECKPOINTS.find(c => c.start === n)!.unlockedBy}; your streak starts at ${n - 1}`
+                  : ` · you just lost at battle ${retry!.lostAt}: start again from here (this session only); your streak starts at ${n - 1}`}
               </small>
             </label>
           ))}

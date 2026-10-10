@@ -135,6 +135,39 @@ describe('RunController', () => {
     expect(third.controller.run('singles-normal')!.history.at(-1)!.result).toBe('loss');
   });
 
+  it('right after a loss at battle 10+, offers (this session only) a new run from the last multiple of 10', () => {
+    const key = 'singles-normal';
+    /** A run lost at `battle` (its battle cut off by a reload, then counted as a loss), in a new session. */
+    const lostAt = (battle: number, opts: { startBattle?: number } = {}) => {
+      const kv = memoryStore();
+      const first = setup(kv);
+      const run = first.controller.startRun({ course: 'normal', team: TEAM, settings: DEFAULT_SETTINGS, seedText: `retry-${battle}`, ...opts });
+      first.store.setRun(key, { ...run, battle, wins: battle - 1 });
+      first.controller.startBattle(key);
+      const session = setup(kv);
+      session.controller.forfeitInterrupted(key);
+      return { kv, session };
+    };
+
+    const { kv, session } = lostAt(17);
+    expect(session.controller.getSnapshot().retries[key]).toEqual({ battle: 10, lostAt: 17, debug: false });
+    expect(() => session.controller.startRun({ course: 'normal', team: TEAM, settings: DEFAULT_SETTINGS, retry: 20 })).toThrow(/battle 10/);
+    const retried = session.controller.retryFromOffer(key);
+    expect([retried.battle, retried.wins, retried.bp, retried.status, retried.debug]).toEqual([10, 9, 0, 'ready', false]);
+    expect(retried.next.battle).toBe(10);
+    expect(retried.team).toEqual(TEAM);
+    // Used up; and a later session (reload) never had it.
+    expect(session.controller.getSnapshot().retries[key]).toBeUndefined();
+    expect(() => session.controller.retryFromOffer(key)).toThrow();
+    expect(setup(kv).controller.getSnapshot().retries).toEqual({});
+
+    // Losing before battle 10: nothing to offer. Losing a debug run: the retry is unranked too.
+    expect(lostAt(7).session.controller.getSnapshot().retries[key]).toBeUndefined();
+    const debug = lostAt(20, { startBattle: 15 }).session.controller;
+    expect(debug.getSnapshot().retries[key]).toEqual({ battle: 20, lostAt: 20, debug: true });
+    expect(debug.retryFromOffer(key).debug).toBe(true);
+  });
+
   it('game rule: battles start with the brought 3, lead first, no Team Preview', async () => {
     const { battle, controller } = setup();
     controller.startRun({ course: 'normal', team: { ...TEAM, bring: [3, 0, 1] }, settings: DEFAULT_SETTINGS, seedText: 'bring' });
