@@ -2,7 +2,8 @@
  "source": "Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
   "They share the Battle Legends' battle-50 slot by weight (Red / Blue are weight 7 in bosses.json); a Multi entry lists the first (left) trainer first.",
-  "IV 31 like the Battle Legends; IV lines in the exports are ignored. Sprites are the user's own pixel art in public/trainers/."
+  "IV 31 like the Battle Legends; IV lines in the exports are ignored. Sprites are the user's own pixel art in public/trainers/.",
+  "A trainer can appear in several entries (Tai and Matt: Super Singles, Super Doubles and, together, Super Multi). \"lead\": the species that always leads their team."
  ],
  "trainers": [
   {
@@ -140,6 +141,344 @@
      ]
     }
    ]
+  },
+  {
+   "name": "Tai",
+   "class": "Battle Legend",
+   "classGender": "M",
+   "sprite": "/trainers/tai.png",
+   "lead": "Agumon",
+   "sets": [
+    {
+     "species": "Agumon",
+     "item": "Wargreyite",
+     "ability": "Blaze",
+     "nature": "Modest",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Gaia Force",
+      "Dragon Pulse",
+      "Scorching Sands",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Charizard",
+     "item": "Charizardite X",
+     "ability": "Blaze",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Flare Blitz",
+      "Dragon Claw",
+      "Earthquake"
+     ]
+    },
+    {
+     "species": "Tyrantrum",
+     "item": "Choice Band",
+     "ability": "Rock Head",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Head Smash",
+      "Dragon Claw",
+      "Earthquake",
+      "Fire Fang"
+     ]
+    },
+    {
+     "species": "Garchomp",
+     "item": "Dragonium Z",
+     "ability": "Rough Skin",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Outrage",
+      "Earthquake",
+      "Fire Fang"
+     ]
+    },
+    {
+     "species": "Metagross",
+     "item": "Assault Vest",
+     "ability": "Clear Body",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Meteor Mash",
+      "Zen Headbutt",
+      "Bullet Punch",
+      "Ice Punch"
+     ]
+    },
+    {
+     "species": "Braviary",
+     "item": "Choice Scarf",
+     "ability": "Defiant",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Brave Bird",
+      "Superpower",
+      "U-turn",
+      "Rock Slide"
+     ]
+    },
+    {
+     "species": "Arcanine",
+     "item": "Sitrus Berry",
+     "ability": "Intimidate",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 4,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Flare Blitz",
+      "Extreme Speed",
+      "Wild Charge",
+      "Will-O-Wisp"
+     ]
+    },
+    {
+     "species": "Hitmonlee",
+     "item": "Life Orb",
+     "ability": "Reckless",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "High Jump Kick",
+      "Knock Off",
+      "Blaze Kick",
+      "Fake Out"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Matt",
+   "class": "Battle Legend",
+   "classGender": "M",
+   "sprite": "/trainers/matt.png",
+   "lead": "Gabumon",
+   "sets": [
+    {
+     "species": "Gabumon",
+     "item": "Metalgaruruite",
+     "ability": "Thick Fat",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Cocytus Pulse",
+      "Fox Fire",
+      "Aura Sphere",
+      "Dark Pulse"
+     ]
+    },
+    {
+     "species": "Lucario",
+     "item": "Lucarionite",
+     "ability": "Justified",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Close Combat",
+      "Meteor Mash",
+      "Bullet Punch"
+     ]
+    },
+    {
+     "species": "Lycanroc-Midnight",
+     "item": "Focus Sash",
+     "ability": "No Guard",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Stone Edge",
+      "Crunch",
+      "Brick Break",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Weavile",
+     "item": "Life Orb",
+     "ability": "Pressure",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Icicle Crash",
+      "Knock Off",
+      "Ice Shard",
+      "Fake Out"
+     ]
+    },
+    {
+     "species": "Primarina",
+     "item": "Primarium Z",
+     "ability": "Liquid Voice",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Sparkling Aria",
+      "Moonblast",
+      "Hyper Voice",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Noivern",
+     "item": "Choice Specs",
+     "ability": "Infiltrator",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Draco Meteor",
+      "Boomburst",
+      "Flamethrower",
+      "Hurricane"
+     ]
+    },
+    {
+     "species": "Ninetales-Alola",
+     "item": "Light Clay",
+     "ability": "Snow Warning",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Aurora Veil",
+      "Blizzard",
+      "Moonblast",
+      "Freeze-Dry"
+     ]
+    },
+    {
+     "species": "Zoroark",
+     "item": "Choice Scarf",
+     "ability": "Illusion",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dark Pulse",
+      "Flamethrower",
+      "Focus Blast",
+      "Sludge Bomb"
+     ]
+    }
+   ]
   }
  ],
  "battles": [
@@ -152,6 +491,70 @@
     "Thomas"
    ],
    "weight": 7
+  },
+  {
+   "format": "singles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Blue"
+   ],
+   "weight": 7
+  },
+  {
+   "format": "doubles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Red"
+   ],
+   "weight": 7
+  },
+  {
+   "format": "singles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Tai"
+   ],
+   "weight": 1
+  },
+  {
+   "format": "singles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Matt"
+   ],
+   "weight": 1
+  },
+  {
+   "format": "doubles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Tai"
+   ],
+   "weight": 1
+  },
+  {
+   "format": "doubles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Matt"
+   ],
+   "weight": 1
+  },
+  {
+   "format": "multi",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Tai",
+    "Matt"
+   ],
+   "weight": 1
   }
  ]
 }

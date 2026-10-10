@@ -126,7 +126,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       <>
         <div className="battle-banner">
           {battleFoes.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
-          <span>Online Multi · Battle {lobby.battle} · with {partnerName ?? 'your partner'}</span>
+          <span>Online {lobby.course === 'allstar' ? 'All Star ' : ''}Multi · Battle {lobby.battle} · with {partnerName ?? 'your partner'}</span>
           <span className="spacer" />
           {host && lobby.inBattle && !snap.aiPartner && partnerName && (
             <button onClick={() => { if (confirm(`Let the AI play ${partnerName}'s Pokémon for the rest of this battle?`)) room.aiTakeOver(); }}>
@@ -181,7 +181,23 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       </ul>
 
       {lobby.next.length > 0 && (
-        <OpponentCard trainers={nextFoes} greetings={greetings} detail={`Battle ${lobby.battle} · streak ${lobby.streak}`} battleKey={nextKey} />
+        <OpponentCard
+          trainers={nextFoes} greetings={greetings} battleKey={nextKey}
+          detail={`${lobby.course === 'allstar' ? 'All Star Mode · ' : ''}Battle ${lobby.battle} · streak ${lobby.streak}`}
+        />
+      )}
+
+      {host && !lobby.inBattle && snap.fresh && (
+        <label className="fld online-start">
+          <span>Mode</span>
+          <select value={lobby.course} onChange={e => room.setCourse(e.target.value as 'super' | 'allstar')}>
+            <option value="super">Super Multi</option>
+            <option value="allstar">All Star Multi · special trainers every battle, Battle Legends every 5th</option>
+          </select>
+        </label>
+      )}
+      {!host && lobby.course === 'allstar' && (
+        <p className="small"><span className="tag">All Star Mode</span> Special trainers every battle, Battle Legends every 5th.</p>
       )}
 
       {host && !lobby.inBattle && snap.fresh && (

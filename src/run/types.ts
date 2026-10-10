@@ -7,10 +7,12 @@ export type { Course, Format };
 /** One saved challenge per format + course, e.g. "singles-super" (there's no Normal Multi). */
 export type RunKey = Exclude<`${Format}-${Course}`, 'multi-normal'>;
 export const runKey = (format: Format, course: Course): RunKey => `${format}-${course}` as RunKey;
-export const RUN_KEYS: readonly RunKey[] = ['singles-normal', 'singles-super', 'doubles-normal', 'doubles-super', 'multi-super'];
+export const RUN_KEYS: readonly RunKey[] = ['singles-normal', 'singles-super', 'singles-allstar', 'doubles-normal', 'doubles-super', 'doubles-allstar', 'multi-super', 'multi-allstar'];
 export const FORMATS: readonly Format[] = ['singles', 'doubles', 'multi'];
 /** Courses each format has: this app has only Super Multi. */
-export const COURSES: Record<Format, readonly Course[]> = { singles: ['normal', 'super'], doubles: ['normal', 'super'], multi: ['super'] };
+export const COURSES: Record<Format, readonly Course[]> = { singles: ['normal', 'super', 'allstar'], doubles: ['normal', 'super', 'allstar'], multi: ['super', 'allstar'] };
+/** Courses that need the format's Super course unlocked: Super and All Star Mode. */
+export const needsSuper = (course: Course) => course !== 'normal';
 
 /** How many Pokémon the player brings to each battle (Singles 3, Doubles 4, Multi 2). */
 export const BRING: Record<Format, number> = {

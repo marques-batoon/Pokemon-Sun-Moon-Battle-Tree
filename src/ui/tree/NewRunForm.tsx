@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { RunController, RunTeam } from '../../run/controller';
 import { courseSchedule } from '../../run/selection';
 import {
-  BRING, checkpointsFor, CHECKPOINTS, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, PARTNER_BRING, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile,
+  BRING, checkpointsFor, CHECKPOINTS, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, needsSuper, PARTNER_BRING, runKey, type Course, type Format, type RunKey, type RunSettings, type TreeProfile,
 } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
@@ -76,17 +76,22 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
       <h2>New challenge</h2>
       <fieldset className="course-pick">
         <legend>Course</legend>
-        {COURSES[format].map(c => (
-          <label key={c} className={c === 'super' && !superUnlocked && startBattle <= 1 ? 'muted' : ''}>
-            <input type="radio" name="course" checked={course === c} disabled={c === 'super' && !superUnlocked && startBattle <= 1} onChange={() => setCourse(c)} />
-            {' '}{label(c)}
-            <small className="muted">
-              {c === 'normal' ? ` · 20 battles, Battle Legend ${legend} at 20`
-                : multi ? (superUnlocked ? ` · endless, ${legend} together at 50, special trainers in pairs every 10` : ' · locked: unlock Super Singles and Super Doubles first')
-                : superUnlocked ? ` · endless, ${legend} at 50, special trainers every 10` : ` · locked: beat ${legend} in ${label('normal')}`}
-            </small>
-          </label>
-        ))}
+        {COURSES[format].map(c => {
+          const locked = needsSuper(c) && !superUnlocked && startBattle <= 1;
+          return (
+            <label key={c} className={locked ? 'muted' : ''}>
+              <input type="radio" name="course" checked={course === c} disabled={locked} onChange={() => setCourse(c)} />
+              {' '}{label(c)}
+              <small className="muted">
+                {c === 'normal' ? ` · 20 battles, Battle Legend ${legend} at 20`
+                  : !superUnlocked ? (multi ? ' · locked: unlock Super Singles and Super Doubles first' : ` · locked: beat ${legend} in ${label('normal')}`)
+                  : c === 'allstar' ? ` · unrated (no records, BP or partner progress): special trainers${multi ? ' in pairs' : ''} every battle, Battle Legends every 5th`
+                  : multi ? ' · endless, Battle Legends every 50 battles, special trainers in pairs every 10'
+                  : ' · endless, Battle Legends every 50 battles, special trainers every 10'}
+              </small>
+            </label>
+          );
+        })}
       </fieldset>
 
       {starts.length > 1 && (

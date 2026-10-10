@@ -126,7 +126,7 @@ export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: numbe
   Agumon: { file: 'pokemon/agumon.png', w: 84, h: 84 },
   WarGreymon: { file: 'pokemon/wargreymon.png', w: 126, h: 96, stageScale: 1.5 },
   Gabumon: { file: 'pokemon/gabumon.png', w: 84, h: 84 },
-  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.27 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.2954 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);

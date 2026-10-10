@@ -7,7 +7,7 @@ import { planChosenOpponent, planOpponent } from '../run/selection';
 import { DEFAULT_SETTINGS, PARTNER_BRING, retryStart, type PlannedOpponent } from '../run/types';
 import type { PokemonSet } from '../team/types';
 import {
-  parseToGuest, parseToHost, withoutNicknames, type GuestEngineMessage, type LobbyView, type ToGuest, type ToHost,
+  parseToGuest, parseToHost, withoutNicknames, type GuestEngineMessage, type LobbyView, type OnlineCourse, type ToGuest, type ToHost,
 } from './link-protocol';
 import type { ConnectRelay, RelayLink } from './relay-client';
 import { GUEST_SEAT, HOST_SEAT, type Member, type ServerMessage } from './relay-protocol';
@@ -64,7 +64,7 @@ export interface RoomOptions {
 
 const newSeed = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
-const EMPTY_LOBBY: LobbyView = { streak: 0, battle: 1, next: [], quotePick: null, hostReady: false, guestReady: false, inBattle: false, notice: null };
+const EMPTY_LOBBY: LobbyView = { course: 'super', streak: 0, battle: 1, next: [], quotePick: null, hostReady: false, guestReady: false, inBattle: false, notice: null };
 
 /**
  * One online Multi Battle room for one of its two players. Two friends team up
@@ -190,6 +190,19 @@ export class OnlineRoom {
     this.publishLobby();
   }
 
+  /**
+   * Host: the room's mode, Super Multi or All Star Mode (special trainers in every battle, the
+   * battle-50 draw every 5th; online streaks earn no records or BP either way). Only before the
+   * streak's first win, like where it starts.
+   */
+  setCourse(course: OnlineCourse): void {
+    const { lobby, fresh } = this.snapshot;
+    if (this.opts.role !== 'host' || lobby.inBattle || !fresh) throw new Error('Only the host can change the mode, before a streak\'s first battle.');
+    this.set({ lobby: { ...lobby, course, notice: null } });
+    this.planNext(lobby.battle);
+    this.publishLobby();
+  }
+
   /** Host: the AI plays the partner's Pokémon for the rest of this battle (they left or stopped answering). */
   aiTakeOver(): void {
     const { battleId, lobby, aiPartner } = this.snapshot;
@@ -266,7 +279,7 @@ export class OnlineRoom {
   // --- host ---
 
   private planNext(battle: number) {
-    this.next = planOpponent(this.seedText, 'multi', 'super', battle, DEFAULT_SETTINGS);
+    this.next = planOpponent(this.seedText, 'multi', this.snapshot.lobby.course, battle, DEFAULT_SETTINGS);
   }
 
   private publishLobby() {

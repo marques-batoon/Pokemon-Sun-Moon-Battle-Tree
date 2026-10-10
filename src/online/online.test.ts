@@ -70,6 +70,9 @@ describe('online messages', () => {
     expect(lobby(7)).toMatchObject({ lobby: { quotePick: 7 } });
     expect(lobby(QUOTE_PICKS)).toMatchObject({ lobby: { quotePick: null } });
     expect(lobby('a greeting')).toMatchObject({ lobby: { quotePick: null } });
+    // The mode: All Star or Super (anything else, or an older host sending none, is Super).
+    const mode = (course: unknown) => parseToGuest({ k: 'lobby', lobby: { streak: 0, battle: 1, next: [190, 191], course } });
+    expect([mode('allstar'), mode(undefined), mode('normal')].map(m => m && m.k === 'lobby' && m.lobby.course)).toEqual(['allstar', 'super', 'super']);
   });
 });
 
@@ -292,6 +295,36 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     play('p1');
     expect(host.getSnapshot().retryFrom).toBeNull();
     expect(host.getSnapshot().lobby.battle).toBe(31);
+    host.dispose();
+    guest.dispose();
+  });
+
+  it('lets the host switch the room to All Star Mode before a streak starts: specials every battle, Battle Legends every 5th', async () => {
+    const handlers = new Set<(msg: FromEngine) => void>();
+    const engine: EngineTransport = { send: () => {}, listen: h => { handlers.add(h); return () => { handlers.delete(h); }; }, dispose: () => {} };
+    const relay = memoryRelay();
+    const makeClient = (t: EngineTransport, perspective: 'p1' | 'p3') => new BattleClient(t, { perspective });
+    const host = new OnlineRoom({ role: 'host', code: 'ABCDEFGH', name: 'Hau', connect: relay.connect(0, 'Hau'), engine, makeClient, seedText: 'all-star' });
+    const guest = new OnlineRoom({ role: 'guest', code: 'ABCDEFGH', name: 'Lillie', connect: relay.connect(1, 'Lillie'), makeClient });
+    await waitFor(() => host.getSnapshot().partnerName === 'Lillie');
+    host.setTeam(pair(0, 1));
+    guest.setTeam(pair(3, 5));
+    await waitFor(() => host.getSnapshot().lobby.guestReady);
+    expect(guest.getSnapshot().lobby.course).toBe('super');
+    expect(() => guest.setCourse('allstar')).toThrow(/Only the host/);
+    host.setCourse('allstar');
+    await waitFor(() => guest.getSnapshot().lobby.course === 'allstar');
+    const kinds: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      kinds.push(host.getSnapshot().lobby.next.map(id => TRAINERS[id].kind).join('+'));
+      host.startBattle();
+      const battleId = host.getSnapshot().battleId!;
+      handlers.forEach(h => h({ type: 'end', battleId, result: { winner: 'p1', turns: 3, seed: [0, 0, 0, 0] as never, inputLog: [] } }));
+      host.leaveBattleScreen();
+    }
+    expect(kinds).toEqual(['special+special', 'special+special', 'special+special', 'special+special', 'legend+legend']);
+    // Mid-streak, the mode stays.
+    expect(() => host.setCourse('super')).toThrow(/before a streak/);
     host.dispose();
     guest.dispose();
   });

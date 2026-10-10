@@ -21,12 +21,12 @@ export function scheduleSlot(format: Format, course: Course, battle: number): Sc
   if (schedule.length !== null && battle > schedule.length) throw new Error(`${course} course has only ${schedule.length} battles`);
   for (const rule of schedule.schedule) {
     if ('everyNth' in rule) {
-      if (battle % rule.everyNth === 0) return { type: 'special' };
+      if (battle % rule.everyNth === 0) return 'boss' in rule ? { type: 'boss', bossKey: rule.boss } : { type: 'special' };
       continue;
     }
     const [from, to] = rule.battles;
     if (battle < from || (to !== null && battle > to)) continue;
-    return 'boss' in rule ? { type: 'boss', bossKey: rule.boss } : { type: 'pool', poolKey: rule.pool };
+    return 'boss' in rule ? { type: 'boss', bossKey: rule.boss } : 'pool' in rule ? { type: 'pool', poolKey: rule.pool } : { type: 'special' };
   }
   throw new Error(`No schedule rule for ${course} battle ${battle}`);
 }
@@ -72,7 +72,9 @@ export function chooseTrainer(
   if (slot.type === 'boss') return { trainer: TRAINERS[chooseBoss(slot.bossKey, rng).trainerId], replacedAnabel: false };
   if (slot.type === 'pool') return { trainer: TRAINERS[rng.pick(allowed(BRACKETS.pools[slot.poolKey].trainerIds))], replacedAnabel: false };
 
-  const special = rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id)), t => t.weight).trainer;
+  // All Star Mode has no regular trainers to stand in for a locked Anabel: she just isn't drawn.
+  const locked = (t: SpecialTrainer) => course === 'allstar' && t.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked;
+  const special = rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id) && !locked(t.trainer)), t => t.weight).trainer;
   if (special.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked) {
     const pool = allowed(BRACKETS.pools[anabelFallbackPool(format, course, battle)].trainerIds);
     return { trainer: TRAINERS[rng.pick(pool)], replacedAnabel: true };
@@ -122,8 +124,10 @@ export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
 /** Seed text of battle N in a run; the simulator and opponent rolls both derive from the run seed. */
 export const battleSeedText = (runSeed: string, battle: number) => `${runSeed}|battle-${battle}`;
 
+/** `lead`: a set that must lead (Tate and Liza's pairs); otherwise the trainer's own lead, if any (Tai's Agumon). */
 function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
-  const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng, lead === undefined ? undefined : SETS[lead]);
+  const leadId = lead ?? trainer.leadSetId;
+  const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng, leadId === undefined ? undefined : SETS[leadId]);
   return {
     trainerId: trainer.id,
     displayName: displayName(trainer),
@@ -213,7 +217,10 @@ export function planChosenOpponent(runSeed: string, format: Format, battle: numb
 
 /** BP for winning battle N (rules.json battlePoints). */
 export function bpForWin(course: Course, battle: number): number {
-  const row = RULES.battlePoints[course].find(r => battle >= r.battles[0] && (r.battles[1] === null || battle <= r.battles[1]));
+  // All Star Mode earns no BP; a Super Battle Legend battle pays like battle 50 whenever it comes back.
+  if (course === 'allstar') return 0;
+  const at = course === 'super' && battle % 50 === 0 ? 50 : battle;
+  const row = RULES.battlePoints[course].find(r => at >= r.battles[0] && (r.battles[1] === null || at <= r.battles[1]));
   if (!row) throw new Error(`No BP entry for ${course} battle ${battle}`);
   return row.bp;
 }

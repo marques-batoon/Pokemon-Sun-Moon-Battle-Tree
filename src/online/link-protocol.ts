@@ -11,6 +11,8 @@ import { PARTNER_BRING } from '../run/types';
 
 /** What the guest sees between battles. */
 export interface LobbyView {
+  /** The room's mode: Super Multi, or All Star Mode (special trainers every battle, Battle Legends every 5th). */
+  course: OnlineCourse;
   /** Battles won in a row together. */
   streak: number;
   /** Number of the next battle. */
@@ -26,6 +28,8 @@ export interface LobbyView {
   /** Something to tell the guest (e.g. their team was rejected). */
   notice: string | null;
 }
+
+export type OnlineCourse = 'super' | 'allstar';
 
 export type ToHost =
   /** The guest's two Pokémon, lead first (null: not ready). */
@@ -116,6 +120,8 @@ function parseLobby(v: unknown): LobbyView | null {
   const next = Array.isArray(v.next) && v.next.length <= 2 && v.next.every(id => int(id, 0, TRAINERS.length - 1) !== null) ? (v.next as number[]) : null;
   if (streak === null || battle === null || !next) return null;
   return {
+    // An older host sends no mode: that's Super Multi.
+    course: v.course === 'allstar' ? 'allstar' : 'super',
     streak, battle, next,
     quotePick: int(v.quotePick, 0, QUOTE_PICKS - 1),
     hostReady: v.hostReady === true,

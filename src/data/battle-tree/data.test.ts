@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Dex } from '@pkmn/dex';
 import { BOSSES, BRACKETS, RULES, SETS, TRAINERS, type SpecialTrainer, type Trainer } from './index';
+import { dex7 } from '../../team/dex';
 
 const gen7 = Dex.forGen(7);
 const byName = (name: string) => TRAINERS.find(t => t.name === name && t.kind !== 'legend') as Trainer;
@@ -30,21 +31,21 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets and 6 battle-50 sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 6);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets and 22 battle-50 sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
     // Only custom sets fix their Ability (the game rolls it).
     expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
     expect(SETS.slice(996).every(s => s.ability)).toBe(true);
   });
 
-  it('resolves every species, move, item and nature in Gen 7', () => {
+  it('resolves every species, move, item and nature in Gen 7 (with the app\'s custom additions, like the Digimon)', () => {
     for (const s of SETS) {
-      expect(gen7.species.get(s.species).exists, s.label).toBe(true);
-      expect(gen7.items.get(s.item).exists, s.label).toBe(true);
-      expect(gen7.natures.get(s.nature).exists, s.label).toBe(true);
+      expect(dex7.species.get(s.species).exists, s.label).toBe(true);
+      expect(dex7.items.get(s.item).exists, s.label).toBe(true);
+      expect(dex7.natures.get(s.nature).exists, s.label).toBe(true);
       expect(s.moves.length, s.label).toBeGreaterThan(0);
-      for (const m of s.moves) expect(gen7.moves.get(m).exists, `${s.label} ${m}`).toBe(true);
+      for (const m of s.moves) expect(dex7.moves.get(m).exists, `${s.label} ${m}`).toBe(true);
     }
   });
 
@@ -68,15 +69,28 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders and 2 battle-50 trainers', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders and 4 battle-50 trainers', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 2);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4 + 2]);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4 + 4]);
     expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
-    expect(TRAINERS.slice(252).map(t => [t.name, t.kind, t.custom, t.iv, t.sprite])).toEqual([
-      ['Marques', 'legend', true, 31, '/trainers/marques.png'],
-      ['Thomas', 'legend', true, 31, '/trainers/thomas.png'],
+    expect(TRAINERS.slice(252).map(t => [t.name, t.class, t.kind, t.custom, t.iv, t.sprite, t.roster.length])).toEqual([
+      ['Marques', 'Pokémon Trainer', 'legend', true, 31, '/trainers/marques.png', 3],
+      ['Thomas', 'Pokémon Trainer', 'legend', true, 31, '/trainers/thomas.png', 3],
+      ['Tai', 'Battle Legend', 'legend', true, 31, '/trainers/tai.png', 8],
+      ['Matt', 'Battle Legend', 'legend', true, 31, '/trainers/matt.png', 8],
     ]);
+    // Tai always leads with his Agumon, Matt with his Gabumon.
+    const lead = (name: string) => SETS[TRAINERS.find(t => t.name === name)!.leadSetId!];
+    expect([lead('Tai').species, lead('Tai').item, lead('Tai').moves]).toEqual(['Agumon', 'Wargreyite', expect.arrayContaining(['Gaia Force'])]);
+    expect([lead('Matt').species, lead('Matt').item, lead('Matt').moves]).toEqual(['Gabumon', 'Metalgaruruite', expect.arrayContaining(['Cocytus Pulse'])]);
+    // Battle 50 of Super Singles / Doubles: the Battle Legend (7) and Tai and Matt (1 each); Super Multi adds Tai & Matt (1).
+    const at50 = (format: string) => Object.values(BOSSES).filter(b => b.format === format && b.course === 'super' && b.battle === 50)
+      .map(b => [TRAINERS[b.trainerId].name, b.partnerTrainerId === undefined ? null : TRAINERS[b.partnerTrainerId].name, b.weight ?? 7]);
+    expect(at50('singles')).toEqual(expect.arrayContaining([['Red', null, 7], ['Blue', null, 7], ['Tai', null, 1], ['Matt', null, 1]]));
+    expect(at50('doubles')).toEqual(expect.arrayContaining([['Blue', null, 7], ['Red', null, 7], ['Tai', null, 1], ['Matt', null, 1]]));
+    expect(at50('multi')).toEqual(expect.arrayContaining([['Red', 'Blue', 7], ['Marques', 'Thomas', 7], ['Tai', 'Matt', 1]]));
+    expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([4, 4, 3]);
   });
 
   it("lets every Gym Leader field 4 Pokémon under the clauses (Doubles)", () => {
@@ -197,7 +211,8 @@ describe('trainer-quotes.json', () => {
     const names = new Set(TRAINERS.map(t => t.name));
     expect(new Set(Object.keys(TRAINER_QUOTES))).toEqual(names);
     // Team-up lines for the paired trainers (Tate and Liza) in Multi Battles.
-    expect(Object.keys(TRAINER_MULTI_QUOTES).sort()).toEqual(['Liza', 'Tate']);
+    expect(Object.keys(TRAINER_MULTI_QUOTES).sort()).toEqual(['Liza', 'Matt', 'Tai', 'Tate']);
+    expect(TRAINER_MULTI_QUOTES.Tai.length).toBe(TRAINER_MULTI_QUOTES.Matt.length);
     const sets = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES)];
     // Three sets each, except the user's battle-50 trainers (as many as they wrote; the same for both of a pair).
     for (const [name, trainerSets] of Object.entries(TRAINER_QUOTES)) {
@@ -283,6 +298,24 @@ describe('trainer-quotes.json', () => {
     for (let i = 1; i <= 20; i++) expect(trainerQuotes(florian, quotePick(`run-1|battle-${i}`))).toBe(trainerQuotes(florian, `run-1|battle-${i}`));
     const picked = new Set(Array.from({ length: 30 }, (_, i) => trainerQuotes(florian, `run-1|battle-${i + 1}`)?.greeting));
     expect(picked.size).toBe(3);
+  });
+
+  it('gives Tai and Matt matching team-up lines in Multi Battles, and their own lines apart', async () => {
+    const { trainerQuotes, TRAINER_MULTI_QUOTES, TRAINER_QUOTES } = await import('./index');
+    const tai = TRAINERS.find(t => t.name === 'Tai')!;
+    const matt = TRAINERS.find(t => t.name === 'Matt')!;
+    for (let i = 0; i < 12; i++) {
+      const key = `run|battle-50-${i}`;
+      const t = trainerQuotes(tai, key, [tai, matt])!;
+      const m = trainerQuotes(matt, key, [tai, matt])!;
+      expect(TRAINER_MULTI_QUOTES.Tai.indexOf(t)).toBe(TRAINER_MULTI_QUOTES.Matt.indexOf(m));
+      expect(TRAINER_MULTI_QUOTES.Tai.indexOf(t)).toBeGreaterThanOrEqual(0);
+      expect(TRAINER_QUOTES.Tai).toContain(trainerQuotes(tai, key));
+      expect(TRAINER_QUOTES.Matt).toContain(trainerQuotes(matt, key, [matt]));
+    }
+    // Together, each one's lines mention the other.
+    for (const q of TRAINER_MULTI_QUOTES.Tai) expect(Object.values(q).join(' ')).toMatch(/Matt/);
+    for (const q of TRAINER_MULTI_QUOTES.Matt) expect(Object.values(q).join(' ')).toMatch(/Tai/);
   });
 
   it('gives Tate and Liza matching team-up lines when they battle together, and their own lines apart', async () => {

@@ -15,6 +15,15 @@ import { Dex, Teams } from '@pkmn/sim';
 const dir = new URL('../data-sources/custom/', import.meta.url);
 const outDir = new URL('../src/data/custom/', import.meta.url);
 
+/**
+ * The app's custom species and moves (the Digimon and their signature moves) aren't in @pkmn/sim's
+ * own data: their names are read from src/data/custom/digimon.ts. Their sets are checked by the
+ * app's tests, with the app's data.
+ */
+const toId = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const CUSTOM_NAMES = new Map([...readFileSync(new URL('../src/data/custom/digimon.ts', import.meta.url), 'utf8').matchAll(/name: '([^']+)'/g)].map(m => [toId(m[1]), m[1]]));
+const customName = s => CUSTOM_NAMES.get(toId(s));
+
 const FEMALE = new Set([
   'Misty', 'Erika', 'Janine', 'Sabrina', 'Whitney', 'Jasmine', 'Clair', 'Roxanne', 'Flannery', 'Winona', 'Liza',
   'Gardenia', 'Fantina', 'Maylene', 'Candice', 'Roxie', 'Elesa', 'Skyla', 'Lenora', 'Bianca',
@@ -55,15 +64,16 @@ function parseExports(file, describe) {
     const trainer = trainers.get(name) ?? { name, ...describe(name), sets: [] };
     for (const s of sets) {
       const species = Dex.species.get(s.species);
-      if (!species.exists) problems.push(`${file} ${title}: unknown species ${s.species}`);
-      for (const m of s.moves) if (!Dex.moves.get(m).exists) problems.push(`${file} ${title}: unknown move ${m}`);
+      const custom = customName(s.species);
+      if (!species.exists && !custom) problems.push(`${file} ${title}: unknown species ${s.species}`);
+      for (const m of s.moves) if (!Dex.moves.get(m).exists && !customName(m)) problems.push(`${file} ${title}: unknown move ${m}`);
       trainer.sets.push({
-        species: species.name,
+        species: custom ?? species.name,
         item: s.item,
         ability: s.ability,
         nature: s.nature || 'Serious',
         evs: Object.fromEntries(STATS.map(st => [st, s.evs?.[st] ?? 0])),
-        moves: s.moves.map(m => Dex.moves.get(m).name || m),
+        moves: s.moves.map(m => customName(m) ?? (Dex.moves.get(m).name || m)),
         ...(s.gender ? { gender: s.gender } : {}),
       });
     }
@@ -90,10 +100,18 @@ const battle50 = JSON.parse(readFileSync(new URL('battle-50-trainers.json', dir)
 const battle50Trainers = parseExports('battle-50-trainers.txt', name => {
   const info = battle50.trainers[name];
   if (!info) { problems.push(`battle-50-trainers.json: no entry for ${name}`); return {}; }
-  return { class: info.class, classGender: info.gender, sprite: info.sprite };
+  return { class: info.class, classGender: info.gender, sprite: info.sprite, ...(info.lead ? { lead: info.lead } : {}) };
 });
+for (const t of battle50Trainers) {
+  if (t.lead && !t.sets.some(s => s.species === t.lead)) problems.push(`battle-50-trainers.json: ${t.name}'s lead ${t.lead} isn't on their team`);
+}
+/** The game's Battle Legends (their Super teams), which battle-50 entries can also name. */
+const GAME_LEGENDS = new Set(JSON.parse(readFileSync(new URL('../src/data/battle-tree/trainers.json', import.meta.url), 'utf8')).trainers
+  .filter(t => t.kind === 'legend' && t.course === 'super').map(t => t.name));
 for (const b of battle50.battles) {
-  for (const n of b.trainers) if (!battle50Trainers.some(t => t.name === n)) problems.push(`battle-50-trainers.json: ${n} has no team in battle-50-trainers.txt`);
+  for (const n of b.trainers) {
+    if (!battle50Trainers.some(t => t.name === n) && !GAME_LEGENDS.has(n)) problems.push(`battle-50-trainers.json: ${n} has no team in battle-50-trainers.txt (and isn't one of the game's Battle Legends)`);
+  }
   if (b.trainers.length !== (b.format === 'multi' ? 2 : 1)) problems.push(`battle-50-trainers.json: a ${b.format} battle needs ${b.format === 'multi' ? 'two trainers' : 'one trainer'}`);
 }
 
@@ -117,6 +135,7 @@ save('battle-50.json', {
   notes: [
     'They share the Battle Legends\' battle-50 slot by weight (Red / Blue are weight 7 in bosses.json); a Multi entry lists the first (left) trainer first.',
     'IV 31 like the Battle Legends; IV lines in the exports are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
+    'A trainer can appear in several entries (Tai and Matt: Super Singles, Super Doubles and, together, Super Multi). "lead": the species that always leads their team.',
   ],
   trainers: battle50Trainers,
   battles: battle50.battles,

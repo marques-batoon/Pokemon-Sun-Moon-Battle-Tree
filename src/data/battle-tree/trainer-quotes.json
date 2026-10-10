@@ -4264,6 +4264,40 @@
     "trainerWins": "Heh, smell ya later!",
     "trainerLoses": "Naaaaaaail... gather the dragon balls..."
    }
+  ],
+  "Tai": [
+   {
+    "greeting": "I still wear these goggles for luck. Courage got me through the Digital World, and it'll get me through you!",
+    "trainerWins": "Ha! That's what courage looks like. Don't worry, you'll get there too!",
+    "trainerLoses": "Okay, okay, you got me! Goggles off to you... just this once."
+   },
+   {
+    "greeting": "Some say I'm reckless. I say a leader charges in first so nobody else has to. Let's go!",
+    "trainerWins": "Charging in first paid off again! My partner and I never back down.",
+    "trainerLoses": "Charging in first... maybe I should've made a plan. Don't tell Matt."
+   },
+   {
+    "greeting": "I came to Alola for the soccer fields and found this tree instead. Bet my team kicks harder than any striker!",
+    "trainerWins": "Goal! And the crowd goes wild! Good game, though. Seriously.",
+    "trainerLoses": "Missed the net on that one. Next time I'm scoring the winner!"
+   }
+  ],
+  "Matt": [
+   {
+    "greeting": "Let's keep this quick. I've got band practice tonight, and I hate being late.",
+    "trainerWins": "Cool and steady, start to finish. That's how it's done.",
+    "trainerLoses": "...Not bad. You've got real friends on your team. I can tell."
+   },
+   {
+    "greeting": "I'm not one for speeches. My harmonica says it better, and my team says it best. Ready?",
+    "trainerWins": "Hmph. Guess the encore goes to us.",
+    "trainerLoses": "Fine. You earned that one. I might even write a song about it."
+   },
+   {
+    "greeting": "Friendship isn't about being nice. It's trusting someone with everything. My team and I do. Show me yours.",
+    "trainerWins": "Trust beats talent. Remember that.",
+    "trainerLoses": "You trusted your team more than I trusted mine today. That won't happen twice."
+   }
   ]
  },
  "multi": {
@@ -4300,9 +4334,43 @@
     "trainerWins": "Fufufu! A perfect launch!",
     "trainerLoses": "...but what a ride, right, Tate?"
    }
+  ],
+  "Tai": [
+   {
+    "greeting": "Me and Matt, together again! Courage and Friendship, just like old times on File Island!",
+    "trainerWins": "See, Matt? Charging in works! ...With you covering me, anyway.",
+    "trainerLoses": "Okay, that one's on me. Matt, don't say it."
+   },
+   {
+    "greeting": "Our partners fought side by side to save two worlds. One tree's nothing! Right, Matt?",
+    "trainerWins": "Two worlds, one tree! Fist bump, Matt!",
+    "trainerLoses": "We've lost before and come back stronger. Right, Matt?"
+   },
+   {
+    "greeting": "Matt and I fought each other plenty as kids. Fighting alongside him is way better. Ready?",
+    "trainerWins": "Best rivals, best friends, best team! That's us!",
+    "trainerLoses": "Ugh! We'll get 'em in the rematch. I'll lead this time... again."
+   }
+  ],
+  "Matt": [
+   {
+    "greeting": "Try not to run ahead this time, Tai. ...Fine. Let's show them what the DigiDestined can do.",
+    "trainerWins": "You ran ahead. Again. Good thing I was there. ...Nice job, Tai.",
+    "trainerLoses": "I wasn't going to say anything, Tai. ...Your plan was terrible, though."
+   },
+   {
+    "greeting": "Two worlds, and he still forgets to plan. Stay sharp, Tai. These two are good.",
+    "trainerWins": "...Fine. One fist bump. Don't make it weird, Tai.",
+    "trainerLoses": "Right. And next time, we follow my plan."
+   },
+   {
+    "greeting": "Tai's the sun, I'm the moon. Annoying, but it works. Let's go.",
+    "trainerWins": "Don't let it go to your head, Tai. ...It was a good win.",
+    "trainerLoses": "You always lead, Tai. Maybe that's the problem. ...Kidding. Mostly."
+   }
   ]
  },
- "multiNote": "Lines for paired trainers when they battle together in a Multi Battle (Tate and Liza): the same set is used for both, so they finish each other's sentences.",
+ "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
  "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each.",
  "pairs": {
   "Brock & Misty": {

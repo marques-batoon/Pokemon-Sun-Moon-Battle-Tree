@@ -58,7 +58,7 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
       <OpponentCard
         trainers={foes.map(f => f.trainer)}
         greetings={foes.map(f => f.greeting)}
-        detail={`Battle ${run.battle} · win for ${bpForWin(run.course, run.battle)} BP`}
+        detail={run.course === 'allstar' ? `Battle ${run.battle} · All Star Mode (no BP)` : `Battle ${run.battle} · win for ${bpForWin(run.course, run.battle)} BP`}
         battleKey={`${run.id}:${run.battle}`}
       />
 

@@ -7,7 +7,7 @@ import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
 import { bpForWin, courseSchedule, displayName, planChosenOpponent, planOpponent } from './selection';
 import {
-  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, opponentLabel, partnerPrice, retryStart, runKey,
+  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, needsSuper, opponentLabel, partnerPrice, retryStart, runKey,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
 } from './types';
 
@@ -112,7 +112,7 @@ export class RunController {
     if (!COURSES[format].includes(course)) throw new Error(`There's no ${course} ${format} course.`);
     const key = runKey(format, course);
     const { profile } = this.store.getState();
-    if (course === 'super' && !isSuperUnlocked(profile, format) && !opts.startBattle) throw new Error(LOCKED[format]);
+    if (needsSuper(course) && !isSuperUnlocked(profile, format) && !opts.startBattle) throw new Error(LOCKED[format]);
     checkBring(team, format);
     if (format === 'multi' && !opts.partner) throw new Error('Choose a partner for the Multi Battle.');
     const partner = format === 'multi' ? runPartner(opts.partner!.name, opts.partner!.setIds, profile.partners) : undefined;
@@ -146,9 +146,9 @@ export class RunController {
       next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
       ...(partner && { partner }),
       history: [],
-      // Checkpoint and retry starts count; debug starts ("start at battle N") and practice runs don't,
-      // and neither does a retry of a run that didn't.
-      debug: debugStart > 1 || fullSettings.ai !== 'heuristic' || (!!opts.retry && !!offer?.debug),
+      // Checkpoint and retry starts count; debug starts ("start at battle N"), practice runs and All Star
+      // Mode (unrated: no records, BP or partner progress) don't, and neither does a retry of a run that didn't.
+      debug: debugStart > 1 || fullSettings.ai !== 'heuristic' || course === 'allstar' || (!!opts.retry && !!offer?.debug),
       startedAt: t,
       updatedAt: t,
     };

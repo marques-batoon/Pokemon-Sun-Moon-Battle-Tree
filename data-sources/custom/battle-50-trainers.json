@@ -1,10 +1,19 @@
 {
-  "about": "Trainers who can appear at battle 50 alongside (or instead of) the Battle Legends. Teams are in battle-50-trainers.txt. After editing either file, run: npm run data:custom",
+  "about": "Trainers who can appear at battle 50 (and every 50 battles after) alongside the Battle Legends. Teams are in battle-50-trainers.txt; entries can also name the game's Battle Legends (Red, Blue) to put them in another format's slot, with their Super teams. 'lead' (optional): the Pokémon (species) that always leads their team. After editing either file, run: npm run data:custom",
   "trainers": {
     "Marques": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/marques.png" },
-    "Thomas": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/thomas.png" }
+    "Thomas": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/thomas.png" },
+    "Tai": { "class": "Battle Legend", "gender": "M", "sprite": "/trainers/tai.png", "lead": "Agumon" },
+    "Matt": { "class": "Battle Legend", "gender": "M", "sprite": "/trainers/matt.png", "lead": "Gabumon" }
   },
   "battles": [
-    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Marques", "Thomas"], "weight": 7 }
+    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Marques", "Thomas"], "weight": 7 },
+    { "format": "singles", "course": "super", "battle": 50, "trainers": ["Blue"], "weight": 7 },
+    { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Red"], "weight": 7 },
+    { "format": "singles", "course": "super", "battle": 50, "trainers": ["Tai"], "weight": 1 },
+    { "format": "singles", "course": "super", "battle": 50, "trainers": ["Matt"], "weight": 1 },
+    { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Tai"], "weight": 1 },
+    { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Matt"], "weight": 1 },
+    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Tai", "Matt"], "weight": 1 }
   ]
 }

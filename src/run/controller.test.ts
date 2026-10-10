@@ -233,7 +233,8 @@ describe('RunController: Doubles', () => {
     const blue = planOpponent('d', 'doubles', 'normal', 20, DEFAULT_SETTINGS);
     expect(blue.displayName).toBe('Battle Legend Blue');
     expect(blue.team).toHaveLength(4);
-    expect(planOpponent('d', 'doubles', 'super', 50, DEFAULT_SETTINGS).displayName).toBe('Battle Legend Blue');
+    // Battle 50 of Super Doubles is a Battle Legend: Blue or Red (weight 7 each), or Tai or Matt (1 each).
+    expect(planOpponent('d', 'doubles', 'super', 50, DEFAULT_SETTINGS).kind).toBe('legend');
     expect(planOpponent('d', 'doubles', 'super', 30, DEFAULT_SETTINGS).kind).toBe('special');
   });
 

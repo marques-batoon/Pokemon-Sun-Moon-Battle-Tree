@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { isFinished, type RunController } from '../../run/controller';
 import {
-  bpBalance, COURSES, FORMATS, isSuperUnlocked, opponentLabel, PARTNER_OFFER_SIZE, PARTNER_PRICE, runKey, type Course, type Format, type RunKey, type RunState, type TreeProfile,
+  bpBalance, COURSES, FORMATS, isSuperUnlocked, needsSuper, opponentLabel, PARTNER_OFFER_SIZE, PARTNER_PRICE, runKey, type Course, type Format, type RunKey, type RunState, type TreeProfile,
 } from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
@@ -130,17 +130,21 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
   );
 }
 
+const ALL_STAR_TEXT = 'Unrated: no records, BP or partner progress. Special trainers in every battle, and the Battle Legends draw every 5th battle.';
 const COURSE_TEXT: Record<Format, Partial<Record<Course, string>>> = {
   singles: {
     normal: '20 battles, bringing 3. Battle Legend Red waits at battle 20; beating him unlocks Super Singles.',
-    super: 'Endless. Special trainers every 10 battles, Red at 50, the toughest trainers from battle 51.',
+    super: 'Endless. Special trainers every 10 battles, Battle Legends every 50 (50, 100, ...), the toughest trainers from battle 51.',
+    allstar: ALL_STAR_TEXT,
   },
   doubles: {
     normal: '20 Double Battles, bringing 4. Battle Legend Blue waits at battle 20; beating him unlocks Super Doubles.',
-    super: 'Endless Double Battles. Special trainers every 10 battles, Blue at 50, the toughest trainers from battle 51.',
+    super: 'Endless Double Battles. Special trainers every 10 battles, Battle Legends every 50 (50, 100, ...), the toughest trainers from battle 51.',
+    allstar: ALL_STAR_TEXT,
   },
   multi: {
-    super: 'Endless Multi Battles: you and a partner bring 2 each against two trainers. Special trainers in pairs every 10 battles, Red and Blue together at 50.',
+    super: 'Endless Multi Battles: you and a partner bring 2 each against two trainers. Special trainers in pairs every 10 battles, Battle Legends every 50.',
+    allstar: `Multi Battles with a partner. ${ALL_STAR_TEXT}`,
   },
 };
 
@@ -161,15 +165,20 @@ function FormatSection({ format, state, onOpen, children }: { format: Format; st
           const key = runKey(format, course);
           const run = state.runs[key];
           const record = profile.records[key];
-          const locked = course === 'super' && !isSuperUnlocked(profile, format);
+          const locked = needsSuper(course) && !isSuperUnlocked(profile, format);
+          const unrated = course === 'allstar';
           return (
             <article key={course} className="panel course-card">
               <h3>{courseLabel(format, course)}</h3>
               <p className="muted small">{COURSE_TEXT[format][course]}</p>
-              <dl className="run-stats">
-                <div><dt>Best streak</dt><dd>{record.best}</dd></div>
-                <div><dt>Last streak</dt><dd>{record.last}</dd></div>
-              </dl>
+              {unrated ? (
+                <p className="small"><span className="tag">All Star Mode</span> <span className="tag">unrated</span></p>
+              ) : (
+                <dl className="run-stats">
+                  <div><dt>Best streak</dt><dd>{record.best}</dd></div>
+                  <div><dt>Last streak</dt><dd>{record.last}</dd></div>
+                </dl>
+              )}
               {run && (
                 <p className="saved-run">
                   {run.status === 'in-battle' && !state.active ? 'Battle interrupted' : isFinished(run) ? `Finished: ${run.status}` : `Saved challenge: ${run.wins} wins, next battle ${run.battle}`}

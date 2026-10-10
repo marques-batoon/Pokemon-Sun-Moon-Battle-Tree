@@ -4,7 +4,8 @@
 export type StatId = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 export type StatTable = Record<StatId, number>;
 export type GameVersion = 'sun' | 'moon';
-export type Course = 'normal' | 'super';
+/** 'allstar': All Star Mode (custom, unrated): special trainers every battle, the battle-50 draw every 5th. */
+export type Course = 'normal' | 'super' | 'allstar';
 export type Format = 'singles' | 'doubles' | 'multi';
 
 export interface TreeSet {
@@ -38,6 +39,8 @@ interface TrainerBase {
   custom?: boolean;
   /** Custom trainers' own sprite (a path under public/), instead of a Showdown one. */
   sprite?: string;
+  /** Custom trainers: the set (id) that always leads their team (Tai's Agumon, Matt's Gabumon). */
+  leadSetId?: number;
 }
 
 export interface RegularTrainer extends TrainerBase {
@@ -71,7 +74,11 @@ export type Trainer = RegularTrainer | SpecialTrainer | LegendTrainer;
 export type ScheduleRule =
   | { battles: [number, number | null]; pool: string }
   | { battles: [number, number]; boss: string }
-  | { everyNth: number; special: true };
+  | { everyNth: number; special: true }
+  /** Custom: the boss battle recurs every N battles (Battle Legends every 50; All Star Mode every 5). */
+  | { everyNth: number; boss: string }
+  /** Custom: special trainers for these battles (All Star Mode). */
+  | { battles: [number, number | null]; special: true };
 
 export interface CourseSchedule {
   length: number | null;
@@ -124,7 +131,8 @@ export interface RulesFile {
   level: { max: number; scaleDownAbove: boolean; scaleUpBelow: boolean };
   teamSize: Record<string, { bring: number; registeredMax?: number; registeredMin?: number; future?: boolean }>;
   bannedSpecies: { includeAllForms: boolean; species: string[] };
-  battlePoints: Record<Course, BpRange[]>;
+  /** Per course in rules.json; All Star Mode earns none (see bpForWin). */
+  battlePoints: Record<Exclude<Course, 'allstar'>, BpRange[]>;
   [key: string]: unknown;
 }
 

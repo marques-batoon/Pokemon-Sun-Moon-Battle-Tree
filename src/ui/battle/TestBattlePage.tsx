@@ -5,8 +5,8 @@ import type { AIKind } from '../../engine/protocol';
 import { TEST_OPPONENT_SET_LABELS, TEST_PLAYER_TEAM_TEXT } from '../../engine/fixtures-data';
 import { randomSeedText } from '../../engine/seed';
 import type { BattleTreeFormat } from '../../engine/format-constants';
-import { planOpponent } from '../../run/selection';
-import { DEFAULT_SETTINGS, MIN_REGISTERED } from '../../run/types';
+import { planChosenOpponent } from '../../run/selection';
+import { MIN_REGISTERED } from '../../run/types';
 import type { TeamStore } from '../../storage/team-store';
 import { useTeams } from '../builder/hooks';
 import { battleName } from '../../online/trainer-name';
@@ -32,7 +32,7 @@ export function TestBattlePage({ client, store }: { client: BattleClient; store:
     // Without debug tools the seed isn't shown, so every battle gets a fresh one.
     const seed = showDebugTools ? seedText : randomSeedText();
     // Doubles: Battle Legend Blue's Super team (4 of his sets, rolled from the seed).
-    const blue = format === 'doubles' ? planOpponent(seed, 'doubles', 'super', 50, DEFAULT_SETTINGS) : null;
+    const blue = format === 'doubles' ? planChosenOpponent(seed, 'doubles', 50, [BOSSES['blue-super'].trainerId]) : null;
     setFoe({ trainerId: blue ? blue.trainerId : BOSSES['red-super'].trainerId, seed });
     client.start({
       format,

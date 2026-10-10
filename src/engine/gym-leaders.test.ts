@@ -47,6 +47,32 @@ describe('Gym Leaders in battle', () => {
     expect(result.turns).toBeGreaterThan(0);
   });
 
+  it('battles Tai vs Matt (Doubles): both lead with their Digimon and Warp Digivolve on turn 1, every set runs', async () => {
+    const id = (name: string) => TRAINERS.find(t => t.name === name && t.custom && t.kind === 'legend')!.id;
+    for (const [half, seed] of [[0, 'a'], [1, 'b']] as const) {
+      // Lead first, then four of the other seven (both halves together use everyone).
+      const team = (name: string) => { const all = roster(id(name), `${name}-${seed}`); return [all[0], ...all.slice(1 + half * 3, 5 + half * 3)]; };
+      const warnings: string[] = [];
+      const session = new BattleSession({
+        format: 'doubles',
+        teamPreview: false,
+        seed: seedFromString(`tai-matt-${seed}`),
+        p1: { name: 'Tai', team: team('Tai') },
+        p2: { name: 'Matt', team: team('Matt') },
+        p1AI: new HeuristicAI(),
+        p2AI: new HeuristicAI(),
+        onWarning: w => warnings.push(w),
+      });
+      session.start();
+      const result = await session.done;
+      const log = session.battle.log.join('\n');
+      expect(log.indexOf('Agumon warp-digivolve to... WarGreymon!')).toBeLessThan(log.indexOf('|turn|2'));
+      expect(log.indexOf('Gabumon warp-digivolve to... MetalGarurumon!')).toBeLessThan(log.indexOf('|turn|2'));
+      expect(warnings).toEqual([]);
+      expect(result.turns).toBeGreaterThan(0);
+    }
+  }, 60000);
+
   // Every set's moves, items and Abilities run in the simulator: each leader's first six
   // against their last six (so 8-Pokémon rosters use everyone), heuristic AI on both sides.
   it.each(leaders.map(t => [t.name, t.id] as const))('%s battles without errors', async (_name, id) => {
