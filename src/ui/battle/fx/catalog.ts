@@ -3,6 +3,7 @@
 // Attacks have a distinct look per type, with separate physical (contact at
 // the target) and special (something travels from the user) versions.
 import type { MoveFx } from '../../../client/move-class';
+import { WARP_DIGIMON } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 
 export type Anchor = 'user' | 'target';
@@ -337,7 +338,7 @@ export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
  * digital space of grid and streaming code, "WARP DIGIVOLVE" flashes across, the Digimon becomes a
  * light silhouette that surges bigger through its in-between forms (sprite class fx-warp-start)
  * inside a spinning wireframe of data, armour pieces fly in, and a white flash. Then the new form
- * bursts out in fire with its name.
+ * bursts out with its name, in its own element (fire for WarGreymon, ice for MetalGarurumon).
  */
 export const WARP_START: FxSpec = { layers: [
   { kind: 'screen', color: '#00040e', mode: 'dim', dur: 2600 },
@@ -352,13 +353,22 @@ export const WARP_START: FxSpec = { layers: [
   { kind: 'aura', at: 'user', color: '#ffffff', size: 210, delay: 1850, dur: 750 },
   { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 2300, dur: 320 },
 ] };
+/** How a warp form bursts out, by its first type. */
+const WARP_BURST_STYLE: Record<string, { flash: string; ring: string; shape: Shape; color: string; color2: string }> = {
+  Fire: { flash: '#fff1c2', ring: '#ff9a1f', shape: 'flame', color: '#ff6a00', color2: '#ffd23f' },
+  Ice: { flash: '#e6fbff', ring: '#7fe3ff', shape: 'shard', color: '#bff3ff', color2: '#4d8cff' },
+};
+const DEFAULT_BURST = WARP_BURST_STYLE.Fire;
+
 export function warpBurst(form = ''): FxSpec {
+  const type = WARP_DIGIMON.find(d => d.warp.name === form)?.warp.types[0] ?? '';
+  const st = WARP_BURST_STYLE[type] ?? DEFAULT_BURST;
   return { shake: 'strong', layers: [
-    { kind: 'screen', color: '#fff1c2', mode: 'flash', dur: 450 },
-    { kind: 'rings', at: 'user', color: '#ff9a1f', count: 2, size: 260 },
-    { kind: 'particles', at: 'user', shape: 'flame', motion: 'burst', color: '#ff6a00', color2: '#ffd23f', count: 16, size: 20, spread: 150 },
+    { kind: 'screen', color: st.flash, mode: 'flash', dur: 450 },
+    { kind: 'rings', at: 'user', color: st.ring, count: 2, size: 260 },
+    { kind: 'particles', at: 'user', shape: st.shape, motion: 'burst', color: st.color, color2: st.color2, count: 16, size: 20, spread: 150 },
     { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#ffd54a', color2: '#ffffff', count: 10, size: 14, spread: 120, delay: 80 },
-    ...(form ? [{ kind: 'banner', text: `${form}!`, color: '#ff6a00', delay: 180, dur: 1050 } as Layer] : []),
+    ...(form ? [{ kind: 'banner', text: `${form}!`, color: st.ring, delay: 180, dur: 1050 } as Layer] : []),
   ] };
 }
 

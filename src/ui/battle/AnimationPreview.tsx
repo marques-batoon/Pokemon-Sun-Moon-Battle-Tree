@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
+import { WARP_DIGIMON } from '../../data/custom/digimon';
 import {
   BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
@@ -27,15 +28,15 @@ const GROUPS: { label: string; moves: string[] }[] = [
   { label: 'Z-Moves', moves: ['Tectonic Rage', 'Inferno Overdrive', 'Hydro Vortex', 'Gigavolt Havoc', 'Devastating Drake', 'Never-Ending Nightmare', 'Shattered Psyche', 'Twinkle Tackle'] },
 ];
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
-/** Warp Digivolution preview: Agumon steps in, then becomes WarGreymon. */
-const WARP = { base: 'Agumon', form: 'WarGreymon' };
+/** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
+const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
 interface FieldState {
   mega: Record<Side, boolean>;
-  /** Warp Digivolution preview: Agumon (1) or WarGreymon (2) stands in. */
-  digimon: Record<Side, 0 | 1 | 2>;
+  /** Warp Digivolution preview: the Digimon (stage 1) or its warp form (stage 2) stands in. */
+  digimon: Record<Side, { form: string; stage: 1 | 2 } | null>;
   sub: Record<Side, boolean>;
   seeded: Record<Side, boolean>;
   shields: Record<Side, string[]>;
@@ -47,7 +48,7 @@ interface FieldState {
   rooms: string[];
 }
 const EMPTY: FieldState = {
-  mega: { p1: false, p2: false }, digimon: { p1: 0, p2: 0 }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
+  mega: { p1: false, p2: false }, digimon: { p1: null, p2: null }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
   status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
   protect: { p1: null, p2: null }, terrain: null, rooms: [],
 };
@@ -67,8 +68,8 @@ function applyStep(f: FieldState, step: Step): FieldState {
     case 'confused': return { ...f, confused: { ...f.confused, [s]: true } };
     case 'infatuated': return { ...f, infatuated: { ...f.infatuated, [s]: true } };
     case 'mega': return { ...f, mega: { ...f.mega, [s]: true } };
-    case 'warp-start': return { ...f, digimon: { ...f.digimon, [s]: 1 } };
-    case 'warp': return { ...f, digimon: { ...f.digimon, [s]: 2 } };
+    case 'warp-start': return c ? { ...f, digimon: { ...f.digimon, [s]: { form: c, stage: 1 } } } : f;
+    case 'warp': return c ? { ...f, digimon: { ...f.digimon, [s]: { form: c, stage: 2 } } } : f;
     case 'sub-start': return { ...f, sub: { ...f.sub, [s]: true } };
     case 'sub-end': return { ...f, sub: { ...f.sub, [s]: false } };
     case 'seeded': return { ...f, seeded: { ...f.seeded, [s]: true } };
@@ -154,6 +155,7 @@ export function AnimationPreview() {
   const speed = ANIMATION_SPEED_FACTOR[settings.animationSpeed] || 1;
   const [move, setMove] = useState('Earthquake');
   const [side, setSide] = useState<Side>('p1');
+  const [warpForm, setWarpForm] = useState(WARP_DIGIMON[0].warp.name);
   const [field, setField] = useState<FieldState>(EMPTY);
   const [run, setRun] = useState<{ steps: Step[]; index: number } | null>(null);
   const [runs, setRuns] = useState(0);
@@ -216,9 +218,12 @@ export function AnimationPreview() {
           { kind: 'mega-start', side, target: null, durationMs: MEGA_START_MS },
           { kind: 'mega', side, target: null, durationMs: 900 },
         ])}>Mega Evolve</button>
-        <button disabled={field.digimon[side] === 2} onClick={() => play([
-          { kind: 'warp-start', side, target: null, condition: WARP.form, durationMs: WARP_START_MS },
-          { kind: 'warp', side, target: null, condition: WARP.form, durationMs: WARP_MS },
+        <select aria-label="Digimon" value={warpForm} onChange={e => setWarpForm(e.target.value)}>
+          {WARP_DIGIMON.map(d => <option key={d.warp.name} value={d.warp.name}>{d.base.name} → {d.warp.name}</option>)}
+        </select>
+        <button disabled={field.digimon[side]?.form === warpForm && field.digimon[side]?.stage === 2} onClick={() => play([
+          { kind: 'warp-start', side, target: null, condition: warpForm, durationMs: WARP_START_MS },
+          { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
         ])}>Warp Digivolve</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
@@ -240,7 +245,7 @@ export function AnimationPreview() {
           <FieldLayers terrain={field.terrain} rooms={field.rooms} anim={anim} />
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
-              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s] === 2 ? WARP.form : WARP.base) : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
+              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
               substitute={field.sub[s]} seeded={field.seeded[s]} status={field.status[s]} confused={field.confused[s]}
               infatuated={field.infatuated[s]} protect={field.protect[s]}
             />

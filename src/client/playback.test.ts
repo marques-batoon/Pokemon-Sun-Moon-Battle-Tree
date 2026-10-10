@@ -171,5 +171,8 @@ describe('planLine: Paradox Evolution', () => {
     expect(warp.map(s => [s.animation?.kind, s.animation?.condition, s.animation?.side, s.applyLine])).toEqual([
       ['warp-start', 'WarGreymon', 'p2', false], ['warp', 'WarGreymon', 'p2', true],
     ]);
+    expect(steps('|detailschange|p1b: Gabumon|MetalGarurumon, L50, F').map(s => [s.animation?.kind, s.animation?.condition, s.animation?.slot])).toEqual([
+      ['warp-start', 'MetalGarurumon', 1], ['warp', 'MetalGarurumon', 1],
+    ]);
   });
 });

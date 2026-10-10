@@ -10,8 +10,10 @@ import { actsAt, spriteClass } from './fx/stage-fx';
 
 type Side = 'p1' | 'p2';
 
-/** Size of a Mega Evolved (or Warp Digivolved) Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
+/** Size of a Mega Evolved Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
 const MEGA_SCALE = 1.2;
+/** Same for a Warp Digivolved Digimon (keep in sync with .is-warp in index.css). */
+const WARP_SCALE = 1.3;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
 function DollSvg({ side }: { side: Side }) {
@@ -140,7 +142,8 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : substitute && !peeking ? 'subbed' : '';
   const showDoll = substitute || mine?.kind === 'sub-end';
   // Mega Evolved Pokémon are drawn 20% larger.
-  const mega = !!pokemon && (/-Mega(-[XYZ])?$/.test(pokemon.species) || isWarpForm(pokemon.species));
+  const warp = !!pokemon && isWarpForm(pokemon.species);
+  const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
     : mine?.kind === 'sub-end' ? 'fx-doll-break'
@@ -150,14 +153,14 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
       <div className="platform" />
       {pokemon && (
         <div className={`sprite-sub ${subClass}`}>
-          <div className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''}`}>
+          <div className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''}`}>
             <PokemonSprite
               key={pokemon.species}
               species={pokemon.species}
               side={side}
               gender={pokemon.gender}
               shiny={pokemon.shiny}
-              scale={(side === 'p1' ? 1.4 : 1.3) * (mega ? MEGA_SCALE : 1)}
+              scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? WARP_SCALE : mega ? MEGA_SCALE : 1)}
             />
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />

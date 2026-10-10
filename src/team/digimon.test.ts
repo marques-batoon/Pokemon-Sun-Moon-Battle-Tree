@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { WARP_DIGIMON } from '../data/custom/digimon';
 import { canHoldItem } from '../data/custom/paradox';
-import { allMoves, eligibleSpecies, gen7, learnableMoves } from './dex';
+import { allMoves, eligibleSpecies, gen7, learnableMoves, speciesAbilities } from './dex';
 import { calcStats, changeSpecies, megaFormForSet, newSet } from './sets';
 
 describe('Agumon in the team builder', () => {
@@ -33,6 +33,33 @@ describe('Agumon in the team builder', () => {
   it('battles as Agumon until it warps (its stats are still its own)', () => {
     const set = { ...newSet('Agumon'), item: 'Wargreyite' };
     expect(calcStats(set).hp).toBe(calcStats(newSet('Agumon')).hp);
+  });
+});
+
+describe('Gabumon in the team builder', () => {
+  it('offers Gabumon, not MetalGarurumon, with its three Abilities', () => {
+    const names = eligibleSpecies().map(s => s.name);
+    expect(names).toContain('Gabumon');
+    expect(names).not.toContain('MetalGarurumon');
+    expect(gen7.species.get('MetalGarurumon')?.types).toEqual(['Ice', 'Steel']);
+    expect(speciesAbilities('Gabumon')).toEqual(['Thick Fat', 'Snow Cloak', 'Flash Fire']);
+  });
+
+  it('learns its own list, and only it gets Blue Blaster and Cocytus Pulse', async () => {
+    const moves = (await learnableMoves('Gabumon')).map(m => m.name);
+    for (const m of ['Blue Blaster', 'Cocytus Pulse', 'Powder Snow', 'Steel Beam', 'Chilling Water', 'Ice Spinner', 'Snowscape', 'Zen Headbutt']) expect(moves).toContain(m);
+    expect(moves).toHaveLength(new Set(WARP_DIGIMON[1].moves).size);
+    expect(moves).not.toContain('Pepper Breath');
+    expect((await learnableMoves('Agumon')).map(m => m.name)).not.toContain('Blue Blaster');
+    expect(allMoves().map(m => m.name)).not.toContain('Cocytus Pulse');
+  });
+
+  it('keeps Metalgaruruite for Gabumon, and shows MetalGarurumon when it holds it', () => {
+    expect(canHoldItem('Gabumon', 'Metalgaruruite')).toBe(true);
+    expect(canHoldItem('Agumon', 'Metalgaruruite')).toBe(false);
+    expect(canHoldItem('Gabumon', 'Wargreyite')).toBe(false);
+    expect(megaFormForSet({ species: 'Gabumon', item: 'Metalgaruruite' })).toBe('MetalGarurumon');
+    expect(megaFormForSet({ species: 'Gabumon', item: 'Wargreyite' })).toBeNull();
   });
 });
 

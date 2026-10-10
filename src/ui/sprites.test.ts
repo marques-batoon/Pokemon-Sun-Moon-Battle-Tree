@@ -37,5 +37,7 @@ describe('Digimon sprites', () => {
     expect(animatedSprite('Agumon', 'p2').mirrored).toBeUndefined();
     expect(animatedSprite('Agumon', 'p1')).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
     expect(staticSprite('WarGreymon', 'p1')).toMatchObject({ url: '/pokemon/wargreymon.png', mirrored: true });
+    expect(animatedSprite('Gabumon', 'p2')).toMatchObject({ url: '/pokemon/gabumon.png' });
+    expect(animatedSprite('MetalGarurumon', 'p1')).toMatchObject({ url: '/pokemon/metalgarurumon.png', mirrored: true });
   });
 });

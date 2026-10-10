@@ -78,6 +78,11 @@ describe('animation catalog', () => {
     const burst = warpBurst('WarGreymon');
     expect(burst.shake).toBe('strong');
     expect(burst.layers.some(l => l.kind === 'banner' && l.text === 'WarGreymon!')).toBe(true);
+    // Each form bursts out in its own element: fire for WarGreymon, ice for MetalGarurumon.
+    const shapes = (form: string) => warpBurst(form).layers.flatMap(l => (l.kind === 'particles' ? [l.shape] : []));
+    expect(shapes('WarGreymon')).toContain('flame');
+    expect(shapes('MetalGarurumon')).toContain('shard');
+    expect(shapes('MetalGarurumon')).not.toContain('flame');
   });
 
   it('animates status conditions with particles only: no filled glow, flash or dim over the Pokémon', () => {

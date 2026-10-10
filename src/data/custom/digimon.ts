@@ -54,6 +54,31 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
     'Substitute', 'Sunny Day', 'Swift', 'Swords Dance', 'Temper Flare', 'Tera Blast', 'Thunder Punch', 'U-turn', 'Will-O-Wisp',
     'X-Scissor',
   ],
+}, {
+  base: {
+    num: 10202, name: 'Gabumon', types: ['Ice'], color: 'Yellow',
+    baseStats: { hp: 44, atk: 55, def: 50, spa: 60, spd: 50, spe: 50 },
+    abilities: { 0: 'Thick Fat', 1: 'Snow Cloak', H: 'Flash Fire' }, weightkg: 14, genderRatio: { M: 0.875, F: 0.125 },
+  },
+  warp: {
+    name: 'MetalGarurumon', types: ['Ice', 'Steel'], color: 'Blue',
+    baseStats: { hp: 80, atk: 95, def: 105, spa: 135, spd: 105, spe: 110 },
+    abilities: { 0: 'Mega Launcher' }, weightkg: 180,
+  },
+  item: 'Metalgaruruite',
+  itemDesc: 'If held by a Gabumon, this item allows it to Warp Digivolve into MetalGarurumon in battle.',
+  moves: [
+    // Level-up
+    'Scratch', 'Growl', 'Powder Snow', 'Metal Claw', 'Bite', 'Tail Whip', 'Quick Attack', 'Icy Wind', 'Blue Blaster', 'Ice Fang',
+    'Metal Sound', 'Scary Face', 'Crunch', 'Ice Beam', 'Flash Cannon', 'Agility', 'Dark Pulse', 'Cocytus Pulse', 'Aura Sphere',
+    'Blizzard', 'Iron Defense', 'Steel Beam', 'Hyper Beam',
+    // TMs
+    'Aerial Ace', 'Avalanche', 'Body Slam', 'Breaking Swipe', 'Chilling Water', 'Dig', 'Dragon Pulse', 'Endure', 'Facade', 'Fling',
+    'Focus Blast', 'Frost Breath', 'Giga Impact', 'Heavy Slam', 'Ice Spinner', 'Iron Head', 'Iron Tail', 'Mud-Slap', 'Pin Missile',
+    'Protect', 'Rain Dance', 'Rest', 'Roar', 'Rock Blast', 'Rock Slide', 'Rock Tomb', 'Shadow Ball', 'Sleep Talk', 'Snarl',
+    'Snowscape', 'Smart Strike', 'Substitute', 'Swift', 'Swords Dance', 'Tera Blast', 'Thunderbolt', 'Thunder Wave', 'Tri Attack',
+    'U-turn', 'Water Pulse', 'Wild Charge', 'Zen Headbutt',
+  ],
 }];
 
 export interface DigimonMove {
@@ -64,20 +89,30 @@ export interface DigimonMove {
   accuracy: number;
   pp: number;
   contact: boolean;
-  /** Chance (%) to burn the target. */
-  burnChance: number;
+  /** A pulse move (boosted by Mega Launcher). */
+  pulse?: boolean;
+  /** Chance (%) of a burn, or of a stat drop on the target. */
+  secondary: { chance: number; status?: 'brn'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
 }
 
 /** Signature moves (only the Digimon that list them can learn them). */
 export const DIGIMON_MOVES: DigimonMove[] = [
   {
-    name: 'Pepper Breath', type: 'Fire', category: 'Special', basePower: 65, accuracy: 100, pp: 15, contact: false, burnChance: 20,
-    desc: '20% chance to burn the target.',
+    name: 'Pepper Breath', type: 'Fire', category: 'Special', basePower: 65, accuracy: 100, pp: 15, contact: false,
+    secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target.',
   },
   {
-    name: 'Gaia Force', type: 'Fire', category: 'Special', basePower: 110, accuracy: 90, pp: 5, contact: false, burnChance: 20,
-    desc: '20% chance to burn the target.',
+    name: 'Gaia Force', type: 'Fire', category: 'Special', basePower: 110, accuracy: 90, pp: 5, contact: false,
+    secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target.',
+  },
+  {
+    name: 'Blue Blaster', type: 'Fire', category: 'Special', basePower: 70, accuracy: 100, pp: 10, contact: false,
+    secondary: { chance: 20, boosts: { spd: -1 } }, desc: '20% chance to lower the target\'s Sp. Def by 1.',
+  },
+  {
+    name: 'Cocytus Pulse', type: 'Ice', category: 'Special', basePower: 85, accuracy: 100, pp: 10, contact: false, pulse: true,
+    secondary: { chance: 20, boosts: { spe: -1 } }, desc: '20% chance to lower the target\'s Speed by 1. Boosted by Mega Launcher.',
   },
 ];
 
@@ -85,6 +120,8 @@ export const DIGIMON_MOVES: DigimonMove[] = [
 export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: number }> = {
   Agumon: { file: 'pokemon/agumon.png', w: 84, h: 84 },
   WarGreymon: { file: 'pokemon/wargreymon.png', w: 132, h: 132 },
+  Gabumon: { file: 'pokemon/gabumon.png', w: 84, h: 84 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118 },
 };
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -152,8 +189,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   for (const m of DIGIMON_MOVES) {
     moves[toId(m.name)] = {
       num: moveNum++, name: m.name, type: m.type, category: m.category, basePower: m.basePower, accuracy: m.accuracy, pp: m.pp,
-      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}) },
-      secondary: { chance: m.burnChance, status: 'brn' }, target: 'normal', gen: 7, isNonstandard: null,
+      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}) },
+      secondary: { ...m.secondary }, target: 'normal', gen: 7, isNonstandard: null,
       shortDesc: m.desc, desc: m.desc,
     };
   }
