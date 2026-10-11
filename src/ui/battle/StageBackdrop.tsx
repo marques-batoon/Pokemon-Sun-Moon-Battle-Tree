@@ -264,8 +264,92 @@ const forestGround: Part = () => (
   </svg>
 );
 
-const SKIES: Partial<Record<BattleBackground, Part>> = { stadium: stadiumSky, mountain: mountainSky, ocean: oceanSky, forest: forestSky };
-const GROUNDS: Partial<Record<BattleBackground, Part>> = { stadium: stadiumGround, mountain: mountainGround, ocean: oceanGround, forest: forestGround };
+// ---- Battle Tree (the default): the arena at the top of the giant tree on Poni Island. Leafy canopy and huge
+// branches overhead, the sea far below past a wooden railing, a round stone floor with a tree emblem. ----
+
+const CANOPY = Array.from({ length: 24 }, (_, i) => ({ cx: i * 44 + wobble(i, 16), cy: 36 + wobble(i + 4, 22), r: 40 + wobble(i + 1, 14) }));
+const LEAF_TONES = ['#2f6f30', '#3f8a3a', '#4f9a3e'];
+const POSTS = Array.from({ length: 17 }, (_, i) => 20 + i * 60);
+const BUSHES_RAIL = [90, 260, 470, 640, 830].map((x, i) => ({ x, r: 16 + wobble(i, 8) }));
+const MOSS = scatter(70, 23, ['#4c8a39', '#79b85a', '#3d7330'], [1.5, 5]);
+
+const treeSky: Part = id => (
+  <svg {...SKY_BOX}>
+    <defs>
+      <VGrad id={`${id}-sky`} stops={[[0, '#59b4ee'], [1, '#c4e8fb']]} />
+      <VGrad id={`${id}-sea`} stops={[[0, '#7ccbea'], [1, '#4aa6d6']]} />
+    </defs>
+    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+    <Cloud x={330} y={118} s={0.9} /><Cloud x={690} y={104} />
+    <rect y="164" width="1000" height="22" fill={`url(#${id}-sea)`} />
+    <path d="M280 168 Q310 156 340 160 Q365 154 390 168 Z M620 168 Q650 160 676 163 Q700 158 724 168 Z" fill="#78a996" />
+    <g fill="#6b4528">
+      <path d="M0 0 L160 0 C135 60 118 130 96 200 L0 200 Z" />
+      <path d="M1000 0 L840 0 C865 60 882 130 904 200 L1000 200 Z" />
+    </g>
+    <g fill="none" stroke="#6b4528" strokeLinecap="round">
+      <path d="M120 84 C240 52 330 70 440 34" strokeWidth="18" />
+      <path d="M880 84 C760 52 670 70 560 34" strokeWidth="18" />
+      <path d="M300 64 C330 40 360 34 390 14" strokeWidth="9" />
+      <path d="M700 64 C670 40 640 34 610 14" strokeWidth="9" />
+    </g>
+    <g fill="none" stroke="#4f321c" strokeWidth="3" opacity="0.55" strokeLinecap="round">
+      <path d="M40 10 C30 70 24 130 14 196 M90 20 C78 80 66 140 52 196 M960 10 C970 70 976 130 986 196 M910 20 C922 80 934 140 948 196" />
+    </g>
+    {LEAF_TONES.map((fill, t) => (
+      <g key={fill} fill={fill}>{CANOPY.map((c, i) => <circle key={i} cx={c.cx - t * 6} cy={c.cy + (2 - t) * 10} r={c.r - t * 8} />)}</g>
+    ))}
+    <rect y="178" width="1000" height="22" fill="#8b5e34" />
+    <rect y="178" width="1000" height="5" fill="#b07f4e" />
+    <g fill="#6d4626">{POSTS.map(x => <rect key={x} x={x - 4} y="172" width="8" height="28" rx="2" />)}</g>
+    <g fill="#c09060">{POSTS.map(x => <rect key={x} x={x - 6} y="170" width="12" height="5" rx="2" />)}</g>
+    <g fill="#3f8a3a">{BUSHES_RAIL.map(b => <circle key={b.x} cx={b.x} cy="192" r={b.r} />)}</g>
+    <g fill="#5aa845">{BUSHES_RAIL.map(b => <circle key={b.x} cx={b.x - 6} cy="188" r={b.r * 0.6} />)}</g>
+  </svg>
+);
+
+const treeGround: Part = id => (
+  <svg {...GROUND_BOX}>
+    <defs>
+      <radialGradient id={`${id}-floor`} cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stopColor="#f1e3bf" />
+        <stop offset="0.65" stopColor="#ddc596" />
+        <stop offset="1" stopColor="#c7a46e" />
+      </radialGradient>
+    </defs>
+    <rect width="1000" height="400" fill="#5f9c47" />
+    {MOSS.map(({ key, cx, cy, rx, ry, fill }) => <ellipse key={key} cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity="0.7" />)}
+    <ellipse cx="500" cy="232" rx="650" ry="232" fill={`url(#${id}-floor)`} />
+    <g fill="none" stroke="#a5824f" strokeWidth="3" opacity="0.8">
+      <ellipse {...LINE} cx="500" cy="232" rx="650" ry="232" strokeWidth="6" stroke="#8b6a3e" />
+      <ellipse {...LINE} cx="500" cy="232" rx="440" ry="156" />
+      <ellipse {...LINE} cx="500" cy="232" rx="190" ry="66" />
+      <path {...LINE} d={Array.from({ length: 16 }, (_, k) => {
+        const a = (k / 16) * Math.PI * 2;
+        return `M${(500 + 190 * Math.cos(a)).toFixed(1)} ${(232 + 66 * Math.sin(a)).toFixed(1)} L${(500 + 440 * Math.cos(a)).toFixed(1)} ${(232 + 156 * Math.sin(a)).toFixed(1)}`;
+      }).join(' ')} strokeWidth="2" opacity="0.7" />
+    </g>
+    <g transform="translate(500 232) scale(1 0.36)">
+      <circle r="150" fill="#e4f1d4" stroke="#4f8a3c" strokeWidth="10" />
+      <path d="M-20 10 L-26 112 L26 112 L20 10 Z" fill="#7a5232" />
+      <path d="M-26 112 Q-60 118 -80 132 M26 112 Q60 118 80 132" stroke="#7a5232" strokeWidth="12" fill="none" strokeLinecap="round" />
+      <circle cx="-58" cy="-8" r="56" fill="#4f9a3e" />
+      <circle cx="58" cy="-8" r="56" fill="#4f9a3e" />
+      <circle cx="0" cy="-58" r="66" fill="#5aa845" />
+      <circle cx="-18" cy="-80" r="20" fill="#8fd16a" opacity="0.8" />
+    </g>
+    <g fill="#000000" opacity="0.07">
+      <ellipse cx="160" cy="40" rx="140" ry="22" /><ellipse cx="820" cy="30" rx="160" ry="20" /><ellipse cx="470" cy="12" rx="120" ry="10" />
+    </g>
+    <g fill="#7a5232" stroke="#4f321c" strokeWidth="2">
+      <path {...LINE} d="M0 230 C50 226 92 252 128 300 C150 330 168 370 176 400 L0 400 Z" />
+      <path {...LINE} d="M1000 210 C950 214 912 240 884 290 C866 324 856 366 852 400 L1000 400 Z" />
+    </g>
+  </svg>
+);
+
+const SKIES: Partial<Record<BattleBackground, Part>> = { battletree: treeSky, stadium: stadiumSky, mountain: mountainSky, ocean: oceanSky, forest: forestSky };
+const GROUNDS: Partial<Record<BattleBackground, Part>> = { battletree: treeGround, stadium: stadiumGround, mountain: mountainGround, ocean: oceanGround, forest: forestGround };
 
 /** The scenery behind the battle: the one picked in Settings, or `kind` (Settings' previews). */
 export function StageBackdrop({ kind }: { kind?: BattleBackground }) {

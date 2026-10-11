@@ -5,8 +5,9 @@ export type AnimationSpeed = 'off' | 'fast' | 'normal' | 'slow';
 /** Pokémon pictures: 2D pixel sprites (Black and White style) or 3D animated ones (X and Y / Sun and Moon style). */
 export type SpriteStyle = '2d' | '3d';
 /** Scenery behind the battle (all share the same horizon line). */
-export type BattleBackground = 'grass' | 'stadium' | 'mountain' | 'ocean' | 'forest';
+export type BattleBackground = 'battletree' | 'grass' | 'stadium' | 'mountain' | 'ocean' | 'forest';
 export const BATTLE_BACKGROUNDS: { id: BattleBackground; label: string }[] = [
+  { id: 'battletree', label: 'Battle Tree' },
   { id: 'grass', label: 'Grass field' },
   { id: 'stadium', label: 'Pokémon Stadium' },
   { id: 'mountain', label: 'Mountain' },
@@ -44,7 +45,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   showDebugTools: false,
   sprites: true,
   spriteStyle: '2d',
-  battleBackground: 'grass',
+  battleBackground: 'battletree',
   animationSpeed: 'normal',
   trainerName: '',
 };
