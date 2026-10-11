@@ -50,12 +50,15 @@ function championsSprite(species: string, side: SpriteSide, preferStatic: boolea
 
 /**
  * A sprite shipped with the app (the Digimon): pixel art in a 96-px box like Pokémon's 2D sprites, so it is
- * sized and placed like one (in either sprite style). The image faces left, so the back view is it flipped.
+ * sized and placed like one (in either sprite style). Your side uses its back sprite; without one, the front
+ * one (facing left) flipped.
  */
 function localSprite(species: string, side: SpriteSide): SpriteInfo | null {
   const s = DIGIMON_SPRITES[species];
   if (!s) return null;
-  return { url: localSpriteUrl(species)!, w: s.w, h: s.h, pixelated: true, smooth: true, ...(side === 'p1' ? { mirrored: true } : {}) };
+  const base = { w: s.w, h: s.h, pixelated: true, smooth: true };
+  if (side === 'p1' && s.back) return { ...base, url: `${import.meta.env.BASE_URL}${s.back}` };
+  return { ...base, url: localSpriteUrl(species)!, ...(side === 'p1' ? { mirrored: true } : {}) };
 }
 
 /** URL of a sprite shipped with the app, or null if the species has none. */

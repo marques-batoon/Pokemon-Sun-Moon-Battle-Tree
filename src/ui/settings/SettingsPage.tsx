@@ -59,7 +59,7 @@ export function SettingsPage() {
         <p className="muted small">2D: Black and White-style pixel sprites (artwork, then 3D, where a Pokémon has none). 3D: X and Y / Sun and Moon-style animated sprites.</p>
         <Toggle checked={settings.matchSideSprites} onChange={v => store.update({ matchSideSprites: v })}
           label="Matching sprites on your side"
-          hint="Some Pokémon have no back sprite (the Digimon, some newer Megas...), so they're shown from the front, flipped. With this on, if any Pokémon on your side (yours, or your partner's in Multi) has none, all of them are shown that way, so they match." />
+          hint="Some Pokémon have no back sprite (some newer Megas, such as Mega Garchomp Z), so they're shown from the front, flipped. With this on, if any Pokémon on your side (yours, or your partner's in Multi) has none, all of them are shown that way, so they match." />
         <fieldset className="choice-row">
           <legend>Battle background</legend>
           {BATTLE_BACKGROUNDS.map(b => (

@@ -34,14 +34,16 @@ describe('Pokémon Champions sprites', () => {
 });
 
 describe('Digimon sprites', () => {
-  it('uses the images shipped with the app, flipped for the back view', () => {
+  it('uses the images shipped with the app, front and back', () => {
     // Pixel art in a 96-px box, sized like a Pokémon's 2D sprite but scaled smoothly (high-resolution file).
     expect(animatedSprite('Agumon', 'p2')).toMatchObject({ url: '/pokemon/agumon.png', w: 96, h: 96, pixelated: true, smooth: true });
     expect(animatedSprite('Agumon', 'p2').mirrored).toBeUndefined();
-    expect(animatedSprite('Agumon', 'p1')).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
-    expect(staticSprite('WarGreymon', 'p1')).toMatchObject({ url: '/pokemon/wargreymon.png', mirrored: true });
-    expect(animatedSprite('Gabumon', 'p2')).toMatchObject({ url: '/pokemon/gabumon.png' });
-    expect(animatedSprite('MetalGarurumon', 'p1')).toMatchObject({ url: '/pokemon/metalgarurumon.png', mirrored: true });
+    // Back sprites (2026-10-11): your side shows them, not the front ones flipped.
+    for (const [name, file] of [['Agumon', 'agumon'], ['WarGreymon', 'wargreymon'], ['BlackWarGreymon', 'blackwargreymon'], ['Gabumon', 'gabumon'], ['MetalGarurumon', 'metalgarurumon']]) {
+      expect(staticSprite(name, 'p1'), name).toMatchObject({ url: `/pokemon/back/${file}.png`, pixelated: true });
+      expect(staticSprite(name, 'p1').mirrored, name).toBeUndefined();
+      expect(animatedSprite(name, 'p2'), name).toMatchObject({ url: `/pokemon/${file}.png` });
+    }
   });
 
   it('draws each warp form at its own size on the stage', () => {
@@ -119,11 +121,12 @@ describe('sprite style', () => {
 });
 
 describe('matching sprites on your side', () => {
-  it('knows which Pokémon have no back sprite (the Digimon are shown from the front, flipped)', () => {
+  it('knows which Pokémon have no back sprite (some newer Megas are shown from the front, flipped)', () => {
     expect(hasBackSprite('Garchomp', '2d')).toBe(true);
     expect(hasBackSprite('Garchomp', '3d')).toBe(true);
-    expect(hasBackSprite('Agumon', '2d')).toBe(false);
-    expect(hasBackSprite('WarGreymon', '3d')).toBe(false);
+    expect(hasBackSprite('Agumon', '2d')).toBe(true);
+    expect(hasBackSprite('WarGreymon', '3d')).toBe(true);
+    expect(hasBackSprite('Garchomp-Mega-Z', '2d')).toBe(false);
   });
 
   it('shows your side\'s Pokémon as their front sprites, flipped, when asked', () => {
@@ -131,7 +134,7 @@ describe('matching sprites on your side', () => {
     expect(front.url).toBe('https://play.pokemonshowdown.com/sprites/gen5/garchomp.png');
     expect(front.mirrored).toBe(true);
     expect(spriteCandidates('Garchomp', 'p1', '3d', { flipFront: true })[0].url).toBe('https://play.pokemonshowdown.com/sprites/ani/garchomp.gif');
-    // Already front-only: still flipped once (it faces the opponent).
+    // A Digimon: its front sprite, flipped (not its back one).
     expect(spriteCandidates('Agumon', 'p1', '2d', { flipFront: true })[0]).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
     // The opponent's side is never affected.
     expect(spriteCandidates('Garchomp', 'p2', '2d', { flipFront: true })[0].mirrored).toBeFalsy();

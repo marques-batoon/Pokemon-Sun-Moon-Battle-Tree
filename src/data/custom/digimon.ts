@@ -170,18 +170,18 @@ export const DIGIMON_MOVES: DigimonMove[] = [
 
 /**
  * Sprites shipped with the app (public/pokemon): the user's pixel art in the style of the Pokémon's 2D (Black and
- * White) sprites, facing left; the back view is the front one flipped. Each picture is a 96-px sprite box like
+ * White) sprites: the front view facing left, and `back` (public/pokemon/back, added 2026-10-11) for your side. Each picture is a 96-px sprite box like
  * Pokémon's (480 px files, 5 px per box pixel, so they stay sharp), with the Digimon at its own size in it and
  * its feet 10% above the bottom, so it is drawn and placed exactly like a Pokémon's 2D sprite. `icon`: the
  * Digimon alone, cropped, for menus. `stageScale`: how much larger a warp form may be drawn on the battle
  * stage (Megas: 1.2x); with these pictures it only lets a warp form go a little past the usual size limit.
  */
-export const DIGIMON_SPRITES: Record<string, { file: string; icon: string; w: number; h: number; stageScale?: number }> = {
-  Agumon: { file: 'pokemon/agumon.png', icon: 'pokemon/icons/agumon.png', w: 96, h: 96 },
-  WarGreymon: { file: 'pokemon/wargreymon.png', icon: 'pokemon/icons/wargreymon.png', w: 96, h: 96, stageScale: 1.5 },
-  Gabumon: { file: 'pokemon/gabumon.png', icon: 'pokemon/icons/gabumon.png', w: 96, h: 96 },
-  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', icon: 'pokemon/icons/metalgarurumon.png', w: 96, h: 96, stageScale: 1.2954 },
-  BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
+export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon: string; w: number; h: number; stageScale?: number }> = {
+  Agumon: { file: 'pokemon/agumon.png', back: 'pokemon/back/agumon.png', icon: 'pokemon/icons/agumon.png', w: 96, h: 96 },
+  WarGreymon: { file: 'pokemon/wargreymon.png', back: 'pokemon/back/wargreymon.png', icon: 'pokemon/icons/wargreymon.png', w: 96, h: 96, stageScale: 1.5 },
+  Gabumon: { file: 'pokemon/gabumon.png', back: 'pokemon/back/gabumon.png', icon: 'pokemon/icons/gabumon.png', w: 96, h: 96 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', back: 'pokemon/back/metalgarurumon.png', icon: 'pokemon/icons/metalgarurumon.png', w: 96, h: 96, stageScale: 1.2954 },
+  BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', back: 'pokemon/back/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);
