@@ -1,7 +1,9 @@
-import { useRef, useState, useSyncExternalStore } from 'react';
+import { useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { SETS, TRAINERS } from '../../data/battle-tree';
 import type { RunSettings, TreeProfile } from '../../run/types';
-import type { AnimationSpeed, SpriteStyle, ThemeSetting } from '../../settings/settings-store';
+import { BATTLE_BACKGROUNDS, type AnimationSpeed, type SpriteStyle, type ThemeSetting } from '../../settings/settings-store';
+import { StageBackdrop } from '../battle/StageBackdrop';
+import { horizonVar } from '../battle/fx/geometry';
 import { checkBackup, createBackup, restoreBackup, type Backup } from '../../storage/backup';
 import { useTeams } from '../builder/hooks';
 import { getKeyValueStore, getRunController, getSettingsStore, getTeamStore } from '../services';
@@ -55,6 +57,18 @@ export function SettingsPage() {
           ))}
         </fieldset>
         <p className="muted small">2D: Black and White-style pixel sprites (artwork, then 3D, where a Pokémon has none). 3D: X and Y / Sun and Moon-style animated sprites.</p>
+        <fieldset className="choice-row">
+          <legend>Battle background</legend>
+          {BATTLE_BACKGROUNDS.map(b => (
+            <label key={b.id} className={`bg-choice${settings.battleBackground === b.id ? ' selected' : ''}`}>
+              <span className="stage-mini" style={horizonVar as CSSProperties}><StageBackdrop kind={b.id} /></span>
+              <span>
+                <input type="radio" name="battle-bg" checked={settings.battleBackground === b.id} onChange={() => store.update({ battleBackground: b.id })} />
+                {' '}{b.label}
+              </span>
+            </label>
+          ))}
+        </fieldset>
       </section>
 
       <section className="panel">

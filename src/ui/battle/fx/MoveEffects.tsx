@@ -3,7 +3,7 @@
 // in CSS (index.css, "Move effects"), driven by per-element custom properties.
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
 import type { Anchor, FxSpec, Layer, Shape } from './catalog';
-import { foeSide, posKey, sideOfPos, spotPoint, type Point, type Pos } from './geometry';
+import { foeSide, HORIZON, posKey, sideOfPos, spotPoint, type Point, type Pos } from './geometry';
 
 type Vars = Record<`--${string}`, string | number>;
 const px = (n: number) => `${Math.round(n * 10) / 10}px`;
@@ -221,8 +221,8 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
     case 'screen':
       return <span key={i} className={`fxl fx-screen ${layer.mode}`} style={css({ '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 400) })} />;
     case 'ground':
-      // The ground starts where the sky ends (46% down, as in the .stage background).
-      return <span key={i} className="fxl fx-ground" style={css({ '--x': '0px', '--y': px(ctx.h * 0.46), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 700) })} />;
+      // The ground starts where the sky ends (the horizon of every battle background).
+      return <span key={i} className="fxl fx-ground" style={css({ '--x': '0px', '--y': px(ctx.h * HORIZON), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 700) })} />;
     case 'datagrid':
       return <span key={i} className="fxl fx-datagrid" style={css({ '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 2000) })} />;
     case 'code': return <CodeStreams key={i} layer={layer} ctx={ctx} />;
@@ -262,6 +262,22 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
     case 'rays': {
       const p = anchor(layer.at);
       return <span key={i} className="fxl fx-rays" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 800) })} />;
+    }
+    case 'gauntlets': {
+      // Ice forms around both arms (at the sides of the sprite, a little above its centre: sized from the measured
+      // sprite when there is one), winds up, then both fists fly into the target from either side and shatter.
+      const h = user.size ?? layer.size * ctx.k * 1.9;
+      const s = h * 0.3;
+      const fist = (dir: 1 | -1) => css({ '--ox': px(dir * h * 0.3), '--oy': px(-h * 0.2), '--ix': px(dir * s * 0.55), '--r': deg(dir * 14) });
+      return (
+        <span key={i} className="fxl fx-gauntlets" style={css({
+          '--x': px(user.x), '--y': px(user.y), '--tx': px(target.x - user.x), '--ty': px(target.y - user.y), '--s': px(s),
+          '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 2000),
+        })}>
+          <span className="gauntlet" style={fist(-1)}><span className="ice" /></span>
+          <span className="gauntlet" style={fist(1)}><span className="ice" /></span>
+        </span>
+      );
     }
     case 'cocoon': {
       const p = anchor(layer.at);
@@ -315,7 +331,7 @@ interface Props {
 /** Layers drawn at or towards the target (once per target); the rest are drawn once, at the user or on the whole stage. */
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
-    case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': return true;
+    case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
     case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';

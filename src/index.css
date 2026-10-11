@@ -502,6 +502,9 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /* ---------- Settings ---------- */
 .settings { display: flex; flex-direction: column; gap: 16px; max-width: 760px; }
 .choice-row { border: none; padding: 0; margin: 0; display: flex; gap: 16px; flex-wrap: wrap; }
+.bg-choice { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+.stage-mini { position: relative; display: block; width: 132px; height: 74px; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); }
+.bg-choice.selected .stage-mini { border-color: var(--accent); }
 .choice-row legend { font-size: 0.8rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
 .toggle { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
 .toggle input { margin-top: 3px; }
@@ -515,13 +518,36 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 :root { --stage-sky: #bfe1ff; --stage-sky2: #eaf6ff; --stage-ground: #b8e2a0; --stage-ground2: #8ccd6f; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) { --stage-sky: #1c2a44; --stage-sky2: #2a3a5c; --stage-ground: #2c4a32; --stage-ground2: #203826; } }
 :root[data-theme='dark'] { --stage-sky: #1c2a44; --stage-sky2: #2a3a5c; --stage-ground: #2c4a32; --stage-ground2: #203826; }
-.stage { position: relative; height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: linear-gradient(180deg, var(--stage-sky) 0%, var(--stage-sky2) 46%, var(--stage-ground) 46%, var(--stage-ground2) 100%); isolation: isolate; }
+/* --horizon (set on each stage from HORIZON in fx/geometry.ts): where the sky ends and the ground begins, the same for
+   every battle background. Raised from 46% to 36% (on request) so the opponents stand well inside the ground. */
+.stage { position: relative; height: 340px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: linear-gradient(180deg, var(--stage-sky) 0%, var(--stage-sky2) var(--horizon), var(--stage-ground) var(--horizon), var(--stage-ground2) 100%); isolation: isolate; }
+
+/* Battle backgrounds (StageBackdrop.tsx; picked in Settings). Sky above the horizon, ground below it. */
+.stage-backdrop { position: absolute; inset: 0; pointer-events: none; }
+/* The sky reaches 1px under the ground so no hairline of sky shows at the horizon. */
+.backdrop-sky { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--horizon) + 1px); overflow: hidden; }
+.backdrop-ground { position: absolute; left: 0; right: 0; top: var(--horizon); bottom: 0; overflow: hidden; }
+.backdrop-sky > svg, .backdrop-ground > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.bg-grass .backdrop-sky { background: linear-gradient(180deg, var(--stage-sky), var(--stage-sky2)); }
+.bg-grass .backdrop-ground { background: linear-gradient(180deg, var(--stage-ground), var(--stage-ground2)); }
+.bg-mountain .backdrop-ground { background:
+  radial-gradient(ellipse 90px 16px at 28% 42%, rgb(110 84 52 / 0.2), transparent 70%),
+  radial-gradient(ellipse 120px 20px at 70% 80%, rgb(110 84 52 / 0.18), transparent 70%),
+  linear-gradient(180deg, #9c8059 0%, #c2a477 10%, #ad8d5f 100%); }
+.bg-forest .backdrop-ground { background:
+  radial-gradient(ellipse 70px 14px at 18% 32%, rgb(255 246 190 / 0.3), transparent 70%),
+  radial-gradient(ellipse 90px 18px at 60% 18%, rgb(255 246 190 / 0.24), transparent 70%),
+  radial-gradient(ellipse 130px 24px at 42% 72%, rgb(255 246 190 / 0.2), transparent 70%),
+  linear-gradient(180deg, #2f6332 0%, #4f8f42 10%, #44843a 60%, #376d31 100%); }
+.bg-ocean .waves { animation: waves-drift 4.5s ease-in-out infinite alternate; }
+@keyframes waves-drift { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
+/* Dark theme: the drawn scenes are dimmed (the grass field has its own dark colours). */
+@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .stage-backdrop:not(.bg-grass) { filter: brightness(0.62) saturate(0.85); } }
+:root[data-theme='dark'] .stage-backdrop:not(.bg-grass) { filter: brightness(0.62) saturate(0.85); }
 .stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 5; }
 .spot { position: absolute; width: 42%; height: 58%; display: flex; align-items: flex-end; justify-content: center; }
 .spot-p2 { right: 5%; top: 4%; }
 .spot-p1 { left: 3%; bottom: 0; height: 62%; }
-.platform { position: absolute; left: 12%; right: 12%; bottom: 4%; height: 20%; border-radius: 50%; background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.22), rgb(0 0 0 / 0) 70%); }
-.spot-p1 .platform { bottom: -4%; }
 .sprite-sub { position: relative; z-index: 1; margin-bottom: 7%; max-height: 100%; display: flex; align-items: flex-end; transform-origin: 50% 100%; transition: opacity calc(180ms * var(--spd, 1)); }
 .spot-p1 .sprite-sub { margin-bottom: 0; }
 .sprite-wrap { position: relative; transform-origin: 50% 100%; display: flex; align-items: flex-end; }
@@ -529,11 +555,13 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
    Megas (20%), Warp Digivolved Digimon (stageScale in data/custom/digimon.ts), and some animated 3D sprites (50%, ui/sprites.ts) */
 .poke-sprite { display: block; max-height: calc(165px * var(--sprite-size, 1)); max-width: 100%; object-fit: contain; object-position: bottom; user-select: none; }
 .spot-p1 .poke-sprite { max-height: calc(190px * var(--sprite-size, 1)); }
-/* 2D pixel sprites: drawn twice as big (2026-10-11, on request); their 96 px images have lots of empty room around the Pokémon */
-.stage.pixel-sprites { height: 500px; }
-.stage.pixel-sprites.doubles { height: 580px; }
-.poke-sprite.pixel { max-height: calc(330px * var(--sprite-size, 1)); max-width: none; }
-.spot-p1 .poke-sprite.pixel { max-height: calc(380px * var(--sprite-size, 1)); }
+/* 2D pixel sprites: 1.5× the 3D sprites' size limits (on request); their 96 px images have empty room around the
+   Pokémon, so in 2D mode the spots sit lower: opponents stand on the grass, yours at the bottom edge.
+   Mega Evolved ones only grow a little past that (min()), or they would not fit on the stage. */
+.poke-sprite.pixel { max-height: min(calc(248px * var(--sprite-size, 1)), 262px); max-width: none; }
+.spot-p1 .poke-sprite.pixel { max-height: min(calc(285px * var(--sprite-size, 1)), 300px); }
+.stage.pixel-sprites .spot-p2 { top: 14%; }
+.stage.pixel-sprites .spot-p1 { bottom: -9%; }
 .poke-sprite.placeholder { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.4rem; box-shadow: var(--shadow); }
 .hud { position: absolute; z-index: 2; width: min(46%, 300px); background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: var(--shadow); font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
 .hud-p2 { left: 3%; top: 5%; }
@@ -549,9 +577,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   .stage { height: 320px; }
   .poke-sprite { max-height: calc(105px * var(--sprite-size, 1)); }
   .spot-p1 .poke-sprite { max-height: calc(120px * var(--sprite-size, 1)); }
-  .stage.pixel-sprites { height: 430px; }
-  .poke-sprite.pixel { max-height: calc(210px * var(--sprite-size, 1)); }
-  .spot-p1 .poke-sprite.pixel { max-height: calc(240px * var(--sprite-size, 1)); }
+  .poke-sprite.pixel { max-height: min(calc(158px * var(--sprite-size, 1)), 166px); }
+  .spot-p1 .poke-sprite.pixel { max-height: min(calc(180px * var(--sprite-size, 1)), 190px); }
   .hud { width: 52%; font-size: 0.75rem; padding: 4px 7px; gap: 2px; }
   .hud-p2 { left: 2%; top: 3%; }
   .hud-p1 { right: 2%; bottom: 4%; }
@@ -570,8 +597,13 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .stage.multi .spot-p2b { right: 1%; top: 7%; }
 .stage.doubles .poke-sprite { max-height: calc(130px * var(--sprite-size, 1)); }
 .stage.doubles .spot-p1 .poke-sprite { max-height: calc(150px * var(--sprite-size, 1)); }
-.stage.doubles .poke-sprite.pixel { max-height: calc(260px * var(--sprite-size, 1)); }
-.stage.doubles .spot-p1 .poke-sprite.pixel { max-height: calc(300px * var(--sprite-size, 1)); }
+.stage.doubles .poke-sprite.pixel { max-height: min(calc(195px * var(--sprite-size, 1)), 205px); }
+.stage.doubles .spot-p1 .poke-sprite.pixel { max-height: min(calc(225px * var(--sprite-size, 1)), 236px); }
+.stage.pixel-sprites.doubles .spot-p2a { top: 15%; }
+.stage.pixel-sprites.doubles .spot-p2b { top: 11%; }
+.stage.pixel-sprites.multi .spot-p2a { top: 11%; }
+.stage.pixel-sprites.multi .spot-p2b { top: 15%; }
+.stage.pixel-sprites.doubles .spot-p1a, .stage.pixel-sprites.doubles .spot-p1b { bottom: -8%; }
 /* The Doubles spots are narrow: let a warp form or an enlarged sprite reach past its spot, so each keeps its own size. */
 .stage.doubles .sprite-wrap.is-large .poke-sprite { max-width: none; }
 .stage.doubles .hud-stack { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: 4px; width: min(36%, 240px); }
@@ -585,9 +617,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   .stage.doubles .spot { width: 30%; }
   .stage.doubles .poke-sprite { max-height: calc(80px * var(--sprite-size, 1)); }
   .stage.doubles .spot-p1 .poke-sprite { max-height: calc(92px * var(--sprite-size, 1)); }
-  .stage.pixel-sprites.doubles { height: 480px; }
-  .stage.doubles .poke-sprite.pixel { max-height: calc(160px * var(--sprite-size, 1)); }
-  .stage.doubles .spot-p1 .poke-sprite.pixel { max-height: calc(184px * var(--sprite-size, 1)); }
+  .stage.doubles .poke-sprite.pixel { max-height: min(calc(120px * var(--sprite-size, 1)), 126px); }
+  .stage.doubles .spot-p1 .poke-sprite.pixel { max-height: min(calc(138px * var(--sprite-size, 1)), 145px); }
   .stage.doubles .hud-stack { width: 47%; }
   .hud.compact { font-size: 0.68rem; }
 }
@@ -600,10 +631,6 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes weather-rain { to { background-position: -30px 60px; } }
 @keyframes weather-sand { to { background-position: 80px 14px; } }
 @keyframes weather-hail { to { background-position: -10px 52px; } }
-.terrain-electric .platform { box-shadow: 0 0 22px 4px rgb(247 208 44 / 0.7); }
-.terrain-grassy .platform { box-shadow: 0 0 22px 4px rgb(122 199 76 / 0.7); }
-.terrain-psychic .platform { box-shadow: 0 0 22px 4px rgb(249 85 135 / 0.6); }
-.terrain-misty .platform { box-shadow: 0 0 22px 4px rgb(214 133 173 / 0.7); }
 
 /* Sprite animations (a/b variants restart on consecutive events). Every timing scales with
    --spd, the playback speed factor set on .stage. */
@@ -912,6 +939,31 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes pillar { 0% { clip-path: inset(0 -60% 100% -60%); transform: scaleX(0.4); opacity: 1; } 25% { clip-path: inset(0 -60% -60% -60%); transform: scaleX(1); } 60% { transform: scaleX(1.15); opacity: 1; } 100% { clip-path: inset(0 -60% -60% -60%); transform: scaleX(0.1); opacity: 0; } }
 
 /* Mega Evolution: the rainbow cocoon and the Mega Evolution symbol */
+/* Ice gauntlets (Glacial Guardian Gauntlet): heavy blocks of ice form around both arms, glint, then smash into the target and shatter. */
+.fx-gauntlets { z-index: 3; }
+.fx-gauntlets .gauntlet { position: absolute; left: 0; top: 0; width: var(--s); height: calc(var(--s) * 0.92); filter: drop-shadow(0 0 8px var(--c2)) drop-shadow(0 0 2px rgb(20 70 110 / 0.8));
+  animation: gauntlet calc(var(--dur) * var(--spd, 1)) cubic-bezier(0.3, 0.7, 0.4, 1) calc(var(--delay, 0ms) * var(--spd, 1)) both; }
+/* A spiky cluster of thick, see-through ice: the fist and forearm show faintly inside it. */
+.fx-gauntlets .ice { position: absolute; inset: 0; overflow: hidden;
+  clip-path: polygon(10% 18%, 22% 0, 36% 12%, 52% 0, 66% 10%, 82% 2%, 100% 26%, 92% 50%, 100% 74%, 80% 100%, 50% 92%, 20% 100%, 0 78%, 6% 50%, 0 30%);
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.95) 0%, color-mix(in srgb, var(--c2) 80%, transparent) 22%, color-mix(in srgb, var(--c) 55%, transparent) 50%, color-mix(in srgb, var(--c) 85%, #1d4f7a) 100%);
+  box-shadow: inset 0 0 0 3px rgb(255 255 255 / 0.6), inset -6px -8px 0 rgb(30 100 150 / 0.35); }
+.fx-gauntlets .ice::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 28%, rgb(255 255 255 / 0.7) 29% 32%, transparent 33% 58%, rgb(255 255 255 / 0.5) 59% 61%, transparent 62%),
+    linear-gradient(25deg, transparent 55%, rgb(255 255 255 / 0.45) 56% 58%, transparent 59%); }
+.fx-gauntlets .ice::before { content: ''; position: absolute; top: -20%; bottom: -20%; left: 0; width: 30%; z-index: 1; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.95), transparent);
+  animation: gauntlet-glint calc(var(--dur) * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)) both; }
+@keyframes gauntlet {
+  0% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(0.15); opacity: 0; }
+  10% { opacity: 1; }
+  30% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(1.12); }
+  38%, 52% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(1); opacity: 1; }
+  57% { transform: translate(calc(var(--ox) * 1.25 - var(--tx) * 0.08 - 50%), calc(var(--oy) - var(--ty) * 0.08 - 50%)) rotate(calc(var(--r) * -1)) scale(1.05); animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5); }
+  65% { transform: translate(calc(var(--tx) + var(--ix) - 50%), calc(var(--ty) - 50%)) rotate(0deg) scale(1.35); opacity: 1; }
+  70% { transform: translate(calc(var(--tx) + var(--ix) * 0.7 - 50%), calc(var(--ty) - 50%)) rotate(0deg) scale(1.3); opacity: 1; filter: brightness(1.6) drop-shadow(0 0 14px var(--c2)); }
+  82%, 100% { transform: translate(calc(var(--tx) + var(--ix) * 1.6 - 50%), calc(var(--ty) - 50%)) rotate(calc(var(--r) * 3)) scale(1.6); opacity: 0; }
+}
+@keyframes gauntlet-glint { 0%, 40% { transform: skewX(-20deg) translateX(-200%); } 50%, 100% { transform: skewX(-20deg) translateX(450%); } }
 .fx-cocoon { width: var(--s); height: calc(var(--s) * 1.2); border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%; overflow: hidden; -webkit-mask-image: radial-gradient(closest-side, rgb(0 0 0 / 0.35) 50%, #000 82%, transparent 100%); mask-image: radial-gradient(closest-side, rgb(0 0 0 / 0.35) 50%, #000 82%, transparent 100%); animation-name: cocoon; animation-timing-function: ease-in; }
 .fx-cocoon .swirl { position: absolute; inset: -25%; background: conic-gradient(#ff5ea8, #ffe45e, #7dff9b, #5ec8ff, #b06bff, #ff5ea8); animation: vortex-spin calc(900ms * var(--spd, 1)) linear infinite; }
 .fx-cocoon::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 35% 25%, rgb(255 255 255 / 0.85) 0 10%, transparent 30%); }
@@ -1089,7 +1141,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 
 /* Terrains cover the ground; rooms enclose the field */
 .terrain-layer, .room-layer { position: absolute; pointer-events: none; z-index: 0; overflow: hidden; }
-.terrain-layer { left: 0; right: 0; top: 46%; bottom: 0; }
+.terrain-layer { left: 0; right: 0; top: var(--horizon); bottom: 0; }
 .room-layer { inset: 0; animation: room-in calc(700ms * var(--spd, 1)) ease-out both; }
 .terrain-layer.ending, .room-layer.ending { animation: layer-out calc(700ms * var(--spd, 1)) ease-in forwards; }
 @keyframes terrain-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
@@ -1110,13 +1162,13 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .room-wall, .room-floor { position: absolute; background-color: color-mix(in srgb, var(--c) 10%, transparent);
   background-image: linear-gradient(color-mix(in srgb, var(--c) 60%, transparent) 1.5px, transparent 1.5px), linear-gradient(90deg, color-mix(in srgb, var(--c) 60%, transparent) 1.5px, transparent 1.5px);
   animation: room-glow 2.4s ease-in-out infinite; }
-.room-wall { left: 0; right: 0; top: 0; height: 46%; background-size: 34px 34px; background-position: center bottom; }
-.room-floor { left: -40%; right: -40%; top: 46%; height: 70%; background-size: 46px 46px; background-position: center top; transform: perspective(260px) rotateX(55deg); transform-origin: 50% 0; }
+.room-wall { left: 0; right: 0; top: 0; height: var(--horizon); background-size: 34px 34px; background-position: center bottom; }
+.room-floor { left: -40%; right: -40%; top: var(--horizon); height: 70%; background-size: 46px 46px; background-position: center top; transform: perspective(260px) rotateX(55deg); transform-origin: 50% 0; }
 @keyframes room-glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
 .room-gravity .room-wall, .room-gravity .room-floor { background-color: rgb(40 20 70 / 0.14); background-image: repeating-linear-gradient(180deg, transparent 0 22px, rgb(70 50 120 / 0.4) 22px 24px); background-size: 100% 46px; animation: gravity-pull 0.9s linear infinite; }
 @keyframes gravity-pull { from { background-position: 0 0; } to { background-position: 0 46px; } }
 /* A terrain sweeping in */
-.fx-ground { width: 100%; height: 54%; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 75%, transparent) 50%, transparent) no-repeat; background-size: 45% 100%; animation-name: ground-sweep; animation-timing-function: linear; }
+.fx-ground { width: 100%; height: calc(100% - var(--horizon)); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 75%, transparent) 50%, transparent) no-repeat; background-size: 45% 100%; animation-name: ground-sweep; animation-timing-function: linear; }
 @keyframes ground-sweep { from { background-position: -60% 0; opacity: 1; } 85% { opacity: 1; } to { background-position: 160% 0; opacity: 0; } }
 
 /* Double Battle controls: one Pokémon at a time, then a target */
@@ -1138,7 +1190,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   .sprite-wrap, .stage-field, .sprite-sub, .sub-doll-inner { animation-duration: 1ms !important; animation-delay: 0ms !important; }
   .move-fx { display: none; }
   .stage::after, .shield-wall, .seed, .sprite-wrap.seeded .poke-sprite, .cond-marks .mark, .mark-confusion .orbit, .ice-block::after,
-  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor { animation: none; }
+  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor, .bg-ocean .waves { animation: none; }
 }
 
 /* Debug: animation preview */

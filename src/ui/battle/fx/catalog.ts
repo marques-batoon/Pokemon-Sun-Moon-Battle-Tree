@@ -57,6 +57,8 @@ export type Layer =
   | { kind: 'rays'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
   /** A column of light from the top of the stage down onto a spot. */
   | { kind: 'pillar'; at: Anchor; color: string; color2?: string; width: number; delay?: number; dur?: number }
+  /** Heavy fists (blocks of ice) forming around both of the user's arms, which then smash into the target together. */
+  | { kind: 'gauntlets'; color: string; color2?: string; size: number; delay?: number; dur?: number }
   /** Mega Evolution: an egg-shaped shell of swirling rainbow energy around the Pokémon. */
   | { kind: 'cocoon'; at: Anchor; size: number; delay?: number; dur?: number }
   /** Mega Evolution: the Mega Evolution symbol (a ring around a helix) flashing over the Pokémon. */
@@ -792,12 +794,16 @@ const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
     { kind: 'impact', color: '#5aa2ff', size: 340, star: true, delay: 1300 },
     pt('target', 'drop', 'spray', '#5aa2ff', '#ffffff', 28, 18, 190, 1300),
   ] },
+  // Poliwrath encases both arms in thick, heavy ice, then smashes the two ice gauntlets into the target (on request).
   glacialguardiangauntlet: { type: 'Ice', layers: [
     { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 1700 },
-    { kind: 'meteor', shape: 'shard', color: '#cdf6ff', color2: '#ffffff', size: 200, delay: 650, dur: 650 },
+    pt('user', 'shard', 'converge', '#cdf6ff', '#ffffff', 24, 14, 150, 0, 700),
+    { kind: 'aura', at: 'user', color: '#9fe8ff', size: 260, delay: 100, dur: 900 },
+    { kind: 'gauntlets', color: '#7fd3f2', color2: '#e8fbff', size: 150, dur: 2000 },
+    { kind: 'impact', color: '#c9f6ff', size: 380, star: true, delay: 1300 },
     { kind: 'crack', color: '#9fe8ff', delay: 1300 },
-    { kind: 'impact', color: '#c9f6ff', size: 360, delay: 1300 },
-    pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 28, 22, 200, 1320),
+    { kind: 'rings', at: 'target', color: '#bff3ff', count: 2, size: 320, delay: 1310, dur: 600 },
+    pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 30, 22, 220, 1320),
   ] },
 };
 

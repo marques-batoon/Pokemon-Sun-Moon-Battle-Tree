@@ -2,7 +2,7 @@ import { useLayoutEffect, useState, type RefObject } from 'react';
 import type { Point, Pos } from './geometry';
 
 const same = (a: Point | undefined, b: Point | undefined) =>
-  a === b || (!!a && !!b && Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1 && Math.abs((a.ground ?? 0) - (b.ground ?? 0)) < 1);
+  a === b || (!!a && !!b && Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1 && Math.abs((a.ground ?? 0) - (b.ground ?? 0)) < 1 && Math.abs((a.size ?? 0) - (b.size ?? 0)) < 1);
 const POSITIONS: Pos[] = ['p1a', 'p1b', 'p2a', 'p2b'];
 
 /**
@@ -27,7 +27,7 @@ export function useSpritePoints(stageRef: RefObject<HTMLElement | null>, trigger
       const r = el.getBoundingClientRect();
       if (!r.width || !r.height) continue;
       // Sprites have empty space above the Pokémon, so its visual centre sits a little low.
-      next[pos] = { x: r.left - base.left + r.width / 2, y: r.top - base.top + r.height * 0.56, ground: r.bottom - base.top - 2 };
+      next[pos] = { x: r.left - base.left + r.width / 2, y: r.top - base.top + r.height * 0.56, ground: r.bottom - base.top - 2, size: r.height };
     }
     setPoints(prev => (POSITIONS.every(p => same(prev[p], next[p])) ? prev : next));
   }, [stageRef, trigger]);

@@ -3,8 +3,13 @@ import type { FxSpec } from './catalog';
 export type Side = 'p1' | 'p2';
 /** A field position: side + active slot (a = left/first, b = right/second; Singles only uses a). */
 export type Pos = 'p1a' | 'p1b' | 'p2a' | 'p2b';
-/** ground: y of the line the Pokémon stands on, when known. */
-export interface Point { x: number; y: number; ground?: number }
+/** ground: y of the line the Pokémon stands on, when known; size: the sprite's drawn height, when measured. */
+export interface Point { x: number; y: number; ground?: number; size?: number }
+
+/** Where the sky ends and the ground begins, as a fraction of the stage height (every battle background). */
+export const HORIZON = 0.36;
+/** HORIZON as the --horizon CSS variable, set on each stage (index.css places the scenery, terrain and rooms with it). */
+export const horizonVar = { '--horizon': `${HORIZON * 100}%` } as const;
 
 export const posKey = (side: Side, slot = 0): Pos => `${side}${slot === 1 ? 'b' : 'a'}` as Pos;
 export const sideOfPos = (pos: Pos): Side => pos.slice(0, 2) as Side;

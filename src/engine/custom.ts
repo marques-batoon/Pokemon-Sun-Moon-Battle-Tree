@@ -67,6 +67,7 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
   }
 
   data.Conditions ??= {};
+  data.Conditions.frz = { inherit: true, onBeforeMove: thawCheck };
   for (const id of TIMED_WEATHER) {
     if (!parent.Conditions[id]) continue;
     data.Conditions[id] = { inherit: true, onFieldStart: tagTurns(parent.Conditions[id].onFieldStart as Handler) };
@@ -77,6 +78,28 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
     const condition = parent.Moves[id].condition as Entry;
     data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, [hook]: tagTurns(condition[hook] as Handler) } };
   }
+}
+
+/** Chance, in fifths, that a frozen Pokémon thaws out when it tries to move: 1/5 (20%) as in the games, 3/5 (60%) with a Fire-type move (on request). */
+const THAW_IN_5 = { usual: 1, fire: 3 };
+
+/**
+ * The frozen status's before-move check (as in the simulator, but a Fire-type move raises the chance to thaw by
+ * 40 points). Moves that always thaw the user (Flame Wheel, Flare Blitz, Scald...) still do. The move's type is
+ * worked out the way the move itself will (Hidden Power, Weather Ball in sun, Revelation Dance, -ate Abilities...)
+ * on a copy, so nothing about the real move changes.
+ */
+function thawCheck(this: Battle, pokemon: Pokemon, target: Pokemon, move: ActiveMove) {
+  if (move.flags['defrost'] && !(move.id === 'burnup' && !pokemon.hasType('Fire'))) return;
+  const probe = this.dex.getActiveMove(move.id);
+  this.singleEvent('ModifyType', probe, null, pokemon, target, probe, probe);
+  this.runEvent('ModifyType', pokemon, target, probe, probe);
+  if (this.randomChance(probe.type === 'Fire' ? THAW_IN_5.fire : THAW_IN_5.usual, 5)) {
+    pokemon.cureStatus();
+    return;
+  }
+  this.add('cant', pokemon, 'frz');
+  return false;
 }
 
 /**

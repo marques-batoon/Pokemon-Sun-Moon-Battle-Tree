@@ -4,6 +4,15 @@ export type ThemeSetting = 'system' | 'light' | 'dark';
 export type AnimationSpeed = 'off' | 'fast' | 'normal' | 'slow';
 /** Pokémon pictures: 2D pixel sprites (Black and White style) or 3D animated ones (X and Y / Sun and Moon style). */
 export type SpriteStyle = '2d' | '3d';
+/** Scenery behind the battle (all share the same horizon line). */
+export type BattleBackground = 'grass' | 'stadium' | 'mountain' | 'ocean' | 'forest';
+export const BATTLE_BACKGROUNDS: { id: BattleBackground; label: string }[] = [
+  { id: 'grass', label: 'Grass field' },
+  { id: 'stadium', label: 'Pokémon Stadium' },
+  { id: 'mountain', label: 'Mountain' },
+  { id: 'ocean', label: 'Ocean' },
+  { id: 'forest', label: 'Forest' },
+];
 
 /** Multiplier on animation durations for each speed setting (0 = no animations). */
 export const ANIMATION_SPEED_FACTOR: Record<AnimationSpeed, number> = { off: 0, fast: 0.5, normal: 1, slow: 1.6 };
@@ -20,6 +29,8 @@ export interface AppSettings {
   sprites: boolean;
   /** Which Pokémon sprites: 2D pixel (default) or 3D animated. Each falls back to the other kinds if missing. */
   spriteStyle: SpriteStyle;
+  /** Scenery behind the battle. */
+  battleBackground: BattleBackground;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
@@ -33,6 +44,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   showDebugTools: false,
   sprites: true,
   spriteStyle: '2d',
+  battleBackground: 'grass',
   animationSpeed: 'normal',
   trainerName: '',
 };

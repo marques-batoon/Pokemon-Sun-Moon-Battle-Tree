@@ -1,6 +1,7 @@
 import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
+import { POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON } from '../../data/custom/digimon';
 import {
   BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
@@ -10,10 +11,12 @@ import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { gen7 } from '../../team/dex';
 import { useAppSettings } from '../useAppSettings';
 import { useElementSize } from '../useElementSize';
+import { horizonVar } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
 import { effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
+import { StageBackdrop } from './StageBackdrop';
 import { ShieldWalls } from './ShieldWalls';
 import { StageSpot } from './StageSpot';
 
@@ -42,6 +45,8 @@ const GROUPS: { label: string; moves: string[] }[] = [
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
 const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
+/** Poliwrath's own Z-Moves are previewed with Poliwrath as the user. */
+const POLIWRATH_Z_MOVES = new Set(Object.values(POLIWRATHIUM_Z.moves).map(z => z.name));
 /** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
@@ -278,12 +283,13 @@ export function AnimationPreview() {
         ))))}>Screens wear off</button>
         <button onClick={() => { setRun(null); setField(EMPTY); setHidden({ p1: null, p2: null }); }}>Reset</button>
       </div>
-      <div ref={stageRef} className={`stage${settings.sprites && settings.spriteStyle === '2d' ? ' pixel-sprites' : ''}`} style={{ '--spd': speed } as CSSProperties}>
+      <div ref={stageRef} className={`stage${settings.sprites && settings.spriteStyle === '2d' ? ' pixel-sprites' : ''}`} style={{ '--spd': speed, ...horizonVar } as CSSProperties}>
+        <StageBackdrop />
         <div className={`stage-field ${shake.className}`} style={shake.style}>
           <FieldLayers terrain={field.terrain} rooms={field.rooms} anim={anim} />
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
-              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
+              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : s === side && POLIWRATH_Z_MOVES.has(move) && !field.mega[s] ? POLIWRATHIUM_Z.user : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
               substitute={field.sub[s]} seeded={field.seeded[s]} status={field.status[s]} confused={field.confused[s]}
               infatuated={field.infatuated[s]} protect={field.protect[s]} hidden={hidden[s]}
             />

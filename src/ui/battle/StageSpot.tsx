@@ -13,8 +13,8 @@ type Side = 'p1' | 'p2';
 
 /** Size of a Mega Evolved Pokémon's sprite relative to the usual one. */
 const MEGA_SCALE = 1.2;
-/** 2D pixel sprites are 96 px images with room around the Pokémon: drawn larger (doubled on request, 2026-10-11). */
-const PIXEL_SCALE = 3;
+/** 2D pixel sprites are 96 px images with room around the Pokémon: drawn larger (1.5× the first size, on request). */
+const PIXEL_SCALE = 2.25;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
 function DollSvg({ side }: { side: Side }) {
@@ -116,7 +116,7 @@ export interface StageSpotProps {
   side: Side;
   /** Active slot (Doubles: 0 = a, 1 = b). */
   slot?: number;
-  /** Pokémon on this spot; null leaves only the platform. */
+  /** Pokémon on this spot; null leaves the spot empty. */
   pokemon: { species: string; gender?: 'M' | 'F' | 'N'; shiny?: boolean } | null;
   anim: BattleAnimation | null;
   /** Behind a Substitute (the doll stands in for it). */
@@ -136,7 +136,7 @@ export interface StageSpotProps {
 /** What the badge over a hidden Pokémon says. */
 const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished' };
 
-/** One side of the field: platform, Pokémon sprite, Substitute doll and status marks. */
+/** One side of the field: Pokémon sprite, Substitute doll and status marks (no shadow under it, on request). */
 export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null, hidden = null }: StageSpotProps) {
   const mine = actsAt(anim, side, slot) ? anim : null;
   const pos = posKey(side, slot);
@@ -149,10 +149,11 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
   const showDoll = substitute || mine?.kind === 'sub-end';
   // Mega Evolved Pokémon are drawn 20% larger; each Warp Digivolved Digimon has its own size; some
   // animated 3D sprites (the Sky Battle fliers...) 50% larger again. --sprite-size raises the caps in index.css.
+  const { spriteStyle } = useAppSettings();
   const warpScale = pokemon ? warpStageScale(pokemon.species) : 1;
   const warp = warpScale !== 1;
   const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
-  const boost = pokemon ? animatedSpriteBoost(pokemon.species) : 1;
+  const boost = pokemon && spriteStyle === '3d' ? animatedSpriteBoost(pokemon.species) : 1;
   const size = (warp ? warpScale : mega ? MEGA_SCALE : 1) * boost;
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
@@ -160,7 +161,6 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : peeking ? 'aside' : '';
   return (
     <div className={`spot spot-${side} spot-${pos}${pokemon && hidden ? ` semi-${hidden}` : ''}`} data-pos={pos}>
-      <div className="platform" />
       {pokemon && hidden && (
         <>
           <span className={`semi-cue semi-cue-${hidden}`} aria-hidden />

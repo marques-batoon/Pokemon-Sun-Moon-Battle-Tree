@@ -5,11 +5,12 @@ import type { Battle, Pokemon } from '@pkmn/client';
 import { ROOMS, SHIELD_CONDITIONS, type BattleAnimation } from '../../client/playback';
 
 import { useElementSize } from '../useElementSize';
-import { posKey, type Point } from './fx/geometry';
+import { horizonVar, posKey, type Point } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
 import { actsAt, effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
+import { StageBackdrop } from './StageBackdrop';
 import { SHIELDS } from './fx/catalog';
 import { PokemonPanel } from './PokemonPanel';
 import { ShieldWalls } from './ShieldWalls';
@@ -114,9 +115,9 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
   const points = useSpritePoints(stageRef, `${animation?.id}:${size.w}x${size.h}`);
   const anchors = spec && animation ? effectAnchors(animation) : null;
   const shields = (s: Side) => SHIELD_CONDITIONS.filter(id => id in battle[s].sideConditions);
-  const stageStyle = { '--spd': speed > 0 ? speed : 1 } as CSSProperties;
+  const stageStyle = { '--spd': speed > 0 ? speed : 1, ...horizonVar } as CSSProperties;
   const { sprites, spriteStyle } = useAppSettings();
-  // 2D pixel sprites are drawn big: the stage is taller to fit them.
+  // 2D pixel sprites are drawn big and stand lower on the stage.
   const big = sprites && spriteStyle === '2d' ? 'pixel-sprites' : '';
   return (
     <div
@@ -124,6 +125,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
       className={`stage ${big} ${doubles ? 'doubles' : ''} ${multi ? 'multi' : ''} ${WEATHER_CLASS[battle.field.weather ?? ''] ?? ''} ${battle.field.terrain ? `terrain-${battle.field.terrain.toLowerCase()}` : ''}`}
       style={stageStyle}
     >
+      <StageBackdrop />
       <div className={`stage-field ${shake.className}`} style={shake.style}>
         <FieldLayers
           terrain={battle.field.terrain ? `${battle.field.terrain.toLowerCase()}terrain` : null}

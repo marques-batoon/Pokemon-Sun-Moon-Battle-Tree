@@ -129,3 +129,35 @@ describe('field effect durations', () => {
     expect(log).not.toMatch(/\[upkeep\][^\n]*\[turns\]/);
   });
 });
+
+describe('thawing out (custom: a Fire-type move raises the chance by 40 points)', () => {
+  /** Share of battles (fixed seeds) in which a frozen lead thaws out when it tries to use its move. */
+  function thawRate(move: string, n = 200) {
+    let thawed = 0;
+    for (let i = 0; i < n; i++) {
+      const b = new Battle({ formatid: 'gen7battletreesinglesnopreview' as never, seed: `${i + 1},${i * 7 + 3},${i * 13 + 5},${i * 31 + 7}` as never });
+      b.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(team(mon('Snorlax', 'Leftovers', 'Thick Fat', [move])))) });
+      b.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(team(target))) });
+      b.p1.active[0].setStatus('frz');
+      const from = b.log.length;
+      b.makeChoices('move 1', 'move 1');
+      if (/\|-curestatus\|p1a: Snorlax\|frz/.test(b.log.slice(from).join('\n'))) thawed++;
+    }
+    return thawed / n;
+  }
+
+  it('thaws about 20% of the time with other moves, about 60% with Fire-type ones (Hidden Power Fire too)', () => {
+    const normal = thawRate('Body Slam');
+    expect(normal).toBeGreaterThan(0.11);
+    expect(normal).toBeLessThan(0.29);
+    for (const fire of ['Flamethrower', 'Hidden Power [Fire]']) {
+      const rate = thawRate(fire);
+      expect(rate).toBeGreaterThan(0.48);
+      expect(rate).toBeLessThan(0.72);
+    }
+  });
+
+  it('still always thaws with moves that thaw the user (Flare Blitz)', () => {
+    expect(thawRate('Flare Blitz', 20)).toBe(1);
+  });
+});
