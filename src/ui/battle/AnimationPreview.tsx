@@ -2,7 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
 import { WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -241,7 +241,7 @@ export function AnimationPreview() {
         <button className="primary" onClick={() => play(moveSteps(move, side, field, zCategory))}>Play</button>
         <button disabled={field.mega[side]} onClick={() => play([
           { kind: 'mega-start', side, target: null, durationMs: MEGA_START_MS },
-          { kind: 'mega', side, target: null, durationMs: 900 },
+          { kind: 'mega', side, target: null, durationMs: MEGA_MS },
         ])}>Mega Evolve</button>
         <select aria-label="Digimon" value={warpForm} onChange={e => setWarpForm(e.target.value)}>
           {WARP_DIGIMON.map(d => <option key={d.warp.name} value={d.warp.name}>{d.base.name} → {d.warp.name}</option>)}

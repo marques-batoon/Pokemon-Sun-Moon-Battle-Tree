@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
-import { SHIELD_CONDITIONS } from '../../../client/playback';
+import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
   ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, Z_MOVE_MS, Z_POWER, zMoveSpec,
@@ -145,6 +145,14 @@ describe('animation catalog', () => {
     for (const spec of [MEGA_START, MEGA_BURST, Z_POWER]) expect(spec.layers.length).toBeGreaterThan(2);
     expect(MEGA_START.layers.some(l => l.kind === 'rings' && l.rainbow)).toBe(true);
     expect(MEGA_BURST.layers.some(l => l.kind === 'screen' && l.mode === 'flash')).toBe(true);
+    // As in the games: a rainbow cocoon wraps the Pokémon, then bursts, and the Mega Evolution symbol flashes.
+    expect(MEGA_START.layers.some(l => l.kind === 'cocoon')).toBe(true);
+    expect(MEGA_BURST.layers.some(l => l.kind === 'megasymbol')).toBe(true);
+    // Bigger than before, but short of a Warp Digivolution: no banner, no digital space, a lighter shake.
+    expect(MEGA_START_MS + MEGA_MS).toBeLessThan(WARP_START_MS + WARP_MS);
+    expect([...MEGA_START.layers, ...MEGA_BURST.layers].some(l => l.kind === 'banner' || l.kind === 'datagrid')).toBe(false);
+    expect(MEGA_BURST.shake).toBe('light');
+    expect(warpBurst('WarGreymon').shake).toBe('strong');
   });
 
   it('has its own Warp Digivolution sequence: digital space, code, a wireframe, armour, and the new form\'s name', () => {

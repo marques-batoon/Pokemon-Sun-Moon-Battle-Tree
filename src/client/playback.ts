@@ -97,7 +97,9 @@ const DURATION: Record<string, number> = {
 };
 const TEXT_DURATION = 350;
 export const SWITCH_OUT_MS = 400;
-export const MEGA_START_MS = 1000;
+export const MEGA_START_MS = 1700;
+/** The Mega forme bursts out of its cocoon. */
+export const MEGA_MS = 1000;
 export const PARADOX_START_MS = 1100;
 export const WARP_START_MS = 2600;
 /** Damaging Z-Moves (catalog Z_MOVE_MS). */
@@ -252,7 +254,7 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (!isMega) return [step({ kind: 'forme', ...who, target: null, durationMs: DURATION['-formechange'] })];
       return [
         { animation: { kind: 'mega-start', ...who, target: null, durationMs: MEGA_START_MS }, applyLine: false },
-        step({ kind: 'mega', ...who, target: null, durationMs: base }),
+        step({ kind: 'mega', ...who, target: null, durationMs: MEGA_MS }),
       ];
     }
     case '-formechange':

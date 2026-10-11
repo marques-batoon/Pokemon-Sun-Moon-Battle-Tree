@@ -263,6 +263,30 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       const p = anchor(layer.at);
       return <span key={i} className="fxl fx-rays" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 800) })} />;
     }
+    case 'cocoon': {
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-cocoon" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--delay': delay, '--dur': ms(layer.dur ?? 1100) })}>
+          <span className="swirl" />
+        </span>
+      );
+    }
+    case 'megasymbol': {
+      const p = anchor(layer.at);
+      return (
+        <svg key={i} className="fxl fx-megasym" viewBox="0 0 100 100" width={layer.size * ctx.k} height={layer.size * ctx.k} style={css({ '--x': px(p.x), '--y': px(p.y - 34 * ctx.k), '--delay': delay, '--dur': ms(layer.dur ?? 850) })} aria-hidden>
+          <defs>
+            <linearGradient id="fx-mega-rainbow" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#ff5ea8" /><stop offset="0.35" stopColor="#ffe45e" /><stop offset="0.65" stopColor="#5ec8ff" /><stop offset="1" stopColor="#b06bff" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#fx-mega-rainbow)" strokeWidth="8" />
+          <path d="M36 20 C 72 36, 28 64, 64 80" fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" />
+          <path d="M64 20 C 28 36, 72 64, 36 80" fill="none" stroke="url(#fx-mega-rainbow)" strokeWidth="8" strokeLinecap="round" />
+          <circle cx="50" cy="50" r="7" fill="#ffffff" />
+        </svg>
+      );
+    }
     case 'pillar': {
       const p = anchor(layer.at);
       return (
@@ -292,7 +316,7 @@ interface Props {
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
     case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': return true;
-    case 'vortex': case 'rays': case 'pillar': return l.at === 'target';
+    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

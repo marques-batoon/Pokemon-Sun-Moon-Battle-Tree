@@ -56,7 +56,11 @@ export type Layer =
   /** A sunburst of rays at a spot. */
   | { kind: 'rays'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
   /** A column of light from the top of the stage down onto a spot. */
-  | { kind: 'pillar'; at: Anchor; color: string; color2?: string; width: number; delay?: number; dur?: number };
+  | { kind: 'pillar'; at: Anchor; color: string; color2?: string; width: number; delay?: number; dur?: number }
+  /** Mega Evolution: an egg-shaped shell of swirling rainbow energy around the Pokémon. */
+  | { kind: 'cocoon'; at: Anchor; size: number; delay?: number; dur?: number }
+  /** Mega Evolution: the Mega Evolution symbol (a ring around a helix) flashing over the Pokémon. */
+  | { kind: 'megasymbol'; at: Anchor; size: number; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -857,17 +861,31 @@ export const Z_POWER: FxSpec = { layers: [
   { kind: 'rings', at: 'user', color: '#ffd43b', count: 2, size: 180, rainbow: true, delay: 450 },
 ] };
 
-/** Mega Evolution: rainbow energy gathers, then a white burst reveals the Mega forme. */
+/**
+ * Mega Evolution, after the games' sequence: the Mega Stone glints as it reacts to the Key Stone,
+ * streams of rainbow light pour in, the Pokémon is wrapped in an egg-shaped cocoon of rainbow
+ * energy that glows to white (sprite class fx-mega-start), then the cocoon bursts into shards and
+ * the Mega Evolution symbol flashes over the new forme. Bigger than it was, still well short of a
+ * Warp Digivolution (shorter, no banner or digital space, a light shake).
+ */
 export const MEGA_START: FxSpec = { layers: [
-  { kind: 'screen', color: '#000000', mode: 'dim', dur: 1000 },
-  { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ff5ea8', color2: '#5ec8ff', count: 20, size: 10, spread: 130 },
-  { kind: 'rings', at: 'user', color: '#ffffff', count: 3, size: 190, rainbow: true, delay: 150 },
-  { kind: 'aura', at: 'user', color: '#ffffff', size: 180, delay: 300, dur: 700 },
+  { kind: 'screen', color: '#000000', mode: 'dim', dur: 1700 },
+  { kind: 'impact', at: 'user', color: '#ffe9a8', size: 70, star: true, delay: 80 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ff5ea8', color2: '#5ec8ff', count: 18, size: 11, spread: 230, delay: 150, dur: 800 },
+  { kind: 'particles', at: 'user', shape: 'gem', motion: 'converge', color: '#ffe45e', color2: '#b06bff', count: 14, size: 12, spread: 200, delay: 300, dur: 800 },
+  { kind: 'rings', at: 'user', color: '#ffffff', count: 3, size: 200, rainbow: true, delay: 250, dur: 600 },
+  { kind: 'cocoon', at: 'user', size: 210, delay: 550, dur: 1150 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'swirl', color: '#ffffff', color2: '#ff9ff3', count: 12, size: 8, spread: 80, delay: 800, dur: 800 },
+  { kind: 'aura', at: 'user', color: '#ffffff', size: 200, delay: 1250, dur: 450 },
+  { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 1500, dur: 200 },
 ] };
 export const MEGA_BURST: FxSpec = { shake: 'light', layers: [
   { kind: 'screen', color: '#ffffff', mode: 'flash', dur: 450 },
-  { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#fff6a8', color2: '#ff9ff3', count: 16, size: 15, spread: 120 },
-  { kind: 'rings', at: 'user', color: '#ffffff', count: 1, size: 230, rainbow: true },
+  { kind: 'particles', at: 'user', shape: 'shard', motion: 'burst', color: '#ff9ff3', color2: '#5ec8ff', count: 12, size: 16, spread: 150 },
+  { kind: 'particles', at: 'user', shape: 'shard', motion: 'burst', color: '#ffe45e', color2: '#b06bff', count: 10, size: 14, spread: 130, delay: 40 },
+  { kind: 'rings', at: 'user', color: '#ffffff', count: 2, size: 250, rainbow: true },
+  { kind: 'megasymbol', at: 'user', size: 120, delay: 150, dur: 850 },
+  { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#fff6a8', color2: '#ff9ff3', count: 12, size: 13, spread: 110, delay: 200 },
 ] };
 
 /**
