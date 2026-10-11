@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { gen7 } from '../../team/dex';
-import { animatedSprite, iconStyle, localSpriteUrl, staticSprite, type SpriteSide } from '../sprites';
+import { animatedSprite, iconStyle, isAnimatedSprite, localSpriteUrl, staticSprite, type SpriteSide } from '../sprites';
 import { typeColor } from '../types';
 import { useAppSettings } from '../useAppSettings';
 
@@ -11,6 +11,8 @@ interface Props {
   shiny?: boolean;
   /** Multiplier on the sprite's natural size. */
   scale?: number;
+  /** Further multiplier, only when the animated 3D sprite is shown (not the static fallback). */
+  animatedScale?: number;
   className?: string;
 }
 
@@ -19,11 +21,12 @@ interface Props {
  * sprite and then to a type-colored placeholder if images fail or are turned off.
  * Remount (key) on species change to retry the animated sprite for a new forme.
  */
-export function PokemonSprite({ species, side, gender, shiny, scale = 1, className = '' }: Props) {
+export function PokemonSprite({ species, side, gender, shiny, scale: baseScale = 1, animatedScale = 1, className = '' }: Props) {
   const { sprites } = useAppSettings();
   const [level, setLevel] = useState<0 | 1 | 2>(0);
   if (!sprites || level === 2) return <SpritePlaceholder species={species} className={className} />;
   const info = level === 0 ? animatedSprite(species, side, { shiny, gender }) : staticSprite(species, side);
+  const scale = baseScale * (isAnimatedSprite(info) ? animatedScale : 1);
   return (
     <img
       className={`poke-sprite ${className}`}

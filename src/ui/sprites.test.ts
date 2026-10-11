@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
-import { animatedSprite, staticSprite } from './sprites';
+import { animatedSprite, animatedSpriteBoost, hasSkyBattleAnimation, isAnimatedSprite, staticSprite } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -47,5 +47,34 @@ describe('Digimon sprites', () => {
     expect(warpStageScale('MetalGarurumon')).toBe(1.2954);
     expect(warpStageScale('Agumon')).toBe(1);
     expect(warpStageScale('Charizard-Mega-X')).toBe(1);
+  });
+});
+
+describe('larger animated sprites', () => {
+  it('knows which Pokémon have Sky Battle (flying) animations', () => {
+    for (const name of ['Charizard', 'Pidgeot', 'Gyarados', 'Talonflame', 'Togekiss', 'Skarmory', 'Gastly', 'Weezing', 'Rotom-Wash', 'Bronzong', 'Hydreigon', 'Landorus-Therian', 'Vivillon-Fancy']) {
+      expect(hasSkyBattleAnimation(name), name).toBe(true);
+    }
+    // Their X & Y / ORAS Megas, even when the Mega loses the Flying type.
+    for (const name of ['Charizard-Mega-X', 'Charizard-Mega-Y', 'Gyarados-Mega', 'Aerodactyl-Mega', 'Pidgeot-Mega', 'Altaria-Mega', 'Salamence-Mega']) {
+      expect(hasSkyBattleAnimation(name), name).toBe(true);
+    }
+    // Kept out of Sky Battles, not fliers, or from after X & Y.
+    for (const name of ['Pidgey', 'Doduo', 'Farfetch’d', 'Hawlucha', 'Gengar', 'Gengar-Mega', 'Pinsir-Mega', 'Shaymin-Sky', 'Garchomp', 'Toucannon', 'Celesteela', 'Vikavolt', 'Dragonite-Mega', 'Skarmory-Mega', 'Agumon']) {
+      expect(hasSkyBattleAnimation(name), name).toBe(false);
+    }
+  });
+
+  it('draws those, Alolan Exeggutor and Raging Bolt 50% larger, only as animated 3D sprites', () => {
+    for (const name of ['Exeggutor-Alola', 'Raging Bolt', 'Charizard', 'Charizard-Mega-Y', 'Rotom-Heat']) expect(animatedSpriteBoost(name), name).toBe(1.5);
+    for (const name of ['Exeggutor', 'Raikou', 'Garchomp', 'WarGreymon']) expect(animatedSpriteBoost(name), name).toBe(1);
+    // Kept at their usual size on request (their base formes are still larger).
+    for (const name of ['Gyarados-Mega', 'Salamence-Mega']) expect(animatedSpriteBoost(name), name).toBe(1);
+    for (const name of ['Gyarados', 'Salamence']) expect(animatedSpriteBoost(name), name).toBe(1.5);
+    expect(isAnimatedSprite(animatedSprite('Charizard', 'p2'))).toBe(true);
+    expect(isAnimatedSprite(animatedSprite('Charizard', 'p1'))).toBe(true);
+    expect(isAnimatedSprite(animatedSprite('Raging Bolt', 'p2'))).toBe(true);
+    expect(isAnimatedSprite(staticSprite('Charizard', 'p2'))).toBe(false);
+    expect(isAnimatedSprite(animatedSprite('Agumon', 'p2'))).toBe(false);
   });
 });

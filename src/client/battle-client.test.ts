@@ -149,6 +149,34 @@ describe('BattleClient playback (animations on)', () => {
     client.dispose();
   }, 40000);
 
+  it('shows "reacting to the Key Stone" before the Mega Evolution animation, and "has Mega Evolved" after it', async () => {
+    const client = new BattleClient(createInProcessTransport(), { speed: 0.02 });
+    const seen: { anim: string | null; log: string[] }[] = [];
+    client.subscribe(() => {
+      const s = client.getSnapshot();
+      seen.push({ anim: s.animation?.kind ?? null, log: s.log.map(e => e.text) });
+    });
+    const stop = autoplay(client, 'mega-text');
+    client.start({ ...start('mega-text'), teamPreview: false });
+    await waitFor(client, s => s.log.some(e => /has Mega Evolved/.test(e.text)) && !s.playing, 30000);
+    stop();
+    const charge = seen.find(s => s.anim === 'mega-start')!;
+    expect(charge).toBeDefined();
+    // As the charge-up plays: the first line is there, the second isn't yet.
+    expect(charge.log.at(-1)).toMatch(/'s .+ is reacting to the Key Stone!$/);
+    expect(charge.log.some(t => /has Mega Evolved/.test(t))).toBe(false);
+    const burst = seen.find(s => s.anim === 'mega')!;
+    expect(burst.log.some(t => /has Mega Evolved/.test(t))).toBe(false);
+    // Afterwards: both lines, once each, in order.
+    const log = client.getSnapshot().log.map(e => e.text);
+    const reacting = log.findIndex(t => /is reacting to the Key Stone/.test(t));
+    const evolved = log.findIndex(t => /has Mega Evolved into Mega /.test(t));
+    expect(reacting).toBeGreaterThan(-1);
+    expect(evolved).toBe(reacting + 1);
+    expect(log.filter(t => t === log[evolved])).toHaveLength(1);
+    client.dispose();
+  }, 40000);
+
   it('skipAnimations applies everything queued immediately', async () => {
     const client = new BattleClient(createInProcessTransport(), { speed: 100 });
     client.start({ ...start('skip-1'), teamPreview: false });

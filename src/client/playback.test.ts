@@ -163,7 +163,7 @@ describe('planLine: Z-Moves and signature moves', () => {
     expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax').map(s => s.animation?.fx?.category)).toEqual(['Special']);
     // The hint only covers the next move line.
     expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax').map(s => s.animation?.fx?.category)).toEqual(['Physical']);
-    expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax')[0].animation?.durationMs).toBe(1700);
+    expect(plan('|move|p1a: Charizard|Inferno Overdrive|p2a: Snorlax')[0].animation?.durationMs).toBe(2200);
   });
 
   it('gives Gaia Force and Cocytus Pulse their longer animations', () => {

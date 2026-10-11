@@ -48,7 +48,15 @@ export type Layer =
   /** A spinning wireframe sphere of data closing in around a spot. */
   | { kind: 'wireframe'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
   /** Big text sweeping across the stage. */
-  | { kind: 'banner'; text: string; color: string; delay?: number; dur?: number };
+  | { kind: 'banner'; text: string; color: string; delay?: number; dur?: number }
+  /** A huge shape falling from the sky onto the target (a boulder, a body slam, a dive). */
+  | { kind: 'meteor'; shape: Shape; color: string; color2?: string; size: number; delay?: number; dur?: number }
+  /** A spinning whirlpool / black hole / drill, flattened onto the ground at a spot. */
+  | { kind: 'vortex'; at: Anchor; color: string; color2?: string; size: number; delay?: number; dur?: number }
+  /** A sunburst of rays at a spot. */
+  | { kind: 'rays'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
+  /** A column of light from the top of the stage down onto a spot. */
+  | { kind: 'pillar'; at: Anchor; color: string; color2?: string; width: number; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -258,306 +266,558 @@ export const ATTACKS: Record<TypeName, { physical: FxSpec; special: FxSpec }> = 
 const asType = (t: string): TypeName => (TYPES as readonly string[]).includes(t) ? t as TypeName : 'Normal';
 
 /**
- * Damaging Z-Moves: an oversized animation per type, different for a physical Z-Move (the user's
- * charge ends in a crash at the target) and a special one (a huge blast from the user). The category
- * is the base move's, from the engine's hint (playback). Each opens dim and ends in a flash.
+ * Damaging Z-Moves: an oversized, 2.2-second animation for each type, one for a physical Z-Move and
+ * one for a special one (the category is the base move's, from the engine's hint), built around the
+ * Z-Move's name (Hydro Vortex is a whirlpool, Continental Crush drops a mountain, Black Hole Eclipse
+ * opens a black hole...). Signature Z-Moves (Catastropika, Oceanic Operetta...) have their own
+ * (Z_SIGNATURE). All open dim, climax around 1.3 s with a flash and a strong shake, and linger.
  */
+const pt = (at: Anchor, shape: Shape, motion: Motion, color: string, color2: string | undefined, count: number, size: number, spread: number, delay = 0, dur?: number): Layer =>
+  ({ kind: 'particles', at, shape, motion, color, ...(color2 ? { color2 } : {}), count, size, spread, delay, ...(dur ? { dur } : {}) });
+
 type ZPair = { physical: Layer[]; special: Layer[] };
 const Z_MOVES: Record<TypeName, ZPair> = {
+  // Breakneck Blitz: the user builds unstoppable momentum and slams into the target.
   Normal: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffffff', color2: '#ffe9a8', count: 16, size: 10, spread: 110 },
-      { kind: 'rings', at: 'path', color: '#ffffff', count: 4, size: 90, delay: 350, dur: 600 },
-      { kind: 'impact', color: '#ffffff', size: 200, star: true, delay: 900 },
-      { kind: 'impact', color: '#ffe9a8', size: 270, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffffff', color2: '#ffe066', count: 16, size: 16, spread: 140, delay: 950 },
+      { kind: 'aura', at: 'user', color: '#fff3c4', size: 260, dur: 700 },
+      pt('user', 'dot', 'converge', '#ffffff', '#ffe9a8', 18, 10, 130),
+      { kind: 'rings', at: 'path', color: '#ffffff', count: 6, size: 100, delay: 450, dur: 700 },
+      { kind: 'impact', color: '#ffffff', size: 320, star: true, delay: 1250 },
+      { kind: 'rays', at: 'target', color: '#fff3c4', size: 360, delay: 1250, dur: 800 },
+      { kind: 'rings', at: 'target', color: '#ffe9a8', count: 3, size: 300, delay: 1300, dur: 700 },
+      pt('target', 'star', 'burst', '#ffffff', '#ffe066', 22, 18, 170, 1280),
     ],
     special: [
-      { kind: 'aura', at: 'user', color: '#ffffff', size: 240, dur: 700 },
-      { kind: 'orb', color: '#ffffff', color2: '#ffe9a8', size: 130, delay: 600, dur: 600 },
-      { kind: 'rings', at: 'target', color: '#ffffff', count: 3, size: 260, delay: 1150, dur: 600 },
-      { kind: 'impact', color: '#ffe9a8', size: 280, delay: 1150 },
+      { kind: 'aura', at: 'user', color: '#ffffff', size: 280, dur: 800 },
+      { kind: 'rays', at: 'user', color: '#fff3c4', size: 320, delay: 100, dur: 800 },
+      { kind: 'orb', color: '#ffffff', color2: '#ffe9a8', size: 180, delay: 750, dur: 550 },
+      { kind: 'impact', color: '#ffe9a8', size: 340, delay: 1300 },
+      { kind: 'rings', at: 'target', color: '#ffffff', count: 4, size: 320, delay: 1300, dur: 700 },
+      pt('target', 'star', 'burst', '#ffffff', '#ffe9a8', 20, 16, 170, 1320),
     ],
   },
+  // Inferno Overdrive: the user is wreathed in an inferno and unleashes it at full power.
   Fire: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'flame', motion: 'rise', color: '#ff5a00', color2: '#ffd23f', count: 14, size: 22, spread: 60, dur: 700 },
-      { kind: 'rings', at: 'path', color: '#ff8c1a', count: 3, size: 80, delay: 400, dur: 550 },
-      { kind: 'column', color: '#ff6a00', color2: '#ffe066', delay: 900 },
-      { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 20, size: 26, spread: 150, delay: 950 },
-      { kind: 'ground', color: '#ff6a00', delay: 950, dur: 600 },
+      { kind: 'rays', at: 'user', color: '#ff8c1a', size: 280, dur: 800 },
+      pt('user', 'flame', 'rise', '#ff5a00', '#ffd23f', 18, 24, 70, 0, 800),
+      { kind: 'rings', at: 'path', color: '#ff6a00', count: 5, size: 100, delay: 500, dur: 650 },
+      { kind: 'column', color: '#ff5a00', color2: '#ffe066', delay: 1150 },
+      { kind: 'column', color: '#ff8c1a', color2: '#fff3b0', delay: 1300 },
+      { kind: 'ground', color: '#ff5a00', delay: 1250, dur: 700 },
+      pt('target', 'flame', 'burst', '#ff5a00', '#ffd23f', 28, 28, 190, 1280),
+      { kind: 'impact', color: '#ff6a00', size: 320, star: true, delay: 1280 },
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff6a00', color2: '#ffd23f', count: 18, size: 18, spread: 160 },
-      { kind: 'aura', at: 'user', color: '#ff8c1a', size: 260, delay: 200, dur: 700 },
-      { kind: 'orb', color: '#ff6a00', color2: '#ffe066', size: 150, shape: 'flame', delay: 650, dur: 600 },
-      { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 24, size: 28, spread: 170, delay: 1200 },
-      { kind: 'impact', color: '#ff6a00', size: 300, delay: 1200 },
-      { kind: 'screen', color: '#ff6a00', mode: 'tint', delay: 1150, dur: 500 },
+      pt('user', 'flame', 'converge', '#ff6a00', '#ffd23f', 24, 20, 190, 0, 800),
+      { kind: 'aura', at: 'user', color: '#ff8c1a', size: 300, delay: 200, dur: 800 },
+      { kind: 'orb', color: '#ff5a00', color2: '#fff3b0', size: 200, shape: 'flame', arc: true, delay: 800, dur: 500 },
+      { kind: 'rays', at: 'target', color: '#ff8c1a', size: 380, delay: 1300, dur: 850 },
+      { kind: 'impact', color: '#ff6a00', size: 360, delay: 1300 },
+      pt('target', 'flame', 'burst', '#ff5a00', '#ffd23f', 30, 30, 200, 1300),
+      { kind: 'screen', color: '#ff6a00', mode: 'tint', delay: 1250, dur: 700 },
     ],
   },
+  // Hydro Vortex: a huge whirlpool swallows the target.
   Water: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'drop', motion: 'swirl', color: '#5aa2ff', color2: '#cfe6ff', count: 14, size: 14, spread: 70, dur: 600 },
-      { kind: 'rings', at: 'target', color: '#3b7cff', count: 4, size: 220, delay: 650, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'swirl', color: '#9ad0ff', count: 18, size: 16, spread: 110, delay: 700, dur: 900 },
-      { kind: 'column', color: '#3b7cff', color2: '#cfe8ff', delay: 1000 },
-      { kind: 'impact', color: '#5aa2ff', size: 240, delay: 1100 },
+      pt('user', 'drop', 'swirl', '#5aa2ff', '#cfe6ff', 16, 16, 80, 0, 700),
+      { kind: 'rings', at: 'path', color: '#3b7cff', count: 4, size: 90, delay: 350, dur: 600 },
+      { kind: 'vortex', at: 'target', color: '#3b7cff', color2: '#cfe8ff', size: 300, delay: 550, dur: 1500 },
+      pt('target', 'bubble', 'swirl', '#9ad0ff', undefined, 22, 18, 130, 650, 1100),
+      { kind: 'column', color: '#3b7cff', color2: '#cfe8ff', delay: 1300 },
+      { kind: 'impact', color: '#5aa2ff', size: 300, delay: 1350 },
+      pt('target', 'drop', 'spray', '#5aa2ff', '#cfe6ff', 24, 16, 150, 1350),
     ],
     special: [
-      { kind: 'beam', color: '#3b7cff', color2: '#cfe8ff', width: 46, wavy: true, delay: 450, dur: 900 },
-      { kind: 'beam', color: '#ffffff', color2: '#9ad0ff', width: 18, wavy: true, delay: 500, dur: 850 },
-      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#5aa2ff', color2: '#cfe6ff', count: 22, size: 14, spread: 120, delay: 900 },
-      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'burst', color: '#9ad0ff', count: 14, size: 18, spread: 110, delay: 1000 },
-      { kind: 'screen', color: '#3b7cff', mode: 'tint', delay: 900, dur: 600 },
+      { kind: 'beam', color: '#3b7cff', color2: '#cfe8ff', width: 60, wavy: true, delay: 350, dur: 1000 },
+      { kind: 'beam', color: '#ffffff', color2: '#9ad0ff', width: 22, wavy: true, delay: 400, dur: 950 },
+      { kind: 'vortex', at: 'target', color: '#3b7cff', color2: '#ffffff', size: 320, delay: 900, dur: 1200 },
+      pt('target', 'bubble', 'burst', '#9ad0ff', undefined, 20, 20, 160, 1300),
+      pt('target', 'drop', 'spray', '#5aa2ff', '#cfe6ff', 24, 16, 150, 1350),
+      { kind: 'screen', color: '#3b7cff', mode: 'tint', delay: 900, dur: 900 },
     ],
   },
+  // Gigavolt Havoc: a giant spear of electricity, hurled.
   Electric: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe14d', color2: '#ffffff', count: 18, size: 16, spread: 120 },
-      { kind: 'aura', at: 'user', color: '#ffe14d', size: 220, dur: 600 },
-      { kind: 'bolt', color: '#ffe14d', delay: 700 },
-      { kind: 'bolt', color: '#fff7a8', delay: 900 },
-      { kind: 'impact', color: '#fff07a', size: 240, star: true, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14d', color2: '#ffffff', count: 20, size: 20, spread: 140, delay: 950 },
+      pt('user', 'spark', 'converge', '#ffe14d', '#ffffff', 22, 18, 150, 0, 700),
+      { kind: 'aura', at: 'user', color: '#ffe14d', size: 260, dur: 700 },
+      { kind: 'orb', color: '#ffe14d', color2: '#ffffff', size: 120, shape: 'spark', delay: 800, dur: 420 },
+      { kind: 'bolt', color: '#ffe14d', delay: 1150 },
+      { kind: 'bolt', color: '#fff7a8', delay: 1250 },
+      { kind: 'bolt', color: '#ffffff', delay: 1350 },
+      { kind: 'rays', at: 'target', color: '#ffe14d', size: 340, delay: 1250, dur: 800 },
+      pt('target', 'spark', 'burst', '#ffe14d', '#ffffff', 26, 22, 180, 1260),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe14d', color2: '#ffffff', count: 22, size: 16, spread: 150 },
-      { kind: 'beam', color: '#ffe14d', color2: '#ffffff', width: 40, delay: 600, dur: 700 },
-      { kind: 'bolt', color: '#ffe14d', delay: 1000 },
-      { kind: 'bolt', color: '#ffffff', delay: 1150 },
-      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14d', count: 24, size: 20, spread: 160, delay: 1050 },
+      pt('user', 'spark', 'converge', '#ffe14d', '#ffffff', 24, 16, 170, 0, 800),
+      { kind: 'beam', color: '#ffe14d', color2: '#ffffff', width: 54, delay: 700, dur: 700 },
+      { kind: 'pillar', at: 'target', color: '#ffe14d', color2: '#ffffff', width: 110, delay: 1150, dur: 700 },
+      { kind: 'bolt', color: '#ffe14d', delay: 1200 },
+      { kind: 'bolt', color: '#ffffff', delay: 1350 },
+      pt('target', 'spark', 'burst', '#ffe14d', '#ffffff', 28, 22, 190, 1300),
     ],
   },
+  // Bloom Doom: the power of plants blossoms all around, then bursts.
   Grass: {
     physical: [
-      { kind: 'ground', color: '#5fb83a', delay: 200, dur: 900 },
-      { kind: 'column', color: '#5fb83a', color2: '#c6f08a', delay: 800 },
-      { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#7ac74c', color2: '#c6f08a', count: 20, size: 18, spread: 140, delay: 900 },
-      { kind: 'particles', at: 'target', shape: 'heart', motion: 'rise', color: '#ff9ccf', color2: '#ffffff', count: 12, size: 14, spread: 90, delay: 1000 },
-      { kind: 'impact', color: '#7ac74c', size: 240, delay: 950 },
+      { kind: 'ground', color: '#5fb83a', delay: 100, dur: 1100 },
+      pt('target', 'heart', 'rise', '#ff9ccf', '#ffffff', 16, 16, 130, 400, 900),
+      pt('target', 'leaf', 'swirl', '#7ac74c', '#c6f08a', 18, 18, 120, 500, 900),
+      { kind: 'column', color: '#5fb83a', color2: '#c6f08a', delay: 1150 },
+      { kind: 'rays', at: 'target', color: '#a8e070', size: 340, delay: 1250, dur: 800 },
+      { kind: 'impact', color: '#7ac74c', size: 320, star: true, delay: 1280 },
+      pt('target', 'leaf', 'burst', '#7ac74c', '#c6f08a', 26, 20, 180, 1300),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'leaf', motion: 'converge', color: '#7ac74c', color2: '#c6f08a', count: 18, size: 16, spread: 150 },
-      { kind: 'aura', at: 'user', color: '#7ac74c', size: 230, delay: 150, dur: 650 },
-      { kind: 'beam', color: '#5fb83a', color2: '#e6ffd0', width: 36, wavy: true, delay: 600, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ccf', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
-      { kind: 'particles', at: 'target', shape: 'leaf', motion: 'swirl', color: '#7ac74c', count: 14, size: 16, spread: 100, delay: 1100 },
+      pt('user', 'leaf', 'converge', '#7ac74c', '#c6f08a', 22, 18, 170, 0, 800),
+      { kind: 'vortex', at: 'target', color: '#7ac74c', color2: '#ff9ccf', size: 300, delay: 400, dur: 1300 },
+      pt('target', 'heart', 'swirl', '#ff9ccf', '#ffffff', 20, 16, 130, 500, 1000),
+      { kind: 'beam', color: '#5fb83a', color2: '#e6ffd0', width: 44, wavy: true, delay: 800, dur: 600 },
+      { kind: 'rays', at: 'target', color: '#ffb6dc', size: 360, delay: 1300, dur: 800 },
+      pt('target', 'heart', 'burst', '#ff9ccf', '#ffffff', 26, 18, 190, 1300),
     ],
   },
+  // Subzero Slammer: the temperature plummets and a giant slab of ice slams down.
   Ice: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'shard', motion: 'converge', color: '#bff3ff', color2: '#ffffff', count: 14, size: 16, spread: 120 },
-      { kind: 'particles', at: 'target', shape: 'shard', motion: 'fall', color: '#bff3ff', color2: '#ffffff', count: 16, size: 26, spread: 80, delay: 500 },
-      { kind: 'crack', color: '#9fe8ff', delay: 950 },
-      { kind: 'impact', color: '#96d9d6', size: 240, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#cdf6ff', color2: '#ffffff', count: 18, size: 18, spread: 140, delay: 1000 },
-      { kind: 'screen', color: '#bfefff', mode: 'tint', delay: 950, dur: 500 },
+      { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 1500 },
+      pt('user', 'shard', 'converge', '#bff3ff', '#ffffff', 16, 18, 140, 0, 700),
+      { kind: 'meteor', shape: 'shard', color: '#bff3ff', color2: '#ffffff', size: 150, delay: 700, dur: 600 },
+      { kind: 'crack', color: '#9fe8ff', delay: 1280 },
+      { kind: 'impact', color: '#c9f6ff', size: 320, delay: 1280 },
+      pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 24, 22, 180, 1300),
+      pt('target', 'wisp', 'rise', '#e6fbff', undefined, 12, 28, 110, 1400),
     ],
     special: [
-      { kind: 'aura', at: 'user', color: '#9fe8ff', size: 230, dur: 600 },
-      { kind: 'beam', color: '#7fe3ff', color2: '#ffffff', width: 40, delay: 500, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#cdf6ff', color2: '#ffffff', count: 22, size: 18, spread: 150, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#e6fbff', count: 10, size: 26, spread: 80, delay: 1100 },
-      { kind: 'rings', at: 'target', color: '#ffffff', count: 2, size: 240, delay: 1050 },
+      { kind: 'aura', at: 'user', color: '#9fe8ff', size: 270, dur: 700 },
+      { kind: 'beam', color: '#7fe3ff', color2: '#ffffff', width: 52, delay: 550, dur: 900 },
+      { kind: 'vortex', at: 'target', color: '#cdf6ff', color2: '#ffffff', size: 300, delay: 950, dur: 1150 },
+      pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 26, 20, 180, 1300),
+      { kind: 'rings', at: 'target', color: '#ffffff', count: 3, size: 300, delay: 1300 },
+      { kind: 'screen', color: '#e6fbff', mode: 'tint', delay: 1000, dur: 900 },
     ],
   },
+  // All-Out Pummeling: a relentless barrage of energy fists.
   Fighting: {
     physical: [
-      { kind: 'aura', at: 'user', color: '#e0503a', size: 220, dur: 600 },
-      { kind: 'impact', color: '#ff7a3d', size: 150, star: true, delay: 500 },
-      { kind: 'impact', color: '#ff7a3d', size: 170, star: true, delay: 650 },
-      { kind: 'impact', color: '#ffb36b', size: 190, star: true, delay: 800 },
-      { kind: 'slash', color: '#e0503a', count: 2, angle: 35, cross: true, width: 8, delay: 700 },
-      { kind: 'impact', color: '#ffffff', size: 240, star: true, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffb36b', color2: '#ffffff', count: 16, size: 16, spread: 140, delay: 1000 },
+      { kind: 'aura', at: 'user', color: '#e0503a', size: 260, dur: 700 },
+      { kind: 'orb', color: '#ff7a3d', color2: '#fff0c0', size: 46, count: 8, gap: 70, delay: 500, dur: 380 },
+      { kind: 'impact', color: '#ff7a3d', size: 160, star: true, delay: 880 },
+      { kind: 'impact', color: '#ffb36b', size: 180, star: true, delay: 1020 },
+      { kind: 'impact', color: '#ff7a3d', size: 200, star: true, delay: 1160 },
+      { kind: 'impact', color: '#ffffff', size: 340, star: true, delay: 1320 },
+      { kind: 'rays', at: 'target', color: '#ff8c5a', size: 340, delay: 1320, dur: 800 },
+      pt('target', 'star', 'burst', '#ffb36b', '#ffffff', 22, 18, 180, 1340),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#6b8cff', color2: '#ffffff', count: 20, size: 12, spread: 150 },
-      { kind: 'orb', color: '#4d6bff', color2: '#ffffff', size: 120, delay: 600, dur: 600 },
-      { kind: 'rings', at: 'target', color: '#6b8cff', count: 3, size: 240, delay: 1150 },
-      { kind: 'impact', color: '#6b8cff', size: 260, delay: 1150 },
+      pt('user', 'dot', 'converge', '#6b8cff', '#ffffff', 24, 12, 170, 0, 800),
+      { kind: 'orb', color: '#4d6bff', color2: '#ffffff', size: 150, delay: 650, dur: 550 },
+      { kind: 'orb', color: '#6b8cff', color2: '#ffffff', size: 40, count: 6, gap: 60, arc: true, delay: 750, dur: 450 },
+      { kind: 'rings', at: 'target', color: '#6b8cff', count: 4, size: 300, delay: 1250 },
+      { kind: 'rays', at: 'target', color: '#8fa6ff', size: 340, delay: 1300, dur: 800 },
+      { kind: 'impact', color: '#6b8cff', size: 340, delay: 1300 },
     ],
   },
+  // Acid Downpour: a poison swamp, then a torrent of toxic rain.
   Poison: {
     physical: [
-      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'fall', color: '#b45fd6', color2: '#e0a8ff', count: 20, size: 18, spread: 90, delay: 300, dur: 900 },
-      { kind: 'ground', color: '#a040c0', delay: 700, dur: 700 },
-      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#a040c0', color2: '#e0a8ff', count: 16, size: 14, spread: 120, delay: 1000 },
-      { kind: 'impact', color: '#b45fd6', size: 220, delay: 1050 },
-      { kind: 'screen', color: '#a040c0', mode: 'tint', delay: 900, dur: 600 },
+      { kind: 'ground', color: '#8a30b0', delay: 100, dur: 1200 },
+      { kind: 'vortex', at: 'target', color: '#a040c0', color2: '#e0a8ff', size: 280, delay: 300, dur: 1300 },
+      pt('target', 'bubble', 'fall', '#b45fd6', '#e0a8ff', 30, 18, 120, 600, 900),
+      pt('target', 'drop', 'spray', '#a040c0', '#e0a8ff', 22, 16, 150, 1300),
+      { kind: 'impact', color: '#b45fd6', size: 300, delay: 1300 },
+      { kind: 'screen', color: '#8a30b0', mode: 'tint', delay: 600, dur: 1100 },
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'bubble', motion: 'converge', color: '#b45fd6', count: 16, size: 16, spread: 140 },
-      { kind: 'beam', color: '#a040c0', color2: '#e0a8ff', width: 42, wavy: true, delay: 550, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'bubble', motion: 'burst', color: '#b45fd6', color2: '#e0a8ff', count: 22, size: 18, spread: 150, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'drop', motion: 'spray', color: '#a040c0', count: 14, size: 14, spread: 110, delay: 1050 },
-      { kind: 'screen', color: '#a040c0', mode: 'tint', delay: 1000, dur: 500 },
+      pt('user', 'bubble', 'converge', '#b45fd6', undefined, 20, 18, 160, 0, 700),
+      { kind: 'beam', color: '#a040c0', color2: '#e0a8ff', width: 52, wavy: true, delay: 550, dur: 900 },
+      pt('target', 'bubble', 'fall', '#b45fd6', '#e0a8ff', 28, 18, 120, 900, 800),
+      pt('target', 'bubble', 'burst', '#b45fd6', '#e0a8ff', 24, 20, 180, 1300),
+      { kind: 'rays', at: 'target', color: '#c070e0', size: 320, delay: 1300, dur: 800 },
+      { kind: 'screen', color: '#8a30b0', mode: 'tint', delay: 1100, dur: 800 },
     ],
   },
+  // Tectonic Rage: the user dives deep into the ground and the earth erupts.
   Ground: {
     physical: [
-      { kind: 'ground', color: '#c8a050', delay: 100, dur: 900 },
+      { kind: 'ground', color: '#c8a050', delay: 100, dur: 1300 },
       { kind: 'crack', color: '#7a5a2a', delay: 600 },
-      { kind: 'column', color: '#b07a3a', color2: '#e8c890', delay: 800 },
-      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b07a3a', color2: '#6b4a2b', count: 18, size: 22, spread: 150, delay: 900 },
-      { kind: 'impact', color: '#c8a050', size: 260, delay: 950 },
+      { kind: 'column', color: '#b07a3a', color2: '#e8c890', delay: 1100 },
+      { kind: 'column', color: '#c8a050', color2: '#fff0c8', delay: 1250 },
+      pt('target', 'rock', 'burst', '#b07a3a', '#6b4a2b', 26, 24, 190, 1250),
+      { kind: 'rings', at: 'target', color: '#c8a050', count: 3, size: 320, delay: 1300 },
+      { kind: 'impact', color: '#c8a050', size: 340, delay: 1280 },
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'rock', motion: 'rise', color: '#b07a3a', color2: '#e8c890', count: 14, size: 18, spread: 90 },
-      { kind: 'rings', at: 'target', color: '#c8a050', count: 3, size: 260, delay: 700, dur: 700 },
-      { kind: 'ground', color: '#c8a050', delay: 900, dur: 700 },
+      pt('user', 'rock', 'rise', '#b07a3a', '#e8c890', 18, 20, 100, 0, 800),
+      { kind: 'vortex', at: 'target', color: '#b07a3a', color2: '#e8c890', size: 300, delay: 450, dur: 1200 },
       { kind: 'crack', color: '#7a5a2a', delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b07a3a', color2: '#e8c890', count: 22, size: 22, spread: 160, delay: 1000 },
+      { kind: 'column', color: '#b07a3a', color2: '#e8c890', delay: 1250 },
+      pt('target', 'rock', 'burst', '#b07a3a', '#e8c890', 28, 24, 200, 1300),
+      { kind: 'rays', at: 'target', color: '#e8c890', size: 340, delay: 1300, dur: 800 },
     ],
   },
+  // Supersonic Skystrike: the user soars into the sky and dives at the target.
   Flying: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'feather', motion: 'rise', color: '#cfe0ff', color2: '#ffffff', count: 12, size: 18, spread: 70 },
-      { kind: 'particles', at: 'target', shape: 'feather', motion: 'fall', color: '#cfe0ff', color2: '#ffffff', count: 14, size: 18, spread: 90, delay: 650 },
-      { kind: 'slash', color: '#ffffff', count: 2, angle: 45, cross: true, width: 8, delay: 900 },
-      { kind: 'impact', color: '#9ab8ff', size: 240, star: true, delay: 950 },
-      { kind: 'rings', at: 'target', color: '#cfe0ff', count: 2, size: 240, delay: 1000 },
+      pt('user', 'feather', 'rise', '#cfe0ff', '#ffffff', 16, 20, 80, 0, 800),
+      { kind: 'rings', at: 'user', color: '#cfe0ff', count: 3, size: 220, delay: 100 },
+      { kind: 'meteor', shape: 'star', color: '#e6efff', color2: '#ffffff', size: 110, delay: 750, dur: 550 },
+      { kind: 'slash', color: '#ffffff', count: 2, angle: 50, cross: true, width: 10, delay: 1250 },
+      { kind: 'impact', color: '#9ab8ff', size: 330, star: true, delay: 1300 },
+      { kind: 'rings', at: 'target', color: '#cfe0ff', count: 3, size: 300, delay: 1320 },
+      pt('target', 'feather', 'burst', '#cfe0ff', '#ffffff', 22, 20, 180, 1300),
     ],
     special: [
-      { kind: 'rings', at: 'path', color: '#cfe0ff', count: 5, size: 80, delay: 300, dur: 900 },
-      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'swirl', color: '#e6efff', count: 16, size: 24, spread: 110, delay: 900 },
-      { kind: 'particles', at: 'target', shape: 'feather', motion: 'burst', color: '#cfe0ff', color2: '#ffffff', count: 16, size: 18, spread: 140, delay: 1000 },
-      { kind: 'impact', color: '#9ab8ff', size: 250, delay: 1050 },
+      { kind: 'rings', at: 'path', color: '#cfe0ff', count: 7, size: 90, delay: 250, dur: 1000 },
+      pt('target', 'wisp', 'swirl', '#e6efff', undefined, 20, 26, 140, 800, 900),
+      { kind: 'pillar', at: 'target', color: '#cfe0ff', color2: '#ffffff', width: 120, delay: 1150, dur: 700 },
+      pt('target', 'feather', 'burst', '#cfe0ff', '#ffffff', 24, 20, 190, 1300),
+      { kind: 'impact', color: '#9ab8ff', size: 330, delay: 1300 },
     ],
   },
+  // Shattered Psyche: the user seizes the target with psychic power and hurls it about.
   Psychic: {
     physical: [
-      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 3, size: 200, delay: 300, dur: 700 },
-      { kind: 'particles', at: 'target', shape: 'gem', motion: 'converge', color: '#ff8fbf', color2: '#ffffff', count: 14, size: 14, spread: 140, delay: 500 },
-      { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#ff5f9e', color2: '#ffd0e4', count: 20, size: 18, spread: 150, delay: 1000 },
-      { kind: 'impact', color: '#ff5f9e', size: 230, star: true, delay: 1000 },
-      { kind: 'screen', color: '#ff5f9e', mode: 'tint', delay: 900, dur: 500 },
+      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 4, size: 220, delay: 250, dur: 800 },
+      pt('target', 'gem', 'converge', '#ff8fbf', '#ffffff', 18, 16, 170, 400, 800),
+      { kind: 'vortex', at: 'target', color: '#ff5f9e', color2: '#ffd0e4', size: 260, delay: 500, dur: 1000 },
+      { kind: 'impact', color: '#ff5f9e', size: 330, star: true, delay: 1280 },
+      pt('target', 'shard', 'burst', '#ff5f9e', '#ffd0e4', 26, 20, 190, 1300),
+      { kind: 'screen', color: '#ff5f9e', mode: 'tint', delay: 1000, dur: 800 },
     ],
     special: [
-      { kind: 'aura', at: 'user', color: '#ff5f9e', size: 240, dur: 700 },
-      { kind: 'beam', color: '#ff5f9e', color2: '#ffd0e4', width: 40, wavy: true, delay: 600, dur: 800 },
-      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 3, size: 250, rainbow: true, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'gem', motion: 'burst', color: '#ff8fbf', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
+      { kind: 'aura', at: 'user', color: '#ff5f9e', size: 290, dur: 800 },
+      { kind: 'rays', at: 'user', color: '#ff8fbf', size: 300, delay: 150, dur: 800 },
+      { kind: 'beam', color: '#ff5f9e', color2: '#ffd0e4', width: 50, wavy: true, delay: 700, dur: 700 },
+      { kind: 'rings', at: 'target', color: '#ff5f9e', count: 4, size: 320, rainbow: true, delay: 1250 },
+      pt('target', 'gem', 'burst', '#ff8fbf', '#ffffff', 26, 18, 190, 1300),
     ],
   },
+  // Savage Spin-Out: silk wraps the target, which is spun and flung.
   Bug: {
     physical: [
-      { kind: 'rings', at: 'target', color: '#a8c040', count: 4, size: 160, delay: 400, dur: 800 },
-      { kind: 'slash', color: '#8aa82a', count: 3, angle: -20, width: 7, delay: 800 },
-      { kind: 'impact', color: '#c8e060', size: 220, star: true, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#a8c040', color2: '#e8ff9a', count: 16, size: 16, spread: 130, delay: 1000 },
+      { kind: 'rings', at: 'target', color: '#e8ffc0', count: 6, size: 180, delay: 300, dur: 900 },
+      { kind: 'vortex', at: 'target', color: '#a8c040', color2: '#e8ffc0', size: 240, delay: 650, dur: 900 },
+      { kind: 'slash', color: '#8aa82a', count: 3, angle: -20, width: 8, delay: 1150 },
+      { kind: 'impact', color: '#c8e060', size: 320, star: true, delay: 1300 },
+      pt('target', 'spark', 'burst', '#a8c040', '#e8ff9a', 24, 18, 180, 1300),
     ],
     special: [
-      { kind: 'orb', color: '#a8c040', color2: '#e8ff9a', size: 26, count: 6, gap: 70, arc: true, delay: 400, dur: 600 },
-      { kind: 'particles', at: 'target', shape: 'spark', motion: 'swirl', color: '#a8c040', color2: '#e8ff9a', count: 18, size: 16, spread: 110, delay: 900 },
-      { kind: 'impact', color: '#a8c040', size: 240, delay: 1100 },
-      { kind: 'rings', at: 'target', color: '#c8e060', count: 2, size: 230, delay: 1100 },
+      { kind: 'orb', color: '#a8c040', color2: '#e8ff9a', size: 30, count: 9, gap: 60, arc: true, delay: 350, dur: 550 },
+      { kind: 'vortex', at: 'target', color: '#a8c040', color2: '#e8ff9a', size: 280, delay: 800, dur: 1100 },
+      pt('target', 'spark', 'swirl', '#a8c040', '#e8ff9a', 22, 18, 130, 900, 900),
+      { kind: 'impact', color: '#a8c040', size: 320, delay: 1300 },
+      { kind: 'rings', at: 'target', color: '#c8e060', count: 3, size: 300, delay: 1300 },
     ],
   },
+  // Continental Crush: a mountain of rock is summoned and dropped on the target.
   Rock: {
     physical: [
-      { kind: 'particles', at: 'target', shape: 'rock', motion: 'fall', color: '#b8a038', color2: '#7a6a2a', count: 10, size: 42, spread: 70, delay: 300 },
-      { kind: 'impact', color: '#b8a038', size: 280, delay: 950 },
-      { kind: 'crack', color: '#6b5a2a', delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b8a038', color2: '#7a6a2a', count: 18, size: 20, spread: 160, delay: 1000 },
+      pt('user', 'rock', 'rise', '#b8a038', '#7a6a2a', 14, 22, 90, 0, 800),
+      { kind: 'meteor', shape: 'rock', color: '#b8a038', color2: '#7a6a2a', size: 220, delay: 650, dur: 650 },
+      { kind: 'crack', color: '#6b5a2a', delay: 1300 },
+      { kind: 'impact', color: '#b8a038', size: 360, delay: 1300 },
+      pt('target', 'rock', 'burst', '#b8a038', '#7a6a2a', 26, 24, 200, 1320),
+      { kind: 'ground', color: '#b8a038', delay: 1300, dur: 600 },
     ],
     special: [
-      { kind: 'orb', color: '#b8a038', color2: '#e8d890', size: 42, shape: 'rock', count: 5, gap: 90, arc: true, delay: 400, dur: 600 },
-      { kind: 'particles', at: 'target', shape: 'rock', motion: 'burst', color: '#b8a038', color2: '#e8d890', count: 20, size: 22, spread: 150, delay: 1100 },
-      { kind: 'impact', color: '#d0b850', size: 250, delay: 1100 },
-      { kind: 'rings', at: 'target', color: '#b8a038', count: 2, size: 230, delay: 1150 },
+      { kind: 'orb', color: '#b8a038', color2: '#e8d890', size: 48, shape: 'rock', count: 6, gap: 80, arc: true, delay: 350, dur: 550 },
+      { kind: 'meteor', shape: 'rock', color: '#d0b850', color2: '#7a6a2a', size: 160, delay: 800, dur: 550 },
+      pt('target', 'rock', 'burst', '#b8a038', '#e8d890', 26, 24, 190, 1320),
+      { kind: 'rays', at: 'target', color: '#e8d890', size: 330, delay: 1320, dur: 800 },
+      { kind: 'impact', color: '#d0b850', size: 330, delay: 1320 },
     ],
   },
+  // Never-Ending Nightmare: ghostly hands reach up from the ground and drag the target down.
   Ghost: {
     physical: [
-      { kind: 'screen', color: '#2a1840', mode: 'dim', delay: 200, dur: 1300 },
-      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'converge', color: '#8a5cc8', color2: '#c8a8ff', count: 18, size: 24, spread: 160, delay: 300, dur: 800 },
-      { kind: 'jaws', color: '#8a5cc8', delay: 900 },
-      { kind: 'impact', color: '#8a5cc8', size: 240, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'crescent', motion: 'burst', color: '#c8a8ff', count: 12, size: 18, spread: 140, delay: 1000 },
+      { kind: 'screen', color: '#2a1840', mode: 'dim', delay: 150, dur: 1800 },
+      { kind: 'vortex', at: 'target', color: '#5b3e8f', color2: '#c8a8ff', size: 300, delay: 300, dur: 1400 },
+      pt('target', 'wisp', 'converge', '#8a5cc8', '#c8a8ff', 24, 26, 190, 400, 900),
+      { kind: 'jaws', color: '#8a5cc8', delay: 1200 },
+      { kind: 'impact', color: '#8a5cc8', size: 320, delay: 1300 },
+      pt('target', 'crescent', 'burst', '#c8a8ff', undefined, 16, 20, 180, 1300),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'wisp', motion: 'rise', color: '#8a5cc8', color2: '#c8a8ff', count: 14, size: 22, spread: 80 },
-      { kind: 'orb', color: '#5b3e8f', color2: '#c8a8ff', size: 90, shape: 'crescent', delay: 600, dur: 650 },
-      { kind: 'rings', at: 'target', color: '#8a5cc8', count: 3, size: 240, delay: 1150 },
-      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'burst', color: '#c8a8ff', color2: '#8a5cc8', count: 18, size: 22, spread: 150, delay: 1150 },
+      pt('user', 'wisp', 'rise', '#8a5cc8', '#c8a8ff', 18, 24, 90, 0, 800),
+      { kind: 'orb', color: '#5b3e8f', color2: '#c8a8ff', size: 130, shape: 'crescent', delay: 700, dur: 600 },
+      { kind: 'vortex', at: 'target', color: '#5b3e8f', color2: '#c8a8ff', size: 300, delay: 1000, dur: 1100 },
+      { kind: 'rings', at: 'target', color: '#8a5cc8', count: 3, size: 300, delay: 1300 },
+      pt('target', 'wisp', 'burst', '#c8a8ff', '#8a5cc8', 22, 24, 190, 1300),
     ],
   },
+  // Devastating Drake: the user's aura takes the shape of a dragon and strikes.
   Dragon: {
     physical: [
-      { kind: 'aura', at: 'user', color: '#6f35fc', size: 260, dur: 700 },
-      { kind: 'rings', at: 'path', color: '#8f6bff', count: 3, size: 90, delay: 500, dur: 500 },
-      { kind: 'slash', color: '#c9b8ff', count: 2, angle: 30, cross: true, width: 9, delay: 950 },
-      { kind: 'impact', color: '#6f35fc', size: 260, star: true, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'scale', motion: 'burst', color: '#8f6bff', color2: '#c9b8ff', count: 20, size: 18, spread: 150, delay: 1000 },
+      { kind: 'aura', at: 'user', color: '#6f35fc', size: 320, dur: 800 },
+      pt('user', 'scale', 'converge', '#8f6bff', '#c9b8ff', 22, 18, 170, 0, 800),
+      { kind: 'rings', at: 'path', color: '#8f6bff', count: 5, size: 110, delay: 550, dur: 650 },
+      { kind: 'slash', color: '#c9b8ff', count: 2, angle: 30, cross: true, width: 12, delay: 1220 },
+      { kind: 'impact', color: '#6f35fc', size: 340, star: true, delay: 1300 },
+      { kind: 'rays', at: 'target', color: '#8f6bff', size: 360, delay: 1300, dur: 800 },
+      pt('target', 'scale', 'burst', '#8f6bff', '#c9b8ff', 26, 20, 190, 1300),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'scale', motion: 'converge', color: '#8f6bff', color2: '#c9b8ff', count: 18, size: 16, spread: 150 },
-      { kind: 'beam', color: '#6f35fc', color2: '#c9b8ff', width: 50, delay: 600, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'scale', motion: 'burst', color: '#8f6bff', color2: '#c9b8ff', count: 22, size: 18, spread: 160, delay: 1050 },
-      { kind: 'impact', color: '#6f35fc', size: 280, delay: 1100 },
+      pt('user', 'scale', 'converge', '#8f6bff', '#c9b8ff', 22, 18, 170, 0, 800),
+      { kind: 'rays', at: 'user', color: '#8f6bff', size: 300, delay: 100, dur: 800 },
+      { kind: 'beam', color: '#6f35fc', color2: '#c9b8ff', width: 66, delay: 700, dur: 800 },
+      pt('target', 'scale', 'burst', '#8f6bff', '#c9b8ff', 28, 20, 200, 1300),
+      { kind: 'impact', color: '#6f35fc', size: 360, delay: 1300 },
     ],
   },
+  // Black Hole Eclipse: a black hole opens and pulls the target in.
   Dark: {
     physical: [
-      { kind: 'particles', at: 'target', shape: 'dot', motion: 'converge', color: '#3a2f45', color2: '#7b5cff', count: 20, size: 14, spread: 180, delay: 300, dur: 800 },
-      { kind: 'slash', color: '#7b5cff', count: 2, angle: -35, cross: true, width: 8, delay: 900 },
-      { kind: 'impact', color: '#5a4870', size: 240, delay: 1000 },
-      { kind: 'particles', at: 'target', shape: 'crescent', motion: 'burst', color: '#7b5cff', color2: '#3a2f45', count: 12, size: 18, spread: 140, delay: 1000 },
+      { kind: 'screen', color: '#000000', mode: 'dim', delay: 200, dur: 1800 },
+      { kind: 'vortex', at: 'target', color: '#1c1c28', color2: '#7b5cff', size: 320, delay: 300, dur: 1500 },
+      pt('target', 'dot', 'converge', '#3a2f45', '#7b5cff', 26, 14, 210, 400, 900),
+      { kind: 'slash', color: '#7b5cff', count: 2, angle: -35, cross: true, width: 10, delay: 1200 },
+      { kind: 'impact', color: '#5a4870', size: 320, delay: 1300 },
+      pt('target', 'crescent', 'burst', '#7b5cff', '#3a2f45', 16, 20, 180, 1300),
     ],
     special: [
-      { kind: 'screen', color: '#000000', mode: 'dim', delay: 300, dur: 1200 },
-      { kind: 'rings', at: 'target', color: '#7b5cff', count: 4, size: 280, delay: 400, dur: 900 },
-      { kind: 'particles', at: 'target', shape: 'wisp', motion: 'converge', color: '#3a2f45', color2: '#7b5cff', count: 20, size: 22, spread: 180, delay: 500, dur: 800 },
-      { kind: 'orb', color: '#1c1c28', color2: '#7b5cff', size: 140, delay: 700, dur: 500 },
-      { kind: 'impact', color: '#7b5cff', size: 300, delay: 1150 },
+      { kind: 'screen', color: '#000000', mode: 'dim', delay: 200, dur: 1800 },
+      { kind: 'vortex', at: 'target', color: '#1c1c28', color2: '#7b5cff', size: 340, delay: 350, dur: 1500 },
+      pt('target', 'wisp', 'converge', '#3a2f45', '#7b5cff', 24, 24, 210, 450, 900),
+      { kind: 'orb', color: '#1c1c28', color2: '#7b5cff', size: 160, delay: 800, dur: 500 },
+      { kind: 'rays', at: 'target', color: '#7b5cff', size: 360, delay: 1300, dur: 800 },
+      { kind: 'impact', color: '#7b5cff', size: 360, delay: 1300 },
     ],
   },
+  // Corkscrew Crash: the user spins like a drill and rams the target.
   Steel: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'spark', motion: 'swirl', color: '#d0d0e0', color2: '#ffffff', count: 14, size: 14, spread: 70 },
-      { kind: 'slash', color: '#d0d0e0', count: 4, angle: 30, width: 6, delay: 800 },
-      { kind: 'impact', color: '#e0e0f0', size: 240, star: true, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#d0d0e0', color2: '#ffffff', count: 18, size: 16, spread: 140, delay: 950 },
+      pt('user', 'spark', 'swirl', '#d0d0e0', '#ffffff', 18, 16, 80, 0, 800),
+      { kind: 'vortex', at: 'user', color: '#b8b8d0', color2: '#ffffff', size: 200, dur: 900 },
+      { kind: 'rings', at: 'path', color: '#d0d0e0', count: 5, size: 90, delay: 600, dur: 600 },
+      { kind: 'slash', color: '#e0e0f0', count: 4, angle: 30, width: 7, delay: 1150 },
+      { kind: 'impact', color: '#e0e0f0', size: 330, star: true, delay: 1300 },
+      pt('target', 'spark', 'burst', '#d0d0e0', '#ffffff', 26, 18, 190, 1300),
     ],
     special: [
-      { kind: 'aura', at: 'user', color: '#d0d0e0', size: 230, dur: 600 },
-      { kind: 'beam', color: '#b8b8d0', color2: '#ffffff', width: 44, delay: 550, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'gem', motion: 'burst', color: '#d0d0e0', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1000 },
-      { kind: 'impact', color: '#e0e0f0', size: 260, delay: 1100 },
+      { kind: 'aura', at: 'user', color: '#d0d0e0', size: 280, dur: 700 },
+      { kind: 'beam', color: '#b8b8d0', color2: '#ffffff', width: 56, delay: 600, dur: 850 },
+      { kind: 'vortex', at: 'target', color: '#b8b8d0', color2: '#ffffff', size: 260, delay: 1000, dur: 1000 },
+      pt('target', 'gem', 'burst', '#d0d0e0', '#ffffff', 26, 18, 190, 1300),
+      { kind: 'rays', at: 'target', color: '#ffffff', size: 340, delay: 1300, dur: 800 },
     ],
   },
+  // Twinkle Tackle: the user whisks the target into a charming space and plays with it.
   Fairy: {
     physical: [
-      { kind: 'particles', at: 'user', shape: 'star', motion: 'swirl', color: '#ff9ff3', color2: '#ffffff', count: 12, size: 14, spread: 70 },
-      { kind: 'rings', at: 'path', color: '#ff9ff3', count: 3, size: 80, delay: 400, dur: 550 },
-      { kind: 'impact', color: '#ff9ff3', size: 240, star: true, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ff3', color2: '#ffffff', count: 18, size: 16, spread: 140, delay: 950 },
-      { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffe066', count: 14, size: 14, spread: 120, delay: 1000 },
+      pt('user', 'star', 'swirl', '#ff9ff3', '#ffffff', 16, 16, 80, 0, 800),
+      { kind: 'rings', at: 'target', color: '#ff9ff3', count: 4, size: 280, rainbow: true, delay: 300, dur: 900 },
+      pt('target', 'heart', 'swirl', '#ff9ff3', '#ffffff', 20, 16, 130, 500, 900),
+      { kind: 'rings', at: 'path', color: '#ff9ff3', count: 4, size: 90, delay: 700, dur: 500 },
+      { kind: 'impact', color: '#ff9ff3', size: 330, star: true, delay: 1280 },
+      pt('target', 'star', 'burst', '#ffe066', '#ffffff', 24, 18, 190, 1300),
     ],
     special: [
-      { kind: 'particles', at: 'user', shape: 'star', motion: 'converge', color: '#ff9ff3', color2: '#ffffff', count: 18, size: 14, spread: 150 },
-      { kind: 'beam', color: '#ff9ff3', color2: '#ffffff', width: 40, wavy: true, delay: 600, dur: 800 },
-      { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff9ff3', color2: '#ffffff', count: 20, size: 16, spread: 150, delay: 1050 },
-      { kind: 'rings', at: 'target', color: '#ff9ff3', count: 2, size: 240, rainbow: true, delay: 1050 },
+      pt('user', 'star', 'converge', '#ff9ff3', '#ffffff', 22, 16, 170, 0, 800),
+      { kind: 'beam', color: '#ff9ff3', color2: '#ffffff', width: 50, wavy: true, delay: 650, dur: 800 },
+      { kind: 'vortex', at: 'target', color: '#ff9ff3', color2: '#ffffff', size: 280, delay: 1000, dur: 1000 },
+      pt('target', 'heart', 'burst', '#ff9ff3', '#ffffff', 26, 18, 190, 1300),
+      { kind: 'rings', at: 'target', color: '#ff9ff3', count: 3, size: 300, rainbow: true, delay: 1300 },
     ],
   },
 };
 
+/** Signature Z-Moves (one Pokémon's own, with a fixed category), and the custom Poliwrathium Z-Moves. */
+const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
+  // Pikachu leaps high, wreathed in electricity, and comes crashing down.
+  catastropika: { type: 'Electric', layers: [
+    pt('user', 'spark', 'converge', '#ffe14d', '#ffffff', 24, 18, 160, 0, 700),
+    { kind: 'aura', at: 'user', color: '#ffe14d', size: 260, dur: 700 },
+    { kind: 'meteor', shape: 'spark', color: '#ffe14d', color2: '#ffffff', size: 160, delay: 700, dur: 600 },
+    { kind: 'bolt', color: '#ffffff', delay: 1250 },
+    { kind: 'rays', at: 'target', color: '#ffe14d', size: 380, delay: 1300, dur: 800 },
+    pt('target', 'spark', 'burst', '#ffe14d', '#ffffff', 30, 24, 210, 1300),
+  ] },
+  // Pikachu in a cap: a storm of lightning bolts, all at once.
+  '10000000voltthunderbolt': { type: 'Electric', layers: [
+    { kind: 'rays', at: 'user', color: '#ffe14d', size: 300, dur: 900 },
+    { kind: 'beam', color: '#ffe14d', color2: '#ffffff', width: 30, delay: 600, dur: 800 },
+    { kind: 'beam', color: '#ff9f43', color2: '#ffffff', width: 18, delay: 680, dur: 750 },
+    { kind: 'beam', color: '#5ec8ff', color2: '#ffffff', width: 14, delay: 760, dur: 700 },
+    { kind: 'pillar', at: 'target', color: '#ffe14d', color2: '#ffffff', width: 130, delay: 1200, dur: 700 },
+    { kind: 'bolt', color: '#ffe14d', delay: 1250 },
+    { kind: 'bolt', color: '#ffffff', delay: 1350 },
+    pt('target', 'spark', 'burst', '#ffe14d', '#ffffff', 30, 22, 210, 1320),
+  ] },
+  // Alolan Raichu surfs its tail on psychic energy, then strikes with lightning.
+  stokedsparksurfer: { type: 'Electric', layers: [
+    { kind: 'rings', at: 'path', color: '#ff8fbf', count: 6, size: 90, delay: 200, dur: 900 },
+    { kind: 'orb', color: '#ffe14d', color2: '#ff8fbf', size: 70, shape: 'spark', arc: true, delay: 500, dur: 650 },
+    { kind: 'pillar', at: 'target', color: '#ffe14d', color2: '#ffd0e4', width: 110, delay: 1150, dur: 700 },
+    { kind: 'bolt', color: '#ffe14d', delay: 1250 },
+    pt('target', 'spark', 'burst', '#ffe14d', '#ff8fbf', 26, 22, 190, 1300),
+    { kind: 'impact', color: '#ffe14d', size: 320, star: true, delay: 1300 },
+  ] },
+  // Snorlax takes a running leap and body-slams the target flat.
+  pulverizingpancake: { type: 'Normal', layers: [
+    { kind: 'aura', at: 'user', color: '#fff3c4', size: 280, dur: 700 },
+    { kind: 'meteor', shape: 'blob', color: '#3f6f8f', color2: '#e8dcc0', size: 240, delay: 650, dur: 650 },
+    { kind: 'crack', color: '#6b5a2a', delay: 1300 },
+    { kind: 'rings', at: 'target', color: '#e8dcc0', count: 4, size: 340, delay: 1300 },
+    { kind: 'impact', color: '#ffffff', size: 380, delay: 1300 },
+    pt('target', 'star', 'burst', '#ffffff', '#ffe066', 24, 20, 200, 1320),
+  ] },
+  // Decidueye fires a rain of arrow-quills from above.
+  sinisterarrowraid: { type: 'Ghost', layers: [
+    { kind: 'screen', color: '#1a1030', mode: 'dim', delay: 100, dur: 1900 },
+    pt('user', 'feather', 'rise', '#5b3e8f', '#c8a8ff', 16, 20, 90, 0, 800),
+    pt('target', 'shard', 'fall', '#8a5cc8', '#ffffff', 30, 22, 130, 650, 700),
+    { kind: 'orb', color: '#5b3e8f', color2: '#ffffff', size: 34, shape: 'shard', count: 8, gap: 55, delay: 700, dur: 400 },
+    { kind: 'impact', color: '#8a5cc8', size: 320, star: true, delay: 1300 },
+    pt('target', 'feather', 'burst', '#c8a8ff', '#5b3e8f', 24, 20, 190, 1300),
+  ] },
+  // Incineroar summons a wrestling ring and drops on the target from the top rope.
+  maliciousmoonsault: { type: 'Dark', layers: [
+    { kind: 'rings', at: 'target', color: '#ff5a3a', count: 3, size: 320, delay: 150, dur: 900 },
+    pt('user', 'flame', 'rise', '#ff5a00', '#ffd23f', 18, 22, 80, 0, 800),
+    { kind: 'meteor', shape: 'crescent', color: '#3a2f45', color2: '#ff5a00', size: 170, delay: 750, dur: 550 },
+    { kind: 'impact', color: '#ff5a3a', size: 360, star: true, delay: 1300 },
+    { kind: 'ground', color: '#ff5a00', delay: 1300, dur: 600 },
+    pt('target', 'flame', 'burst', '#ff5a00', '#ffd23f', 28, 26, 200, 1300),
+  ] },
+  // Primarina sings and drops a huge balloon of water on the target.
+  oceanicoperetta: { type: 'Water', layers: [
+    pt('user', 'bubble', 'rise', '#9ad0ff', '#ffffff', 20, 20, 100, 0, 900),
+    { kind: 'rings', at: 'user', color: '#9ad0ff', count: 4, size: 240, delay: 100, dur: 800 },
+    { kind: 'orb', color: '#5aa2ff', color2: '#ffffff', size: 210, shape: 'bubble', arc: true, delay: 750, dur: 550 },
+    { kind: 'column', color: '#3b7cff', color2: '#cfe8ff', delay: 1300 },
+    { kind: 'rays', at: 'target', color: '#9ad0ff', size: 360, delay: 1300, dur: 800 },
+    pt('target', 'drop', 'spray', '#5aa2ff', '#ffffff', 28, 18, 190, 1320),
+  ] },
+  // A Tapu's giant guardian form appears and crushes the target.
+  guardianofalola: { type: 'Fairy', layers: [
+    { kind: 'rays', at: 'user', color: '#ffd36b', size: 320, dur: 900 },
+    { kind: 'meteor', shape: 'gem', color: '#ff9ff3', color2: '#ffd36b', size: 230, delay: 650, dur: 650 },
+    { kind: 'rings', at: 'target', color: '#ffd36b', count: 4, size: 340, rainbow: true, delay: 1300 },
+    { kind: 'impact', color: '#ff9ff3', size: 380, delay: 1300 },
+    pt('target', 'star', 'burst', '#ffd36b', '#ff9ff3', 28, 20, 200, 1320),
+  ] },
+  // Marshadow strikes seven times as a shadow, then steals the target's soul.
+  soulstealing7starstrike: { type: 'Ghost', layers: [
+    { kind: 'screen', color: '#000000', mode: 'dim', delay: 100, dur: 1900 },
+    ...[0, 1, 2, 3, 4, 5, 6].map((i): Layer => ({ kind: 'impact', color: i % 2 ? '#8a5cc8' : '#ff5a3a', size: 140 + i * 20, star: true, delay: 500 + i * 110 })),
+    { kind: 'slash', color: '#8a5cc8', count: 3, angle: 25, width: 8, delay: 900 },
+    { kind: 'vortex', at: 'target', color: '#1c1c28', color2: '#8a5cc8', size: 280, delay: 1200, dur: 900 },
+    pt('target', 'wisp', 'rise', '#c8a8ff', '#8a5cc8', 18, 26, 110, 1300),
+  ] },
+  // Kommo-o clangs its scales and unleashes a soul-shaking wave of sound.
+  clangoroussoulblaze: { type: 'Dragon', layers: [
+    { kind: 'rays', at: 'user', color: '#ffd36b', size: 320, dur: 900 },
+    pt('user', 'scale', 'burst', '#ffd36b', '#8f6bff', 20, 18, 140, 200),
+    { kind: 'rings', at: 'path', color: '#ffd36b', count: 7, size: 110, delay: 450, dur: 900 },
+    { kind: 'rings', at: 'target', color: '#8f6bff', count: 4, size: 320, rainbow: true, delay: 1250 },
+    { kind: 'impact', color: '#ffd36b', size: 360, delay: 1300 },
+    pt('target', 'scale', 'burst', '#8f6bff', '#ffd36b', 28, 20, 200, 1320),
+  ] },
+  // Lycanroc rides a wave of rock that erupts in jagged spires around the target.
+  splinteredstormshards: { type: 'Rock', layers: [
+    { kind: 'ground', color: '#b8a038', delay: 100, dur: 1300 },
+    { kind: 'column', color: '#b8a038', color2: '#fff0c8', delay: 800 },
+    { kind: 'column', color: '#d0b850', color2: '#ffffff', delay: 1000 },
+    { kind: 'column', color: '#b8a038', color2: '#fff0c8', delay: 1200 },
+    pt('target', 'shard', 'burst', '#e8d890', '#b8a038', 28, 26, 200, 1300),
+    { kind: 'impact', color: '#d0b850', size: 340, star: true, delay: 1300 },
+  ] },
+  // Mimikyu drags the target under its disguise for a "friendly" hug.
+  letssnuggleforever: { type: 'Fairy', layers: [
+    { kind: 'screen', color: '#1c1408', mode: 'dim', delay: 200, dur: 1800 },
+    { kind: 'vortex', at: 'target', color: '#3a2f20', color2: '#ffe066', size: 300, delay: 400, dur: 1300 },
+    pt('target', 'wisp', 'converge', '#3a2f20', '#ffe066', 22, 26, 190, 500, 800),
+    { kind: 'jaws', color: '#ffe066', delay: 1150 },
+    pt('target', 'heart', 'burst', '#ff9ff3', '#ffe066', 24, 18, 190, 1300),
+    { kind: 'impact', color: '#ffe066', size: 330, delay: 1300 },
+  ] },
+  // Solgaleo charges as a blazing sun.
+  searingsunrazesmash: { type: 'Steel', layers: [
+    { kind: 'rays', at: 'user', color: '#ffb000', size: 360, dur: 1000 },
+    { kind: 'aura', at: 'user', color: '#ffd27f', size: 300, delay: 200, dur: 800 },
+    { kind: 'rings', at: 'path', color: '#ffd27f', count: 5, size: 120, delay: 700, dur: 550 },
+    { kind: 'pillar', at: 'target', color: '#ffb000', color2: '#ffffff', width: 140, delay: 1200, dur: 700 },
+    { kind: 'impact', color: '#ffd27f', size: 380, star: true, delay: 1300 },
+    pt('target', 'spark', 'burst', '#ffd27f', '#ffffff', 28, 20, 200, 1300),
+  ] },
+  // Lunala draws the moon's power into a maelstrom of light.
+  menacingmoonrazemaelstrom: { type: 'Ghost', layers: [
+    { kind: 'screen', color: '#000010', mode: 'dim', delay: 100, dur: 1900 },
+    { kind: 'orb', color: '#c8a8ff', color2: '#ffffff', size: 150, shape: 'crescent', delay: 550, dur: 600 },
+    { kind: 'vortex', at: 'target', color: '#5b3e8f', color2: '#c8d8ff', size: 320, delay: 900, dur: 1200 },
+    { kind: 'pillar', at: 'target', color: '#c8a8ff', color2: '#ffffff', width: 130, delay: 1200, dur: 700 },
+    pt('target', 'crescent', 'burst', '#c8d8ff', '#c8a8ff', 22, 22, 190, 1300),
+  ] },
+  // Ultra Necrozma fires a pillar of blinding light from the sky.
+  lightthatburnsthesky: { type: 'Psychic', layers: [
+    { kind: 'rays', at: 'user', color: '#ffffff', size: 360, dur: 1000 },
+    { kind: 'rings', at: 'user', color: '#ffffff', count: 4, size: 300, rainbow: true, delay: 200, dur: 900 },
+    { kind: 'pillar', at: 'target', color: '#fff7c0', color2: '#ffffff', width: 170, delay: 1050, dur: 900 },
+    { kind: 'rays', at: 'target', color: '#ffffff', size: 400, delay: 1300, dur: 900 },
+    pt('target', 'star', 'burst', '#ffffff', '#ffe066', 28, 20, 210, 1320),
+  ] },
+  // Mew gathers psychic energy into a sphere that explodes like a supernova.
+  genesissupernova: { type: 'Psychic', layers: [
+    pt('user', 'gem', 'converge', '#ff8fbf', '#ffffff', 24, 16, 180, 0, 800),
+    { kind: 'orb', color: '#ff5f9e', color2: '#ffffff', size: 180, delay: 700, dur: 600 },
+    { kind: 'vortex', at: 'target', color: '#ff5f9e', color2: '#ffd0e4', size: 300, delay: 1100, dur: 1000 },
+    { kind: 'rays', at: 'target', color: '#ff8fbf', size: 420, delay: 1300, dur: 900 },
+    { kind: 'rings', at: 'target', color: '#ffffff', count: 4, size: 340, rainbow: true, delay: 1320 },
+  ] },
+  // Poliwrathium Z (custom): a whirling barrage of punches, then a free decoy.
+  omegawrath: { type: 'Fighting', layers: [
+    pt('user', 'drop', 'swirl', '#5aa2ff', '#cfe6ff', 16, 16, 80, 0, 800),
+    { kind: 'orb', color: '#e0503a', color2: '#5aa2ff', size: 44, count: 8, gap: 65, delay: 500, dur: 380 },
+    { kind: 'impact', color: '#5aa2ff', size: 170, star: true, delay: 900 },
+    { kind: 'impact', color: '#e0503a', size: 200, star: true, delay: 1080 },
+    { kind: 'impact', color: '#ffffff', size: 340, star: true, delay: 1300 },
+    { kind: 'rays', at: 'target', color: '#ff8c5a', size: 340, delay: 1300, dur: 800 },
+  ] },
+  riptiderocketrush: { type: 'Water', layers: [
+    { kind: 'rings', at: 'user', color: '#5aa2ff', count: 3, size: 240, dur: 700 },
+    { kind: 'rings', at: 'path', color: '#3b7cff', count: 7, size: 100, delay: 400, dur: 750 },
+    { kind: 'column', color: '#3b7cff', color2: '#cfe8ff', delay: 1250 },
+    { kind: 'impact', color: '#5aa2ff', size: 340, star: true, delay: 1300 },
+    pt('target', 'drop', 'spray', '#5aa2ff', '#ffffff', 28, 18, 190, 1300),
+  ] },
+  glacialguardiangauntlet: { type: 'Ice', layers: [
+    { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 1700 },
+    { kind: 'meteor', shape: 'shard', color: '#cdf6ff', color2: '#ffffff', size: 200, delay: 650, dur: 650 },
+    { kind: 'crack', color: '#9fe8ff', delay: 1300 },
+    { kind: 'impact', color: '#c9f6ff', size: 360, delay: 1300 },
+    pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 28, 22, 200, 1320),
+  ] },
+};
+
+/** Total length of a damaging Z-Move's animation (playback uses the same). */
+export const Z_MOVE_MS = 2200;
+const zFrame = (type: TypeName, layers: Layer[]): FxSpec => ({
+  shake: 'strong',
+  layers: [
+    { kind: 'screen', color: '#000000', mode: 'dim', dur: Z_MOVE_MS },
+    ...layers,
+    { kind: 'screen', color: typeColor(type).bg, mode: 'flash', delay: 1300, dur: 450 },
+  ],
+});
+
 /** Damaging Z-Move of a type, physical or special (see Z_MOVES). */
 export function zMoveSpec(type: string, category: 'Physical' | 'Special' = 'Physical'): FxSpec {
   const t = asType(type);
-  const c = typeColor(t).bg;
-  return {
-    shake: 'strong',
-    layers: [
-      { kind: 'screen', color: '#000000', mode: 'dim', dur: 1700 },
-      ...Z_MOVES[t][category === 'Special' ? 'special' : 'physical'],
-      { kind: 'screen', color: c, mode: 'flash', delay: 1080, dur: 380 },
-    ],
-  };
+  return zFrame(t, Z_MOVES[t][category === 'Special' ? 'special' : 'physical']);
 }
+
+/** A signature Z-Move's own animation (Catastropika, Oceanic Operetta...), or null. */
+export function signatureZMoveSpec(moveId: string): FxSpec | null {
+  const z = Z_SIGNATURE[moveId];
+  return z ? zFrame(z.type, z.layers) : null;
+}
+/** Ids of the signature Z-Moves that have their own animation. */
+export const SIGNATURE_Z_MOVES = Object.keys(Z_SIGNATURE);
 
 /**
  * Signature moves with their own animation, after the Digimon attacks they're named for.
@@ -762,7 +1022,7 @@ export function moveSpec(fx: MoveFx): FxSpec {
     case 'attack':
       return SIGNATURE_MOVES[fx.moveId] ?? ATTACKS[t][fx.category === 'Physical' ? 'physical' : 'special'];
     case 'z':
-      return zMoveSpec(t, fx.category === 'Special' ? 'Special' : 'Physical');
+      return signatureZMoveSpec(fx.moveId) ?? zMoveSpec(t, fx.category === 'Special' ? 'Special' : 'Physical');
     case 'powerup':
       return { layers: [
         { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffd36b', color2: c, count: 12, size: 8, spread: 80 },

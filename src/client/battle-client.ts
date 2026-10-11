@@ -289,8 +289,14 @@ export class BattleClient {
       // [silent] lines change state without a message (as in Showdown's own client).
       item.text = 'silent' in kwArgs ? '' : this.formatter!.formatText(args, kwArgs);
       item.steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, !!item.text.trim());
+      this.splitMegaText(item.steps);
     }
     const step = item.steps.shift()!;
+    if (step.text) {
+      const lines = step.text.split('\n').map(t => t.trim()).filter(Boolean);
+      for (const t of lines) draft.log.push(this.entry('line', t));
+      if (lines.length) draft.caption = lines.join(' ');
+    }
     if (step.applyLine) {
       const lines = (item.text ?? '').split('\n').map(t => t.trim()).filter(Boolean);
       for (const t of lines) draft.log.push(this.entry(line.startsWith('|turn|') ? 'turn' : 'line', t));
@@ -314,6 +320,25 @@ export class BattleClient {
     }
     draft.animation = { ...step.animation, id: ++this.animId };
     return step.animation.durationMs;
+  }
+
+  /**
+   * Mega Evolution: the sim sends the forme change, then "-mega", whose text is both messages. Show
+   * the first ("Blastoise's Blastoisinite is reacting to the Key Stone!") as the charge-up starts and
+   * the second ("Blastoise has Mega Evolved into Mega Blastoise!") once the animation is over; the
+   * "-mega" line then only updates the battle state. (Its text depends only on the line itself.)
+   */
+  private splitMegaText(steps: PlannedStep[]) {
+    if (steps[0]?.animation?.kind !== 'mega-start') return;
+    const next = this.queue[1];
+    if (next?.kind !== 'line' || !next.line.startsWith('|-mega|')) return;
+    const { args, kwArgs } = Protocol.parseBattleLine(next.line);
+    const [before, ...after] = this.formatter!.formatText(args, kwArgs).split('\n').map(t => t.trim()).filter(Boolean);
+    if (!before) return;
+    steps[0] = { ...steps[0], text: before };
+    if (after.length) steps.push({ animation: null, applyLine: false, text: after.join('\n') });
+    next.text = '';
+    next.steps = [{ animation: null, applyLine: true }];
   }
 
   private entry(kind: LogEntry['kind'], text: string): LogEntry {

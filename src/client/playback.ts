@@ -100,6 +100,8 @@ export const SWITCH_OUT_MS = 400;
 export const MEGA_START_MS = 1000;
 export const PARADOX_START_MS = 1100;
 export const WARP_START_MS = 2600;
+/** Damaging Z-Moves (catalog Z_MOVE_MS). */
+const Z_MOVE_MS = 2200;
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
 export const SIGNATURE_MS: Record<string, number> = { gaiaforce: 1500, cocytuspulse: 1300 };
 /** A damaging Z-Move's category (Physical or Special, from its base move), from the engine's silent hint line, until its move line. */
@@ -133,7 +135,7 @@ const PROTECTIONS = new Set(['protect', 'detect', 'kingsshield', 'spikyshield', 
 
 /** Move animation length (normal speed) by what the move does. */
 export function moveDuration(fx: MoveFx): number {
-  if (fx.kind === 'z') return 1700;
+  if (fx.kind === 'z') return Z_MOVE_MS;
   if (SIGNATURE_MS[fx.moveId]) return SIGNATURE_MS[fx.moveId];
   if (fx.kind === 'attack') return fx.category === 'Special' ? 1000 : 900;
   return 800;
@@ -160,6 +162,8 @@ export interface PlannedStep {
   animation: Omit<BattleAnimation, 'id'> | null;
   /** Apply the protocol line in this step (false for the "before" steps). */
   applyLine: boolean;
+  /** Text shown when this step plays, on top of the line's own (Mega Evolution's messages, split around its animation). */
+  text?: string;
 }
 
 /**

@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from 'react';
 import { warpStageScale } from '../../data/custom/digimon';
 import type { BattleAnimation } from '../../client/playback';
 import { PokemonSprite } from '../components/PokemonSprite';
-import { substituteSprite } from '../sprites';
+import { animatedSpriteBoost, substituteSprite } from '../sprites';
 import { useAppSettings } from '../useAppSettings';
 import { SHIELDS } from './fx/catalog';
 import { posKey } from './fx/geometry';
@@ -10,7 +10,7 @@ import { actsAt, spriteClass } from './fx/stage-fx';
 
 type Side = 'p1' | 'p2';
 
-/** Size of a Mega Evolved Pokémon's sprite relative to the usual one (keep in sync with .is-mega in index.css). */
+/** Size of a Mega Evolved Pokémon's sprite relative to the usual one. */
 const MEGA_SCALE = 1.2;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
@@ -139,10 +139,13 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : mine?.kind === 'sub-end' ? 'fx-sub-show'
     : substitute && !peeking ? 'subbed' : '';
   const showDoll = substitute || mine?.kind === 'sub-end';
-  // Mega Evolved Pokémon are drawn 20% larger; each Warp Digivolved Digimon has its own size (--warp-scale in index.css).
+  // Mega Evolved Pokémon are drawn 20% larger; each Warp Digivolved Digimon has its own size; some
+  // animated 3D sprites (the Sky Battle fliers...) 50% larger again. --sprite-size raises the caps in index.css.
   const warpScale = pokemon ? warpStageScale(pokemon.species) : 1;
   const warp = warpScale !== 1;
   const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
+  const boost = pokemon ? animatedSpriteBoost(pokemon.species) : 1;
+  const size = (warp ? warpScale : mega ? MEGA_SCALE : 1) * boost;
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
     : mine?.kind === 'sub-end' ? 'fx-doll-break'
@@ -152,7 +155,10 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
       <div className="platform" />
       {pokemon && (
         <div className={`sprite-sub ${subClass}`}>
-          <div className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''}`} style={warp ? { '--warp-scale': warpScale } as CSSProperties : undefined}>
+          <div
+            className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''} ${warp || boost > 1 ? 'is-large' : ''}`}
+            style={size !== 1 ? { '--sprite-size': size } as CSSProperties : undefined}
+          >
             <PokemonSprite
               key={pokemon.species}
               species={pokemon.species}
@@ -160,6 +166,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
               gender={pokemon.gender}
               shiny={pokemon.shiny}
               scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? warpScale : mega ? MEGA_SCALE : 1)}
+              animatedScale={boost}
             />
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />

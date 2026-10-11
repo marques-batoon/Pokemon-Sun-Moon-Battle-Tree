@@ -30,8 +30,16 @@ const GROUPS: { label: string; moves: string[] }[] = [
     moves: ['Breakneck Blitz', 'Inferno Overdrive', 'Hydro Vortex', 'Gigavolt Havoc', 'Bloom Doom', 'Subzero Slammer', 'All-Out Pummeling', 'Acid Downpour', 'Tectonic Rage',
       'Supersonic Skystrike', 'Shattered Psyche', 'Savage Spin-Out', 'Continental Crush', 'Never-Ending Nightmare', 'Devastating Drake', 'Black Hole Eclipse', 'Corkscrew Crash', 'Twinkle Tackle'],
   },
+  {
+    label: 'Signature Z-Moves',
+    moves: ['Catastropika', '10,000,000 Volt Thunderbolt', 'Stoked Sparksurfer', 'Pulverizing Pancake', 'Sinister Arrow Raid', 'Malicious Moonsault', 'Oceanic Operetta',
+      'Guardian of Alola', 'Soul-Stealing 7-Star Strike', 'Clangorous Soulblaze', 'Splintered Stormshards', "Let's Snuggle Forever", 'Searing Sunraze Smash',
+      'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
+  },
   { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire'] },
 ];
+/** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
+const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
 /** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
@@ -87,7 +95,7 @@ function applyStep(f: FieldState, step: Step): FieldState {
 /** `zCategory`: a type Z-Move's category comes from its base move (Physical or Special). */
 function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical' | 'Special' = 'Physical'): Step[] {
   const classified = classifyMove(name);
-  const fx = classified.kind === 'z' ? { ...classified, category: zCategory } : classified;
+  const fx = zFromBaseMove(name) ? { ...classified, category: zCategory } : classified;
   const foe = other(side);
   const target = fx.category === 'Status' && ['powerup', 'protect', 'heal', 'substitute', 'field'].includes(fx.kind) && fx.field !== 'hazard' ? side : foe;
   const steps: Step[] = [];
@@ -221,7 +229,7 @@ export function AnimationPreview() {
             <option value="p2">Opponent</option>
           </select>
         </label>
-        {classifyMove(move).kind === 'z' && (
+        {zFromBaseMove(move) && (
           <label>
             Z-Move from a{' '}
             <select value={zCategory} onChange={e => setZCategory(e.target.value as 'Physical' | 'Special')}>

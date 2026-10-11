@@ -7,6 +7,7 @@ import { CHAMPIONS_SPRITES } from '../data/champions';
 import { SPRITE_ALIASES } from '../data/custom';
 import { DIGIMON_SPRITES } from '../data/custom/digimon';
 import { PARADOX_SPRITES } from '../data/custom/paradox';
+import { gen7 } from '../team/dex';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
 import type { Trainer } from '../data/battle-tree';
@@ -77,6 +78,40 @@ export function staticSprite(name: string, side: SpriteSide): SpriteInfo {
   if (champions) return champions;
   const s = Sprites.getPokemon(species, { gen: 'gen5', side });
   return { url: s.url, w: s.w, h: s.h, pixelated: s.pixelated };
+}
+
+/** Whether the image is one of Showdown's animated 3D sprites (front or back, shiny or not). */
+export const isAnimatedSprite = (info: SpriteInfo) => /\/sprites\/ani(-back)?(-shiny)?\//.test(info.url);
+
+/** Extra size on the battle stage for these Pokémon's animated 3D sprites (they look small otherwise). */
+const ANIMATED_BOOST = 1.5;
+/** Picked by name, on request: tall or bulky sprites drawn too small. */
+const BOOSTED = new Set(['Exeggutor-Alola', 'Raging Bolt']);
+/** Sky Battle fliers kept at their usual size, on request. */
+const NOT_BOOSTED = new Set(['Gyarados-Mega', 'Salamence-Mega']);
+/**
+ * Flying-type or Levitate Pokémon that X & Y still kept out of Sky Battles (they don't fly in battle),
+ * from the community lists (Nintendo never published one). Gengar lost Levitate in Gen 7 anyway.
+ */
+const SKY_BATTLE_BANNED = new Set([
+  'Pidgey', 'Spearow', 'Farfetch’d', 'Doduo', 'Dodrio', 'Hoothoot', 'Natu', 'Murkrow', 'Delibird', 'Taillow', 'Starly', 'Chatot',
+  'Shaymin', 'Pidove', 'Archen', 'Ducklett', 'Rufflet', 'Vullaby', 'Fletchling', 'Hawlucha', 'Gengar',
+]);
+/**
+ * Pokémon with Sky Battle (flying) animations: the ones X & Y let into Sky Battles (Flying-type or
+ * Levitate, from Gens 1-6, minus the exclusions above), and their X & Y / Omega Ruby & Alpha
+ * Sapphire Mega Evolutions. Later Pokémon (Gen 7, Alolan forms, the Champions Megas) never had them.
+ */
+export function hasSkyBattleAnimation(name: string): boolean {
+  const s = gen7.species.get(name);
+  if (!s || s.gen > 6 || SKY_BATTLE_BANNED.has(s.baseSpecies)) return false;
+  const flier = s.forme.startsWith('Mega') ? gen7.species.get(s.baseSpecies) : s;
+  return !!flier && (flier.types.includes('Flying') || Object.values(flier.abilities).includes('Levitate'));
+}
+/** Size multiplier for a Pokémon's animated 3D sprite on the battle stage (1: usual size). */
+export function animatedSpriteBoost(name: string): number {
+  if (NOT_BOOSTED.has(name)) return 1;
+  return BOOSTED.has(name) || hasSkyBattleAnimation(name) ? ANIMATED_BOOST : 1;
 }
 
 /** The Substitute doll (Gen 5 pixel art; `p1` = back view). */

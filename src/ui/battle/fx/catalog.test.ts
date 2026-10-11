@@ -3,7 +3,7 @@ import { classifyMove } from '../../../client/move-class';
 import { SHIELD_CONDITIONS } from '../../../client/playback';
 import {
   ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  SIGNATURE_MOVES, WARP_START, warpBurst, Z_POWER, zMoveSpec,
+  SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -77,6 +77,54 @@ describe('animation catalog', () => {
     // The category comes from the base move (playback), not the Z-Move's data.
     expect(moveSpec({ ...classifyMove('Inferno Overdrive'), category: 'Special' })).toEqual(zMoveSpec('Fire', 'Special'));
     expect(moveSpec(classifyMove('Inferno Overdrive'))).toEqual(zMoveSpec('Fire', 'Physical'));
+  });
+
+  it('builds each type\'s Z-Moves around the name, over a longer timeline', () => {
+    const has = (spec: { layers: { kind: string }[] }, kind: string) => spec.layers.some(l => l.kind === kind);
+    // Hydro Vortex and Black Hole Eclipse open a vortex; Continental Crush and Subzero Slammer drop a giant from the sky.
+    for (const c of ['Physical', 'Special'] as const) {
+      expect(has(zMoveSpec('Water', c), 'vortex')).toBe(true);
+      expect(has(zMoveSpec('Dark', c), 'vortex')).toBe(true);
+    }
+    expect(has(zMoveSpec('Rock', 'Physical'), 'meteor')).toBe(true);
+    expect(has(zMoveSpec('Ice', 'Physical'), 'meteor')).toBe(true);
+    // Gigavolt Havoc strikes with lightning; All-Out Pummeling is a barrage of hits.
+    expect(zMoveSpec('Electric', 'Physical').layers.filter(l => l.kind === 'bolt').length).toBeGreaterThanOrEqual(3);
+    expect(zMoveSpec('Fighting', 'Physical').layers.filter(l => l.kind === 'impact').length).toBeGreaterThanOrEqual(4);
+    for (const t of TYPES) for (const c of ['Physical', 'Special'] as const) {
+      const spec = zMoveSpec(t, c);
+      expect(spec.layers[0]).toMatchObject({ kind: 'screen', mode: 'dim', dur: Z_MOVE_MS });
+      // Everything has started by the climax and is over by the end.
+      for (const l of spec.layers) expect((l.delay ?? 0) + ('dur' in l && l.dur ? l.dur : 0), `${t} ${c} ${l.kind}`).toBeLessThanOrEqual(Z_MOVE_MS);
+    }
+  });
+
+  it('gives signature Z-Moves their own animations', () => {
+    expect(SIGNATURE_Z_MOVES).toEqual(expect.arrayContaining([
+      'catastropika', '10000000voltthunderbolt', 'stokedsparksurfer', 'pulverizingpancake', 'sinisterarrowraid', 'maliciousmoonsault', 'oceanicoperetta',
+      'guardianofalola', 'soulstealing7starstrike', 'clangoroussoulblaze', 'splinteredstormshards', 'letssnuggleforever', 'searingsunrazesmash',
+      'menacingmoonrazemaelstrom', 'lightthatburnsthesky', 'genesissupernova', 'omegawrath', 'riptiderocketrush', 'glacialguardiangauntlet',
+    ]));
+    const typeZs = new Set(TYPES.flatMap(t => [zMoveSpec(t, 'Physical'), zMoveSpec(t, 'Special')]).map(key));
+    const seen = new Set<string>();
+    for (const id of SIGNATURE_Z_MOVES) {
+      const spec = signatureZMoveSpec(id)!;
+      expect(spec.shake).toBe('strong');
+      expect(spec.layers.length, id).toBeGreaterThanOrEqual(6);
+      expect(spec.layers[0]).toMatchObject({ kind: 'screen', mode: 'dim' });
+      expect(spec.layers.at(-1)).toMatchObject({ kind: 'screen', mode: 'flash' });
+      expect(typeZs.has(key(spec))).toBe(false);
+      seen.add(key(spec));
+    }
+    expect(seen.size).toBe(SIGNATURE_Z_MOVES.length);
+    // The battle screen picks them by the move used, whatever the base move's category.
+    for (const name of ['Catastropika', 'Oceanic Operetta', 'Genesis Supernova', "Let's Snuggle Forever", 'Omega Wrath', 'Glacial Guardian Gauntlet']) {
+      const fx = classifyMove(name);
+      expect(fx.kind, name).toBe('z');
+      expect(moveSpec(fx)).toEqual(signatureZMoveSpec(fx.moveId));
+      expect(moveSpec({ ...fx, category: 'Special' })).toEqual(signatureZMoveSpec(fx.moveId));
+    }
+    expect(signatureZMoveSpec('infernooverdrive')).toBeNull();
   });
 
   it('gives Gaia Force (Terra Force) and Cocytus Pulse (Cocytus Breath) their own animations', () => {

@@ -236,6 +236,41 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
     }
     case 'banner':
       return <span key={i} className="fxl fx-banner" style={css({ '--x': '0px', '--y': px(ctx.h * 0.4), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1200) })}>{layer.text}</span>;
+    case 'meteor': {
+      // Falls from above the stage (leaning in from the user's side) onto the target; its shadow grows underneath.
+      const ground = (target.ground ?? target.y + 50 * ctx.k) - target.y;
+      return (
+        <span key={i} className="fxl fx-meteor" style={css({
+          '--x': px(target.x), '--y': px(target.y), '--fy': px(-(target.y + layer.size * ctx.k)), '--fx': px((user.x - target.x) * 0.35), '--gy': px(ground),
+          '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 600),
+        })}>
+          <span className="meteor-shadow" />
+          <span className="meteor-body"><span className={`shape sh-${layer.shape}`} /></span>
+        </span>
+      );
+    }
+    case 'vortex': {
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-vortex" style={css({
+          '--x': px(p.x), '--y': px(p.ground ?? p.y + 40 * ctx.k), '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 1200),
+        })}>
+          <span className="core" /><span className="spin r1" /><span className="spin r2" /><span className="spin r3" /><span className="spin r4" />
+        </span>
+      );
+    }
+    case 'rays': {
+      const p = anchor(layer.at);
+      return <span key={i} className="fxl fx-rays" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 800) })} />;
+    }
+    case 'pillar': {
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-pillar" style={css({
+          '--x': px(p.x), '--y': '0px', '--h': px(p.ground ?? p.y + 50 * ctx.k), '--w': px(layer.width * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 700),
+        })} />
+      );
+    }
   }
 }
 
@@ -256,7 +291,8 @@ interface Props {
 /** Layers drawn at or towards the target (once per target); the rest are drawn once, at the user or on the whole stage. */
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
-    case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': return true;
+    case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': return true;
+    case 'vortex': case 'rays': case 'pillar': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

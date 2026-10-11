@@ -525,14 +525,10 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .sprite-sub { position: relative; z-index: 1; margin-bottom: 7%; max-height: 100%; display: flex; align-items: flex-end; transform-origin: 50% 100%; transition: opacity calc(180ms * var(--spd, 1)); }
 .spot-p1 .sprite-sub { margin-bottom: 0; }
 .sprite-wrap { position: relative; transform-origin: 50% 100%; display: flex; align-items: flex-end; }
-.poke-sprite { display: block; max-height: 165px; max-width: 100%; object-fit: contain; object-position: bottom; user-select: none; }
-.spot-p1 .poke-sprite { max-height: 190px; }
-/* Mega Evolved Pokémon are drawn 20% larger (MEGA_SCALE in StageSpot.tsx) */
-.sprite-wrap.is-mega .poke-sprite { max-height: 198px; }
-.spot-p1 .sprite-wrap.is-mega .poke-sprite { max-height: 228px; }
-/* Warp Digivolved Digimon are drawn larger, each by its own --warp-scale (stageScale in data/custom/digimon.ts) */
-.sprite-wrap.is-warp .poke-sprite { max-height: calc(165px * var(--warp-scale, 1.3)); }
-.spot-p1 .sprite-wrap.is-warp .poke-sprite { max-height: calc(190px * var(--warp-scale, 1.3)); }
+/* --sprite-size (set on .sprite-wrap by StageSpot.tsx) raises the caps for the Pokémon drawn larger:
+   Megas (20%), Warp Digivolved Digimon (stageScale in data/custom/digimon.ts), and some animated 3D sprites (50%, ui/sprites.ts) */
+.poke-sprite { display: block; max-height: calc(165px * var(--sprite-size, 1)); max-width: 100%; object-fit: contain; object-position: bottom; user-select: none; }
+.spot-p1 .poke-sprite { max-height: calc(190px * var(--sprite-size, 1)); }
 .poke-sprite.placeholder { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.4rem; box-shadow: var(--shadow); }
 .hud { position: absolute; z-index: 2; width: min(46%, 300px); background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: var(--shadow); font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
 .hud-p2 { left: 3%; top: 5%; }
@@ -546,12 +542,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .poke-icon-img { width: 40px; height: 30px; object-fit: contain; display: inline-block; vertical-align: middle; }
 @media (max-width: 520px) {
   .stage { height: 320px; }
-  .poke-sprite { max-height: 105px; }
-  .spot-p1 .poke-sprite { max-height: 120px; }
-  .sprite-wrap.is-mega .poke-sprite { max-height: 126px; }
-  .spot-p1 .sprite-wrap.is-mega .poke-sprite { max-height: 144px; }
-  .sprite-wrap.is-warp .poke-sprite { max-height: calc(105px * var(--warp-scale, 1.3)); }
-  .spot-p1 .sprite-wrap.is-warp .poke-sprite { max-height: calc(120px * var(--warp-scale, 1.3)); }
+  .poke-sprite { max-height: calc(105px * var(--sprite-size, 1)); }
+  .spot-p1 .poke-sprite { max-height: calc(120px * var(--sprite-size, 1)); }
   .hud { width: 52%; font-size: 0.75rem; padding: 4px 7px; gap: 2px; }
   .hud-p2 { left: 2%; top: 3%; }
   .hud-p1 { right: 2%; bottom: 4%; }
@@ -568,14 +560,10 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /* Multi: each trainer has one spot; the first opponent (p2) stands on the left, as on the opponent card. */
 .stage.multi .spot-p2a { right: 24%; top: 3%; }
 .stage.multi .spot-p2b { right: 1%; top: 7%; }
-.stage.doubles .poke-sprite { max-height: 130px; }
-.stage.doubles .spot-p1 .poke-sprite { max-height: 150px; }
-.stage.doubles .sprite-wrap.is-mega .poke-sprite { max-height: 156px; }
-.stage.doubles .spot-p1 .sprite-wrap.is-mega .poke-sprite { max-height: 180px; }
-.stage.doubles .sprite-wrap.is-warp .poke-sprite { max-height: calc(130px * var(--warp-scale, 1.3)); }
-.stage.doubles .spot-p1 .sprite-wrap.is-warp .poke-sprite { max-height: calc(150px * var(--warp-scale, 1.3)); }
-/* The Doubles spots are narrow: let a warp form reach past its spot, so each keeps its own size. */
-.stage.doubles .sprite-wrap.is-warp .poke-sprite { max-width: none; }
+.stage.doubles .poke-sprite { max-height: calc(130px * var(--sprite-size, 1)); }
+.stage.doubles .spot-p1 .poke-sprite { max-height: calc(150px * var(--sprite-size, 1)); }
+/* The Doubles spots are narrow: let a warp form or an enlarged sprite reach past its spot, so each keeps its own size. */
+.stage.doubles .sprite-wrap.is-large .poke-sprite { max-width: none; }
 .stage.doubles .hud-stack { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: 4px; width: min(36%, 240px); }
 .stage.doubles .hud-stack-p2 { left: 2%; top: 2%; }
 .stage.doubles .hud-stack-p1 { right: 2%; bottom: 2%; }
@@ -585,12 +573,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @media (max-width: 520px) {
   .stage.doubles { height: 380px; }
   .stage.doubles .spot { width: 30%; }
-  .stage.doubles .poke-sprite { max-height: 80px; }
-  .stage.doubles .spot-p1 .poke-sprite { max-height: 92px; }
-  .stage.doubles .sprite-wrap.is-mega .poke-sprite { max-height: 96px; }
-  .stage.doubles .spot-p1 .sprite-wrap.is-mega .poke-sprite { max-height: 110px; }
-  .stage.doubles .sprite-wrap.is-warp .poke-sprite { max-height: calc(80px * var(--warp-scale, 1.3)); }
-  .stage.doubles .spot-p1 .sprite-wrap.is-warp .poke-sprite { max-height: calc(92px * var(--warp-scale, 1.3)); }
+  .stage.doubles .poke-sprite { max-height: calc(80px * var(--sprite-size, 1)); }
+  .stage.doubles .spot-p1 .poke-sprite { max-height: calc(92px * var(--sprite-size, 1)); }
   .stage.doubles .hud-stack { width: 47%; }
   .hud.compact { font-size: 0.68rem; }
 }
@@ -662,15 +646,15 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /* Z-Moves: golden charge-up, then the user powers into its attack */
 .fx-zcharge { animation: zcharge calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes zcharge { 0%,100%{filter:none;transform:none} 20%,60%{filter:brightness(1.6) drop-shadow(0 0 14px #ffd43b) drop-shadow(0 0 4px #ff9ff3);transform:scale(1.06)} 40%,80%{filter:brightness(2.2) drop-shadow(0 0 22px #ffd43b);transform:scale(1.1)} }
-.fx-zuser-p1 { animation: zuser-p1 calc(1500ms * var(--spd, 1)) ease-in-out; }
-.fx-zuser-p2 { animation: zuser-p2 calc(1500ms * var(--spd, 1)) ease-in-out; }
-@keyframes zuser-p1 { 0%,100%{transform:none;filter:none} 15%,35%{transform:scale(1.12);filter:brightness(1.8) drop-shadow(0 0 16px #ffd43b)} 25%{filter:brightness(1.3) drop-shadow(0 0 8px #ffd43b)} 50%{transform:translate(14%,-10%) scale(1.1);filter:brightness(2) drop-shadow(0 0 20px #fff)} 65%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
-@keyframes zuser-p2 { 0%,100%{transform:none;filter:none} 15%,35%{transform:scale(1.12);filter:brightness(1.8) drop-shadow(0 0 16px #ffd43b)} 25%{filter:brightness(1.3) drop-shadow(0 0 8px #ffd43b)} 50%{transform:translate(-14%,10%) scale(1.1);filter:brightness(2) drop-shadow(0 0 20px #fff)} 65%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
+.fx-zuser-p1 { animation: zuser-p1 calc(2200ms * var(--spd, 1)) ease-in-out; }
+.fx-zuser-p2 { animation: zuser-p2 calc(2200ms * var(--spd, 1)) ease-in-out; }
+@keyframes zuser-p1 { 0%,100%{transform:none;filter:none} 10%,30%{transform:scale(1.12);filter:brightness(1.8) drop-shadow(0 0 16px #ffd43b)} 20%,40%{transform:scale(1.08);filter:brightness(1.3) drop-shadow(0 0 8px #ffd43b)} 48%{transform:translate(-4%,3%) scale(1.12);filter:brightness(2) drop-shadow(0 0 20px #fff)} 56%{transform:translate(16%,-12%) scale(1.1);filter:brightness(2.2) drop-shadow(0 0 24px #fff)} 70%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
+@keyframes zuser-p2 { 0%,100%{transform:none;filter:none} 10%,30%{transform:scale(1.12);filter:brightness(1.8) drop-shadow(0 0 16px #ffd43b)} 20%,40%{transform:scale(1.08);filter:brightness(1.3) drop-shadow(0 0 8px #ffd43b)} 48%{transform:translate(4%,-3%) scale(1.12);filter:brightness(2) drop-shadow(0 0 20px #fff)} 56%{transform:translate(-16%,12%) scale(1.1);filter:brightness(2.2) drop-shadow(0 0 24px #fff)} 70%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
 /* Special Z-Move: the user swells with power where it stands, then rocks back as the blast leaves */
-.fx-zcast-p1 { animation: zcast-p1 calc(1500ms * var(--spd, 1)) ease-in-out; }
-.fx-zcast-p2 { animation: zcast-p2 calc(1500ms * var(--spd, 1)) ease-in-out; }
-@keyframes zcast-p1 { 0%,100%{transform:none;filter:none} 15%,35%{transform:scale(1.14);filter:brightness(1.8) drop-shadow(0 0 18px #ffd43b)} 45%{transform:translate(-5%,3%) scale(1.06);filter:brightness(2.2) drop-shadow(0 0 22px #fff)} 65%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
-@keyframes zcast-p2 { 0%,100%{transform:none;filter:none} 15%,35%{transform:scale(1.14);filter:brightness(1.8) drop-shadow(0 0 18px #ffd43b)} 45%{transform:translate(5%,-3%) scale(1.06);filter:brightness(2.2) drop-shadow(0 0 22px #fff)} 65%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
+.fx-zcast-p1 { animation: zcast-p1 calc(2200ms * var(--spd, 1)) ease-in-out; }
+.fx-zcast-p2 { animation: zcast-p2 calc(2200ms * var(--spd, 1)) ease-in-out; }
+@keyframes zcast-p1 { 0%,100%{transform:none;filter:none} 10%,28%{transform:scale(1.14);filter:brightness(1.8) drop-shadow(0 0 18px #ffd43b)} 19%{transform:scale(1.1);filter:brightness(1.4) drop-shadow(0 0 10px #ffd43b)} 36%{transform:translate(-6%,4%) scale(1.06);filter:brightness(2.4) drop-shadow(0 0 24px #fff)} 60%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
+@keyframes zcast-p2 { 0%,100%{transform:none;filter:none} 10%,28%{transform:scale(1.14);filter:brightness(1.8) drop-shadow(0 0 18px #ffd43b)} 19%{transform:scale(1.1);filter:brightness(1.4) drop-shadow(0 0 10px #ffd43b)} 36%{transform:translate(6%,-4%) scale(1.06);filter:brightness(2.4) drop-shadow(0 0 24px #fff)} 60%{transform:none;filter:drop-shadow(0 0 8px #ffd43b)} }
 /* Mega Evolution: glows through the colours to white, then bursts into the new forme */
 .fx-mega-start { animation: mega-start calc(1000ms * var(--spd, 1)) ease-in forwards; }
 @keyframes mega-start { 0%{filter:none} 30%{filter:brightness(1.6) drop-shadow(0 0 10px #ff5ea8)} 55%{filter:brightness(2.2) drop-shadow(0 0 14px #5ec8ff)} 80%{filter:brightness(3) drop-shadow(0 0 18px #ffe45e)} 100%{filter:brightness(5) drop-shadow(0 0 22px #fff);transform:scale(1.08)} }
@@ -891,6 +875,28 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
 .fx-banner { width: 100%; text-align: center; font-weight: 900; font-style: italic; text-transform: uppercase; font-size: calc(30px * var(--k, 1)); letter-spacing: 0.06em; color: #fff; -webkit-text-stroke: 1px color-mix(in srgb, var(--c) 60%, #000); text-shadow: 0 0 6px var(--c), 0 0 18px var(--c), 3px 3px 0 rgb(0 0 0 / 0.55); white-space: nowrap; animation-name: banner; animation-timing-function: cubic-bezier(.2, .9, .2, 1); }
 @keyframes banner { 0% { transform: translate(60%, -50%) skewX(-18deg); opacity: 0; } 18% { transform: translate(0, -50%) skewX(-10deg); opacity: 1; } 78% { transform: translate(-4%, -50%) skewX(-10deg); opacity: 1; } 100% { transform: translate(-60%, -50%) skewX(-18deg); opacity: 0; } }
+
+/* Z-Moves: falling giants, whirlpools and black holes, sunbursts, pillars of light from the sky */
+.fx-meteor .meteor-body, .fx-meteor .meteor-shadow { position: absolute; left: 0; top: 0; animation-duration: calc(var(--dur) * var(--spd, 1)); animation-delay: calc(var(--delay, 0ms) * var(--spd, 1)); animation-fill-mode: both; }
+.fx-meteor .meteor-body { filter: drop-shadow(0 0 10px var(--c2)) drop-shadow(0 0 3px rgb(0 0 0 / 0.5)); animation-name: meteor-fall; }
+.fx-meteor .meteor-body::before { content: ''; position: absolute; left: 50%; bottom: 0; width: calc(var(--s) * 0.5); height: calc(var(--s) * 1.6); transform: translate(-50%, -20%); background: linear-gradient(0deg, var(--c2), color-mix(in srgb, var(--c) 60%, transparent) 40%, transparent); border-radius: 50%; filter: blur(4px); opacity: 0.8; }
+.fx-meteor .meteor-shadow { top: var(--gy); width: var(--s); height: calc(var(--s) * 0.28); border-radius: 50%; background: radial-gradient(closest-side, rgb(0 0 0 / 0.55), transparent); animation-name: meteor-shadow; }
+@keyframes meteor-fall { 0% { transform: translate(var(--fx), var(--fy)) rotate(-30deg) scale(0.7); opacity: 0; animation-timing-function: cubic-bezier(.55, 0, 1, .45); } 12% { opacity: 1; } 90% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translate(0, 0) scale(1.25, 0.8); opacity: 0; } }
+@keyframes meteor-shadow { 0% { transform: translate(-50%, -50%) scale(0.15); opacity: 0; } 85% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; } }
+.fx-vortex { width: var(--s); height: var(--s); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c) 45%, transparent) 0 38%, transparent 70%); animation-name: vortex; animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+.fx-vortex .core { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c) 75%, #000) 0 30%, color-mix(in srgb, var(--c) 55%, transparent) 60%, transparent 72%); }
+.fx-vortex .spin { position: absolute; border-radius: 50%; border: calc(8px * var(--k, 1)) solid transparent; border-top-color: var(--c); border-right-color: color-mix(in srgb, var(--c2) 75%, transparent); filter: drop-shadow(0 0 6px var(--c)); animation: vortex-spin calc(620ms * var(--spd, 1)) linear infinite; }
+.fx-vortex .r1 { inset: 0; }
+.fx-vortex .r2 { inset: 12%; border-top-color: var(--c2); border-right-color: transparent; border-bottom-color: color-mix(in srgb, var(--c) 80%, transparent); animation-duration: calc(500ms * var(--spd, 1)); }
+.fx-vortex .r3 { inset: 24%; animation-duration: calc(400ms * var(--spd, 1)); }
+.fx-vortex .r4 { inset: 35%; border-top-color: var(--c2); border-left-color: var(--c); border-right-color: transparent; animation-duration: calc(310ms * var(--spd, 1)); }
+@keyframes vortex { 0% { transform: translate(-50%, -50%) scale(0.1, 0.04) rotate(0deg); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1, 0.42); opacity: 0.95; } 80% { transform: translate(-50%, -50%) scale(1.06, 0.45); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1.3, 0.5); opacity: 0; } }
+@keyframes vortex-spin { to { transform: rotate(360deg); } }
+.fx-rays { width: var(--s); height: var(--s); border-radius: 50%; background: radial-gradient(circle, #fff 0 8%, color-mix(in srgb, var(--c) 70%, transparent) 16%, transparent 34%), repeating-conic-gradient(var(--c) 0 5deg, transparent 7deg 20deg); -webkit-mask-image: radial-gradient(circle, #000 18%, transparent 70%); mask-image: radial-gradient(circle, #000 18%, transparent 70%); animation-name: rays; animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+@keyframes rays { 0% { transform: translate(-50%, -50%) scale(0.2) rotate(0deg); opacity: 0; } 20% { opacity: 1; } 70% { opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1.25) rotate(50deg); opacity: 0; } }
+.fx-pillar { width: var(--w); height: var(--h); margin-left: calc(var(--w) / -2); transform-origin: 50% 0; border-radius: 0 0 50% 50% / 0 0 calc(var(--w) * 0.25) calc(var(--w) * 0.25); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 85%, transparent) 22%, var(--c2) 50%, color-mix(in srgb, var(--c) 85%, transparent) 78%, transparent); filter: drop-shadow(0 0 10px var(--c)); animation-name: pillar; }
+.fx-pillar::after { content: ''; position: absolute; left: 50%; bottom: 0; width: calc(var(--w) * 2.4); height: calc(var(--w) * 0.6); transform: translate(-50%, 50%); border-radius: 50%; background: radial-gradient(closest-side, var(--c2), color-mix(in srgb, var(--c) 70%, transparent) 50%, transparent); }
+@keyframes pillar { 0% { clip-path: inset(0 -60% 100% -60%); transform: scaleX(0.4); opacity: 1; } 25% { clip-path: inset(0 -60% -60% -60%); transform: scaleX(1); } 60% { transform: scaleX(1.15); opacity: 1; } 100% { clip-path: inset(0 -60% -60% -60%); transform: scaleX(0.1); opacity: 0; } }
 
 /* ---------- Lasting states on the field ---------- */
 
