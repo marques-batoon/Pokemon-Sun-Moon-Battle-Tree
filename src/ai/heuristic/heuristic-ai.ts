@@ -1,6 +1,6 @@
 import type { Battle, Pokemon, PRNG, Side, SideID } from '@pkmn/sim';
 import type { AIContext, BattleAI } from '../types';
-import { doublesTargets, hitsPartner, isSpread } from '../../engine/choices';
+import { doublesTargets, fieldSlot, hitsPartner, isSpread } from '../../engine/choices';
 import { isWarpForm } from '../../data/custom/digimon';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequest } from '../../engine/sim-types';
 import { estimateDamage, type Forme } from './calc';
@@ -75,13 +75,14 @@ export class HeuristicAI implements BattleAI {
       const reqMon = request.side.pokemon[index];
       if (!me || me.fainted || !reqMon || isFainted(reqMon)) return 'pass';
       // Field position decides targeting (in Multi the partner's trainer holds the other spot).
-      const slot = me.position;
+      const slot = fieldSlot(me, battle.gameType);
+      const locOf = (foe: Pokemon) => fieldSlot(foe, battle.gameType) + 1;
       const partner = battle.gameType === 'multi' ? mySide.allySide?.active[0] : mySide.active[1 - slot];
       const partnerUp = !!partner && !partner.fainted && partner.hp > 0;
       const usable = active.moves
         .map((m, i) => ({ m, moveSlot: i + 1, dex: battle.dex.moves.get(m.id) }))
         .filter(({ m }) => !m.disabled && (m.pp === undefined || m.pp > 0));
-      const firstFoeLoc = foes.length ? foes[0].position + 1 : 1;
+      const firstFoeLoc = foes.length ? locOf(foes[0]) : 1;
       const withTarget = (moveSlot: number, target: string | undefined, loc: number, extra = '') => {
         const needs = doublesTargets(target, slot);
         return `move ${moveSlot}${needs ? ` ${needs.includes(loc) ? loc : needs[0]}` : ''}${extra}`;
@@ -100,6 +101,9 @@ export class HeuristicAI implements BattleAI {
         trickRoom: !!battle.field.getPseudoWeather('trickroom'),
         threat: bestThreat(battle, foe, me, myForme),
       });
+      /** How hard a foe can hit this Pokémon (fraction of its HP), for moves that don't pick a foe. */
+      const threats = new Map(foes.map(f => [f, bestThreat(battle, f, me, myForme).frac]));
+      const threatTo = (foe: Pokemon) => threats.get(foe) ?? 0;
       const partnerHit = (moveId: string) => {
         if (!partnerUp) return { penalty: 0, heavy: false };
         const est = estimateDamage(battle, me, partner, moveId, { attackerForme: myForme });
@@ -110,11 +114,12 @@ export class HeuristicAI implements BattleAI {
       for (const { m, moveSlot, dex } of usable) {
         if (dex.category === 'Status') continue;
         if (isSpread(dex.target) || !doublesTargets(dex.target, slot)) {
-          // Spread (or self-targeting, like Outrage): one choice, judged against every foe it can hit.
-          const hits = isSpread(dex.target) ? foes : foes.slice(0, 1);
-          const scored = hits.map(f => scoreDamaging(situation(f), m.id, false));
+          // Spread moves: one choice, judged against every foe they hit. Moves that pick their own
+          // target (Outrage hits a random foe): judged on average over the foes.
+          const scored = foes.map(f => scoreDamaging(situation(f), m.id, false));
           const friendly = hitsPartner(dex.target) ? partnerHit(m.id) : { penalty: 0, heavy: false };
-          const score = scored.reduce((a, r) => a + r.score, 0) - friendly.penalty;
+          const total = scored.reduce((a, r) => a + r.score, 0);
+          const score = (isSpread(dex.target) ? total : total / scored.length) - friendly.penalty;
           options.push({
             choice: withTarget(moveSlot, dex.target, firstFoeLoc, mega), score, ko: scored.some(r => r.ko), first: scored.some(r => r.first),
             harmsPartner: friendly.heavy, reason: `${m.move}: ${scored.map(r => r.reason).join(' / ')}${friendly.penalty ? ` (partner -${friendly.penalty.toFixed(2)})` : ''}`,
@@ -123,7 +128,7 @@ export class HeuristicAI implements BattleAI {
         }
         for (const foe of foes) {
           const r = scoreDamaging(situation(foe), m.id, false);
-          options.push({ choice: withTarget(moveSlot, dex.target, foe.position + 1, mega), score: r.score, ko: r.ko, first: r.first, reason: `${m.move} -> ${foe.name}: ${r.reason}` });
+          options.push({ choice: withTarget(moveSlot, dex.target, locOf(foe), mega), score: r.score, ko: r.ko, first: r.first, reason: `${m.move} -> ${foe.name}: ${r.reason}` });
         }
       }
       const koAvailable = options.some(o => o.ko);
@@ -135,9 +140,14 @@ export class HeuristicAI implements BattleAI {
           if (partnerUp) options.push({ choice: withTarget(moveSlot, dex.target, targets[targets.length - 1], mega), score: cfg.partnerSupportScore, ko: false, first: false, reason: `${m.move}: support partner` });
           continue;
         }
-        const foe = foes[0];
-        const r = scoreStatus(situation(foe), m.id, koAvailable);
-        options.push({ choice: withTarget(moveSlot, dex.target, foe.position + 1, mega), score: r.score, ko: false, first: r.first, reason: `${m.move}: ${r.reason}` });
+        // Aimed at a foe (Thunder Wave, Taunt...): scored against each one. Otherwise (Swords Dance,
+        // weather...) judged against the foe that threatens this Pokémon most.
+        const aimed = !!targets?.some(t => t > 0);
+        const against = aimed ? foes : [foes.reduce((a, b) => (threatTo(b) > threatTo(a) ? b : a))];
+        for (const foe of against) {
+          const r = scoreStatus(situation(foe), m.id, koAvailable);
+          options.push({ choice: withTarget(moveSlot, dex.target, locOf(foe), mega), score: r.score, ko: false, first: r.first, reason: `${m.move}${aimed ? ` -> ${foe.name}` : ''}: ${r.reason}` });
+        }
       }
       if (!zUsed && active.canZMove && prng.random() < cfg.zMoveChance) {
         active.canZMove.forEach((z, i) => {
@@ -146,7 +156,7 @@ export class HeuristicAI implements BattleAI {
           const best = foes
             .map(f => ({ f, r: scoreDamaging(situation(f), base.id, true) }))
             .reduce((a, b) => (b.r.score > a.r.score ? b : a));
-          options.push({ choice: withTarget(i + 1, z.target, best.f.position + 1, ' zmove'), score: best.r.score, ko: best.r.ko, first: best.r.first, reason: `${z.move} -> ${best.f.name}: ${best.r.reason}` });
+          options.push({ choice: withTarget(i + 1, z.target, locOf(best.f), ' zmove'), score: best.r.score, ko: best.r.ko, first: best.r.first, reason: `${z.move} -> ${best.f.name}: ${best.r.reason}` });
         });
       }
 
@@ -165,20 +175,26 @@ export class HeuristicAI implements BattleAI {
     return choice;
   }
 
-  /** Doubles replacements: for each empty slot, the strongest remaining Pokémon against the foes still standing. */
+  /**
+   * Doubles (and Multi) replacements: for each empty slot, the strongest remaining Pokémon against
+   * the foes still standing, averaged over both of them.
+   */
   private chooseDoublesReplacements({ battle, side }: AIContext, request: Extract<SimRequest, { forceSwitch: boolean[] }>): string {
     const mySide = battle.getSide(side);
-    const foe = fieldFoes(mySide)[0];
+    const foes = fieldFoes(mySide);
     const taken = new Set<number>();
+    // Each bench Pokémon's score against every foe, averaged.
+    const scores = new Map<number, number>();
+    for (const foe of foes) {
+      for (const b of evaluateBench(battle, mySide, foe)) scores.set(b.slot, (scores.get(b.slot) ?? 0) + scoreIncoming(b) / foes.length);
+    }
     return request.forceSwitch.map(needed => {
       if (!needed) return 'pass';
-      const bench = foe
-        ? evaluateBench(battle, mySide, foe).filter(b => !taken.has(b.slot))
-        : mySide.pokemon.flatMap((p, i) => (!p.isActive && p.hp > 0 && !taken.has(i + 1) ? [{ slot: i + 1, offense: 0, incoming: 0 }] : []));
+      const bench = mySide.pokemon.flatMap((p, i) => (!p.isActive && p.hp > 0 && !taken.has(i + 1) ? [i + 1] : []));
       if (!bench.length) return 'pass';
-      const best = bench.reduce((a, b) => (scoreIncoming(b) > scoreIncoming(a) ? b : a));
-      taken.add(best.slot);
-      return `switch ${best.slot}`;
+      const best = bench.reduce((a, b) => ((scores.get(b) ?? 0) > (scores.get(a) ?? 0) ? b : a));
+      taken.add(best);
+      return `switch ${best}`;
     }).join(', ');
   }
 

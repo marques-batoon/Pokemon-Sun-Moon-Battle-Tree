@@ -10,13 +10,20 @@ function optionLabel(t: Trainer): string {
   return `${t.class} ${t.name}`;
 }
 
+/** The custom special trainers, by the file their teams come from (data-sources/custom/). */
+const CUSTOM_GROUPS = [['Gym Leaders', 'gym-leaders.txt'], ['Elite Four and Champions', 'elite-four.txt'], ['Evil team leaders and admins', 'evil-teams.txt']] as const;
+
 /** The trainers debug mode can pick, grouped, leaving out any that can't field a team in this format. */
 function groupsFor(format: Format) {
   const eligible = (t: Trainer) => canField(t, teamSizeFor(t, format));
   return [
     { label: 'Battle Legends', trainers: TRAINERS.filter(t => t.kind === 'legend' && eligible(t)) },
     { label: 'Battle Tree special trainers', trainers: TRAINERS.filter(t => t.kind === 'special' && !t.custom && eligible(t)) },
-    { label: 'Gym Leaders', trainers: TRAINERS.filter(t => t.kind === 'special' && t.custom && eligible(t)).sort((a, b) => a.name.localeCompare(b.name)) },
+    ...CUSTOM_GROUPS.map(([label, file]) => ({
+      label,
+      trainers: TRAINERS.filter(t => t.kind === 'special' && t.custom && t.source.sets?.includes(file) && eligible(t))
+        .sort((a, b) => optionLabel(a).localeCompare(optionLabel(b))),
+    })),
   ].filter(g => g.trainers.length);
 }
 

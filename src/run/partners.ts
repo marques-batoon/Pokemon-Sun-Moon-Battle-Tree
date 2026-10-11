@@ -1,12 +1,12 @@
-import { SETS, TRAINERS, type SpecialTrainer } from '../data/battle-tree';
+import { SETS, TRAINERS, trainerKey, type SpecialTrainer } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
 import { pickUpTo, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, partnerPrice, type PartnerBook, type RunPartner } from './types';
 
-/** Special trainers (the only Multi partners), by name: partners are stored by name. */
+/** Special trainers (the only Multi partners), by name (trainerKey): partners are stored by it. */
 export function specialTrainer(name: string): SpecialTrainer {
-  const trainer = TRAINERS.find((t): t is SpecialTrainer => t.kind === 'special' && t.name === name);
+  const trainer = TRAINERS.find((t): t is SpecialTrainer => t.kind === 'special' && trainerKey(t) === name);
   if (!trainer) throw new Error(`${name} isn't a special trainer.`);
   return trainer;
 }

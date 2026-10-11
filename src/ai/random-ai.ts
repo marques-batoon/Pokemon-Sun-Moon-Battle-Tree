@@ -1,5 +1,5 @@
 import type { AIContext, BattleAI } from './types';
-import { doublesTargets } from '../engine/choices';
+import { doublesTargets, fieldSlot } from '../engine/choices';
 import { isWarpItem } from '../data/custom/digimon';
 import { isFainted, isForceSwitch, isMoveRequest, isTeamPreview, type SimRequestActive, type SimRequestSide } from '../engine/sim-types';
 import type { PRNG } from '@pkmn/sim';
@@ -39,7 +39,10 @@ export class RandomAI implements BattleAI {
       // Doubles and Multi both need targets; in Multi this side controls one Pokémon, at its own field position.
       // Without the simulator's battle (headless player in tests), the request tells Singles from Doubles.
       const doubles = battle ? battle.gameType !== 'singles' : request.active.length > 1;
-      const position = (slot: number) => battle?.getSide(side).active[slot]?.position ?? slot;
+      const position = (slot: number) => {
+        const mon = battle?.getSide(side).active[slot];
+        return mon && battle ? fieldSlot(mon, battle.gameType) : slot;
+      };
       const bench = benchSlots(request.side);
       let megaUsed = false;
       let zUsed = false;

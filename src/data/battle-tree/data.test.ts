@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Dex } from '@pkmn/dex';
-import { BOSSES, BRACKETS, RULES, SETS, TRAINERS, type SpecialTrainer, type Trainer } from './index';
+import { BOSSES, BRACKETS, RULES, samePerson, SETS, trainerKey, TRAINERS, type SpecialTrainer, type Trainer } from './index';
 import { dex7 } from '../../team/dex';
 
 const gen7 = Dex.forGen(7);
@@ -31,8 +31,10 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets and 264 Elite Four and Champion sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets and 224 evil team sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 224);
+    // Labels name the trainer by key, so the two Archies' sets stay apart.
+    expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
     // Only custom sets fix their Ability (the game rolls it).
     expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
@@ -69,13 +71,16 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers and 33 Elite Four and Champions', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions and 28 evil team leaders and admins', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33, 4 + 4]);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 28);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 28, 4 + 4]);
+    // Every special trainer has a unique key (lines, pictures, partners), even when names repeat.
+    const specials = TRAINERS.filter(t => t.kind === 'special');
+    expect(new Set(specials.map(trainerKey)).size).toBe(specials.length);
     expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
     // The Elite Four and Champions come last (earlier ids, kept in saved runs, don't move): weight 3.5, eight Pokémon each.
-    const elite = TRAINERS.slice(256);
+    const elite = TRAINERS.slice(256, 289);
     expect(elite.every(t => t.kind === 'special' && t.custom && t.weight === 3.5 && t.iv === 31 && t.versions.length === 2 && t.roster.length === 8)).toBe(true);
     expect(elite.map(t => t.name)).toEqual([
       'Lorelei', 'Bruno', 'Agatha', 'Lance', 'Will', 'Koga', 'Karen', 'Sidney', 'Phoebe', 'Glacia', 'Drake', 'Steven', 'Wallace', 'Aaron', 'Bertha',
@@ -210,18 +215,21 @@ describe('trainer-art.json', () => {
   it('covers every special trainer and Battle Legend (artwork or a reason why not), and nobody else', async () => {
     const art = (await import('./trainer-art.json')).default as { named: Record<string, { url: string }>; missing: Record<string, string> };
     // Custom trainers with their own sprite (pixel art) don't need artwork.
-    const named = new Set(TRAINERS.filter(t => t.kind !== 'regular' && !t.sprite).map(t => t.name));
+    const named = new Set(TRAINERS.filter(t => t.kind !== 'regular' && !t.sprite).map(trainerKey));
     const covered = [...Object.keys(art.named), ...Object.keys(art.missing)];
     expect(new Set(covered)).toEqual(named);
     expect(covered.length).toBe(named.size); // no name in both lists
-    for (const { url } of Object.values(art.named)) expect(url).toMatch(/^https:\/\/cdn\.pidgi\.net\/images\/thumb\//);
+    // 400 px copies; PidgiWiki serves the original when it's already 400 px wide (the ORAS admins).
+    for (const { url, width } of Object.values(art.named) as { url: string; width: number }[]) {
+      expect(url).toMatch(width === 400 && !url.includes('/thumb/') ? /^https:\/\/cdn\.pidgi\.net\/images\// : /^https:\/\/cdn\.pidgi\.net\/images\/thumb\//);
+    }
   });
 });
 
 describe('trainer-quotes.json', () => {
   it('gives every trainer (by name) three sets of greeting + both closing remarks, no line shared', async () => {
     const { TRAINER_MULTI_QUOTES, TRAINER_QUOTES } = await import('./index');
-    const names = new Set(TRAINERS.map(t => t.name));
+    const names = new Set(TRAINERS.map(trainerKey));
     expect(new Set(Object.keys(TRAINER_QUOTES))).toEqual(names);
     // Team-up lines for the paired trainers (Tate and Liza) in Multi Battles.
     expect(Object.keys(TRAINER_MULTI_QUOTES).sort()).toEqual(['Liza', 'Matt', 'Tai', 'Tate']);
@@ -229,7 +237,7 @@ describe('trainer-quotes.json', () => {
     const sets = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES)];
     // Three sets each, except the user's battle-50 trainers (as many as they wrote; the same for both of a pair).
     for (const [name, trainerSets] of Object.entries(TRAINER_QUOTES)) {
-      const t = TRAINERS.find(x => x.name === name)!;
+      const t = TRAINERS.find(x => trainerKey(x) === name)!;
       if (t.sprite) expect(trainerSets.length, name).toBeGreaterThanOrEqual(1);
       else expect(trainerSets, name).toHaveLength(3);
     }
@@ -257,7 +265,7 @@ describe('trainer-quotes.json', () => {
 
   it('has pair greetings for special trainers who share a region or a type: one per trainer, no Pokémon named', async () => {
     const { TRAINER_PAIR_GREETINGS, TRAINER_QUOTES } = await import('./index');
-    const special = new Set(TRAINERS.filter(t => t.kind === 'special').map(t => t.name));
+    const special = new Set(TRAINERS.filter(t => t.kind === 'special').map(trainerKey));
     const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
     const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?!\\w)`);
     const seen = new Set<string>();
@@ -268,12 +276,15 @@ describe('trainer-quotes.json', () => {
       for (const name of who) expect(special.has(name), `${label}: ${name}`).toBe(true);
       // Tate and Liza only ever battle together (they have their own team-up lines).
       expect(who.some(n => n === 'Tate' || n === 'Liza'), label).toBe(false);
+      // Two versions of one character (the Archies) never battle together.
+      const [a, b] = who.map(n => TRAINERS.find(t => trainerKey(t) === n)!);
+      expect(samePerson(a, b), label).toBe(false);
       const key = [...who].sort().join('|');
       expect(seen.has(key), label).toBe(false);
       seen.add(key);
       lines.push(...Object.values(entry));
     }
-    expect(seen.size).toBeGreaterThanOrEqual(317 + 486);
+    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 427);
     const usual = Object.values(TRAINER_QUOTES).flat().map(q => q.greeting);
     for (const text of lines) {
       expect(text.trim().length).toBeGreaterThan(0);

@@ -28,6 +28,14 @@ export interface TreeSet {
 interface TrainerBase {
   id: number;
   name: string;
+  /**
+   * Unique name for data lookups (lines, pictures, partners) when two trainers share a name: the two
+   * Archies and Maxies (Ruby / Sapphire / Emerald and Omega Ruby / Alpha Sapphire), Team Aqua's Matt.
+   * Use trainerKey(); defaults to the name.
+   */
+  key?: string;
+  /** The same character in two versions (both Archies): they never battle together or against each other. */
+  person?: string;
   class: string;
   classGender: 'M' | 'F' | null;
   /** IV applied to all six stats of every Pokémon this trainer uses. */
@@ -54,7 +62,7 @@ export interface SpecialTrainer extends TrainerBase {
   kind: 'special';
   number: null;
   versions: GameVersion[];
-  /** Relative weight within the special pool (Anabel 1, the Elite Four and Champions 3.5, everyone else 7). */
+  /** Relative weight within the special pool (Anabel 1, the Elite Four and Champions and the evil teams 3.5, everyone else 7). */
   weight: number;
   requires?: 'lookerGuzzlordChapter';
   requiresNote?: string;

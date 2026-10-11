@@ -376,6 +376,59 @@ describe('HeuristicAI in Doubles', () => {
   });
 });
 
+describe('HeuristicAI in Multi Battles', () => {
+  // Each trainer has one Pokémon on the field, at position 0 of its own side: the AI has to work out
+  // which foe sits where (p1 and p2 on the left, their partners p3 and p4 on the right).
+  const mon = (text: string) => `${text}\nLevel: 50`;
+  const BULKY = mon('Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP / 252 Def\n- Protect');
+  const FRAIL = mon('Heatran @ Choice Scarf\nAbility: Flash Fire\nEVs: 4 HP\n- Protect');
+  const GENGAR = mon('Gengar @ Choice Specs\nAbility: Levitate\nEVs: 252 SpA\nModest Nature\n- Earth Power');
+  const pair = (lead: string, other: string) => team([lead, other].join('\n\n'));
+  const BACK = mon('Chansey @ Eviolite\nAbility: Natural Cure\n- Soft-Boiled');
+  function multi(p1: string, p2: string, p3: string, p4: string): Battle {
+    const battle = new Battle({ formatid: NO_PREVIEW_FORMAT_IDS.multi as never, seed: seedFromString('multi-scenario') });
+    battle.setPlayer('p1', { name: 'Player', team: pair(p1, BACK) });
+    battle.setPlayer('p2', { name: 'Foe 1', team: pair(p2, BACK) });
+    battle.setPlayer('p3', { name: 'Partner', team: pair(p3, BACK) });
+    battle.setPlayer('p4', { name: 'Foe 2', team: pair(p4, BACK) });
+    return battle;
+  }
+  const choicesFor = (battle: Battle, side: 'p2' | 'p3', n = 120) => {
+    const ai = new HeuristicAI();
+    const req = battle.getSide(side).activeRequest as unknown as SimRequest;
+    const counts: Record<string, number> = {};
+    for (let i = 0; i < n; i++) {
+      const choice = ai.choose({ request: req, battle, side, prng: new PRNG(seedFromString(`m${side}${i}`)) });
+      counts[choice] = (counts[choice] ?? 0) + 1;
+    }
+    return counts;
+  };
+
+  it("lets the opposing AI aim at your partner (on the right) when that's the knockout", () => {
+    // Earth Power OHKOs the partner's Heatran (target 2), not the player's Snorlax (target 1).
+    const counts = choicesFor(multi(BULKY, GENGAR, FRAIL, BULKY), 'p2');
+    expect((counts['move 1 2'] ?? 0) / 120).toBeGreaterThan(0.8);
+    // And at the player (on the left) when it's the other way round.
+    const flipped = choicesFor(multi(FRAIL, GENGAR, BULKY, BULKY), 'p2');
+    expect((flipped['move 1 1'] ?? 0) / 120).toBeGreaterThan(0.8);
+  });
+
+  it("lets your partner's AI aim at the second opponent (on the right)", () => {
+    const counts = choicesFor(multi(BULKY, BULKY, GENGAR, FRAIL), 'p3');
+    expect((counts['move 1 2'] ?? 0) / 120).toBeGreaterThan(0.8);
+  });
+
+  it('aims a status move at the foe it works on', () => {
+    // The player's Snorlax is already paralyzed; Thunder Wave goes to the partner's.
+    const zapper = mon('Raichu @ Leftovers\nAbility: Static\nEVs: 4 HP\n- Thunder Wave\n- Protect');
+    const battle = multi(BULKY, zapper, BULKY, BULKY);
+    battle.p1.active[0].setStatus('par');
+    const counts = choicesFor(battle, 'p2');
+    expect(counts['move 1 1'] ?? 0).toBe(0);
+    expect(counts['move 1 2'] ?? 0).toBeGreaterThan(0);
+  });
+});
+
 describe('moves that are certain to fail', () => {
   // Rock Slide only chips Great Tusk; Toxic and Thunder Wave fail on a paralyzed target; Roost isn't needed.
   const DRAGONITE = `Dragonite @ Leftovers\nAbility: Multiscale\nEVs: 252 HP / 252 Def\nBold Nature\n- Rock Slide\n- Toxic\n- Thunder Wave\n- Roost`;

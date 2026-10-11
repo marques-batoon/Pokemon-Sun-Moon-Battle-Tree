@@ -10,7 +10,7 @@ import { PARADOX_SPRITES } from '../data/custom/paradox';
 import { gen7 } from '../team/dex';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
-import type { Trainer } from '../data/battle-tree';
+import { trainerKey, type Trainer } from '../data/battle-tree';
 
 export type SpriteSide = 'p1' | 'p2';
 
@@ -88,9 +88,10 @@ const BOOSTED: Record<string, number> = {
   // Tall or bulky sprites drawn too small.
   'Exeggutor-Alola': 1.5, 'Raging Bolt': 1.5,
 };
-/** Small size tweaks on request, on top of everything else (Megas: 5% over the usual Mega size). */
+/** Small size tweaks on request, on top of everything else (Megas: over the usual Mega size). */
 const SIZE_TWEAKS: Record<string, number> = {
   'Latios-Mega': 1.05, 'Latias-Mega': 1.05, 'Charizard-Mega-X': 1.05, 'Charizard-Mega-Y': 1.05,
+  'Metagross-Mega': 1.1, Noivern: 1.1,
 };
 /** The Sky Battle Pokémon below are enlarged a little less (35%, on request). */
 const WING_FLAP_BOOST = 1.35;
@@ -151,7 +152,7 @@ const named = spriteData.named as Record<string, string>;
 
 /** Showdown trainer sprite id for a Battle Tree trainer (see trainer-sprites.json). */
 export function trainerSpriteId(trainer: Trainer): string | null {
-  if (trainer.kind !== 'regular') return named[trainer.name] ?? null;
+  if (trainer.kind !== 'regular') return named[trainerKey(trainer)] ?? null;
   return classes[`${trainer.class}|${trainer.classGender}`] ?? classes[trainer.class] ?? null;
 }
 
@@ -170,5 +171,5 @@ const art = artData.named as Record<string, TrainerArt>;
  * only; see trainer-art.json). Loaded from PidgiWiki's image CDN.
  */
 export function trainerArt(trainer: Trainer): TrainerArt | null {
-  return trainer.kind === 'regular' ? null : art[trainer.name] ?? null;
+  return trainer.kind === 'regular' ? null : art[trainerKey(trainer)] ?? null;
 }

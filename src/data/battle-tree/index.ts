@@ -7,6 +7,7 @@ import quotesJson from './trainer-quotes.json';
 import gymLeadersJson from '../custom/gym-leaders.json';
 import battle50Json from '../custom/battle-50.json';
 import eliteFourJson from '../custom/elite-four.json';
+import evilTeamsJson from '../custom/evil-teams.json';
 import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
 
 export * from './types';
@@ -17,23 +18,29 @@ const GAME_TRAINERS = trainersJson.trainers as Trainer[];
 const gameLegend = (name: string) => GAME_TRAINERS.find(t => t.kind === 'legend' && t.course === 'super' && t.name === name);
 
 interface CustomSet { species: string; item: string; ability: string; nature: string; evs: StatTable; moves: string[]; gender?: 'M' | 'F' }
-interface CustomTrainer { name: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[] }
+interface CustomTrainer { name: string; key?: string; person?: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[] }
+
+/** A trainer's unique name for data lookups (lines, pictures, partners): `key` if two share a name. */
+export const trainerKey = (t: Pick<Trainer, 'name' | 'key'>) => t.key ?? t.name;
+/** Whether two trainers are the same character (two versions of Archie or Maxie, or the very same trainer). */
+export const samePerson = (a: Trainer, b: Trainer) => a.id === b.id || (a.person ?? trainerKey(a)) === (b.person ?? trainerKey(b));
 
 /**
  * Custom special trainers (see DATA_NOTES.md "Custom additions"), appended after the sets and
  * trainers before them so ids stay array indices: the Gym Leaders (weight 7, like the game's
- * special trainers) and the Elite Four and Champions (weight 3.5). Both versions, IV 31.
+ * special trainers), the Elite Four and Champions and the evil teams (weight 3.5). Both versions, IV 31.
  */
 function customTrainers(list: CustomTrainer[], firstSet: number, firstTrainer: number, weight: number, file: string) {
   const sets: TreeSet[] = [];
   const trainers: SpecialTrainer[] = list.map((t, i) => {
     const roster = t.sets.map((s, j) => {
       const id = firstSet + sets.length;
-      sets.push({ id, label: `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
+      sets.push({ id, label: `${s.species} (${trainerKey(t)}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
       return id;
     });
     return {
-      id: firstTrainer + i, name: t.name, class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'special',
+      id: firstTrainer + i, name: t.name, ...(t.key ? { key: t.key } : {}), ...(t.person ? { person: t.person } : {}),
+      class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'special',
       number: null, versions: ['sun', 'moon'], weight, custom: true, region: t.region,
       source: { sets: `custom: data-sources/custom/${file}` },
     };
@@ -87,8 +94,16 @@ const ELITE_FOUR = customTrainers(
   3.5, 'elite-four.txt (designed for the user)',
 );
 
-export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets];
-export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers];
+/** The evil teams' leaders and admins of Generations 1-7, after the Elite Four (earlier ids don't move). */
+const EVIL_TEAMS = customTrainers(
+  evilTeamsJson.trainers as CustomTrainer[],
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length,
+  GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length,
+  3.5, 'evil-teams.txt (designed for the user)',
+);
+
+export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets];
+export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers];
 const GAME_BRACKETS = bracketsJson as unknown as BracketsFile;
 
 /**
@@ -117,7 +132,7 @@ const withModes = <T extends Partial<Record<Course, CourseSchedule>>>(courses: T
 });
 
 /**
- * brackets.json, with the Gym Leaders and the Elite Four and Champions in the special-trainer pool
+ * brackets.json, with the Gym Leaders, the Elite Four and Champions and the evil teams in the special-trainer pool
  * (Super Singles, Doubles and Multi), the Battle Legends every 50 battles of Super, and All Star Mode.
  */
 export const BRACKETS: BracketsFile = {
@@ -127,11 +142,14 @@ export const BRACKETS: BracketsFile = {
   multi: withModes(GAME_BRACKETS.multi),
   specialTrainerPool: {
     ...GAME_BRACKETS.specialTrainerPool,
-    trainerIds: [...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id)],
+    trainerIds: [
+      ...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id),
+      ...EVIL_TEAMS.trainers.map(t => t.id),
+    ],
   },
 };
 
-const trainerByName = (name: string) => TRAINERS.find(t => t.kind === 'special' && t.name === name)!;
+const trainerByName = (name: string) => TRAINERS.find(t => t.kind === 'special' && trainerKey(t) === name)!;
 /**
  * Special trainers who always battle together as opponents in Multi Battles (Tate and Liza),
  * each leading with one Pokémon of a pair (set ids, same order as `trainerIds`).
@@ -182,8 +200,8 @@ const DUO_PARTNER = new Map<number, number>([
 
 /** What `trainer` says to greet you when battling alongside `other` (null: no special greeting for this pair). */
 export function pairGreeting(trainer: Trainer, other: Trainer): string | null {
-  if (trainer.name === other.name) return null;
-  return PAIR_GREETINGS.get(pairKey(trainer.name, other.name))?.[trainer.name] ?? null;
+  if (samePerson(trainer, other)) return null;
+  return PAIR_GREETINGS.get(pairKey(trainerKey(trainer), trainerKey(other)))?.[trainerKey(trainer)] ?? null;
 }
 
 /** Number of distinct quote picks: divisible by every list length up to 10, so each line is equally likely. */
@@ -214,7 +232,7 @@ export function quotePick(battleKey: string): number {
 export function trainerQuotes(trainer: Trainer, battleKey: string | number, alongside: readonly Trainer[] = []): TrainerQuotes | null {
   const partner = DUO_PARTNER.get(trainer.id);
   const together = partner !== undefined && alongside.some(t => t.id === partner);
-  const sets = (together ? TRAINER_MULTI_QUOTES[trainer.name] : undefined) ?? TRAINER_QUOTES[trainer.name];
+  const sets = (together ? TRAINER_MULTI_QUOTES[trainerKey(trainer)] : undefined) ?? TRAINER_QUOTES[trainerKey(trainer)];
   if (!sets?.length) return null;
   const pick = typeof battleKey === 'number' ? battleKey : quotePick(battleKey);
   const lines = sets[pick % sets.length];

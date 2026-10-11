@@ -4,6 +4,8 @@
 //  - gym-leaders.txt -> src/data/custom/gym-leaders.json (special trainers);
 //  - elite-four.txt -> src/data/custom/elite-four.json (the Elite Four and Champions of
 //    Generations 1-7 as special trainers, weight 3.5);
+//  - evil-teams.txt -> src/data/custom/evil-teams.json (the evil teams' leaders and admins of
+//    Generations 1-7 as special trainers, weight 3.5);
 //  - battle-50-trainers.txt + battle-50-trainers.json -> src/data/custom/battle-50.json
 //    (trainers who can take the Battle Legends' battle-50 slot).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
@@ -70,6 +72,45 @@ const ELITE_FEMALE = new Set([
 ]);
 const eliteRegion = name => Object.keys(ELITE_FOUR).find(r => ELITE_FOUR[r].includes(name));
 
+/**
+ * The evil teams' leaders and admins (Generations 1-7), by export section title. Archie and Maxie
+ * come twice, as in Ruby / Sapphire / Emerald and in Omega Ruby / Alpha Sapphire (the games'
+ * classes tell them apart: "Aqua Leader" / "Team Aqua Leader"); the section title is their key
+ * (lines, pictures, partners), `person` keeps the two versions apart in Multi Battles. Team Aqua's
+ * Matt has a key too (Tai's partner Matt is a Battle Legend). Giovanni (a Gym Leader here), Guzma,
+ * Plumeria and Colress are already special trainers.
+ */
+const EVIL_TEAMS = {
+  'Archer': { class: 'Rocket Executive', region: 'Johto' },
+  'Ariana': { class: 'Rocket Executive', region: 'Johto', female: true },
+  'Proton': { class: 'Rocket Executive', region: 'Johto' },
+  'Petrel': { class: 'Rocket Executive', region: 'Johto' },
+  'Maxie (RSE)': { name: 'Maxie', person: 'Maxie', class: 'Magma Leader', region: 'Hoenn' },
+  'Maxie (ORAS)': { name: 'Maxie', person: 'Maxie', class: 'Team Magma Leader', region: 'Hoenn' },
+  'Tabitha': { class: 'Team Magma Admin', region: 'Hoenn' },
+  'Courtney': { class: 'Team Magma Admin', region: 'Hoenn', female: true },
+  'Archie (RSE)': { name: 'Archie', person: 'Archie', class: 'Aqua Leader', region: 'Hoenn' },
+  'Archie (ORAS)': { name: 'Archie', person: 'Archie', class: 'Team Aqua Leader', region: 'Hoenn' },
+  'Matt (Team Aqua)': { name: 'Matt', class: 'Team Aqua Admin', region: 'Hoenn' },
+  'Shelly': { class: 'Team Aqua Admin', region: 'Hoenn', female: true },
+  'Cyrus': { class: 'Galactic Boss', region: 'Sinnoh' },
+  'Mars': { class: 'Commander', region: 'Sinnoh', female: true },
+  'Jupiter': { class: 'Commander', region: 'Sinnoh', female: true },
+  'Saturn': { class: 'Commander', region: 'Sinnoh' },
+  'Charon': { class: 'Commander', region: 'Sinnoh' },
+  'N': { class: 'Pokémon Trainer', region: 'Unova' },
+  'Ghetsis': { class: 'Team Plasma', region: 'Unova' },
+  'Zinzolin': { class: 'Team Plasma', region: 'Unova' },
+  'Lysandre': { class: 'Team Flare Boss', region: 'Kalos' },
+  'Xerosic': { class: 'Team Flare Admin', region: 'Kalos' },
+  'Aliana': { class: 'Team Flare Admin', region: 'Kalos', female: true },
+  'Bryony': { class: 'Team Flare Admin', region: 'Kalos', female: true },
+  'Celosia': { class: 'Team Flare Admin', region: 'Kalos', female: true },
+  'Mable': { class: 'Team Flare Admin', region: 'Kalos', female: true },
+  'Lusamine': { class: 'Aether President', region: 'Alola', female: true },
+  'Faba': { class: 'Aether Branch Chief', region: 'Alola' },
+};
+
 const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 const problems = [];
 
@@ -129,6 +170,19 @@ const eliteFour = parseExports('elite-four.txt', name => ({
 for (const t of eliteFour) if (!t.region) problems.push(`${t.name}: not in ELITE_FOUR`);
 for (const t of eliteFour) if (gymLeaders.some(g => g.name === t.name)) problems.push(`${t.name}: already a Gym Leader`);
 
+// --- Evil team leaders and admins ---
+const evilTeams = parseExports('evil-teams.txt', title => {
+  const info = EVIL_TEAMS[title];
+  if (!info) { problems.push(`evil-teams.txt: ${title} isn't in EVIL_TEAMS`); return {}; }
+  const name = info.name ?? title;
+  return {
+    name, ...(name !== title ? { key: title } : {}), ...(info.person ? { person: info.person } : {}),
+    class: info.class, classGender: info.female ? 'F' : 'M', region: info.region,
+  };
+});
+const takenNames = new Set([...gymLeaders, ...eliteFour].map(t => t.name));
+for (const t of evilTeams) if (takenNames.has(t.key ?? t.name)) problems.push(`${t.key ?? t.name}: already a special trainer`);
+
 // --- Battle-50 trainers ---
 const battle50 = JSON.parse(readFileSync(new URL('battle-50-trainers.json', dir), 'utf8'));
 const battle50Trainers = parseExports('battle-50-trainers.txt', name => {
@@ -172,6 +226,15 @@ save('elite-four.json', {
     'IVs are the special-trainer IV (31); Abilities and genders are as exported. Every set passes the app\'s Gen 7 team validator.',
   ],
   trainers: eliteFour,
+});
+save('evil-teams.json', {
+  source: 'Designed for the user (2026-10-11, on request): the evil teams\' leaders and admins of Generations 1-7 as Showdown exports in data-sources/custom/evil-teams.txt; built by scripts/build-custom-trainers.mjs. Not from any game.',
+  notes: [
+    'Each trainer is one special trainer with eight Pokémon, weight 3.5, in Super Singles, Super Doubles and Super Multi (and All Star Mode).',
+    'Archie and Maxie appear twice (Ruby / Sapphire / Emerald: no Megas; Omega Ruby / Alpha Sapphire: with their Megas); "key" tells them apart in the data, "person" keeps the two versions out of the same battle.',
+    'Giovanni (a Gym Leader here), Guzma, Plumeria and Colress were already special trainers. IVs 31; Abilities and genders as exported. Every set passes the app\'s Gen 7 team validator.',
+  ],
+  trainers: evilTeams,
 });
 save('battle-50.json', {
   source: 'Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.',

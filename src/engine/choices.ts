@@ -2,6 +2,16 @@
 // No simulator imports.
 
 /**
+ * A Pokémon's field slot in a Double or Multi Battle (0 = left, 1 = right), which target locations
+ * count from. In a Multi Battle every trainer has one Pokémon, each at position 0 of its own side,
+ * so the slot comes from the trainer: p1 and p2 hold slot 0, their partners p3 and p4 slot 1
+ * (target 1 is p1's or p2's Pokémon, target 2 p3's or p4's).
+ */
+export function fieldSlot(pokemon: { position: number; side: { n: number } }, gameType: string): number {
+  return gameType === 'multi' ? (pokemon.side.n >= 2 ? 1 : 0) : pokemon.position;
+}
+
+/**
  * Target locations a move may be aimed at in a Double Battle, from the user in
  * active slot `slot` (0 = left, 1 = right). Showdown numbers foes 1 and 2 and
  * the user's own side -1 and -2. Returns null when the move picks its own

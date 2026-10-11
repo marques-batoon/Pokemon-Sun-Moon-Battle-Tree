@@ -84,9 +84,10 @@ The guide documents the Singles AI; the Doubles logic is an **approximation** bu
 - Each active Pokémon picks its own action with the Singles rules (KO bias, weighted roll), one after the other.
 - **Targets:** a single-target move is scored against each foe still standing, and the choice names the target. So the AI aims at whichever foe it hurts most, usually the one it can knock out.
 - **Spread moves** (Rock Slide, Heat Wave, Earthquake...) are scored against every foe they hit. The calc gets the Doubles field, so the spread damage reduction is included. A move that also hits the partner (Earthquake, Surf, Explosion...) loses `partnerDamagePenalty` (1.5) per fraction of the partner's HP. A KO that also does 30%+ to the partner isn't taken automatically; it goes to the weighted roll.
+- **Status moves aimed at a foe** (Thunder Wave, Taunt, Will-O-Wisp...) are scored against each foe too (so one that would fail on a foe goes to the other); status moves that don't pick a foe (Swords Dance, weather) are judged against the foe that threatens the user most. Moves that pick a random foe (Outrage) are scored on average over both.
 - **Partner-only moves** (Helping Hand and other moves aimed only at the ally) score `partnerSupportScore` (0.25) while the partner is up.
 - **One Mega Evolution and one Z-Move per turn**, the first Pokémon that picks one. Warp Digivolution doesn't count as the Mega.
-- **No voluntary switching** in Doubles. Replacements after a faint: the strongest remaining Pokémon against a foe still standing, never the same one twice.
+- **No voluntary switching** in Doubles. Replacements after a faint: the strongest remaining Pokémon against the foes still standing (its score averaged over both), never the same one twice.
 - Not modelled: redirection (Follow Me, Rage Powder, Lightning Rod pulling moves), Wide Guard / Quick Guard decisions, targeting a foe that is likely to Protect, or coordinating the two actions (e.g. Trick Room plus a slow attacker).
 
 ## Multi Battles
@@ -95,6 +96,7 @@ The same Doubles logic, with one AI per trainer (**approximation**; the Multi AI
 
 - Each of the three AI trainers (both opponents and your partner) controls one Pokémon at its own field position and chooses on its own; nobody coordinates.
 - **Foes** are both Pokémon on the other half of the field (`fieldFoes` in `heuristic-ai.ts`), so it aims at whichever of the two it hurts most.
+- **Where everyone stands** (fixed 2026-10-11): in a Multi Battle each trainer's Pokémon is at position 0 of its own side, so targets come from the trainer instead (`fieldSlot` in `engine/choices.ts`): p1 and p2 on the left (target 1), their partners p3 and p4 on the right (target 2). Before the fix every AI read both foes as target 1, so the opponents always attacked your Pokémon and your partner always attacked the first opponent.
 - **Partner** is the ally trainer's Pokémon: spread moves that hit it are penalised and partner-only moves score as in Doubles.
 - Each trainer has its own Mega Evolution and Z-Move (as in the game).
 - Your partner uses this AI too, so it plays like an opponent would: it won't cover your Pokémon's weaknesses or follow a plan with you.

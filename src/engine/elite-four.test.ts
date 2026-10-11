@@ -9,7 +9,7 @@ import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats } fro
 
 registerBattleTreeFormats();
 const validator = new TeamValidator(Dex.formats.get(FORMAT_IDS.singles));
-const ELITE = TRAINERS.filter(t => t.kind === 'special' && t.custom && t.weight === 3.5);
+const ELITE = TRAINERS.filter(t => t.kind === 'special' && t.source.sets?.includes('elite-four.txt'));
 /** Two Pokémon to make a full team around the set being checked (never clashing with it). */
 const BENCH: SimSet[] = [
   { name: '', species: 'Chansey', item: 'Eviolite', ability: 'Natural Cure', moves: ['Soft-Boiled'], nature: 'Bold', gender: 'F', evs: {} as never, ivs: {} as never, level: 50 },

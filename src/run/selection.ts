@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, pairedTrainer, RULES, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { BOSSES, BRACKETS, pairedTrainer, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -121,6 +121,9 @@ export function multiDuo(trainerId: number): [number, number] | null {
 
 export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
 
+/** A trainer and any other version of the same character (both Archies): never two of them in one battle. */
+const samePersonIds = (id: number) => TRAINERS.filter(t => samePerson(t, TRAINERS[id])).map(t => t.id);
+
 /** Seed text of battle N in a run; the simulator and opponent rolls both derive from the run seed. */
 export const battleSeedText = (runSeed: string, battle: number) => `${runSeed}|battle-${battle}`;
 
@@ -151,7 +154,8 @@ export function planOpponent(
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|opponent`);
   const multi = format === 'multi';
-  const exclude = new Set(partnerId === undefined ? [] : [partnerId]);
+  // Your partner (and any other version of them: two Archies) can't be an opponent.
+  const exclude = new Set(partnerId === undefined ? [] : samePersonIds(partnerId));
   const partnersTwin = multi && partnerId !== undefined ? pairedTrainer(partnerId) : null;
   if (partnersTwin) exclude.add(partnersTwin.partnerId);
   const slot = scheduleSlot(format, course, battle);
@@ -173,7 +177,7 @@ export function planOpponent(
   const first = planTrainer(firstChoice, format, rng);
   if (!multi) return { battle, ...first, seedText };
 
-  exclude.add(first.trainerId);
+  for (const id of samePersonIds(first.trainerId)) exclude.add(id);
   // A paired trainer can't be the second opponent without their partner.
   for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
   const second = chooseTrainer(format, course, battle, settings, rng, exclude);

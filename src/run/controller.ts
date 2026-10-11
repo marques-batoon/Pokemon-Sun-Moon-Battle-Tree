@@ -1,6 +1,6 @@
 import type { BattleClient, BattleSnapshot } from '../client/battle-client';
 import type { AIKind } from '../engine/protocol';
-import { pairedTrainer, TRAINERS } from '../data/battle-tree';
+import { pairedTrainer, trainerKey, TRAINERS } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
 import { partnerTeam, rollOffer, runPartner } from './partners';
 import { Rng } from './rng';
@@ -390,7 +390,7 @@ function withBeaten(p: TreeProfile, next: PlannedOpponent): TreeProfile['partner
   const beaten = { ...p.partners.beaten };
   for (const t of [next, ...(next.second ? [next.second] : [])]) {
     if (t.kind !== 'special') continue;
-    const { name } = TRAINERS[t.trainerId];
+    const name = trainerKey(TRAINERS[t.trainerId]);
     beaten[name] = (beaten[name] ?? 0) + 1;
   }
   return { ...p.partners, beaten };

@@ -70,15 +70,18 @@ describe('larger animated sprites', () => {
     // Mega Latios, Mega Latias and Mega Charizard X: 5% over the usual Mega size; the base formes keep theirs.
     for (const name of ['Latios-Mega', 'Latias-Mega', 'Charizard-Mega-X']) expect(animatedSpriteBoost(name), name).toBe(1.05);
     for (const name of ['Latios', 'Latias']) expect(animatedSpriteBoost(name), name).toBe(1);
-    // Mega Charizard Y flaps its wings (35%), then 5% more.
+    // Mega Charizard Y flaps its wings (35%), then 5% more. Noivern (back to its usual size with the bats) and Mega Metagross: 10%.
     expect(animatedSpriteBoost('Charizard-Mega-Y')).toBeCloseTo(1.35 * 1.05);
+    expect(animatedSpriteBoost('Noivern')).toBeCloseTo(1.1);
+    expect(animatedSpriteBoost('Metagross-Mega')).toBeCloseTo(1.1);
+    expect(animatedSpriteBoost('Metagross')).toBe(1);
     for (const name of ['Charizard', 'Pidgeot', 'Talonflame', 'Yveltal']) expect(animatedSpriteBoost(name), name).toBe(1.35);
     for (const name of WING_FLAPPERS) {
       expect(hasSkyBattleAnimation(name), name).toBe(true);
       expect(animatedSpriteBoost(name), name).toBeCloseTo(name === 'Charizard-Mega-Y' ? 1.35 * 1.05 : 1.35);
     }
     // Sky Battle Pokémon that float, glide or hover without big wing flaps keep their size.
-    for (const name of ['Archeops', 'Zubat', 'Golbat', 'Crobat', 'Woobat', 'Swoobat', 'Noibat', 'Noivern', 'Gyarados', 'Gyarados-Mega', 'Salamence', 'Salamence-Mega', 'Pidgeot-Mega', 'Rotom-Heat', 'Bronzong', 'Latios', 'Skarmory', 'Koffing', 'Togekiss', 'Vivillon']) {
+    for (const name of ['Archeops', 'Zubat', 'Golbat', 'Crobat', 'Woobat', 'Swoobat', 'Noibat', 'Gyarados', 'Gyarados-Mega', 'Salamence', 'Salamence-Mega', 'Pidgeot-Mega', 'Rotom-Heat', 'Bronzong', 'Latios', 'Skarmory', 'Koffing', 'Togekiss', 'Vivillon']) {
       expect(animatedSpriteBoost(name), name).toBe(1);
     }
     for (const name of ['Exeggutor', 'Raikou', 'Garchomp', 'WarGreymon']) expect(animatedSpriteBoost(name), name).toBe(1);

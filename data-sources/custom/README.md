@@ -51,6 +51,14 @@ team, ...).
   game's rules (learnsets, Abilities, items).
 - **Lines and pair greetings:** `trainer-quotes.json`, like the Gym Leaders'.
 
+## Evil team leaders and admins
+
+- **Teams:** `evil-teams.txt`, one section per trainer, titled with their key: the
+  name, or "Archie (RSE)" / "Archie (ORAS)" style when two share a name. Class,
+  gender and region are in `scripts/build-custom-trainers.mjs` (`EVIL_TEAMS`); a new
+  trainer must be added there too. Weight 3.5. `npm test` checks every set.
+- **Lines and pair greetings:** `trainer-quotes.json`, under the same key.
+
 ## Gym Leaders
 
 - **Teams:** `gym-leaders.txt`, same format; "Brock 1" and "Brock 2" are both Brock.

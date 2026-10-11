@@ -16,7 +16,8 @@ interface Props {
 /**
  * The big centred trainer picture on the opponent card: official artwork for
  * special trainers and Battle Legends that have it, otherwise the Showdown
- * sprite scaled up with crisp pixels. Battles keep the small sprite.
+ * sprite scaled up with crisp pixels (in a Multi Battle, both show sprites
+ * unless both have artwork). Battles keep the small sprite.
  * `intro` (special battles): a key for the full-screen entrance, played once
  * per key, with `captions` (names and greetings) under the trainers. Remount
  * per battle (key) so state doesn't carry over.
@@ -25,7 +26,10 @@ export function OpponentPortrait({ trainers, intro = null, captions }: Props) {
   const { sprites } = useAppSettings();
   // Trainers whose artwork failed to load (they fall back to the sprite).
   const [artFailed, setArtFailed] = useState<number[]>([]);
-  const artOf = (t: Trainer) => (sprites && !artFailed.includes(t.id) ? trainerArt(t) : null);
+  const ownArt = (t: Trainer) => (sprites && !artFailed.includes(t.id) ? trainerArt(t) : null);
+  // Two trainers (Multi) match: artwork only if both have it, otherwise both show their sprite.
+  const allArt = trainers.every(ownArt);
+  const artOf = (t: Trainer) => (allArt ? ownArt(t) : null);
   // Decided once: the card's own fade-in is skipped while the intro plays.
   const [withIntro] = useState(() => !!intro && !introPlayed(intro) && !prefersReducedMotion());
   const box = useRef<HTMLDivElement>(null);

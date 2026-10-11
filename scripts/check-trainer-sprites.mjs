@@ -14,6 +14,9 @@ const { trainers: gameTrainers } = JSON.parse(readFileSync(join(DATA, 'trainers.
 // The Gym Leaders and the Elite Four and Champions (custom special trainers) from src/data/custom/.
 const gymLeaders = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'gym-leaders.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
 const eliteFour = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'elite-four.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+const evilTeams = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'evil-teams.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+/** A trainer's data key: its `key` when two trainers share a name (the two Archies). */
+const keyOf = t => t.key ?? t.name;
 // Custom battle-50 trainers bring their own sprite file (public/...): check it's there.
 const battle50 = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'battle-50.json'), 'utf8')).trainers;
 const PUBLIC = join(DATA, '..', '..', '..', 'public');
@@ -22,12 +25,12 @@ if (missingFiles.length) {
   console.error('Custom sprite files missing from public/:', missingFiles.join(', '));
   process.exitCode = 1;
 }
-const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour];
+const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour, ...evilTeams];
 
 const missing = [];
 for (const t of trainers) {
   const key = t.kind === 'regular' ? (sprites.classes[`${t.class}|${t.classGender}`] ? `${t.class}|${t.classGender}` : t.class) : null;
-  const id = key ? sprites.classes[key] : sprites.named[t.name];
+  const id = key ? sprites.classes[key] : sprites.named[keyOf(t)];
   if (!id) missing.push(`${t.class} ${t.name}`);
 }
 if (missing.length) {
@@ -49,7 +52,7 @@ if (bad.length) {
 
 // Opponent-card artwork (special trainers and Battle Legends; Pokémon Wiki CDN).
 const art = JSON.parse(readFileSync(join(DATA, 'trainer-art.json'), 'utf8'));
-const namedTrainers = new Set(trainers.filter(t => t.kind !== 'regular').map(t => t.name));
+const namedTrainers = new Set(trainers.filter(t => t.kind !== 'regular').map(keyOf));
 const unknown = [...Object.keys(art.named), ...Object.keys(art.missing)].filter(n => !namedTrainers.has(n));
 const uncovered = [...namedTrainers].filter(n => !art.named[n] && !art.missing[n]);
 if (unknown.length || uncovered.length) {

@@ -6,7 +6,8 @@
   "Cynthia and Wally appear in Sun & Moon in their Diamond and Pearl / Omega Ruby and Alpha Sapphire designs (matching their Showdown sprites), so that art is used.",
   "Trainers without usable art fall back to the enlarged Showdown sprite (see 'missing').",
   "Gym Leaders (custom special trainers, 2026-10-08): drawn artwork only, never renders of 3D models (so nothing from Brilliant Diamond and Shining Pearl), from each one's most recent main-series game other than Let's Go Pikachu / Eevee that has drawn art on PidgiWiki: HeartGold and SoulSilver (Kanto, Johto), Ultra Sun and Ultra Moon (Giovanni), Omega Ruby and Alpha Sapphire (Hoenn), Diamond and Pearl (Sinnoh), Black 2 and White 2 or Black and White (Unova). Thumbnails were generated through PidgiWiki's API (iiurlwidth=400).",
-  "Elite Four and Champions (custom special trainers, 2026-10-10): the Gym Leaders' rule (drawn artwork only, from each one's most recent main-series game other than Let's Go Pikachu / Eevee): HeartGold and SoulSilver (Bruno, Lance, Will, Koga, Karen), Omega Ruby and Alpha Sapphire (Sidney, Phoebe, Drake, Steven, Wallace), Black and White (Alder), X and Y (Drasna, Diantha), Sun and Moon (Hala, Olivia, Acerola, Kukui). Thumbnails through PidgiWiki's API (iiurlwidth=400), each checked to load when requested from another site."
+  "Elite Four and Champions (custom special trainers, 2026-10-10): the Gym Leaders' rule (drawn artwork only, from each one's most recent main-series game other than Let's Go Pikachu / Eevee): HeartGold and SoulSilver (Bruno, Lance, Will, Koga, Karen), Omega Ruby and Alpha Sapphire (Sidney, Phoebe, Drake, Steven, Wallace), Black and White (Alder), X and Y (Drasna, Diantha), Sun and Moon (Hala, Olivia, Acerola, Kukui). Thumbnails through PidgiWiki's API (iiurlwidth=400), each checked to load when requested from another site.",
+  "Evil team leaders and admins (custom special trainers, 2026-10-11): the same rule, keyed like the sprites. Ruby and Sapphire art for the first versions of Archie and Maxie, Omega Ruby and Alpha Sapphire for their second versions and the Hoenn admins, HeartGold and SoulSilver (Rocket Executives), Diamond and Pearl or Platinum (Cyrus, Mars, Charon), Black 2 and White 2 (N), X and Y (Lysandre, Xerosic), Sun and Moon (Lusamine, Faba). Each checked to load when requested from another site."
  ],
  "named": {
   "Red": {
@@ -407,6 +408,146 @@
    "height": 755,
    "game": "Sun and Moon",
    "page": "https://www.pidgi.net/wiki/File:Professor_Kukui_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Archer": {
+   "url": "https://cdn.pidgi.net/images/thumb/0/0d/Archer_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Archer_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 1099,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Archer_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Ariana": {
+   "url": "https://cdn.pidgi.net/images/thumb/5/54/Ariana_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Ariana_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 905,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Ariana_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Proton": {
+   "url": "https://cdn.pidgi.net/images/thumb/f/ff/Proton_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Proton_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 694,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Proton_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Petrel": {
+   "url": "https://cdn.pidgi.net/images/thumb/6/6f/Petrel_-_Pokemon_HeartGold_and_SoulSilver.png/400px-Petrel_-_Pokemon_HeartGold_and_SoulSilver.png",
+   "width": 400,
+   "height": 716,
+   "game": "HeartGold and SoulSilver",
+   "page": "https://www.pidgi.net/wiki/File:Petrel_-_Pokemon_HeartGold_and_SoulSilver.png"
+  },
+  "Maxie (RSE)": {
+   "url": "https://cdn.pidgi.net/images/thumb/9/9e/Maxie_-_Pokemon_Ruby_and_Sapphhire.png/400px-Maxie_-_Pokemon_Ruby_and_Sapphhire.png",
+   "width": 400,
+   "height": 807,
+   "game": "Ruby and Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Maxie_-_Pokemon_Ruby_and_Sapphhire.png"
+  },
+  "Maxie (ORAS)": {
+   "url": "https://cdn.pidgi.net/images/thumb/3/39/Maxie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Maxie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 950,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Maxie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Archie (RSE)": {
+   "url": "https://cdn.pidgi.net/images/thumb/f/fe/Archie_-_Pokemon_Ruby_and_Sapphire.png/400px-Archie_-_Pokemon_Ruby_and_Sapphire.png",
+   "width": 400,
+   "height": 708,
+   "game": "Ruby and Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Archie_-_Pokemon_Ruby_and_Sapphire.png"
+  },
+  "Archie (ORAS)": {
+   "url": "https://cdn.pidgi.net/images/thumb/d/d3/Archie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png/400px-Archie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 566,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Archie_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Tabitha": {
+   "url": "https://cdn.pidgi.net/images/6/62/Tabitha_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 480,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Tabitha_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Courtney": {
+   "url": "https://cdn.pidgi.net/images/4/4c/Courtney_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 480,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Courtney_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Matt (Team Aqua)": {
+   "url": "https://cdn.pidgi.net/images/0/04/Matt_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 480,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Matt_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Shelly": {
+   "url": "https://cdn.pidgi.net/images/9/92/Shelly_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png",
+   "width": 400,
+   "height": 480,
+   "game": "Omega Ruby and Alpha Sapphire",
+   "page": "https://www.pidgi.net/wiki/File:Shelly_-_Pokemon_Omega_Ruby_and_Alpha_Sapphire.png"
+  },
+  "Cyrus": {
+   "url": "https://cdn.pidgi.net/images/thumb/b/b7/Cyrus_-_Pokemon_Diamond_and_Pearl.png/400px-Cyrus_-_Pokemon_Diamond_and_Pearl.png",
+   "width": 400,
+   "height": 840,
+   "game": "Diamond and Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Cyrus_-_Pokemon_Diamond_and_Pearl.png"
+  },
+  "Mars": {
+   "url": "https://cdn.pidgi.net/images/thumb/a/a4/Mars_-_Pokemon_Diamond_and_Pearl.png/400px-Mars_-_Pokemon_Diamond_and_Pearl.png",
+   "width": 400,
+   "height": 883,
+   "game": "Diamond and Pearl",
+   "page": "https://www.pidgi.net/wiki/File:Mars_-_Pokemon_Diamond_and_Pearl.png"
+  },
+  "Charon": {
+   "url": "https://cdn.pidgi.net/images/thumb/6/62/Charon_-_Pokemon_Platinum.png/400px-Charon_-_Pokemon_Platinum.png",
+   "width": 400,
+   "height": 664,
+   "game": "Platinum",
+   "page": "https://www.pidgi.net/wiki/File:Charon_-_Pokemon_Platinum.png"
+  },
+  "N": {
+   "url": "https://cdn.pidgi.net/images/thumb/4/45/N_-_Pokemon_Black_2_and_White_2.png/400px-N_-_Pokemon_Black_2_and_White_2.png",
+   "width": 400,
+   "height": 566,
+   "game": "Black 2 and White 2",
+   "page": "https://www.pidgi.net/wiki/File:N_-_Pokemon_Black_2_and_White_2.png"
+  },
+  "Lysandre": {
+   "url": "https://cdn.pidgi.net/images/thumb/8/85/Lysandre_-_Pokemon_X_and_Y.png/400px-Lysandre_-_Pokemon_X_and_Y.png",
+   "width": 400,
+   "height": 940,
+   "game": "X and Y",
+   "page": "https://www.pidgi.net/wiki/File:Lysandre_-_Pokemon_X_and_Y.png"
+  },
+  "Xerosic": {
+   "url": "https://cdn.pidgi.net/images/thumb/f/f6/Xerosic_-_Pokemon_X_and_Y.png/400px-Xerosic_-_Pokemon_X_and_Y.png",
+   "width": 400,
+   "height": 566,
+   "game": "X and Y",
+   "page": "https://www.pidgi.net/wiki/File:Xerosic_-_Pokemon_X_and_Y.png"
+  },
+  "Lusamine": {
+   "url": "https://cdn.pidgi.net/images/thumb/0/0e/Lusamine_-_Pokemon_Sun_and_Moon.png/400px-Lusamine_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 566,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Lusamine_-_Pokemon_Sun_and_Moon.png"
+  },
+  "Faba": {
+   "url": "https://cdn.pidgi.net/images/thumb/2/2b/Faba_-_Pokemon_Sun_and_Moon.png/400px-Faba_-_Pokemon_Sun_and_Moon.png",
+   "width": 400,
+   "height": 566,
+   "game": "Sun and Moon",
+   "page": "https://www.pidgi.net/wiki/File:Faba_-_Pokemon_Sun_and_Moon.png"
   }
  },
  "missing": {
@@ -445,6 +586,14 @@
   "Siebold": "No official artwork on PidgiWiki.",
   "Wikstrom": "No official artwork on PidgiWiki.",
   "Kahili": "No official artwork on PidgiWiki.",
-  "Molayne": "No official artwork on PidgiWiki."
+  "Molayne": "No official artwork on PidgiWiki.",
+  "Jupiter": "Her Diamond and Pearl artwork on PidgiWiki is a JPEG with a solid background (and her other art is a Brilliant Diamond and Shining Pearl 3D render), so her sprite is shown.",
+  "Saturn": "His Diamond and Pearl artwork on PidgiWiki is a JPEG with a solid background (and his other art is a Brilliant Diamond and Shining Pearl 3D render), so his sprite is shown.",
+  "Ghetsis": "His only main-series artwork on PidgiWiki is his Black and White design; his Black 2 and White 2 design (his sprite) has none.",
+  "Zinzolin": "No official artwork on PidgiWiki.",
+  "Aliana": "No official artwork on PidgiWiki.",
+  "Bryony": "No official artwork on PidgiWiki.",
+  "Celosia": "No official artwork on PidgiWiki.",
+  "Mable": "Her only artwork on PidgiWiki is from Legends: Z-A, a later design; her X and Y sprite is shown instead."
  }
 }
