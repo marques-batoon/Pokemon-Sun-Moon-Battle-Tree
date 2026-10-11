@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { gen7 } from '../../team/dex';
-import { animatedSprite, iconStyle, isAnimatedSprite, localSpriteUrl, staticSprite, type SpriteSide } from '../sprites';
+import { iconStyle, isAnimatedSprite, localSpriteUrl, spriteCandidates, type SpriteSide } from '../sprites';
 import { typeColor } from '../types';
 import { useAppSettings } from '../useAppSettings';
 
@@ -13,30 +13,35 @@ interface Props {
   scale?: number;
   /** Further multiplier, only when the animated 3D sprite is shown (not the static fallback). */
   animatedScale?: number;
+  /** Further multiplier for pixel sprites (96 px images, so they match the 3D ones' size on the stage). */
+  pixelScale?: number;
   className?: string;
 }
 
 /**
- * Battle sprite: animated (Showdown "ani"), falling back to the static Gen 5
- * sprite and then to a type-colored placeholder if images fail or are turned off.
- * Remount (key) on species change to retry the animated sprite for a new forme.
+ * Battle sprite in the chosen style (Settings): 2D pixel sprites by default, falling back to
+ * artwork, then the 3D sprite; or 3D animated sprites, falling back to the pixel ones. Then a
+ * type-colored placeholder if images fail or are turned off. Remount (key) on species change to
+ * start over for a new forme.
  */
-export function PokemonSprite({ species, side, gender, shiny, scale: baseScale = 1, animatedScale = 1, className = '' }: Props) {
-  const { sprites } = useAppSettings();
-  const [level, setLevel] = useState<0 | 1 | 2>(0);
-  if (!sprites || level === 2) return <SpritePlaceholder species={species} className={className} />;
-  const info = level === 0 ? animatedSprite(species, side, { shiny, gender }) : staticSprite(species, side);
-  const scale = baseScale * (isAnimatedSprite(info) ? animatedScale : 1);
+export function PokemonSprite({ species, side, gender, shiny, scale: baseScale = 1, animatedScale = 1, pixelScale = 1, className = '' }: Props) {
+  const { sprites, spriteStyle } = useAppSettings();
+  const [level, setLevel] = useState(0);
+  const candidates = spriteCandidates(species, side, spriteStyle, { shiny, gender });
+  if (!sprites || level >= candidates.length) return <SpritePlaceholder species={species} className={className} />;
+  const info = candidates[level];
+  const scale = baseScale * (isAnimatedSprite(info) ? animatedScale : info.pixelated ? pixelScale : 1);
   return (
     <img
-      className={`poke-sprite ${className}`}
+      key={info.url}
+      className={`poke-sprite${info.pixelated ? ' pixel' : ''} ${className}`}
       src={info.url}
       alt={species}
       width={Math.round(info.w * scale)}
       height={Math.round(info.h * scale)}
       style={info.pixelated || info.mirrored ? { imageRendering: info.pixelated ? 'pixelated' : undefined, transform: info.mirrored ? 'scaleX(-1)' : undefined } : undefined}
       draggable={false}
-      onError={() => setLevel(l => (l === 0 ? 1 : 2))}
+      onError={() => setLevel(l => l + 1)}
     />
   );
 }

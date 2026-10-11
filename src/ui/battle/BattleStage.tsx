@@ -1,3 +1,5 @@
+import { useAppSettings } from '../useAppSettings';
+import { semiInvulnerableOf } from '../../client/semi-invulnerable';
 import { useState, type CSSProperties } from 'react';
 import type { Battle, Pokemon } from '@pkmn/client';
 import { ROOMS, SHIELD_CONDITIONS, type BattleAnimation } from '../../client/playback';
@@ -54,6 +56,7 @@ function Spot({ side, slot, pokemon, anim, playing, faintSeen }: SpotProps) {
       confused={!!visible && 'confusion' in pokemon.volatiles}
       infatuated={!!visible && 'attract' in pokemon.volatiles}
       protect={visible ? protectVariant(pokemon) : null}
+      hidden={visible ? semiInvulnerableOf(pokemon) : null}
     />
   );
 }
@@ -112,10 +115,13 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
   const anchors = spec && animation ? effectAnchors(animation) : null;
   const shields = (s: Side) => SHIELD_CONDITIONS.filter(id => id in battle[s].sideConditions);
   const stageStyle = { '--spd': speed > 0 ? speed : 1 } as CSSProperties;
+  const { sprites, spriteStyle } = useAppSettings();
+  // 2D pixel sprites are drawn big: the stage is taller to fit them.
+  const big = sprites && spriteStyle === '2d' ? 'pixel-sprites' : '';
   return (
     <div
       ref={stageRef}
-      className={`stage ${doubles ? 'doubles' : ''} ${multi ? 'multi' : ''} ${WEATHER_CLASS[battle.field.weather ?? ''] ?? ''} ${battle.field.terrain ? `terrain-${battle.field.terrain.toLowerCase()}` : ''}`}
+      className={`stage ${big} ${doubles ? 'doubles' : ''} ${multi ? 'multi' : ''} ${WEATHER_CLASS[battle.field.weather ?? ''] ?? ''} ${battle.field.terrain ? `terrain-${battle.field.terrain.toLowerCase()}` : ''}`}
       style={stageStyle}
     >
       <div className={`stage-field ${shake.className}`} style={shake.style}>

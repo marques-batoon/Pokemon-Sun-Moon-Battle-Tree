@@ -125,6 +125,10 @@ describe('animation catalog', () => {
       expect(moveSpec({ ...fx, category: 'Special' })).toEqual(signatureZMoveSpec(fx.moveId));
     }
     expect(signatureZMoveSpec('infernooverdrive')).toBeNull();
+    // Omega Wrath is one big punch (a single fist and a single star impact), not a barrage.
+    const omega = signatureZMoveSpec('omegawrath')!.layers;
+    expect(omega.filter(l => l.kind === 'orb').map(l => (l.kind === 'orb' ? l.count ?? 1 : 0))).toEqual([1]);
+    expect(omega.filter(l => l.kind === 'impact')).toHaveLength(1);
   });
 
   it('gives Gaia Force (Terra Force) and Cocytus Pulse (Cocytus Breath) their own animations', () => {

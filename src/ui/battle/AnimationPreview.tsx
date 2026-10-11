@@ -1,3 +1,4 @@
+import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
 import { WARP_DIGIMON } from '../../data/custom/digimon';
@@ -173,6 +174,8 @@ export function AnimationPreview() {
   const [side, setSide] = useState<Side>('p1');
   const [warpForm, setWarpForm] = useState(WARP_DIGIMON[0].warp.name);
   const [field, setField] = useState<FieldState>(EMPTY);
+  // Preview of a Pokémon out of reach for a turn (Dig, Fly, Dive, Phantom Force), set by hand.
+  const [hidden, setHidden] = useState<Record<Side, SemiInvulnerable | null>>({ p1: null, p2: null });
   const [run, setRun] = useState<{ steps: Step[]; index: number } | null>(null);
   const [runs, setRuns] = useState(0);
   const [stageRef, size] = useElementSize<HTMLDivElement>();
@@ -258,21 +261,31 @@ export function AnimationPreview() {
             {MAJOR_STATUS.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
+        <label>
+          Charging turn{' '}
+          <select aria-label="Charging turn" value={hidden[side] ?? ''} onChange={e => setHidden(h => ({ ...h, [side]: (e.target.value || null) as SemiInvulnerable | null }))}>
+            <option value="">none</option>
+            <option value="underground">Dig</option>
+            <option value="sky">Fly</option>
+            <option value="underwater">Dive</option>
+            <option value="phantom">Phantom Force</option>
+          </select>
+        </label>
         <button disabled={!held.length} onClick={() => play(held)}>Held back</button>
         <button onClick={endTurn}>End turn</button>
         <button disabled={!anyShields} onClick={() => play((['p1', 'p2'] as const).flatMap(s => field.shields[s].map(c => (
           { kind: 'side-end', side: s, target: null, condition: c, durationMs: SIDE_MS } as Step
         ))))}>Screens wear off</button>
-        <button onClick={() => { setRun(null); setField(EMPTY); }}>Reset</button>
+        <button onClick={() => { setRun(null); setField(EMPTY); setHidden({ p1: null, p2: null }); }}>Reset</button>
       </div>
-      <div ref={stageRef} className="stage" style={{ '--spd': speed } as CSSProperties}>
+      <div ref={stageRef} className={`stage${settings.sprites && settings.spriteStyle === '2d' ? ' pixel-sprites' : ''}`} style={{ '--spd': speed } as CSSProperties}>
         <div className={`stage-field ${shake.className}`} style={shake.style}>
           <FieldLayers terrain={field.terrain} rooms={field.rooms} anim={anim} />
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
               key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
               substitute={field.sub[s]} seeded={field.seeded[s]} status={field.status[s]} confused={field.confused[s]}
-              infatuated={field.infatuated[s]} protect={field.protect[s]}
+              infatuated={field.infatuated[s]} protect={field.protect[s]} hidden={hidden[s]}
             />
           ))}
           {(['p2', 'p1'] as const).map(s => (

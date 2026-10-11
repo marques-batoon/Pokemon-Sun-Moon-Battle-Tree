@@ -774,13 +774,16 @@ const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
     { kind: 'rings', at: 'target', color: '#ffffff', count: 4, size: 340, rainbow: true, delay: 1320 },
   ] },
   // Poliwrathium Z (custom): a whirling barrage of punches, then a free decoy.
+  // Poliwrath gathers its power and lands one huge "omega" punch (on request: a single blow, not a barrage).
   omegawrath: { type: 'Fighting', layers: [
-    pt('user', 'drop', 'swirl', '#5aa2ff', '#cfe6ff', 16, 16, 80, 0, 800),
-    { kind: 'orb', color: '#e0503a', color2: '#5aa2ff', size: 44, count: 8, gap: 65, delay: 500, dur: 380 },
-    { kind: 'impact', color: '#5aa2ff', size: 170, star: true, delay: 900 },
-    { kind: 'impact', color: '#e0503a', size: 200, star: true, delay: 1080 },
-    { kind: 'impact', color: '#ffffff', size: 340, star: true, delay: 1300 },
-    { kind: 'rays', at: 'target', color: '#ff8c5a', size: 340, delay: 1300, dur: 800 },
+    pt('user', 'drop', 'converge', '#5aa2ff', '#cfe6ff', 20, 16, 170, 0, 800),
+    { kind: 'aura', at: 'user', color: '#e0503a', size: 300, delay: 200, dur: 800 },
+    { kind: 'rings', at: 'user', color: '#5aa2ff', count: 3, size: 240, delay: 300, dur: 700 },
+    { kind: 'orb', color: '#e0503a', color2: '#fff0c0', size: 130, delay: 950, dur: 320 },
+    { kind: 'impact', color: '#ffffff', size: 420, star: true, delay: 1270 },
+    { kind: 'rings', at: 'target', color: '#e0503a', count: 3, size: 380, delay: 1290, dur: 700 },
+    { kind: 'rays', at: 'target', color: '#ff8c5a', size: 400, delay: 1290, dur: 850 },
+    { kind: 'crack', color: '#7a5a2a', delay: 1300 },
   ] },
   riptiderocketrush: { type: 'Water', layers: [
     { kind: 'rings', at: 'user', color: '#5aa2ff', count: 3, size: 240, dur: 700 },

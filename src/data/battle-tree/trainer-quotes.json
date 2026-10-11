@@ -5234,23 +5234,6 @@
     "trainerLoses": "Back to the lab, I suppose."
    }
   ],
-  "Aliana": [
-   {
-    "greeting": "Team Flare admin Aliana. Do try to keep up with my style, darling.",
-    "trainerWins": "You couldn't keep up. Few can.",
-    "trainerLoses": "My style... has been beaten. How unfashionable."
-   },
-   {
-    "greeting": "Red is the color of passion, power, and victory. Mine, specifically.",
-    "trainerWins": "Red wins again. Naturally.",
-    "trainerLoses": "Red... loses? That doesn't match at all."
-   },
-   {
-    "greeting": "I paid a fortune to join Team Flare. I expect a return on that investment.",
-    "trainerWins": "Investment returned, with interest.",
-    "trainerLoses": "A total loss. My accountant will cry."
-   }
-  ],
   "Bryony": [
    {
     "greeting": "I'm Bryony, a Team Flare admin. Let's make this quick; I have a fitting later.",
@@ -5266,23 +5249,6 @@
     "greeting": "Alola's fashion is so... casual. I'll bring a little class to this battle.",
     "trainerWins": "Class, delivered. You're welcome.",
     "trainerLoses": "Even class can't save every look."
-   }
-  ],
-  "Celosia": [
-   {
-    "greeting": "I'm Celosia, Team Flare admin. Green is the color of growth. Watch me grow my lead.",
-    "trainerWins": "My lead grew beautifully.",
-    "trainerLoses": "My lead withered. Unacceptable."
-   },
-   {
-    "greeting": "Team Flare wanted a better world for the chosen few. I'm one of the few.",
-    "trainerWins": "Chosen, and victorious.",
-    "trainerLoses": "Perhaps I wasn't chosen after all."
-   },
-   {
-    "greeting": "I love this island's greenery. It almost makes me forgive the humidity.",
-    "trainerWins": "Greenery and a victory. Lovely.",
-    "trainerLoses": "The humidity wins. Ugh."
    }
   ],
   "Mable": [
@@ -10018,17 +9984,9 @@
    "Zinzolin": "Skyla. The cold sky. Lovely.",
    "Skyla": "Zinzolin! The sky's lovely when it's warm, too! Let's soar!"
   },
-  "Lysandre & Aliana": {
-   "Lysandre": "Aliana. Team Flare's red admin. Show them our vision of beauty.",
-   "Aliana": "Lysandre! It's an honor. Beauty, coming right up."
-  },
   "Lysandre & Bryony": {
    "Lysandre": "Bryony. Elegant and merciless. Exactly as I like it.",
    "Bryony": "Lysandre. Your praise is the only kind worth having."
-  },
-  "Lysandre & Celosia": {
-   "Lysandre": "Celosia. Grow us a victory, as green as Kalos's forests.",
-   "Celosia": "Lysandre. My pleasure. Watch the lead grow."
   },
   "Lysandre & Dexio": {
    "Lysandre": "Dexio. Sycamore's assistant. My old friend chose his students well.",
@@ -10066,17 +10024,9 @@
    "Lysandre": "Xerosic. My scientist. Let's see your genius at work.",
    "Xerosic": "Lysandre! Hmhmhm! Prepare for brilliance!"
   },
-  "Xerosic & Aliana": {
-   "Xerosic": "Hmhmhm! Aliana! Let's run an experiment together!",
-   "Aliana": "Xerosic. Fine. Just don't blow anything up."
-  },
   "Xerosic & Bryony": {
    "Xerosic": "Hmhmhm! Bryony! Your elegance is statistically significant!",
    "Bryony": "Xerosic. Was that a compliment? Let's battle."
-  },
-  "Xerosic & Celosia": {
-   "Xerosic": "Hmhmhm! Celosia! Green, like a test tube's glow!",
-   "Celosia": "Xerosic. Lovely. Let's grow a win."
   },
   "Xerosic & Dexio": {
    "Xerosic": "Hmhmhm! Sycamore's assistant! A fellow scientist!",
@@ -10110,50 +10060,6 @@
    "Xerosic": "Hmhmhm! A knight! Such fascinating armor!",
    "Wikstrom": "Xerosic! My armor is not for study! Let us battle!"
   },
-  "Aliana & Bryony": {
-   "Aliana": "Bryony. Try not to clash with my outfit.",
-   "Bryony": "Aliana. My outfit never clashes. Yours might."
-  },
-  "Aliana & Celosia": {
-   "Aliana": "Celosia. Red and green. How festive.",
-   "Celosia": "Aliana. Let's make it a celebration of our win."
-  },
-  "Aliana & Dexio": {
-   "Aliana": "Sycamore's assistant. Stand back and watch real style.",
-   "Dexio": "Aliana. I'll stand beside you, thanks. Let's battle."
-  },
-  "Aliana & Diantha": {
-   "Aliana": "The Champion. Your fashion sense is almost as good as mine.",
-   "Diantha": "Aliana. Almost? Let's battle, darling."
-  },
-  "Aliana & Drasna": {
-   "Aliana": "Drasna. Your dragons need a makeover.",
-   "Drasna": "Oh my, Aliana. My dragons are perfect as they are."
-  },
-  "Aliana & Mable": {
-   "Aliana": "Mable. Blue doesn't suit everyone, but it suits you.",
-   "Mable": "Aliana. Red suits you. Mostly. Let's battle."
-  },
-  "Aliana & Malva": {
-   "Aliana": "Malva. Red and red. We'll be stunning together.",
-   "Malva": "Aliana. I was stunning first. Let's battle."
-  },
-  "Aliana & Siebold": {
-   "Aliana": "Siebold. A chef. Make us a victory feast.",
-   "Siebold": "Aliana. A feast for the worthy. Let us battle."
-  },
-  "Aliana & Sina": {
-   "Aliana": "Sycamore's other assistant. Cute.",
-   "Sina": "Aliana! I'm not just cute! Let's battle!"
-  },
-  "Aliana & Wikstrom": {
-   "Aliana": "Wikstrom. Your armor's so last century.",
-   "Wikstrom": "Aliana! Armor is timeless! Let us battle!"
-  },
-  "Bryony & Celosia": {
-   "Bryony": "Celosia. Purple and green. Daring.",
-   "Celosia": "Bryony. Daring wins battles. Let's go."
-  },
   "Bryony & Dexio": {
    "Bryony": "Sycamore's assistant. Try to keep up.",
    "Dexio": "Bryony. I'll keep up just fine. Let's battle."
@@ -10185,38 +10091,6 @@
   "Bryony & Wikstrom": {
    "Bryony": "Wikstrom. Chivalry is so... quaint.",
    "Wikstrom": "Bryony! Chivalry is eternal! Let us battle!"
-  },
-  "Celosia & Dexio": {
-   "Celosia": "Sycamore's assistant. Let's grow something together.",
-   "Dexio": "Celosia. A victory, preferably. Let's battle."
-  },
-  "Celosia & Diantha": {
-   "Celosia": "The Champion. Green looks good on everyone, even champions.",
-   "Diantha": "Celosia. Let's make this battle bloom."
-  },
-  "Celosia & Drasna": {
-   "Celosia": "Drasna. Your dragons and my greenery. A natural pairing.",
-   "Drasna": "Oh my, Celosia. How lovely. Let's win."
-  },
-  "Celosia & Mable": {
-   "Celosia": "Mable. Green and blue. Like Kalos's forests and skies.",
-   "Mable": "Celosia. Poetic. Let's battle."
-  },
-  "Celosia & Malva": {
-   "Celosia": "Malva. Report on our growth.",
-   "Malva": "Celosia. Live update: we're winning. Stay tuned."
-  },
-  "Celosia & Siebold": {
-   "Celosia": "Siebold. Fresh herbs make every dish better.",
-   "Siebold": "Celosia. Indeed. Let us cook up a win."
-  },
-  "Celosia & Sina": {
-   "Celosia": "Sycamore's assistant. Cold and green. Refreshing.",
-   "Sina": "Celosia! Let's grow a cool win!"
-  },
-  "Celosia & Wikstrom": {
-   "Celosia": "Wikstrom. Your armor needs some moss. Kidding.",
-   "Wikstrom": "Celosia! Moss upon my armor? Ha! A knight endures all jests!"
   },
   "Mable & Dexio": {
    "Mable": "Sycamore's assistant. Let's compare research methods.",

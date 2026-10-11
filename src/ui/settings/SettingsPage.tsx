@@ -1,7 +1,7 @@
 import { useRef, useState, useSyncExternalStore } from 'react';
 import { SETS, TRAINERS } from '../../data/battle-tree';
 import type { RunSettings, TreeProfile } from '../../run/types';
-import type { AnimationSpeed, ThemeSetting } from '../../settings/settings-store';
+import type { AnimationSpeed, SpriteStyle, ThemeSetting } from '../../settings/settings-store';
 import { checkBackup, createBackup, restoreBackup, type Backup } from '../../storage/backup';
 import { useTeams } from '../builder/hooks';
 import { getKeyValueStore, getRunController, getSettingsStore, getTeamStore } from '../services';
@@ -45,6 +45,16 @@ export function SettingsPage() {
         </fieldset>
         <Toggle checked={settings.sprites} onChange={v => store.update({ sprites: v })}
           label="Pokémon sprites and trainer portraits" hint="Loaded from Pokémon Showdown's sprite server (needs an internet connection; © Nintendo / Creatures / GAME FREAK). Off: type-colored placeholders." />
+        <fieldset className="choice-row" disabled={!settings.sprites}>
+          <legend>Pokémon sprites</legend>
+          {(['2d', '3d'] as SpriteStyle[]).map(st => (
+            <label key={st}>
+              <input type="radio" name="sprite-style" checked={settings.spriteStyle === st} onChange={() => store.update({ spriteStyle: st })} />
+              {' '}{st === '2d' ? '2D pixel sprites' : '3D animated sprites'}
+            </label>
+          ))}
+        </fieldset>
+        <p className="muted small">2D: Black and White-style pixel sprites (artwork, then 3D, where a Pokémon has none). 3D: X and Y / Sun and Moon-style animated sprites.</p>
       </section>
 
       <section className="panel">

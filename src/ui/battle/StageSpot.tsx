@@ -1,3 +1,4 @@
+import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useState, type CSSProperties } from 'react';
 import { warpStageScale } from '../../data/custom/digimon';
 import type { BattleAnimation } from '../../client/playback';
@@ -12,6 +13,8 @@ type Side = 'p1' | 'p2';
 
 /** Size of a Mega Evolved Pokémon's sprite relative to the usual one. */
 const MEGA_SCALE = 1.2;
+/** 2D pixel sprites are 96 px images with room around the Pokémon: drawn larger (doubled on request, 2026-10-11). */
+const PIXEL_SCALE = 3;
 
 /** Drawn doll for when sprites are off or the image fails to load. */
 function DollSvg({ side }: { side: Side }) {
@@ -126,10 +129,15 @@ export interface StageSpotProps {
   infatuated?: boolean;
   /** Protect (or detect, kingsshield, spikyshield, banefulbunker) is up this turn. */
   protect?: string | null;
+  /** Out of reach for a turn (Dig, Fly, Dive, Phantom Force...): most attacks miss it. */
+  hidden?: SemiInvulnerable | null;
 }
 
+/** What the badge over a hidden Pokémon says. */
+const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished' };
+
 /** One side of the field: platform, Pokémon sprite, Substitute doll and status marks. */
-export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null }: StageSpotProps) {
+export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null, hidden = null }: StageSpotProps) {
   const mine = actsAt(anim, side, slot) ? anim : null;
   const pos = posKey(side, slot);
   const v = anim && anim.id % 2 ? 'a' : 'b';
@@ -151,8 +159,14 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
     : mine?.kind === 'sub-end' ? 'fx-doll-break'
     : peeking ? 'aside' : '';
   return (
-    <div className={`spot spot-${side} spot-${pos}`} data-pos={pos}>
+    <div className={`spot spot-${side} spot-${pos}${pokemon && hidden ? ` semi-${hidden}` : ''}`} data-pos={pos}>
       <div className="platform" />
+      {pokemon && hidden && (
+        <>
+          <span className={`semi-cue semi-cue-${hidden}`} aria-hidden />
+          <span className="semi-badge" title="Most attacks will miss it this turn">{HIDDEN_LABEL[hidden]}</span>
+        </>
+      )}
       {pokemon && (
         <div className={`sprite-sub ${subClass}`}>
           <div
@@ -167,6 +181,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
               shiny={pokemon.shiny}
               scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? warpScale : mega ? MEGA_SCALE : 1)}
               animatedScale={boost}
+              pixelScale={PIXEL_SCALE}
             />
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />

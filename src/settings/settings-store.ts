@@ -2,6 +2,8 @@ import type { KeyValueStore } from '../storage/kv';
 
 export type ThemeSetting = 'system' | 'light' | 'dark';
 export type AnimationSpeed = 'off' | 'fast' | 'normal' | 'slow';
+/** Pokémon pictures: 2D pixel sprites (Black and White style) or 3D animated ones (X and Y / Sun and Moon style). */
+export type SpriteStyle = '2d' | '3d';
 
 /** Multiplier on animation durations for each speed setting (0 = no animations). */
 export const ANIMATION_SPEED_FACTOR: Record<AnimationSpeed, number> = { off: 0, fast: 0.5, normal: 1, slow: 1.6 };
@@ -16,6 +18,8 @@ export interface AppSettings {
   showDebugTools: boolean;
   /** Pokémon sprites and trainer portraits (loaded from Pokémon Showdown's sprite server). */
   sprites: boolean;
+  /** Which Pokémon sprites: 2D pixel (default) or 3D animated. Each falls back to the other kinds if missing. */
+  spriteStyle: SpriteStyle;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
@@ -28,6 +32,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   keyboardShortcuts: true,
   showDebugTools: false,
   sprites: true,
+  spriteStyle: '2d',
   animationSpeed: 'normal',
   trainerName: '',
 };

@@ -62,6 +62,15 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
         battleKey={`${run.id}:${run.battle}`}
       />
 
+      {/* Right under the trainer card in every mode (above your partner in Multi). */}
+      <div className="row-actions">
+        <button className="danger" onClick={() => { if (confirm(`Retire? Your ${run.wins}-win streak ends.`)) controller.retire(key); }}>Retire</button>
+        <span className="spacer" />
+        {!changing && <button onClick={() => setChanging(true)}>Change team</button>}
+        <button onClick={onLeave}>Save &amp; quit</button>
+        <button className="primary" disabled={changing} onClick={onBattle}>Battle!</button>
+      </div>
+
       {run.partner && (
         <div className="run-partner">
           <span className="muted small">Your partner</span>
@@ -103,14 +112,6 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
           onApply={ids => controller.debugChooseOpponent(key, ids)}
         />
       )}
-
-      <div className="row-actions">
-        <button className="danger" onClick={() => { if (confirm(`Retire? Your ${run.wins}-win streak ends.`)) controller.retire(key); }}>Retire</button>
-        <span className="spacer" />
-        {!changing && <button onClick={() => setChanging(true)}>Change team</button>}
-        <button onClick={onLeave}>Save &amp; quit</button>
-        <button className="primary" disabled={changing} onClick={onBattle}>Battle!</button>
-      </div>
 
       {run.history.length > 0 && (
         <details className="history">

@@ -8,6 +8,7 @@ import { SPRITE_ALIASES } from '../data/custom';
 import { DIGIMON_SPRITES } from '../data/custom/digimon';
 import { PARADOX_SPRITES } from '../data/custom/paradox';
 import { gen7 } from '../team/dex';
+import type { SpriteStyle } from '../settings/settings-store';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
 import { trainerKey, type Trainer } from '../data/battle-tree';
@@ -69,15 +70,38 @@ export function animatedSprite(name: string, side: SpriteSide, opts: { shiny?: b
   return { url: s.url, w: s.w, h: s.h, pixelated: s.pixelated };
 }
 
-/** Static Gen 5 sprite, used if the animated one fails to load. */
-export function staticSprite(name: string, side: SpriteSide): SpriteInfo {
+/** Static 2D sprite (Black and White style, pixel art; newer Pokémon have fan-made ones in that style). */
+export function staticSprite(name: string, side: SpriteSide, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo {
   const species = SPRITE_ALIASES[name] ?? name;
   const local = localSprite(species, side);
   if (local) return local;
   const champions = championsSprite(species, side, true);
   if (champions) return champions;
-  const s = Sprites.getPokemon(species, { gen: 'gen5', side });
+  const s = Sprites.getPokemon(species, { gen: 'gen5', side, shiny: opts.shiny, gender: opts.gender });
   return { url: s.url, w: s.w, h: s.h, pixelated: s.pixelated };
+}
+
+/** Official-style artwork (Showdown's Pokédex pictures): front only, so the back view is it flipped. */
+export function artworkSprite(name: string, side: SpriteSide): SpriteInfo {
+  const species = SPRITE_ALIASES[name] ?? name;
+  const local = localSprite(species, side);
+  if (local) return local;
+  const a = CHAMPIONS_SPRITES[species] ?? PARADOX_SPRITES[species];
+  const info: SpriteInfo = a
+    ? { url: `${SPRITE_BASE}/dex/${a.id}.png`, w: 120, h: 120, pixelated: false }
+    : (({ url, w, h }) => ({ url, w, h, pixelated: false }))(Sprites.getDexPokemon(species, { gen: 'dex' }));
+  return side === 'p1' ? { ...info, mirrored: true } : info;
+}
+
+/**
+ * The pictures to try for a Pokémon, in order, until one loads. 2D (the default): the pixel sprite,
+ * then the artwork, then the 3D sprite. 3D: the animated sprite, then the pixel one. Every image URL
+ * the app shows is built in this file (an offline version would only need to change these).
+ */
+export function spriteCandidates(name: string, side: SpriteSide, style: SpriteStyle, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo[] {
+  return style === '3d'
+    ? [animatedSprite(name, side, opts), staticSprite(name, side, opts)]
+    : [staticSprite(name, side, opts), artworkSprite(name, side), animatedSprite(name, side, opts)];
 }
 
 /** Whether the image is one of Showdown's animated 3D sprites (front or back, shiny or not). */

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
-import { animatedSprite, animatedSpriteBoost, hasSkyBattleAnimation, isAnimatedSprite, staticSprite, WING_FLAPPERS } from './sprites';
+import { DEFAULT_APP_SETTINGS } from '../settings/settings-store';
+import { animatedSprite, animatedSpriteBoost, artworkSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, staticSprite, WING_FLAPPERS } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -90,5 +91,28 @@ describe('larger animated sprites', () => {
     expect(isAnimatedSprite(animatedSprite('Raging Bolt', 'p2'))).toBe(true);
     expect(isAnimatedSprite(staticSprite('Charizard', 'p2'))).toBe(false);
     expect(isAnimatedSprite(animatedSprite('Agumon', 'p2'))).toBe(false);
+  });
+});
+
+describe('sprite style', () => {
+  it('defaults to 2D pixel sprites, then artwork, then 3D; 3D keeps the pixel sprite as its fallback', () => {
+    expect(DEFAULT_APP_SETTINGS.spriteStyle).toBe('2d');
+    const urls = (style: '2d' | '3d', side: 'p1' | 'p2' = 'p2') => spriteCandidates('Garchomp', side, style).map(s => s.url.replace('https://play.pokemonshowdown.com/sprites/', ''));
+    expect(urls('2d')).toEqual(['gen5/garchomp.png', 'dex/garchomp.png', 'ani/garchomp.gif']);
+    expect(urls('3d')).toEqual(['ani/garchomp.gif', 'gen5/garchomp.png']);
+    expect(urls('2d', 'p1')).toEqual(['gen5-back/garchomp.png', 'dex/garchomp.png', 'ani-back/garchomp.gif']);
+    // Artwork only exists facing forward: the back view is it flipped.
+    expect(artworkSprite('Garchomp', 'p1').mirrored).toBe(true);
+    expect(artworkSprite('Clefable-Mega', 'p2').url).toBe('https://play.pokemonshowdown.com/sprites/dex/clefable-mega.png');
+    // Shiny pixel sprites.
+    expect(spriteCandidates('Garchomp', 'p2', '2d', { shiny: true })[0].url).toContain('gen5-shiny/garchomp.png');
+    // The Digimon bring their own picture, whatever the style.
+    expect(spriteCandidates('Agumon', 'p2', '2d')[0].url).toBe('/pokemon/agumon.png');
+  });
+
+  it('only enlarges sprites (Sky Battle fliers, Alolan Exeggutor...) when the animated 3D one is shown', () => {
+    expect(animatedSpriteBoost('Charizard')).toBe(1.35);
+    expect(isAnimatedSprite(spriteCandidates('Charizard', 'p2', '2d')[0])).toBe(false);
+    expect(isAnimatedSprite(spriteCandidates('Charizard', 'p2', '3d')[0])).toBe(true);
   });
 });

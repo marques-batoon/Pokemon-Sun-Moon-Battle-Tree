@@ -31,8 +31,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets and 224 evil team sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 224);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets and 208 evil team sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208);
     // Labels name the trainer by key, so the two Archies' sets stay apart.
     expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
@@ -71,10 +71,10 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions and 28 evil team leaders and admins', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions and 26 evil team leaders and admins', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 28);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 28, 4 + 4]);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26, 4 + 4]);
     // Every special trainer has a unique key (lines, pictures, partners), even when names repeat.
     const specials = TRAINERS.filter(t => t.kind === 'special');
     expect(new Set(specials.map(trainerKey)).size).toBe(specials.length);
@@ -92,6 +92,8 @@ describe('trainers.json', () => {
     expect([cls('Lorelei'), cls('Hala'), cls('Kukui')]).toEqual(['Elite Four', 'Elite Four', 'Pokémon Professor']);
     // Cynthia and Grimsley stay the game's own special trainers; Blue stays a Battle Legend only.
     expect(TRAINERS.filter(t => ['Cynthia', 'Grimsley', 'Blue'].includes(t.name)).every(t => !t.custom)).toBe(true);
+    // Aliana and Celosia were removed on request.
+    expect(TRAINERS.some(t => t.name === 'Aliana' || t.name === 'Celosia')).toBe(false);
     expect(TRAINERS.slice(252, 256).map(t => [t.name, t.class, t.kind, t.custom, t.iv, t.sprite, t.roster.length])).toEqual([
       ['Marques', 'Pokémon Trainer', 'legend', true, 31, '/trainers/marques.png', 3],
       ['Thomas', 'Pokémon Trainer', 'legend', true, 31, '/trainers/thomas.png', 3],
@@ -284,7 +286,7 @@ describe('trainer-quotes.json', () => {
       seen.add(key);
       lines.push(...Object.values(entry));
     }
-    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 427);
+    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 404);
     const usual = Object.values(TRAINER_QUOTES).flat().map(q => q.greeting);
     for (const text of lines) {
       expect(text.trim().length).toBeGreaterThan(0);

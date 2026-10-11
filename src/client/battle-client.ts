@@ -1,3 +1,4 @@
+import { trackSemiInvulnerable } from './semi-invulnerable';
 import { Battle as ClientBattle } from '@pkmn/client';
 import type { PokemonSet } from '@pkmn/data';
 import { Protocol } from '@pkmn/protocol';
@@ -304,6 +305,7 @@ export class BattleClient {
       if (args[0] === 'turn') draft.currentMove = null;
       draft.fieldTimers = nextTimers(draft.fieldTimers, args as readonly string[], kwArgs as Record<string, unknown>);
       battle.add(args, kwArgs);
+      trackSemiInvulnerable(battle, args as readonly string[]);
       if (args[0] === 'gametype') linkMultiAllies(battle);
     }
     const anim = step.animation;

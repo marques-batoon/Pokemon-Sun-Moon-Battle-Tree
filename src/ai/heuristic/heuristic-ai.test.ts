@@ -87,6 +87,18 @@ describe('HeuristicAI move choice', () => {
     expect(decide(wish)['move 1'] ?? 0).toBe(0);
   });
 
+  it("doesn't use Power Trick again right after (a second one would swap the stats back)", () => {
+    const SHUCKLE = `Shuckle @ Leftovers\nAbility: Sturdy\nEVs: 252 HP / 252 Def\nRelaxed Nature\n- Power Trick\n- Rock Slide`;
+    const SNORLAX = `Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP / 252 SpD\nCareful Nature\n- Rest\n- Sleep Talk`;
+    const b = scenario(SNORLAX, SHUCKLE);
+    // Fresh in, Power Trick (Shuckle's huge Defense into Attack) is a real option...
+    expect(decide(b)['move 1'] ?? 0).toBeGreaterThan(0);
+    b.makeChoices('move 1', 'move 1');
+    expect(b.p2.active[0].volatiles.powertrick).toBeTruthy();
+    // ...but not again while the swap is on.
+    expect(decide(b)['move 1'] ?? 0).toBe(0);
+  });
+
   it("doesn't use Future Sight again until the last one has hit", () => {
     // Future Sight is its strongest attack (Water Gun is the other), so it's the pick, except while one is on its way.
     const SLOWBRO = `Slowbro @ Leftovers\nAbility: Regenerator\nEVs: 252 HP / 252 SpA\nModest Nature\n- Future Sight\n- Water Gun`;

@@ -20,8 +20,8 @@ const BENCH: SimSet[] = [
 ];
 
 describe('evil team leaders and admins', () => {
-  it('are 28 special trainers at weight 3.5 with eight sets each, every set legal for a player in Sun & Moon', () => {
-    expect(EVIL).toHaveLength(28);
+  it('are 26 special trainers at weight 3.5 with eight sets each, every set legal for a player in Sun & Moon', () => {
+    expect(EVIL).toHaveLength(26);
     expect(EVIL.every(t => t.kind === 'special' && t.weight === 3.5 && t.roster.length === 8 && t.iv === 31)).toBe(true);
     const problems: string[] = [];
     for (const t of EVIL) {

@@ -187,6 +187,18 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
         />
       )}
 
+      {/* Right under the trainer card, as in the Battle Tree. */}
+      <div className="row-actions">
+        <span className="spacer" />
+        {host ? (
+          <button className="primary" disabled={!partnerName || !lobby.hostReady || !lobby.guestReady || lobby.inBattle} onClick={() => room.startBattle()}>
+            Start battle {lobby.battle}
+          </button>
+        ) : (
+          <span className="muted small">{lobby.inBattle ? 'Battle starting…' : 'The host starts the battle when you are both ready.'}</span>
+        )}
+      </div>
+
       {host && !lobby.inBattle && snap.fresh && (
         <label className="fld online-start">
           <span>Mode</span>
@@ -223,16 +235,6 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       <TeamSetup format="multi" teams={teams} initial={room.teamChoice ?? undefined} onChange={team => room.setTeam(team ? team.bring.map(i => team.sets[i]) : null, team)} />
       <p className="muted small">Nicknames aren't shown online: your partner sees species names only.</p>
 
-      <div className="row-actions">
-        <span className="spacer" />
-        {host ? (
-          <button className="primary" disabled={!partnerName || !lobby.hostReady || !lobby.guestReady || lobby.inBattle} onClick={() => room.startBattle()}>
-            Start battle {lobby.battle}
-          </button>
-        ) : (
-          <span className="muted small">{lobby.inBattle ? 'Battle starting…' : 'The host starts the battle when you are both ready.'}</span>
-        )}
-      </div>
       <SafetyNote />
     </section>
   );

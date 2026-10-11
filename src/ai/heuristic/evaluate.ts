@@ -156,11 +156,13 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   const safe = threat.frac < config.setupSafeThreat && !threat.koFirst;
 
   // Ruled out (app rules), scored below a move that merely fails so they lose even an all-zero tie:
-  // partner-only moves (Helping Hand) in a Single Battle, and Wish / Trick Room twice in a row
-  // (a second Trick Room undoes ours; a second Wish fails while one is pending).
+  // partner-only moves (Helping Hand) in a Single Battle, Wish / Trick Room twice in a row
+  // (a second Trick Room undoes ours; a second Wish fails while one is pending), and Power Trick
+  // while its swap is on (right after using it: a second one swaps Attack and Defense back).
   if (battle.gameType === 'singles' && ALLY_ONLY_TARGETS.has(move.target)) return out(RULED_OUT, 'no partner in Singles');
   if (move.id === 'wish' && (me.lastMove?.id === 'wish' || me.side.slotConditions[me.position]?.wish)) return out(RULED_OUT, 'wish just used');
   if (move.id === 'trickroom' && (me.lastMove?.id === 'trickroom' || ownTrickRoomSetLastTurn(s))) return out(RULED_OUT, 'trick room just set');
+  if (move.id === 'powertrick' && (me.lastMove?.id === 'powertrick' || me.volatiles.powertrick)) return out(RULED_OUT, 'power trick already on');
 
   if (move.status) {
     if (!canInflict(s, move, move.status)) return out(0, `can't ${move.status}`);
