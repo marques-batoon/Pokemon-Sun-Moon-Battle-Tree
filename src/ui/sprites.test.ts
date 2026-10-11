@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
-import { animatedSprite, animatedSpriteBoost, hasSkyBattleAnimation, isAnimatedSprite, staticSprite } from './sprites';
+import { animatedSprite, animatedSpriteBoost, hasSkyBattleAnimation, isAnimatedSprite, staticSprite, WING_FLAPPERS } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -65,12 +65,18 @@ describe('larger animated sprites', () => {
     }
   });
 
-  it('draws those, Alolan Exeggutor and Raging Bolt 50% larger, only as animated 3D sprites', () => {
-    for (const name of ['Exeggutor-Alola', 'Raging Bolt', 'Charizard', 'Charizard-Mega-Y', 'Rotom-Heat']) expect(animatedSpriteBoost(name), name).toBe(1.5);
+  it('draws Alolan Exeggutor and Raging Bolt 50% larger, and the wing-flapping Sky Battle Pokémon 35%, only as animated 3D sprites', () => {
+    for (const name of ['Exeggutor-Alola', 'Raging Bolt']) expect(animatedSpriteBoost(name), name).toBe(1.5);
+    for (const name of ['Charizard', 'Charizard-Mega-Y', 'Pidgeot', 'Talonflame', 'Zubat', 'Yveltal']) expect(animatedSpriteBoost(name), name).toBe(1.35);
+    for (const name of WING_FLAPPERS) {
+      expect(hasSkyBattleAnimation(name), name).toBe(true);
+      expect(animatedSpriteBoost(name), name).toBe(1.35);
+    }
+    // Sky Battle Pokémon that float, glide or hover without big wing flaps keep their size.
+    for (const name of ['Gyarados', 'Gyarados-Mega', 'Salamence', 'Salamence-Mega', 'Pidgeot-Mega', 'Charizard-Mega-X', 'Rotom-Heat', 'Bronzong', 'Latios', 'Skarmory', 'Koffing', 'Togekiss', 'Vivillon']) {
+      expect(animatedSpriteBoost(name), name).toBe(1);
+    }
     for (const name of ['Exeggutor', 'Raikou', 'Garchomp', 'WarGreymon']) expect(animatedSpriteBoost(name), name).toBe(1);
-    // Kept at their usual size on request (their base formes are still larger).
-    for (const name of ['Gyarados-Mega', 'Salamence-Mega']) expect(animatedSpriteBoost(name), name).toBe(1);
-    for (const name of ['Gyarados', 'Salamence']) expect(animatedSpriteBoost(name), name).toBe(1.5);
     expect(isAnimatedSprite(animatedSprite('Charizard', 'p2'))).toBe(true);
     expect(isAnimatedSprite(animatedSprite('Charizard', 'p1'))).toBe(true);
     expect(isAnimatedSprite(animatedSprite('Raging Bolt', 'p2'))).toBe(true);

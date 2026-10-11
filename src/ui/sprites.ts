@@ -83,12 +83,25 @@ export function staticSprite(name: string, side: SpriteSide): SpriteInfo {
 /** Whether the image is one of Showdown's animated 3D sprites (front or back, shiny or not). */
 export const isAnimatedSprite = (info: SpriteInfo) => /\/sprites\/ani(-back)?(-shiny)?\//.test(info.url);
 
-/** Extra size on the battle stage for these Pokémon's animated 3D sprites (they look small otherwise). */
+/** Extra size on the battle stage for some animated 3D sprites (they look small otherwise). */
 const ANIMATED_BOOST = 1.5;
 /** Picked by name, on request: tall or bulky sprites drawn too small. */
 const BOOSTED = new Set(['Exeggutor-Alola', 'Raging Bolt']);
-/** Sky Battle fliers kept at their usual size, on request. */
-const NOT_BOOSTED = new Set(['Gyarados-Mega', 'Salamence-Mega']);
+/** The Sky Battle Pokémon below are enlarged a little less (35%, on request). */
+const WING_FLAP_BOOST = 1.35;
+/**
+ * Sky Battle Pokémon whose animated sprites flap their wings through a wide sweep, so the image is
+ * much bigger than the Pokémon in any one frame and it looks small on the stage. Picked from the
+ * Showdown GIFs (2026-10-10): each frame's outline averaged 65% or less of the whole animation's
+ * box, and the frames were checked by eye to be wing flaps (not floating, gas puffs or swaying tails).
+ */
+export const WING_FLAPPERS = [
+  'Aerodactyl', 'Aerodactyl-Mega', 'Archeops', 'Articuno', 'Braviary', 'Charizard', 'Charizard-Mega-Y', 'Crobat', 'Fearow', 'Fletchinder',
+  'Flygon', 'Golbat', 'Ho-Oh', 'Honchkrow', 'Lugia', 'Mandibuzz', 'Moltres', 'Mothim', 'Noctowl', 'Noibat', 'Noivern', 'Pelipper',
+  'Pidgeotto', 'Pidgeot', 'Staravia', 'Staraptor', 'Swanna', 'Woobat', 'Swoobat', 'Talonflame', 'Tornadus-Therian', 'Tranquill',
+  'Unfezant', 'Yveltal', 'Zapdos', 'Zubat',
+];
+const wingFlappers = new Set(WING_FLAPPERS);
 /**
  * Flying-type or Levitate Pokémon that X & Y still kept out of Sky Battles (they don't fly in battle),
  * from the community lists (Nintendo never published one). Gengar lost Levitate in Gen 7 anyway.
@@ -110,8 +123,8 @@ export function hasSkyBattleAnimation(name: string): boolean {
 }
 /** Size multiplier for a Pokémon's animated 3D sprite on the battle stage (1: usual size). */
 export function animatedSpriteBoost(name: string): number {
-  if (NOT_BOOSTED.has(name)) return 1;
-  return BOOSTED.has(name) || hasSkyBattleAnimation(name) ? ANIMATED_BOOST : 1;
+  if (BOOSTED.has(name)) return ANIMATED_BOOST;
+  return wingFlappers.has(name) && hasSkyBattleAnimation(name) ? WING_FLAP_BOOST : 1;
 }
 
 /** The Substitute doll (Gen 5 pixel art; `p1` = back view). */
