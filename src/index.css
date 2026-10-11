@@ -561,7 +561,6 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .poke-sprite.pixel { max-height: min(calc(248px * var(--sprite-size, 1)), 262px); max-width: none; }
 .spot-p1 .poke-sprite.pixel { max-height: min(calc(285px * var(--sprite-size, 1)), 300px); }
 .stage.pixel-sprites .spot-p2 { top: 14%; }
-.stage.pixel-sprites .spot-p1 { bottom: -9%; }
 .poke-sprite.placeholder { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.4rem; box-shadow: var(--shadow); }
 .hud { position: absolute; z-index: 2; width: min(46%, 300px); background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: var(--shadow); font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
 .hud-p2 { left: 3%; top: 5%; }
@@ -603,7 +602,6 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .stage.pixel-sprites.doubles .spot-p2b { top: 11%; }
 .stage.pixel-sprites.multi .spot-p2a { top: 11%; }
 .stage.pixel-sprites.multi .spot-p2b { top: 15%; }
-.stage.pixel-sprites.doubles .spot-p1a, .stage.pixel-sprites.doubles .spot-p1b { bottom: -8%; }
 /* The Doubles spots are narrow: let a warp form or an enlarged sprite reach past its spot, so each keeps its own size. */
 .stage.doubles .sprite-wrap.is-large .poke-sprite { max-width: none; }
 .stage.doubles .hud-stack { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: 4px; width: min(36%, 240px); }

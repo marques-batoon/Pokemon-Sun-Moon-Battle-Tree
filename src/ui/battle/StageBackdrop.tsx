@@ -265,13 +265,32 @@ const forestGround: Part = () => (
 );
 
 // ---- Battle Tree (the default): the arena at the top of the giant tree on Poni Island. Leafy canopy and huge
-// branches overhead, the sea far below past a wooden railing, a round stone floor with a tree emblem. ----
+// branches overhead, the sea far below past a wooden railing, a round stone floor with a hala tree emblem. ----
 
 const CANOPY = Array.from({ length: 24 }, (_, i) => ({ cx: i * 44 + wobble(i, 16), cy: 36 + wobble(i + 4, 22), r: 40 + wobble(i + 1, 14) }));
 const LEAF_TONES = ['#2f6f30', '#3f8a3a', '#4f9a3e'];
 const POSTS = Array.from({ length: 17 }, (_, i) => 20 + i * 60);
 const BUSHES_RAIL = [90, 260, 470, 640, 830].map((x, i) => ({ x, r: 16 + wobble(i, 8) }));
 const MOSS = scatter(70, 23, ['#4c8a39', '#79b85a', '#3d7330'], [1.5, 5]);
+
+/**
+ * The floor emblem: a hala tree (Pandanus tectorius), native to Hawaiʻi (Alola is based on Hawaiʻi, and Kahuna Hala
+ * is named after it; on request): stilt roots propping up the trunk, forking branches that each end in a tuft of
+ * long, drooping, sword-shaped leaves, and pineapple-like hala fruit.
+ */
+function halaTuft(cx: number, cy: number, len: number): string {
+  const n = 13;
+  return Array.from({ length: n }, (_, i) => {
+    const a = -Math.PI / 2 + (i / (n - 1) - 0.5) * Math.PI * 1.75;
+    const side = Math.abs(Math.cos(a));
+    const l = len * (0.75 + 0.25 * side);
+    const mx = cx + Math.cos(a) * l * 0.55, my = cy + Math.sin(a) * l * 0.55 - 8;
+    const tx = cx + Math.cos(a) * l, ty = cy + Math.sin(a) * l + l * 0.45 * side;
+    return `M${cx} ${cy} Q${mx.toFixed(1)} ${my.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)}`;
+  }).join(' ');
+}
+const HALA_TUFTS: [number, number, number][] = [[-62, -42, 54], [58, -50, 54], [0, -80, 50]];
+const HALA_FRUIT: [number, number][] = [[-48, -16], [70, -24]];
 
 const treeSky: Part = id => (
   <svg {...SKY_BOX}>
@@ -331,19 +350,26 @@ const treeGround: Part = id => (
     </g>
     <g transform="translate(500 232) scale(1 0.36)">
       <circle r="150" fill="#e4f1d4" stroke="#4f8a3c" strokeWidth="10" />
-      <path d="M-20 10 L-26 112 L26 112 L20 10 Z" fill="#7a5232" />
-      <path d="M-26 112 Q-60 118 -80 132 M26 112 Q60 118 80 132" stroke="#7a5232" strokeWidth="12" fill="none" strokeLinecap="round" />
-      <circle cx="-58" cy="-8" r="56" fill="#4f9a3e" />
-      <circle cx="58" cy="-8" r="56" fill="#4f9a3e" />
-      <circle cx="0" cy="-58" r="66" fill="#5aa845" />
-      <circle cx="-18" cy="-80" r="20" fill="#8fd16a" opacity="0.8" />
+      <g stroke="#6b4528" fill="none" strokeLinecap="round">
+        <path d="M-2 70 Q-30 88 -56 122 M-2 72 Q-16 94 -24 124 M0 74 L2 126 M2 72 Q18 94 28 124 M2 70 Q32 88 58 122" strokeWidth="6" />
+        <path d="M0 76 C-4 50 4 30 0 8" strokeWidth="16" />
+        <path d="M0 10 C-20 -6 -40 -20 -62 -42 M0 10 C20 -8 40 -26 58 -50 M0 8 C2 -24 0 -52 0 -80" strokeWidth="10" />
+      </g>
+      {HALA_FRUIT.map(([cx, cy]) => (
+        <g key={cx}>
+          <ellipse cx={cx} cy={cy} rx="15" ry="19" fill="#f0a23a" stroke="#c46a1c" strokeWidth="3" />
+          <path d={`M${cx - 12} ${cy - 6} L${cx + 12} ${cy - 6} M${cx - 14} ${cy + 4} L${cx + 14} ${cy + 4} M${cx - 6} ${cy - 17} L${cx - 6} ${cy + 17} M${cx + 6} ${cy - 17} L${cx + 6} ${cy + 17}`} stroke="#c46a1c" strokeWidth="2" />
+        </g>
+      ))}
+      {HALA_TUFTS.map(([cx, cy, len], i) => (
+        <g key={i} fill="none" strokeLinecap="round">
+          <path d={halaTuft(cx, cy, len)} stroke="#2f6f30" strokeWidth="9" />
+          <path d={halaTuft(cx, cy, len * 0.9)} stroke="#5aa845" strokeWidth="4" />
+        </g>
+      ))}
     </g>
     <g fill="#000000" opacity="0.07">
       <ellipse cx="160" cy="40" rx="140" ry="22" /><ellipse cx="820" cy="30" rx="160" ry="20" /><ellipse cx="470" cy="12" rx="120" ry="10" />
-    </g>
-    <g fill="#7a5232" stroke="#4f321c" strokeWidth="2">
-      <path {...LINE} d="M0 230 C50 226 92 252 128 300 C150 330 168 370 176 400 L0 400 Z" />
-      <path {...LINE} d="M1000 210 C950 214 912 240 884 290 C866 324 856 366 852 400 L1000 400 Z" />
     </g>
   </svg>
 );
