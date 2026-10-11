@@ -35,7 +35,8 @@ describe('Pokémon Champions sprites', () => {
 
 describe('Digimon sprites', () => {
   it('uses the images shipped with the app, flipped for the back view', () => {
-    expect(animatedSprite('Agumon', 'p2')).toMatchObject({ url: '/pokemon/agumon.png', pixelated: false });
+    // Pixel art in a 96-px box, sized like a Pokémon's 2D sprite but scaled smoothly (high-resolution file).
+    expect(animatedSprite('Agumon', 'p2')).toMatchObject({ url: '/pokemon/agumon.png', w: 96, h: 96, pixelated: true, smooth: true });
     expect(animatedSprite('Agumon', 'p2').mirrored).toBeUndefined();
     expect(animatedSprite('Agumon', 'p1')).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
     expect(staticSprite('WarGreymon', 'p1')).toMatchObject({ url: '/pokemon/wargreymon.png', mirrored: true });

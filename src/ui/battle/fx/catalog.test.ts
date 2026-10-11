@@ -3,7 +3,7 @@ import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
   ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, Z_MOVE_MS, Z_POWER, zMoveSpec,
+  SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -190,5 +190,31 @@ describe('animation catalog', () => {
         if (layer.kind === 'impact') expect(layer.star).toBeFalsy();
       }
     }
+  });
+});
+
+describe('BlackWarGreymon\'s animations', () => {
+  it('has its own Dark Warp Digivolution: the same sequence, named so, bursting out in dark energy', () => {
+    const start = warpStart('BlackWarGreymon');
+    expect(start.layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'Dark Warp Digivolve!' });
+    expect(start.layers.filter(l => l.kind !== 'banner')).toEqual(WARP_START.layers.filter(l => l.kind !== 'banner'));
+    expect(warpStart('WarGreymon')).toBe(WARP_START);
+    const burst = warpBurst('BlackWarGreymon');
+    expect(burst.layers.some(l => l.kind === 'particles' && l.shape === 'wisp')).toBe(true);
+    expect(burst.layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'BlackWarGreymon!' });
+    expect(key(burst)).not.toBe(key(warpBurst('WarGreymon')));
+  });
+
+  it('has signature animations: Dark Gaia Force is Gaia Force in dark energy; Dramon Breaker parallels Dramon Destroyer', () => {
+    const gaia = SIGNATURE_MOVES.gaiaforce, dark = SIGNATURE_MOVES.darkgaiaforce;
+    expect(dark.layers.map(l => [l.kind, l.delay ?? 0])).toEqual(gaia.layers.map(l => [l.kind, l.delay ?? 0]));
+    expect(key(dark)).not.toBe(key(gaia));
+    const destroyer = SIGNATURE_MOVES.dramondestroyer, breaker = SIGNATURE_MOVES.dramonbreaker;
+    expect(destroyer.layers.filter(l => l.kind === 'slash')).toHaveLength(2);
+    expect(breaker.layers.filter(l => l.kind === 'slash')).toHaveLength(2);
+    expect(key(destroyer)).not.toBe(key(breaker));
+    expect(moveSpec(classifyMove('Dark Gaia Force'))).toBe(dark);
+    expect(moveSpec(classifyMove('Dramon Destroyer'))).toBe(destroyer);
+    expect(moveSpec(classifyMove('Dramon Breaker'))).toBe(breaker);
   });
 });

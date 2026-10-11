@@ -24,16 +24,49 @@ export interface WarpDigimon {
   /** The held item that lets it Warp Digivolve (works like a Mega Stone). */
   item: string;
   itemDesc: string;
-  /** Moves it can learn (level-up and TM), by name. */
+  /** Moves it can learn (level-up and TM) while holding this item, by name. Without a warp item: DIGIMON_BASE_MOVES. */
   moves: string[];
+  /** A Dark Warp Digivolution (BlackWarGreymon): its own name in messages and buttons, dark energy in the animation. */
+  dark?: boolean;
 }
 
+const AGUMON: WarpDigimon['base'] = {
+  num: 10201, name: 'Agumon', types: ['Fire'], color: 'Yellow',
+  baseStats: { hp: 44, atk: 60, def: 45, spa: 55, spd: 45, spe: 60 },
+  abilities: { 0: 'Blaze', H: 'Tough Claws' }, weightkg: 12, genderRatio: { M: 0.875, F: 0.125 },
+};
+/** Agumon's own list (no warp item); with Wargreyite it also learns Dramon Breaker. */
+const AGUMON_MOVES = [
+  // Level-up
+  'Scratch', 'Growl', 'Metal Claw', 'Ember', 'Smokescreen', 'Bite', 'Fire Fang', 'Pepper Breath', 'Slash', 'Scary Face',
+  'Dragon Breath', 'Crunch', 'Flamethrower', 'Dragon Claw', 'Iron Defense', 'Dragon Dance', 'Gaia Force', 'Close Combat',
+  'Heat Wave', 'Flare Blitz', 'Outrage', 'Giga Impact',
+  // TMs
+  'Aerial Ace', 'Air Slash', 'Aura Sphere', 'Blast Burn', 'Brick Break', 'Breaking Swipe', 'Bulldoze', 'Dark Pulse', 'Dig',
+  'Draco Meteor', 'Dragon Pulse', 'Dragon Tail', 'Dual Wingbeat', 'Earthquake', 'Endure', 'Facade', 'Fire Blast', 'Fire Pledge',
+  'Fire Punch', 'Fire Spin', 'Flame Charge', 'Fly', 'Focus Blast', 'Hyper Beam', 'Iron Head', 'Overheat', 'Protect', 'Rest',
+  'Rock Slide', 'Rock Tomb', 'Scorching Sands', 'Shadow Claw', 'Sleep Talk', 'Solar Beam', 'Solar Blade', 'Stone Edge',
+  'Substitute', 'Sunny Day', 'Swift', 'Swords Dance', 'Temper Flare', 'Tera Blast', 'Thunder Punch', 'U-turn', 'Will-O-Wisp',
+  'X-Scissor',
+];
+const GABUMON_MOVES = [
+  // Level-up
+  'Scratch', 'Growl', 'Powder Snow', 'Metal Claw', 'Bite', 'Tail Whip', 'Quick Attack', 'Icy Wind', 'Fox Fire', 'Ice Fang',
+  'Metal Sound', 'Scary Face', 'Crunch', 'Ice Beam', 'Flash Cannon', 'Agility', 'Dark Pulse', 'Cocytus Pulse', 'Aura Sphere',
+  'Blizzard', 'Iron Defense', 'Steel Beam', 'Hyper Beam',
+  // TMs
+  'Aerial Ace', 'Avalanche', 'Body Slam', 'Breaking Swipe', 'Chilling Water', 'Dig', 'Dragon Pulse', 'Endure', 'Facade', 'Fling',
+  'Focus Blast', 'Frost Breath', 'Giga Impact', 'Heavy Slam', 'Ice Spinner', 'Iron Head', 'Iron Tail', 'Mud-Slap', 'Pin Missile',
+  'Protect', 'Rain Dance', 'Rest', 'Roar', 'Rock Blast', 'Rock Slide', 'Rock Tomb', 'Shadow Ball', 'Sleep Talk', 'Snarl',
+  'Snowscape', 'Smart Strike', 'Substitute', 'Swift', 'Swords Dance', 'Tera Blast', 'Thunderbolt', 'Thunder Wave', 'Tri Attack',
+  'U-turn', 'Water Pulse', 'Wild Charge', 'Zen Headbutt',
+];
+
+/** What each Digimon can learn without a warp item (or holding someone else's). */
+export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES };
+
 export const WARP_DIGIMON: WarpDigimon[] = [{
-  base: {
-    num: 10201, name: 'Agumon', types: ['Fire'], color: 'Yellow',
-    baseStats: { hp: 44, atk: 60, def: 45, spa: 55, spd: 45, spe: 60 },
-    abilities: { 0: 'Blaze', H: 'Tough Claws' }, weightkg: 12, genderRatio: { M: 0.875, F: 0.125 },
-  },
+  base: AGUMON,
   warp: {
     name: 'WarGreymon', types: ['Fire', 'Dragon'], color: 'Yellow',
     baseStats: { hp: 78, atk: 140, def: 100, spa: 130, spd: 86, spe: 100 },
@@ -41,19 +74,7 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   },
   item: 'Wargreyite',
   itemDesc: 'If held by an Agumon, this item allows it to Warp Digivolve into WarGreymon in battle.',
-  moves: [
-    // Level-up
-    'Scratch', 'Growl', 'Metal Claw', 'Ember', 'Smokescreen', 'Bite', 'Fire Fang', 'Pepper Breath', 'Slash', 'Scary Face',
-    'Dragon Breath', 'Crunch', 'Flamethrower', 'Dragon Claw', 'Iron Defense', 'Dragon Dance', 'Gaia Force', 'Close Combat',
-    'Heat Wave', 'Flare Blitz', 'Outrage', 'Giga Impact',
-    // TMs
-    'Aerial Ace', 'Air Slash', 'Aura Sphere', 'Blast Burn', 'Brick Break', 'Breaking Swipe', 'Bulldoze', 'Dark Pulse', 'Dig',
-    'Draco Meteor', 'Dragon Pulse', 'Dragon Tail', 'Dual Wingbeat', 'Earthquake', 'Endure', 'Facade', 'Fire Blast', 'Fire Pledge',
-    'Fire Punch', 'Fire Spin', 'Flame Charge', 'Fly', 'Focus Blast', 'Hyper Beam', 'Iron Head', 'Overheat', 'Protect', 'Rest',
-    'Rock Slide', 'Rock Tomb', 'Scorching Sands', 'Shadow Claw', 'Sleep Talk', 'Solar Beam', 'Solar Blade', 'Stone Edge',
-    'Substitute', 'Sunny Day', 'Swift', 'Swords Dance', 'Temper Flare', 'Tera Blast', 'Thunder Punch', 'U-turn', 'Will-O-Wisp',
-    'X-Scissor',
-  ],
+  moves: [...AGUMON_MOVES, 'Dramon Breaker'],
 }, {
   base: {
     num: 10202, name: 'Gabumon', types: ['Ice'], color: 'Yellow',
@@ -67,17 +88,32 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   },
   item: 'Metalgaruruite',
   itemDesc: 'If held by a Gabumon, this item allows it to Warp Digivolve into MetalGarurumon in battle.',
+  moves: GABUMON_MOVES,
+}, {
+  // Agumon's alternate evolution (2026-10-11, designed by the user): Dark Warp Digivolution. Holding Blackwargreyite,
+  // Agumon learns this list instead of its own.
+  base: AGUMON,
+  warp: {
+    name: 'BlackWarGreymon', types: ['Fire', 'Dark'], color: 'Black',
+    baseStats: { hp: 78, atk: 145, def: 95, spa: 130, spd: 86, spe: 100 },
+    abilities: { 0: 'Tough Claws' }, weightkg: 120,
+  },
+  item: 'Blackwargreyite',
+  itemDesc: 'If held by an Agumon, this item allows it to Dark Warp Digivolve into BlackWarGreymon in battle.',
+  dark: true,
   moves: [
     // Level-up
-    'Scratch', 'Growl', 'Powder Snow', 'Metal Claw', 'Bite', 'Tail Whip', 'Quick Attack', 'Icy Wind', 'Fox Fire', 'Ice Fang',
-    'Metal Sound', 'Scary Face', 'Crunch', 'Ice Beam', 'Flash Cannon', 'Agility', 'Dark Pulse', 'Cocytus Pulse', 'Aura Sphere',
-    'Blizzard', 'Iron Defense', 'Steel Beam', 'Hyper Beam',
+    'Scratch', 'Growl', 'Metal Claw', 'Ember', 'Smokescreen', 'Bite', 'Fire Fang', 'Pepper Breath', 'Slash', 'Scary Face',
+    'Snarl', 'Crunch', 'Flamethrower', 'Night Slash', 'Iron Defense', 'Swords Dance', 'Dramon Destroyer', 'Close Combat',
+    'Dark Pulse', 'Dark Gaia Force', 'Flare Blitz', 'Outrage', 'Giga Impact',
     // TMs
-    'Aerial Ace', 'Avalanche', 'Body Slam', 'Breaking Swipe', 'Chilling Water', 'Dig', 'Dragon Pulse', 'Endure', 'Facade', 'Fling',
-    'Focus Blast', 'Frost Breath', 'Giga Impact', 'Heavy Slam', 'Ice Spinner', 'Iron Head', 'Iron Tail', 'Mud-Slap', 'Pin Missile',
-    'Protect', 'Rain Dance', 'Rest', 'Roar', 'Rock Blast', 'Rock Slide', 'Rock Tomb', 'Shadow Ball', 'Sleep Talk', 'Snarl',
-    'Snowscape', 'Smart Strike', 'Substitute', 'Swift', 'Swords Dance', 'Tera Blast', 'Thunderbolt', 'Thunder Wave', 'Tri Attack',
-    'U-turn', 'Water Pulse', 'Wild Charge', 'Zen Headbutt',
+    'Aerial Ace', 'Air Slash', 'Aura Sphere', 'Blast Burn', 'Brick Break', 'Breaking Swipe', 'Bulk Up', 'Bulldoze', 'Dig',
+    'Dragon Claw', 'Dragon Dance', 'Dragon Pulse', 'Dragon Tail', 'Dual Wingbeat', 'Earthquake', 'Endure', 'Facade', 'Fire Blast',
+    'Fire Pledge', 'Fire Punch', 'Fire Spin', 'Flame Charge', 'Fling', 'Focus Blast', 'Foul Play', 'Heat Wave', 'Hone Claws',
+    'Hyper Beam', 'Iron Head', 'Knock Off', 'Lash Out', 'Nasty Plot', 'Overheat', 'Payback', 'Protect', 'Rest', 'Rock Slide',
+    'Rock Tomb', 'Scorching Sands', 'Shadow Ball', 'Shadow Claw', 'Sleep Talk', 'Solar Beam', 'Solar Blade', 'Stone Edge',
+    'Substitute', 'Sucker Punch', 'Sunny Day', 'Swift', 'Taunt', 'Temper Flare', 'Tera Blast', 'Thief', 'Throat Chop',
+    'Thunder Punch', 'Torment', 'U-turn', 'Will-O-Wisp', 'X-Scissor',
   ],
 }];
 
@@ -91,8 +127,10 @@ export interface DigimonMove {
   contact: boolean;
   /** A pulse move (boosted by Mega Launcher). */
   pulse?: boolean;
-  /** Chance (%) of a burn, or of a stat drop on the target. */
-  secondary: { chance: number; status?: 'brn'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
+  /** Critical-hit ratio as the simulator counts it: 2 = one stage higher than usual (like Slash). */
+  critRatio?: number;
+  /** Chance (%) of a burn, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
+  secondary?: { chance: number; status?: 'brn'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
 }
 
@@ -114,19 +152,36 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     name: 'Cocytus Pulse', type: 'Ice', category: 'Special', basePower: 85, accuracy: 100, pp: 10, contact: false, pulse: true,
     secondary: { chance: 20, boosts: { spe: -1 } }, desc: '20% chance to lower the target\'s Speed by 1. Boosted by Mega Launcher.',
   },
+  // Added 2026-10-11 (designed by the user). Agumon with Wargreyite (WarGreymon's Dramon Killer claws):
+  {
+    name: 'Dramon Breaker', type: 'Dragon', category: 'Physical', basePower: 90, accuracy: 100, pp: 10, contact: true, critRatio: 2,
+    secondary: { chance: 20, boosts: { def: -1 } }, desc: 'High critical hit ratio. 20% chance to lower the target\'s Defense by 1.',
+  },
+  // Agumon with Blackwargreyite (BlackWarGreymon):
+  {
+    name: 'Dark Gaia Force', type: 'Dark', category: 'Special', basePower: 110, accuracy: 90, pp: 5, contact: false,
+    secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target.',
+  },
+  {
+    name: 'Dramon Destroyer', type: 'Dragon', category: 'Physical', basePower: 90, accuracy: 100, pp: 10, contact: true, critRatio: 2,
+    desc: 'High critical hit ratio.',
+  },
 ];
 
 /**
- * Sprites shipped with the app (public/pokemon), facing left; the back view is the front one flipped.
- * `w`/`h` must match the image's shape (WarGreymon's is cropped to its wide body, not padded to a
- * square, so height limits on the stage measure the body, not empty space).
- * `stageScale`: how much larger a warp form is drawn on the battle stage (Megas are drawn 1.2x).
+ * Sprites shipped with the app (public/pokemon): the user's pixel art in the style of the Pokémon's 2D (Black and
+ * White) sprites, facing left; the back view is the front one flipped. Each picture is a 96-px sprite box like
+ * Pokémon's (480 px files, 5 px per box pixel, so they stay sharp), with the Digimon at its own size in it and
+ * its feet 10% above the bottom, so it is drawn and placed exactly like a Pokémon's 2D sprite. `icon`: the
+ * Digimon alone, cropped, for menus. `stageScale`: how much larger a warp form may be drawn on the battle
+ * stage (Megas: 1.2x); with these pictures it only lets a warp form go a little past the usual size limit.
  */
-export const DIGIMON_SPRITES: Record<string, { file: string; w: number; h: number; stageScale?: number }> = {
-  Agumon: { file: 'pokemon/agumon.png', w: 84, h: 84 },
-  WarGreymon: { file: 'pokemon/wargreymon.png', w: 126, h: 96, stageScale: 1.5 },
-  Gabumon: { file: 'pokemon/gabumon.png', w: 84, h: 84 },
-  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', w: 118, h: 118, stageScale: 1.2954 },
+export const DIGIMON_SPRITES: Record<string, { file: string; icon: string; w: number; h: number; stageScale?: number }> = {
+  Agumon: { file: 'pokemon/agumon.png', icon: 'pokemon/icons/agumon.png', w: 96, h: 96 },
+  WarGreymon: { file: 'pokemon/wargreymon.png', icon: 'pokemon/icons/wargreymon.png', w: 96, h: 96, stageScale: 1.5 },
+  Gabumon: { file: 'pokemon/gabumon.png', icon: 'pokemon/icons/gabumon.png', w: 96, h: 96 },
+  MetalGarurumon: { file: 'pokemon/metalgarurumon.png', icon: 'pokemon/icons/metalgarurumon.png', w: 96, h: 96, stageScale: 1.2954 },
+  BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);
@@ -137,18 +192,22 @@ export const DIGIMON_MOVE_IDS = new Set(DIGIMON_MOVES.map(m => toId(m.name)));
 /** Signature moves that were renamed (old name -> new), so saved teams keep them. */
 export const RENAMED_MOVES: Record<string, string> = { 'Blue Blaster': 'Fox Fire' };
 const BY_ITEM = new Map(WARP_DIGIMON.map(d => [toId(d.item), d]));
-const BY_BASE = new Map(WARP_DIGIMON.map(d => [toId(d.base.name), d]));
+const BY_FORM = new Map(WARP_DIGIMON.map(d => [toId(d.warp.name), d]));
+const BASES = new Set(WARP_DIGIMON.map(d => toId(d.base.name)));
 const WARP_FORMS = new Set(WARP_DIGIMON.map(d => d.warp.name));
-const LEARNS = new Map(WARP_DIGIMON.map(d => [toId(d.base.name), new Set(d.moves.map(toId))]));
+const BASE_LEARNS = new Map(Object.entries(DIGIMON_BASE_MOVES).map(([species, moves]) => [toId(species), new Set(moves.map(toId))]));
+const ITEM_LEARNS = new Map(WARP_DIGIMON.map(d => [toId(d.item), new Set(d.moves.map(toId))]));
 
 /** Names the AI's damage calculator doesn't know (it gets their stats passed in). */
-export const DIGIMON_SPECIES = WARP_DIGIMON.flatMap(d => [d.base.name, d.warp.name]);
+export const DIGIMON_SPECIES = [...new Set(WARP_DIGIMON.flatMap(d => [d.base.name, d.warp.name]))];
 /** Whether the item is a warp item (Wargreyite...). */
 export const isWarpItem = (item: string | undefined | null) => BY_ITEM.has(toId(item ?? ''));
 /** Whether a species name is a Warp Digivolved form (WarGreymon...). */
 export const isWarpForm = (species: string | undefined | null) => !!species && WARP_FORMS.has(species);
 /** Whether the species is one of the Digimon (their learnsets are their own). */
-export const isDigimon = (species: string) => BY_BASE.has(toId(species));
+export const isDigimon = (species: string) => BASES.has(toId(species));
+/** Whether a warp item or warp form is a Dark Warp Digivolution (Blackwargreyite / BlackWarGreymon). */
+export const isDarkWarp = (itemOrForm: string | undefined | null) => !!(BY_ITEM.get(toId(itemOrForm ?? '')) ?? BY_FORM.get(toId(itemOrForm ?? '')))?.dark;
 /** What a set Warp Digivolves into in battle (null without its warp item). */
 export function warpFormForSet(species: string, item: string | undefined | null): string | null {
   const d = BY_ITEM.get(toId(item ?? ''));
@@ -156,10 +215,19 @@ export function warpFormForSet(species: string, item: string | undefined | null)
 }
 /** Whether a warp item may go on this species (each one only fits its own Digimon). */
 export const canHoldWarpItem = (species: string, item: string) => !isWarpItem(item) || !!warpFormForSet(species, item);
-/** Whether the Digimon can learn the move (ids or names); null if the species isn't a Digimon. */
-export function digimonCanLearn(species: string, move: string): boolean | null {
-  const learns = LEARNS.get(toId(species));
-  return learns ? learns.has(toId(move)) : null;
+/** The moves a Digimon can learn with this held item (its warp item's list, else its own); null if it isn't a Digimon. */
+export function digimonMoves(species: string, item?: string | null): string[] | null {
+  if (!isDigimon(species)) return null;
+  const warp = BY_ITEM.get(toId(item ?? ''));
+  if (warp && toId(warp.base.name) === toId(species)) return warp.moves;
+  return DIGIMON_BASE_MOVES[WARP_DIGIMON.find(d => toId(d.base.name) === toId(species))!.base.name] ?? [];
+}
+/** Whether the Digimon can learn the move (ids or names) holding `item`; null if the species isn't a Digimon. */
+export function digimonCanLearn(species: string, move: string, item?: string | null): boolean | null {
+  if (!isDigimon(species)) return null;
+  const warp = BY_ITEM.get(toId(item ?? ''));
+  const learns = warp && toId(warp.base.name) === toId(species) ? ITEM_LEARNS.get(toId(warp.item)) : BASE_LEARNS.get(toId(species));
+  return !!learns?.has(toId(move));
 }
 
 /**
@@ -177,12 +245,14 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   let itemNum = 10130;
   for (const d of WARP_DIGIMON) {
     const shared = { num: d.base.num, genderRatio: d.base.genderRatio, eggGroups: ['Monster', 'Dragon'], gen: 7 };
+    // Agumon has two warp forms (WarGreymon, BlackWarGreymon): list them all.
+    const forms = WARP_DIGIMON.filter(o => o.base.name === d.base.name).map(o => o.warp.name);
     species[toId(d.base.name)] = {
       ...shared, name: d.base.name, types: d.base.types, baseStats: d.base.baseStats, abilities: d.base.abilities,
-      weightkg: d.base.weightkg, color: d.base.color, otherFormes: [d.warp.name], formeOrder: [d.base.name, d.warp.name],
+      weightkg: d.base.weightkg, color: d.base.color, otherFormes: forms, formeOrder: [d.base.name, ...forms],
     };
     species[toId(d.warp.name)] = {
-      ...shared, name: d.warp.name, baseSpecies: d.base.name, forme: 'Warp', types: d.warp.types, baseStats: d.warp.baseStats,
+      ...shared, name: d.warp.name, baseSpecies: d.base.name, forme: d.dark ? 'Dark-Warp' : 'Warp', types: d.warp.types, baseStats: d.warp.baseStats,
       abilities: d.warp.abilities, weightkg: d.warp.weightkg, color: d.warp.color, requiredItem: d.item, battleOnly: d.base.name,
     };
     formatsData[toId(d.base.name)] = { isNonstandard: null, tier: 'OU' };
@@ -191,7 +261,11 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
       name: d.item, num: itemNum++, gen: 7, isNonstandard: null,
       megaStone: { [d.base.name]: d.warp.name }, itemUser: [d.base.name], shortDesc: d.itemDesc, desc: d.itemDesc,
     };
-    learnsets[toId(d.base.name)] = { learnset: Object.fromEntries(d.moves.map(m => [toId(m), ['7M']])) };
+  }
+  // Every move a Digimon can learn with any of its items (the validator and builder check the held item: digimonCanLearn).
+  for (const [base, own] of Object.entries(DIGIMON_BASE_MOVES)) {
+    const all = [...own, ...WARP_DIGIMON.filter(d => d.base.name === base).flatMap(d => d.moves)];
+    learnsets[toId(base)] = { learnset: Object.fromEntries(all.map(m => [toId(m), ['7M']])) };
   }
   const moves: Record<string, object> = {};
   let moveNum = 10140;
@@ -199,7 +273,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
     moves[toId(m.name)] = {
       num: moveNum++, name: m.name, type: m.type, category: m.category, basePower: m.basePower, accuracy: m.accuracy, pp: m.pp,
       priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}) },
-      secondary: { ...m.secondary }, target: 'normal', gen: 7, isNonstandard: null,
+      ...(m.critRatio ? { critRatio: m.critRatio } : {}),
+      secondary: m.secondary ? { ...m.secondary } : null, target: 'normal', gen: 7, isNonstandard: null,
       shortDesc: m.desc, desc: m.desc,
     };
   }

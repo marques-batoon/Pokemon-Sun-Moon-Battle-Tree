@@ -5,7 +5,7 @@ import { Dex, type ID, type ModdedDex } from '@pkmn/dex';
 import { RULES } from '../data/battle-tree';
 import { CHAMPIONS_MOD, championsOverrides, NEW_BASE_SPECIES, NEW_MOVE_IDS } from '../data/champions';
 import { CUSTOM_LEARNS, customOverrides, mergeModData } from '../data/custom';
-import { DIGIMON_MOVE_IDS, digimonOverrides } from '../data/custom/digimon';
+import { DIGIMON_MOVE_IDS, digimonMoves, digimonOverrides } from '../data/custom/digimon';
 import { isParadoxForm, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxOverrides } from '../data/custom/paradox';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
@@ -86,6 +86,9 @@ export async function learnableMoves(species: string, item?: string): Promise<Mo
       .filter((m): m is Move => !!m && !m.isZ)
       .sort((a, b) => a.name.localeCompare(b.name));
   }
+  // The Digimon learn their own list, which depends on the held warp item (Blackwargreyite: BlackWarGreymon's).
+  const digimon = digimonMoves(species, item);
+  if (digimon) return digimon.map(m => gen7.moves.get(m)).filter((m): m is Move => !!m).sort((a, b) => a.name.localeCompare(b.name));
   const s = gen7.species.get(species);
   // Champions Pokémon that aren't in Sun & Moon learn from their newest (Gen 9) learnsets.
   const learnable = s && NEW_BASE_SPECIES.includes(s.name)

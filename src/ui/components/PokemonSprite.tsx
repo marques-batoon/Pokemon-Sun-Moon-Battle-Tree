@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { gen7 } from '../../team/dex';
-import { iconStyle, isAnimatedSprite, localSpriteUrl, spriteCandidates, type SpriteSide } from '../sprites';
+import { iconStyle, isAnimatedSprite, localIconUrl, spriteCandidates, type SpriteSide } from '../sprites';
 import { typeColor } from '../types';
 import { useAppSettings } from '../useAppSettings';
 
@@ -39,7 +39,7 @@ export function PokemonSprite({ species, side, gender, shiny, scale: baseScale =
       alt={species}
       width={Math.round(info.w * scale)}
       height={Math.round(info.h * scale)}
-      style={info.pixelated || info.mirrored ? { imageRendering: info.pixelated ? 'pixelated' : undefined, transform: info.mirrored ? 'scaleX(-1)' : undefined } : undefined}
+      style={info.pixelated || info.mirrored ? { imageRendering: info.pixelated && !info.smooth ? 'pixelated' : undefined, transform: info.mirrored ? 'scaleX(-1)' : undefined } : undefined}
       draggable={false}
       onError={() => setLevel(l => l + 1)}
     />
@@ -58,11 +58,11 @@ export function SpritePlaceholder({ species, className = '' }: { species: string
   );
 }
 
-/** Small menu icon; renders nothing when images are turned off. The Digimon use their sprite, shrunk. */
+/** Small menu icon; renders nothing when images are turned off. The Digimon use their own (cropped from their sprite). */
 export function PokemonIcon({ species, className = '' }: { species: string; className?: string }) {
   const { sprites } = useAppSettings();
   if (!sprites) return null;
-  const local = localSpriteUrl(species);
+  const local = localIconUrl(species);
   if (local) return <img className={`poke-icon poke-icon-img ${className}`} src={local} alt="" width={40} height={30} draggable={false} aria-hidden="true" />;
   return <span className={`poke-icon ${className}`} style={iconStyle(species)} aria-hidden="true" />;
 }

@@ -211,3 +211,78 @@ describe('Warp Digivolution', () => {
     expect(c.p1.choose('move 1 mega, move 1 mega')).toBe(false);
   });
 });
+
+describe('BlackWarGreymon (Dark Warp Digivolution) and the Dramon moves', () => {
+  const black = (moves = ['Dark Gaia Force'], ability = 'Tough Claws') => mon('Agumon', 'Blackwargreyite', ability, moves, 'EVs: 252 SpA\nModest Nature\n');
+
+  it('has the custom species, item and moves', () => {
+    const w = dex.species.get('BlackWarGreymon');
+    expect(w.exists).toBe(true);
+    expect([w.baseSpecies, w.battleOnly, w.requiredItem]).toEqual(['Agumon', 'Agumon', 'Blackwargreyite']);
+    expect(w.types).toEqual(['Fire', 'Dark']);
+    expect(w.baseStats).toEqual({ hp: 78, atk: 145, def: 95, spa: 130, spd: 86, spe: 100 });
+    expect(Object.values(w.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
+    expect(w.abilities).toEqual({ 0: 'Tough Claws' });
+    expect(w.weightkg).toBe(120);
+    expect(dex.species.get('Agumon').otherFormes).toEqual(['WarGreymon', 'BlackWarGreymon']);
+    expect(dex.items.get('Blackwargreyite').megaStone).toEqual({ Agumon: 'BlackWarGreymon' });
+    // Renamed from BlackWarGreyite: same id, so teams saved with the old name still find it.
+    expect(dex.items.get('BlackWarGreyite').name).toBe('Blackwargreyite');
+    const dark = dex.moves.get('Dark Gaia Force');
+    expect([dark.type, dark.category, dark.basePower, dark.accuracy, dark.pp, dark.priority, dark.target]).toEqual(['Dark', 'Special', 110, 90, 5, 0, 'normal']);
+    expect(dark.flags.contact).toBeUndefined();
+    expect(dark.secondary).toEqual({ chance: 20, status: 'brn' });
+    const destroyer = dex.moves.get('Dramon Destroyer');
+    expect([destroyer.type, destroyer.category, destroyer.basePower, destroyer.accuracy, destroyer.pp, destroyer.critRatio]).toEqual(['Dragon', 'Physical', 90, 100, 10, 2]);
+    expect(destroyer.flags.contact).toBe(1);
+    expect(destroyer.secondary ?? null).toBeNull();
+    const breaker = dex.moves.get('Dramon Breaker');
+    expect([breaker.type, breaker.category, breaker.basePower, breaker.accuracy, breaker.pp, breaker.critRatio]).toEqual(['Dragon', 'Physical', 90, 100, 10, 2]);
+    expect(breaker.flags.contact).toBe(1);
+    expect(breaker.secondary).toEqual({ chance: 20, boosts: { def: -1 } });
+  });
+
+  it('learns BlackWarGreymon\'s list instead of its own while holding Blackwargreyite', () => {
+    expect(validate(team(black(['Dark Gaia Force', 'Dramon Destroyer', 'Lash Out', 'Knock Off'])))).toEqual([]);
+    expect(validate(team(black(['Nasty Plot', 'Foul Play', 'Sucker Punch', 'Throat Chop'])))).toEqual([]);
+    // Its own list's extras (Gaia Force, Dragon Breath, Fly, Draco Meteor) aren't on it.
+    for (const move of ['Gaia Force', 'Dragon Breath', 'Fly', 'Draco Meteor', 'Dramon Breaker']) {
+      expect(validate(team(black([move]))).join(' '), move).toMatch(new RegExp(`can't learn ${move}`));
+    }
+    // Without Blackwargreyite it can't use BlackWarGreymon's moves.
+    expect(validate(team(agumon(['Dark Gaia Force']))).join(' ')).toMatch(/can't learn Dark Gaia Force/);
+    expect(validate(team(agumon(['Nasty Plot'], 'Charcoal'))).join(' ')).toMatch(/can't learn Nasty Plot/);
+    expect(validate(team(mon('Charizard', 'Blackwargreyite', 'Blaze', ['Flamethrower'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Blackwargreyite/);
+  });
+
+  it('learns Dramon Breaker only while holding Wargreyite', () => {
+    expect(validate(team(agumon(['Dramon Breaker', 'Gaia Force'])))).toEqual([]);
+    expect(validate(team(agumon(['Dramon Breaker'], 'Charcoal'))).join(' ')).toMatch(/can't learn Dramon Breaker/);
+    expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Dramon Destroyer'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Dramon Destroyer/);
+  });
+
+  it('Dark Warp Digivolves Agumon into BlackWarGreymon, with its own message', () => {
+    const b = singles([black()], [target]);
+    expect(b.p1.active[0].canMegaEvo).toBe('BlackWarGreymon');
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.species.name).toBe('BlackWarGreymon');
+    expect(p.ability).toBe('toughclaws');
+    const log = b.log.join('\n');
+    expect(log).toMatch(/\|message\|Agumon dark warp-digivolve to\.\.\.\n[^]*?\|detailschange\|p1a: Agumon\|BlackWarGreymon[^]*?\|message\|BlackWarGreymon!/);
+    expect(log).toMatch(/\|move\|p1a: Agumon\|Dark Gaia Force/);
+  });
+
+  it('boosts Dramon Destroyer with Tough Claws, and Dramon Breaker with Sheer Force (losing its Defense drop)', () => {
+    const b = singles([black(['Dramon Destroyer'])], [target]);
+    b.makeChoices('move 1 mega', 'move 1');
+    const destroyer = b.dex.getActiveMove('Dramon Destroyer');
+    expect(b.runEvent('BasePower', b.p1.active[0], b.p2.active[0], destroyer, destroyer.basePower, true)).toBe(117);
+    const w = singles([agumon(['Dramon Breaker'])], [target]);
+    w.makeChoices('move 1 mega', 'move 1');
+    const breaker = w.dex.getActiveMove('Dramon Breaker');
+    w.runEvent('ModifyMove', w.p1.active[0], w.p2.active[0], breaker, breaker);
+    expect(breaker.secondaries ?? []).toEqual([]);
+    expect(w.runEvent('BasePower', w.p1.active[0], w.p2.active[0], breaker, breaker.basePower, true)).toBe(117);
+  });
+});

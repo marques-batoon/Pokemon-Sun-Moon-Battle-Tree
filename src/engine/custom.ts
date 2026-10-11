@@ -2,7 +2,7 @@
 // turn counts the battle screen shows). Runs where the simulator runs.
 import type { ActiveMove, Battle, Effect, Move, Pokemon, Side } from '@pkmn/sim';
 import { CUSTOM_MEGAS, POLIWRATHIUM_Z } from '../data/custom';
-import { isWarpForm, isWarpItem, WARP_DIGIMON } from '../data/custom/digimon';
+import { isDarkWarp, isWarpForm, isWarpItem, WARP_DIGIMON } from '../data/custom/digimon';
 import { PARADOX_ABILITIES, PARADOX_ITEMS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -191,7 +191,8 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
   const who = displayName(pokemon);
   battle.add('-activate', pokemon, `item: ${item.name}`, '[silent]');
   // The anime's call, split around the warp animation: "Agumon warp-digivolve to..." ... "WarGreymon!"
-  battle.add('message', `${who} warp-digivolve to...`);
+  // (BlackWarGreymon: "Agumon dark warp-digivolve to...").
+  battle.add('message', `${who} ${isDarkWarp(form) ? 'dark ' : ''}warp-digivolve to...`);
   pokemon.formeChange(form, battle.dex.conditions.get('warpdigivolution'), true);
   // As for Mega Evolution: it counts as an action for Truant, and there's no going back.
   pokemon.moveThisTurnResult = true;

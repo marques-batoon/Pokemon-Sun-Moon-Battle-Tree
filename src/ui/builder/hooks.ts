@@ -2,6 +2,7 @@ import type { BattleTreeFormat } from '../../engine/format-constants';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Move } from '@pkmn/data';
 import type { TeamStore } from '../../storage/team-store';
+import { isDigimon } from '../../data/custom/digimon';
 import { paradoxFormForSet } from '../../data/custom/paradox';
 import { learnableMoves } from '../../team/dex';
 import type { PokemonSet, TeamValidation } from '../../team/types';
@@ -15,22 +16,23 @@ const learnsetCache = new Map<string, Move[]>();
 
 /**
  * Learnable moves for a species (null while loading; learnsets load lazily).
- * With a Paradoxorb that fits, they're its Paradox form's moves.
+ * With a Paradoxorb that fits, they're its Paradox form's moves; a Digimon's depend on its warp item.
  */
 export function useLearnset(species: string, item = ''): Move[] | null {
   const paradox = paradoxFormForSet(species, item);
-  const key = paradox ? `${species}>${paradox}` : species;
+  const digimon = isDigimon(species);
+  const key = paradox ? `${species}>${paradox}` : digimon ? `${species}@${item.toLowerCase().replace(/[^a-z0-9]/g, '')}` : species;
   const [loaded, setLoaded] = useState<{ key: string; moves: Move[] } | null>(null);
   const cached = learnsetCache.get(key);
   useEffect(() => {
     if (learnsetCache.has(key)) return;
     let live = true;
-    void learnableMoves(species, paradox ? item : undefined).then(moves => {
+    void learnableMoves(species, paradox || digimon ? item : undefined).then(moves => {
       learnsetCache.set(key, moves);
       if (live) setLoaded({ key, moves });
     });
     return () => { live = false; };
-  }, [key, species, item, paradox]);
+  }, [key, species, item, paradox, digimon]);
   return cached ?? (loaded?.key === key ? loaded.moves : null);
 }
 

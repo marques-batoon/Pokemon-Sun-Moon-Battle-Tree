@@ -56,7 +56,7 @@ function registerChampionsMod(): void {
  * from their newest learnsets; everyone else uses the Gen 7 rules, plus the
  * app's custom extra moves (CUSTOM_LEARNS). A Pokémon holding a Paradoxorb
  * learns its Paradox form's moves instead (newest learnset, no restrictions).
- * The Digimon learn exactly their own lists, and only they get their signature moves.
+ * The Digimon learn exactly their own lists (which depend on the held warp item), and only they get their signature moves.
  */
 // Problems start with a space: the validator puts the Pokémon's name in front.
 function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSources: Parameters<TeamValidator['checkCanLearn']>[2], set: PokemonSet): string | null {
@@ -66,7 +66,7 @@ function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSou
     const learnset = Dex.species.getLearnsetData(toId(paradox) as never).learnset ?? {};
     return move.id in learnset ? null : ` can't learn ${move.name} (its Paradox form ${paradox} doesn't).`;
   }
-  const digimon = digimonCanLearn(id, move.id);
+  const digimon = digimonCanLearn(id, move.id, set.item);
   if (digimon !== null) return digimon ? null : ` can't learn ${move.name}.`;
   if (isCustomLearn(id, move.id)) return null;
   if (NEW_LEARNSET_IDS.has(id)) {

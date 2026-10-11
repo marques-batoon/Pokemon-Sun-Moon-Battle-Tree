@@ -1,7 +1,7 @@
 import type { Item, Move, Specie } from '@pkmn/data';
 import { allItems, eligibleSpecies, gen7, speciesAbilities } from '../../team/dex';
 import { canHoldItem, PARADOX_LABELS, paradoxFormForSet, paradoxKindOfItem } from '../../data/custom/paradox';
-import { isWarpForm } from '../../data/custom/digimon';
+import { isDarkWarp, isWarpForm } from '../../data/custom/digimon';
 import { changeSpecies, hiddenPowerType, megaFormForSet } from '../../team/sets';
 import { STAT_IDS, STAT_LABELS, type PokemonSet } from '../../team/types';
 import { SearchSelect } from '../components/SearchSelect';
@@ -34,19 +34,20 @@ const bst = (s: Specie) => Object.values(s.baseStats).reduce((a, b) => a + b, 0)
  */
 function MegaFormSection({ base, form }: { base: Specie; form: Specie }) {
   const warp = isWarpForm(form.name);
+  const dark = isDarkWarp(form.name) ? 'Dark ' : '';
   const ability = form.abilities[0];
   return (
-    <section className={`mega-form${warp ? ' warp' : ''}`} aria-label={`${base.name} after ${warp ? 'Warp Digivolution' : 'Mega Evolution'}`}>
+    <section className={`mega-form${warp ? ' warp' : ''}`} aria-label={`${base.name} after ${warp ? `${dark}Warp Digivolution` : 'Mega Evolution'}`}>
       <div className="mega-form-sprite"><PokemonSprite key={form.name} species={form.name} side="p2" /></div>
       <div className="mega-form-body">
         <div className="mega-form-head">
-          <span className="mega-form-kicker">{warp ? 'Warp Digivolves into' : 'Mega Evolves into'}</span>
+          <span className="mega-form-kicker">{warp ? `${dark}Warp Digivolves into` : 'Mega Evolves into'}</span>
           <strong>{form.name}</strong>
           {form.types.map(t => <TypeBadge key={t} type={t} />)}
         </div>
         <div className="mega-form-ability">
           <span className="fld-head">
-            <span className="muted small">Ability after {warp ? 'Warp Digivolving' : 'Mega Evolving'}:</span>
+            <span className="muted small">Ability after {warp ? `${dark}Warp Digivolving` : 'Mega Evolving'}:</span>
             <strong>{ability}</strong>
             {ability && <InfoButton label={`the Ability ${ability}`}><AbilityDetails name={ability} /></InfoButton>}
           </span>
@@ -119,7 +120,7 @@ export function SetEditor({ set, problems, speciesConflict, itemConflict, onChan
           )}
           {shown?.types.map(t => <TypeBadge key={t} type={t} />)}
           {megaSpecies && shown ? (
-            <span className="muted small" title={`Base stat total after ${isWarpForm(megaSpecies.name) ? 'Warp Digivolving' : 'Mega Evolving'} (${shown.name}: ${bst(shown)})`}>
+            <span className="muted small" title={`Base stat total after ${isWarpForm(megaSpecies.name) ? `${isDarkWarp(megaSpecies.name) ? 'Dark ' : ''}Warp Digivolving` : 'Mega Evolving'} (${shown.name}: ${bst(shown)})`}>
               BST {bst(megaSpecies)} <span className="bst-form">as {megaSpecies.name}</span>
             </span>
           ) : (

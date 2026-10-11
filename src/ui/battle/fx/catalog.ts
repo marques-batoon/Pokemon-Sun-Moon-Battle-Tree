@@ -3,7 +3,7 @@
 // Attacks have a distinct look per type, with separate physical (contact at
 // the target) and special (something travels from the user) versions.
 import type { MoveFx } from '../../../client/move-class';
-import { WARP_DIGIMON } from '../../../data/custom/digimon';
+import { isDarkWarp, WARP_DIGIMON } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 
 export type Anchor = 'user' | 'target';
@@ -860,6 +860,43 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'impact', color: '#c9f6ff', size: 220, delay: 850 },
     { kind: 'screen', color: '#e6fbff', mode: 'flash', delay: 900, dur: 350 },
   ] },
+  // Dark Gaia Force (BlackWarGreymon): Gaia Force's sequence exactly, in dark energy and blue flames (on request).
+  darkgaiaforce: { shake: 'strong', layers: [
+    { kind: 'screen', color: '#07000f', mode: 'dim', dur: 1500 },
+    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#7a3cff', color2: '#4d7bff', count: 22, size: 16, spread: 170, dur: 700 },
+    { kind: 'aura', at: 'user', color: '#5a1aa0', size: 280, delay: 100, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#9a6bff', count: 3, size: 230, delay: 150, dur: 650 },
+    { kind: 'orb', color: '#3a0a6e', color2: '#6f8cff', size: 160, arc: true, delay: 850, dur: 450 },
+    { kind: 'impact', color: '#4a0a8a', size: 320, star: true, delay: 1300 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#3d4bff', color2: '#a06bff', count: 22, size: 28, spread: 160, delay: 1300 },
+    { kind: 'ground', color: '#4a1a8a', delay: 1300, dur: 500 },
+    { kind: 'screen', color: '#8a6bff', mode: 'flash', delay: 1300, dur: 400 },
+  ] },
+  // Dramon Destroyer (BlackWarGreymon): a weak point is marked on the target, then the armoured claws rake it
+  // (three claw streaks) in dark crimson, with a critical-hit flash.
+  dramondestroyer: { shake: 'strong', layers: [
+    { kind: 'aura', at: 'user', color: '#8a0a24', size: 190, dur: 380 },
+    { kind: 'rings', at: 'target', color: '#ff2a4d', count: 2, size: 130, dur: 320 },
+    { kind: 'slash', color: '#ff2a4d', count: 3, angle: 58, width: 24, delay: 240 },
+    { kind: 'slash', color: '#d9dbe3', count: 3, angle: 58, width: 9, delay: 260 },
+    { kind: 'impact', color: '#5a0a1a', size: 150, star: true, delay: 330 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#2a2a30', color2: '#ff2a4d', count: 16, size: 16, spread: 120, delay: 300 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#b48cff', color2: '#ff6a85', count: 10, size: 12, spread: 90, delay: 320 },
+    { kind: 'screen', color: '#ff2a4d', mode: 'flash', delay: 300, dur: 220 },
+  ] },
+  // Dramon Breaker (Agumon holding Wargreyite, WarGreymon): Dramon Destroyer's counterpart, the same strike with
+  // the Dramon Killer claws in WarGreymon's orange and gold, and the target's guard cracks.
+  dramonbreaker: { shake: 'strong', layers: [
+    { kind: 'aura', at: 'user', color: '#ff8a1f', size: 190, dur: 380 },
+    { kind: 'rings', at: 'target', color: '#ffd23f', count: 2, size: 130, dur: 320 },
+    { kind: 'slash', color: '#ff7a1a', count: 3, angle: 58, width: 24, delay: 240 },
+    { kind: 'slash', color: '#e6e8ef', count: 3, angle: 58, width: 9, delay: 260 },
+    { kind: 'impact', color: '#ffb000', size: 150, star: true, delay: 330 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#c9ccd6', color2: '#ff9a1f', count: 16, size: 16, spread: 120, delay: 300 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffd23f', color2: '#ff6a00', count: 10, size: 12, spread: 90, delay: 320 },
+    { kind: 'crack', color: '#ffb000', delay: 320 },
+    { kind: 'screen', color: '#ffd27f', mode: 'flash', delay: 300, dur: 220 },
+  ] },
 };
 
 /** Z-Power charge-up before any Z-Move. */
@@ -939,7 +976,8 @@ export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
  * digital space of grid and streaming code, "WARP DIGIVOLVE" flashes across, the Digimon becomes a
  * light silhouette that surges bigger through its in-between forms (sprite class fx-warp-start)
  * inside a spinning wireframe of data, armour pieces fly in, and a white flash. Then the new form
- * bursts out with its name, in its own element (fire for WarGreymon, ice for MetalGarurumon).
+ * bursts out with its name, in its own element (fire for WarGreymon, ice for MetalGarurumon). A Dark
+ * Warp Digivolution (BlackWarGreymon) is the same sequence, named so, bursting out in dark energy.
  */
 export const WARP_START: FxSpec = { layers: [
   { kind: 'screen', color: '#00040e', mode: 'dim', dur: 2600 },
@@ -954,6 +992,11 @@ export const WARP_START: FxSpec = { layers: [
   { kind: 'aura', at: 'user', color: '#ffffff', size: 210, delay: 1850, dur: 750 },
   { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 2300, dur: 320 },
 ] };
+/** The warp sequence for a form: a Dark Warp Digivolution's banner says so. */
+export function warpStart(form = ''): FxSpec {
+  if (!isDarkWarp(form)) return WARP_START;
+  return { layers: WARP_START.layers.map(l => (l.kind === 'banner' ? { ...l, text: 'Dark Warp Digivolve!', color: '#a05bff' } : l)) };
+}
 /** How a warp form bursts out, by its first type. */
 const WARP_BURST_STYLE: Record<string, { flash: string; ring: string; shape: Shape; color: string; color2: string }> = {
   Fire: { flash: '#fff1c2', ring: '#ff9a1f', shape: 'flame', color: '#ff6a00', color2: '#ffd23f' },
@@ -961,7 +1004,22 @@ const WARP_BURST_STYLE: Record<string, { flash: string; ring: string; shape: Sha
 };
 const DEFAULT_BURST = WARP_BURST_STYLE.Fire;
 
+/** BlackWarGreymon bursts out in dark energy: a dark pulse, black smoke and swirling dark sparks (on request). */
+function darkWarpBurst(form: string): FxSpec {
+  return { shake: 'strong', layers: [
+    { kind: 'screen', color: '#0d0018', mode: 'dim', dur: 1000 },
+    { kind: 'screen', color: '#b48cff', mode: 'flash', dur: 400 },
+    { kind: 'aura', at: 'user', color: '#3a0a5e', size: 260, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#9a4dff', count: 2, size: 260 },
+    { kind: 'particles', at: 'user', shape: 'wisp', motion: 'burst', color: '#2a0a3a', color2: '#7a2bff', count: 16, size: 26, spread: 150 },
+    { kind: 'particles', at: 'user', shape: 'dot', motion: 'swirl', color: '#9a4dff', color2: '#ff2a6a', count: 18, size: 10, spread: 120, dur: 1000 },
+    { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#b48cff', color2: '#ff4d7a', count: 10, size: 14, spread: 120, delay: 80 },
+    { kind: 'banner', text: `${form}!`, color: '#9a4dff', delay: 180, dur: 1050 },
+  ] };
+}
+
 export function warpBurst(form = ''): FxSpec {
+  if (isDarkWarp(form)) return darkWarpBurst(form);
   const type = WARP_DIGIMON.find(d => d.warp.name === form)?.warp.types[0] ?? '';
   const st = WARP_BURST_STYLE[type] ?? DEFAULT_BURST;
   return { shake: 'strong', layers: [

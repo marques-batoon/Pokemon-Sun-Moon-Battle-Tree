@@ -22,6 +22,8 @@ export interface SpriteInfo {
   pixelated: boolean;
   /** No back sprite exists: show the front sprite flipped horizontally. */
   mirrored?: boolean;
+  /** Pixel art in a high-resolution file (the Digimon): sized like a pixel sprite, but scaled smoothly. */
+  smooth?: boolean;
 }
 
 const SPRITE_BASE = 'https://play.pokemonshowdown.com/sprites';
@@ -46,17 +48,26 @@ function championsSprite(species: string, side: SpriteSide, preferStatic: boolea
   return mirrored ? { ...mirrored, mirrored: true } : null;
 }
 
-/** A sprite shipped with the app (the Digimon): the image faces left, so the back view is it flipped. */
+/**
+ * A sprite shipped with the app (the Digimon): pixel art in a 96-px box like Pokémon's 2D sprites, so it is
+ * sized and placed like one (in either sprite style). The image faces left, so the back view is it flipped.
+ */
 function localSprite(species: string, side: SpriteSide): SpriteInfo | null {
   const s = DIGIMON_SPRITES[species];
   if (!s) return null;
-  return { url: localSpriteUrl(species)!, w: s.w, h: s.h, pixelated: false, ...(side === 'p1' ? { mirrored: true } : {}) };
+  return { url: localSpriteUrl(species)!, w: s.w, h: s.h, pixelated: true, smooth: true, ...(side === 'p1' ? { mirrored: true } : {}) };
 }
 
 /** URL of a sprite shipped with the app, or null if the species has none. */
 export function localSpriteUrl(species: string): string | null {
   const s = DIGIMON_SPRITES[species];
   return s ? `${import.meta.env.BASE_URL}${s.file}` : null;
+}
+
+/** URL of a menu icon shipped with the app (the Digimon, cropped from their sprites), or null. */
+export function localIconUrl(species: string): string | null {
+  const s = DIGIMON_SPRITES[species];
+  return s ? `${import.meta.env.BASE_URL}${s.icon}` : null;
 }
 
 /** Animated 3D sprite (XY/SM style); `p1` = back sprite, `p2` = front sprite. */

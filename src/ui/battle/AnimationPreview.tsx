@@ -2,7 +2,7 @@ import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
-import { WARP_DIGIMON } from '../../data/custom/digimon';
+import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
   BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
@@ -40,7 +40,7 @@ const GROUPS: { label: string; moves: string[] }[] = [
       'Guardian of Alola', 'Soul-Stealing 7-Star Strike', 'Clangorous Soulblaze', 'Splintered Stormshards', "Let's Snuggle Forever", 'Searing Sunraze Smash',
       'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
   },
-  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire'] },
+  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer'] },
 ];
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
 const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;
@@ -257,7 +257,7 @@ export function AnimationPreview() {
         <button disabled={field.digimon[side]?.form === warpForm && field.digimon[side]?.stage === 2} onClick={() => play([
           { kind: 'warp-start', side, target: null, condition: warpForm, durationMs: WARP_START_MS },
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
-        ])}>Warp Digivolve</button>
+        ])}>{isDarkWarp(warpForm) ? 'Dark Warp Digivolve' : 'Warp Digivolve'}</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
           Inflict on {side === 'p1' ? 'opponent' : 'you'}{' '}

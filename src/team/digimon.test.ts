@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { WARP_DIGIMON } from '../data/custom/digimon';
+import { DIGIMON_BASE_MOVES, WARP_DIGIMON } from '../data/custom/digimon';
 import { canHoldItem } from '../data/custom/paradox';
 import { allMoves, eligibleSpecies, gen7, learnableMoves, speciesAbilities } from './dex';
 import { calcStats, changeSpecies, megaFormForSet, newSet } from './sets';
@@ -19,7 +19,7 @@ describe('Agumon in the team builder', () => {
     for (const m of ['Pepper Breath', 'Gaia Force', 'Scratch', 'Giga Impact', 'Tera Blast', 'Scorching Sands', 'Temper Flare', 'Solar Blade', 'X-Scissor']) expect(moves).toContain(m);
     expect(moves).not.toContain('Thunderbolt');
     // Every listed move exists (none dropped as unknown).
-    expect(moves).toHaveLength(new Set(WARP_DIGIMON[0].moves).size);
+    expect(moves).toHaveLength(new Set(DIGIMON_BASE_MOVES.Agumon).size);
     expect(allMoves().map(m => m.name)).not.toContain('Pepper Breath');
     expect((await learnableMoves('Smeargle')).map(m => m.name)).not.toContain('Gaia Force');
   });
@@ -72,5 +72,30 @@ describe('megaFormForSet (builder BST and the "after Mega Evolution" section)', 
     expect(megaFormForSet({ species: 'Venusaur', item: 'Charizardite X' })).toBeNull();
     expect(megaFormForSet({ species: 'Agumon', item: 'Charcoal' })).toBeNull();
     expect(megaFormForSet({ species: 'Agumon', item: '' })).toBeNull();
+  });
+});
+
+describe('Agumon\'s warp items change what it learns', () => {
+  it('adds Dramon Breaker with Wargreyite, and learns BlackWarGreymon\'s list with Blackwargreyite', async () => {
+    const own = (await learnableMoves('Agumon')).map(m => m.name);
+    const war = (await learnableMoves('Agumon', 'Wargreyite')).map(m => m.name);
+    const black = (await learnableMoves('Agumon', 'Blackwargreyite')).map(m => m.name);
+    expect(own).not.toContain('Dramon Breaker');
+    expect(war).toEqual([...own, 'Dramon Breaker'].sort((a, b) => a.localeCompare(b)));
+    const list = WARP_DIGIMON.find(d => d.item === 'Blackwargreyite')!.moves;
+    expect(black).toHaveLength(new Set(list).size);
+    for (const m of ['Dark Gaia Force', 'Dramon Destroyer', 'Lash Out', 'Knock Off', 'Nasty Plot', 'Night Slash']) expect(black).toContain(m);
+    for (const m of ['Gaia Force', 'Dramon Breaker', 'Dragon Breath', 'Fly']) expect(black).not.toContain(m);
+    // Someone else's warp item leaves its own list.
+    expect((await learnableMoves('Agumon', 'Metalgaruruite')).map(m => m.name)).toEqual(own);
+    expect(allMoves().map(m => m.name)).not.toContain('Dark Gaia Force');
+  });
+
+  it('shows BlackWarGreymon when it holds Blackwargreyite', () => {
+    expect(canHoldItem('Agumon', 'Blackwargreyite')).toBe(true);
+    expect(canHoldItem('Gabumon', 'Blackwargreyite')).toBe(false);
+    expect(megaFormForSet({ species: 'Agumon', item: 'Blackwargreyite' })).toBe('BlackWarGreymon');
+    expect(eligibleSpecies().map(s => s.name)).not.toContain('BlackWarGreymon');
+    expect(gen7.species.get('BlackWarGreymon')?.types).toEqual(['Fire', 'Dark']);
   });
 });
