@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
 import { DEFAULT_APP_SETTINGS } from '../settings/settings-store';
-import { animatedSprite, animatedSpriteBoost, artworkSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, staticSprite, WING_FLAPPERS } from './sprites';
+import { animatedSprite, animatedSpriteBoost, artworkSprite, hasBackSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, staticSprite, WING_FLAPPERS } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -115,5 +115,25 @@ describe('sprite style', () => {
     expect(animatedSpriteBoost('Charizard')).toBe(1.35);
     expect(isAnimatedSprite(spriteCandidates('Charizard', 'p2', '2d')[0])).toBe(false);
     expect(isAnimatedSprite(spriteCandidates('Charizard', 'p2', '3d')[0])).toBe(true);
+  });
+});
+
+describe('matching sprites on your side', () => {
+  it('knows which Pokémon have no back sprite (the Digimon are shown from the front, flipped)', () => {
+    expect(hasBackSprite('Garchomp', '2d')).toBe(true);
+    expect(hasBackSprite('Garchomp', '3d')).toBe(true);
+    expect(hasBackSprite('Agumon', '2d')).toBe(false);
+    expect(hasBackSprite('WarGreymon', '3d')).toBe(false);
+  });
+
+  it('shows your side\'s Pokémon as their front sprites, flipped, when asked', () => {
+    const [front] = spriteCandidates('Garchomp', 'p1', '2d', { flipFront: true });
+    expect(front.url).toBe('https://play.pokemonshowdown.com/sprites/gen5/garchomp.png');
+    expect(front.mirrored).toBe(true);
+    expect(spriteCandidates('Garchomp', 'p1', '3d', { flipFront: true })[0].url).toBe('https://play.pokemonshowdown.com/sprites/ani/garchomp.gif');
+    // Already front-only: still flipped once (it faces the opponent).
+    expect(spriteCandidates('Agumon', 'p1', '2d', { flipFront: true })[0]).toMatchObject({ url: '/pokemon/agumon.png', mirrored: true });
+    // The opponent's side is never affected.
+    expect(spriteCandidates('Garchomp', 'p2', '2d', { flipFront: true })[0].mirrored).toBeFalsy();
   });
 });

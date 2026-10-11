@@ -234,6 +234,13 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </span>
       );
     }
+    case 'label': {
+      // Over the Pokémon, or under its feet when there's no room above (the opponents near the top of the stage).
+      const p = anchor(layer.at);
+      const above = p.y - 70 * ctx.k;
+      const y = above >= 24 * ctx.k ? above : (p.ground ?? p.y + 60 * ctx.k) + 16 * ctx.k;
+      return <span key={i} className="fxl fx-label" style={css({ '--x': px(p.x), '--y': px(y), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000) })}>{layer.text}</span>;
+    }
     case 'banner':
       return <span key={i} className="fxl fx-banner" style={css({ '--x': '0px', '--y': px(ctx.h * 0.4), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1200) })}>{layer.text}</span>;
     case 'meteor': {
@@ -332,7 +339,7 @@ interface Props {
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
     case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
-    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': return l.at === 'target';
+    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

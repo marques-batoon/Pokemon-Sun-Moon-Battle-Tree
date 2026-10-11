@@ -4,7 +4,7 @@ import { Generations } from '@pkmn/data';
 import { Dex } from '@pkmn/dex';
 import { Protocol } from '@pkmn/protocol';
 import { Battle, Teams, type ID } from '@pkmn/sim';
-import { planLine, type BattleAnimation } from './playback';
+import { absorbedByAbility, planLine, type BattleAnimation } from './playback';
 
 type Planned = Omit<BattleAnimation, 'id'>;
 
@@ -195,5 +195,85 @@ describe('planLine: Paradox Evolution', () => {
     expect(steps('|detailschange|p1b: Gabumon|MetalGarurumon, L50, F').map(s => [s.animation?.kind, s.animation?.condition, s.animation?.slot])).toEqual([
       ['warp-start', 'MetalGarurumon', 1], ['warp', 'MetalGarurumon', 1],
     ]);
+  });
+});
+
+/** As planBattle, with the battle client's look-ahead for moves taken in by an Ability. */
+function planWithLookahead(p1Team: string, p2Team: string, turns: [string, string][]): Planned[] {
+  const sim = new Battle({ formatid: 'gen7customgame' as ID, seed: '1,2,3,4' });
+  sim.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(p1Team)) });
+  sim.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(p2Team)) });
+  sim.makeChoices('team 1', 'team 1');
+  for (const [a, b] of turns) sim.makeChoices(a, b);
+  const lines: string[] = [];
+  for (let i = 0; i < sim.log.length; i++) {
+    if (sim.log[i].startsWith('|split|')) { i++; continue; }
+    lines.push(sim.log[i]);
+  }
+  const client = new ClientBattle(new Generations(Dex));
+  const planned: Planned[] = [];
+  lines.forEach((line, i) => {
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, lines.slice(i + 1));
+    for (const step of planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true, { absorbed })) {
+      if (step.animation) planned.push(step.animation);
+    }
+    client.add(args, kwArgs);
+  });
+  return planned;
+}
+const set = (species: string, ability: string, moves: string[]) => `${species}\nAbility: ${ability}\nLevel: 50\nEVs: 252 HP / 252 SpA\n${moves.map(m => `- ${m}`).join('\n')}`;
+
+describe('planLine: moves taken in by an Ability (Water Absorb, Volt Absorb...)', () => {
+  const moveOf = (planned: Planned[], name: string) => planned.filter(a => a.kind === 'move' && a.moveName === name).pop()!;
+  const abilityAnims = (planned: Planned[]) => planned.filter(a => a.kind === 'ability');
+
+  it('Volt Absorb: the move doesn\'t animate; the Ability heals with its own animation, the attack coming from the user', () => {
+    const planned = planWithLookahead(set('Pikachu', 'Static', ['Thunderbolt', 'Grass Knot']), set('Lanturn', 'Volt Absorb', ['Splash']), [['move 2', 'move 1'], ['move 1', 'move 1']]);
+    expect(moveOf(planned, 'Thunderbolt')).toMatchObject({ still: true });
+    expect(moveOf(planned, 'Grass Knot').still).toBe(false);
+    const [heal] = abilityAnims(planned);
+    expect(heal).toMatchObject({ kind: 'ability', side: 'p2', target: 'p1', condition: 'voltabsorb', label: 'Volt Absorb' });
+    expect(heal.hpDelta).toBeGreaterThan(0);
+    expect(planned.some(a => a.kind === 'miss')).toBe(false);
+  });
+
+  it('Water Absorb at full HP: its animation, not a miss', () => {
+    const planned = planWithLookahead(set('Starmie', 'Natural Cure', ['Surf']), set('Vaporeon', 'Water Absorb', ['Splash']), [['move 1', 'move 1']]);
+    expect(moveOf(planned, 'Surf').still).toBe(true);
+    expect(abilityAnims(planned)).toEqual([expect.objectContaining({ side: 'p2', target: 'p1', condition: 'waterabsorb', label: 'Water Absorb' })]);
+    expect(planned.some(a => a.kind === 'miss')).toBe(false);
+  });
+
+  it('Motor Drive, Flash Fire and Levitate each get their own', () => {
+    const motor = planWithLookahead(set('Pikachu', 'Static', ['Thunderbolt']), set('Electivire', 'Motor Drive', ['Splash']), [['move 1', 'move 1']]);
+    expect(moveOf(motor, 'Thunderbolt').still).toBe(true);
+    expect(abilityAnims(motor)).toEqual([expect.objectContaining({ condition: 'motordrive', label: 'Motor Drive' })]);
+    // The Speed rise follows with its usual animation.
+    expect(motor.findIndex(a => a.kind === 'boost')).toBeGreaterThan(motor.findIndex(a => a.kind === 'ability'));
+    const fire = planWithLookahead(set('Charizard', 'Blaze', ['Flamethrower']), set('Heatran', 'Flash Fire', ['Splash']), [['move 1', 'move 1']]);
+    expect(moveOf(fire, 'Flamethrower').still).toBe(true);
+    expect(abilityAnims(fire)).toEqual([expect.objectContaining({ condition: 'flashfire' })]);
+    const quake = planWithLookahead(set('Garchomp', 'Rough Skin', ['Earthquake']), set('Gengar', 'Levitate', ['Splash']), [['move 1', 'move 1']]);
+    expect(moveOf(quake, 'Earthquake').still).toBe(true);
+    expect(abilityAnims(quake)).toEqual([expect.objectContaining({ condition: 'levitate', label: 'Levitate' })]);
+  });
+
+  it('keeps the miss animation for type immunities, and the move\'s own animation when it lands', () => {
+    const ghost = planWithLookahead(set('Snorlax', 'Thick Fat', ['Body Slam']), set('Gengar', 'Levitate', ['Splash']), [['move 1', 'move 1']]);
+    expect(moveOf(ghost, 'Body Slam').still).toBe(false);
+    expect(ghost.some(a => a.kind === 'miss')).toBe(true);
+    expect(abilityAnims(ghost)).toEqual([]);
+  });
+
+  it('only stops a single-target move whose own target takes it in', () => {
+    const move = ['move', 'p1a: Pikachu', 'Thunderbolt', 'p2a: Lanturn'];
+    expect(absorbedByAbility(move, {}, ['|-immune|p2a: Lanturn|[from] ability: Volt Absorb'])).toBe(true);
+    expect(absorbedByAbility(move, {}, ['|-heal|p2a: Lanturn|100/100|[from] ability: Volt Absorb|[of] p1a: Pikachu'])).toBe(true);
+    expect(absorbedByAbility(move, {}, ['|-damage|p2a: Lanturn|50/100', '|', '|-heal|p2a: Lanturn|100/100|[from] ability: Volt Absorb'])).toBe(false);
+    expect(absorbedByAbility(move, { spread: 'p2a,p2b' }, ['|-immune|p2a: Lanturn|[from] ability: Volt Absorb'])).toBe(false);
+    expect(absorbedByAbility(move, {}, ['|-heal|p2a: Lanturn|100/100|[from] item: Leftovers'])).toBe(false);
+    expect(absorbedByAbility(['move', 'p1a: Pikachu', 'Thunderbolt', 'p2a: Raichu'], {}, ['|-ability|p2a: Raichu|Lightning Rod|boost', '|-boost|p2a: Raichu|spa|1'])).toBe(true);
+    expect(absorbedByAbility(['move', 'p1a: Pikachu', 'Thunderbolt', 'p2a: Raichu'], {}, ['|-ability|p2b: Gyarados|Intimidate|boost'])).toBe(false);
   });
 });

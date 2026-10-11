@@ -59,6 +59,8 @@ export type Layer =
   | { kind: 'pillar'; at: Anchor; color: string; color2?: string; width: number; delay?: number; dur?: number }
   /** Heavy fists (blocks of ice) forming around both of the user's arms, which then smash into the target together. */
   | { kind: 'gauntlets'; color: string; color2?: string; size: number; delay?: number; dur?: number }
+  /** A small name tag popping up over a spot (an Ability's name as it acts). */
+  | { kind: 'label'; at: Anchor; text: string; color: string; delay?: number; dur?: number }
   /** Mega Evolution: an egg-shaped shell of swirling rainbow energy around the Pokémon. */
   | { kind: 'cocoon'; at: Anchor; size: number; delay?: number; dur?: number }
   /** Mega Evolution: the Mega Evolution symbol (a ring around a helix) flashing over the Pokémon. */
@@ -898,6 +900,82 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'screen', color: '#ffd27f', mode: 'flash', delay: 300, dur: 220 },
   ] },
 };
+
+/**
+ * An Ability takes in a move, which fails (as in the games, the move itself doesn't animate). Here "user" is
+ * the move's user and "target" the Pokémon with the Ability: the attack's element flies across and is soaked
+ * up, then what the Ability gives shows (healing, a stat rise, Flash Fire's flames), with the Ability's name
+ * over the Pokémon. Levitate: the Pokémon floats over the quake. Any other Ability that stops a move
+ * (Soundproof, Wonder Guard...): a flash around the Pokémon with the Ability's name.
+ */
+const HEAL_SPARKLE: Layer = { kind: 'particles', at: 'target', shape: 'dot', motion: 'rise', color: '#8af0a0', color2: '#ffffff', count: 10, size: 9, spread: 60, delay: 650, dur: 650 };
+function takeIn(shape: Shape, color: string, color2: string, extra: Layer[]): Layer[] {
+  return [
+    { kind: 'orb', color, color2, size: 22, shape, count: 3, gap: 60, dur: 420 },
+    { kind: 'particles', at: 'target', shape, motion: 'converge', color, color2, count: 14, size: 14, spread: 95, delay: 380, dur: 500 },
+    { kind: 'aura', at: 'target', color, size: 170, delay: 520, dur: 520 },
+    ...extra,
+  ];
+}
+export const ABILITY_FX: Record<string, FxSpec> = {
+  // Water soaked up, then healing.
+  waterabsorb: { layers: takeIn('drop', '#4d9cff', '#cfe6ff', [HEAL_SPARKLE]) },
+  // Water soaked into the skin, which glistens with bubbles, then healing.
+  dryskin: { layers: takeIn('drop', '#6fc3ff', '#e6f6ff', [
+    { kind: 'particles', at: 'target', shape: 'bubble', motion: 'rise', color: '#9fd8ff', color2: '#ffffff', count: 8, size: 14, spread: 55, delay: 600 },
+    HEAL_SPARKLE,
+  ]) },
+  // Electricity soaked up, then healing.
+  voltabsorb: { layers: takeIn('spark', '#ffd43b', '#fff6b0', [HEAL_SPARKLE]) },
+  // Electricity drives a whirring motor (spinning rings), with speed lines; the Speed rise follows (its own line).
+  motordrive: { layers: takeIn('spark', '#ffd43b', '#fff6b0', [
+    { kind: 'rings', at: 'target', color: '#ffe066', count: 3, size: 150, delay: 560, dur: 500 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'swirl', color: '#ffe066', color2: '#ffffff', count: 10, size: 10, spread: 70, delay: 600, dur: 500 },
+  ]) },
+  // The Pokémon draws the lightning down onto itself like a lightning rod; the Sp. Atk rise follows.
+  lightningrod: { layers: [
+    { kind: 'bolt', color: '#ffe066', delay: 150 },
+    { kind: 'impact', color: '#fff6b0', size: 110, delay: 330 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'converge', color: '#ffd43b', color2: '#fff6b0', count: 12, size: 14, spread: 90, delay: 350, dur: 450 },
+    { kind: 'aura', at: 'target', color: '#ffd43b', size: 170, delay: 480, dur: 520 },
+  ] },
+  // The water drains into the Pokémon in a whirlpool; the Sp. Atk rise follows.
+  stormdrain: { layers: [
+    { kind: 'orb', color: '#3b7cff', color2: '#cfe8ff', size: 22, shape: 'drop', count: 3, gap: 60, dur: 420 },
+    { kind: 'vortex', at: 'target', color: '#3b7cff', color2: '#cfe8ff', size: 170, delay: 300, dur: 800 },
+    { kind: 'aura', at: 'target', color: '#5aa2ff', size: 170, delay: 600, dur: 450 },
+  ] },
+  // Leaves sipped up, the Pokémon sprouting with fresh leaves; the Attack rise follows.
+  sapsipper: { layers: takeIn('leaf', '#5fb83a', '#c8f08a', [
+    { kind: 'particles', at: 'target', shape: 'leaf', motion: 'rise', color: '#7ac74c', color2: '#c8f08a', count: 8, size: 14, spread: 60, delay: 620, dur: 600 },
+  ]) },
+  // Fire taken in, and the Pokémon's own fire flares up (its Fire moves are powered up).
+  flashfire: { layers: takeIn('flame', '#ff8a1f', '#ffd23f', [
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'rise', color: '#ff5a00', color2: '#ffd23f', count: 14, size: 22, spread: 70, delay: 600, dur: 700 },
+    { kind: 'aura', at: 'target', color: '#ff6a00', size: 220, delay: 650, dur: 500 },
+  ]) },
+  // The ground quakes beneath, but the Pokémon floats over it (sprite class fx-levitate).
+  levitate: { layers: [
+    { kind: 'ground', color: '#a07a4a', dur: 600 },
+    { kind: 'rings', at: 'target', color: '#c9a7ff', count: 2, size: 120, delay: 150, dur: 700 },
+    { kind: 'particles', at: 'target', shape: 'dot', motion: 'rise', color: '#d9c6ff', color2: '#ffffff', count: 8, size: 8, spread: 50, delay: 250, dur: 700 },
+  ] },
+};
+const ABILITY_COLORS: Record<string, string> = {
+  waterabsorb: '#2f7fe0', dryskin: '#2a93c8', voltabsorb: '#c99400', motordrive: '#c99400', lightningrod: '#c99400',
+  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8',
+};
+/** Any other Ability that stops a move. */
+const ABILITY_BLOCK: FxSpec = { layers: [
+  { kind: 'rings', at: 'target', color: '#ffffff', count: 2, size: 140, dur: 500 },
+  { kind: 'aura', at: 'target', color: '#c9d4ff', size: 160, delay: 100, dur: 600 },
+] };
+/** The animation for an Ability that took in or stopped a move, with its name over the Pokémon. */
+export function abilitySpec(id: string, name?: string): FxSpec {
+  const spec = ABILITY_FX[id] ?? ABILITY_BLOCK;
+  if (!name) return spec;
+  return { ...spec, layers: [...spec.layers, { kind: 'label', at: 'target', text: name, color: ABILITY_COLORS[id] ?? '#5a6a8a', delay: 150, dur: 950 }] };
+}
 
 /** Z-Power charge-up before any Z-Move. */
 export const Z_POWER: FxSpec = { layers: [

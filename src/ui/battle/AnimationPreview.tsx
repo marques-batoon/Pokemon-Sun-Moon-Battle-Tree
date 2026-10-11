@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -50,6 +50,9 @@ const POLIWRATH_Z_MOVES = new Set(Object.values(POLIWRATHIUM_Z.moves).map(z => z
 /** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
+/** Abilities that take in or stop a move, for the preview (the healing ones show +25%). */
+const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Soundproof'];
+const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
 interface FieldState {
@@ -259,6 +262,17 @@ export function AnimationPreview() {
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
         ])}>{isDarkWarp(warpForm) ? 'Dark Warp Digivolve' : 'Warp Digivolve'}</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
+        <label>
+          {side === 'p1' ? 'Opponent' : 'You'}{' '}takes it in{' '}
+          <select aria-label="Ability takes in the move" value="" onChange={e => {
+            const name = e.target.value;
+            e.target.value = '';
+            if (name) play([{ kind: 'ability', side: other(side), target: side, condition: name.toLowerCase().replace(/[^a-z0-9]/g, ''), label: name, hpDelta: HEALING_ABILITIES.has(name) ? 25 : undefined, durationMs: ABILITY_MS }]);
+          }}>
+            <option value="">Ability…</option>
+            {PREVIEW_ABILITIES.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+        </label>
         <label>
           Inflict on {side === 'p1' ? 'opponent' : 'you'}{' '}
           <select value="" onChange={e => { const c = e.target.value; e.target.value = ''; if (c) play([statusStep(other(side), c)]); }}>

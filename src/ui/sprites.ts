@@ -109,11 +109,16 @@ export function artworkSprite(name: string, side: SpriteSide): SpriteInfo {
  * then the artwork, then the 3D sprite. 3D: the animated sprite, then the pixel one. Every image URL
  * the app shows is built in this file (an offline version would only need to change these).
  */
-export function spriteCandidates(name: string, side: SpriteSide, style: SpriteStyle, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N' } = {}): SpriteInfo[] {
+export function spriteCandidates(name: string, side: SpriteSide, style: SpriteStyle, opts: { shiny?: boolean; gender?: 'M' | 'F' | 'N'; flipFront?: boolean } = {}): SpriteInfo[] {
+  // Your side shown with front sprites, flipped (Settings: matching sprites on your side).
+  if (side === 'p1' && opts.flipFront) return spriteCandidates(name, 'p2', style, { ...opts, flipFront: false }).map(c => ({ ...c, mirrored: !c.mirrored }));
   return style === '3d'
     ? [animatedSprite(name, side, opts), staticSprite(name, side, opts)]
     : [staticSprite(name, side, opts), artworkSprite(name, side), animatedSprite(name, side, opts)];
 }
+
+/** Whether the Pokémon has a real back sprite in this style (else its front sprite is shown flipped). */
+export const hasBackSprite = (name: string, style: SpriteStyle) => !spriteCandidates(name, 'p1', style)[0]?.mirrored;
 
 /** Whether the image is one of Showdown's animated 3D sprites (front or back, shiny or not). */
 export const isAnimatedSprite = (info: SpriteInfo) => /\/sprites\/ani(-back)?(-shiny)?\//.test(info.url);

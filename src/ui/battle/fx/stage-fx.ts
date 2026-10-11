@@ -1,11 +1,11 @@
 // Which sprite animation and which catalog effect each battle event gets.
 import type { CSSProperties } from 'react';
-import type { BattleAnimation } from '../../../client/playback';
+import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  blockedSpec, cantSpec, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, blockedSpec, cantSpec, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
 } from './catalog';
-import { posKey, shakeDelay, type Pos, type Side } from './geometry';
+import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
 import { isDarkWarp } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 
@@ -58,6 +58,14 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
         case 'flinch': return `fx-flinch-${v}`;
         default: return `fx-hurt-${v}`;
       }
+    case 'ability': {
+      // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
+      const id = anim.condition ?? '';
+      if (id === 'levitate') return 'fx-levitate';
+      if (['waterabsorb', 'voltabsorb', 'dryskin'].includes(id)) return `fx-absorb-${v}`;
+      if ((ABSORB_ABILITIES as readonly string[]).includes(id)) return `fx-powerup-${v}`;
+      return `fx-power-${v}`;
+    }
     case 'confused': return `fx-dizzy-${v}`;
     case 'infatuated': return `fx-smitten-${v}`;
     case 'switch-out': return 'fx-switch-out';
@@ -104,6 +112,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'infatuated': return INFATUATED;
     case 'blocked': return blockedSpec(anim.condition ?? 'protect');
     case 'cure': return CURE;
+    case 'ability': return abilitySpec(anim.condition ?? '', anim.label);
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':
     case 'field-end': return anim.condition ? fieldSpec(anim.condition, anim.kind === 'field-end') : null;
@@ -118,6 +127,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
  */
 export function effectAnchors(anim: BattleAnimation): { user: Pos; targets: Pos[] } | null {
   if (anim.kind === 'absorb') return anim.target && anim.side ? { user: posKey(anim.target, anim.targetSlot), targets: [posKey(anim.side, anim.slot)] } : null;
+  // An Ability taking in a move: the attack comes from the move's user (else the opposing side) into the Pokémon with it.
+  if (anim.kind === 'ability') return anim.side ? { user: anim.target ? posKey(anim.target, anim.targetSlot) : posKey(foeSide(anim.side)), targets: [posKey(anim.side, anim.slot)] } : null;
   // Terrains and rooms can start or end without anyone causing it (they run out).
   if (anim.kind === 'field-start' || anim.kind === 'field-end') return { user: posKey(anim.side ?? 'p1', anim.slot), targets: [] };
   if (!anim.side) return null;

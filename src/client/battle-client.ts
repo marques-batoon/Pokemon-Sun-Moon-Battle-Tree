@@ -9,7 +9,7 @@ import type { SimRequest } from '../engine/sim-types';
 import { gens } from '../team/dex';
 import { nextTimers, NO_TIMERS, type FieldTimers } from './field-timers';
 import { linkMultiAllies, TreeLogFormatter } from './log-formatter';
-import { planLine, type BattleAnimation, type PlannedStep } from './playback';
+import { absorbedByAbility, planLine, type BattleAnimation, type PlannedStep } from './playback';
 import type { EngineTransport } from './transport';
 
 export type { BattleAnimation } from './playback';
@@ -219,6 +219,16 @@ export class BattleClient {
     }
   }
 
+  /** The protocol lines queued after the one being played (up to the next request or the end). */
+  private upcomingLines(): string[] {
+    const lines: string[] = [];
+    for (const item of this.queue.slice(1)) {
+      if (item.kind !== 'line') break;
+      lines.push(item.line);
+    }
+    return lines;
+  }
+
   private enqueue(items: QueueItem[]) {
     this.queue.push(...items);
     if (!this.timer) this.pump(false);
@@ -289,7 +299,9 @@ export class BattleClient {
       // Plan against the state before the line is applied (the formatter needs that state too).
       // [silent] lines change state without a message (as in Showdown's own client).
       item.text = 'silent' in kwArgs ? '' : this.formatter!.formatText(args, kwArgs);
-      item.steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, !!item.text.trim());
+      // A move taken in by an Ability (Water Absorb...) doesn't animate: look at the lines queued after it.
+      const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, this.upcomingLines());
+      item.steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, !!item.text.trim(), { absorbed });
       this.splitMegaText(item.steps);
     }
     const step = item.steps.shift()!;

@@ -5,7 +5,7 @@ export type AnimationSpeed = 'off' | 'fast' | 'normal' | 'slow';
 /** Pokémon pictures: 2D pixel sprites (Black and White style) or 3D animated ones (X and Y / Sun and Moon style). */
 export type SpriteStyle = '2d' | '3d';
 /** Scenery behind the battle (all share the same horizon line). */
-export type BattleBackground = 'battletree' | 'grass' | 'stadium' | 'mountain' | 'ocean' | 'forest';
+export type BattleBackground = 'battletree' | 'grass' | 'stadium' | 'mountain' | 'ocean' | 'forest' | 'spiralmountain';
 export const BATTLE_BACKGROUNDS: { id: BattleBackground; label: string }[] = [
   { id: 'battletree', label: 'Battle Tree' },
   { id: 'grass', label: 'Grass field' },
@@ -13,6 +13,7 @@ export const BATTLE_BACKGROUNDS: { id: BattleBackground; label: string }[] = [
   { id: 'mountain', label: 'Mountain' },
   { id: 'ocean', label: 'Ocean' },
   { id: 'forest', label: 'Forest' },
+  { id: 'spiralmountain', label: 'Spiral Mountain' },
 ];
 
 /** Multiplier on animation durations for each speed setting (0 = no animations). */
@@ -32,6 +33,11 @@ export interface AppSettings {
   spriteStyle: SpriteStyle;
   /** Scenery behind the battle. */
   battleBackground: BattleBackground;
+  /**
+   * If any Pokémon on your side (yours, or your partner's in Multi) has no back sprite, show all of them as
+   * front sprites, flipped, so your side matches (otherwise only that one is a flipped front sprite).
+   */
+  matchSideSprites: boolean;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
@@ -46,6 +52,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   sprites: true,
   spriteStyle: '2d',
   battleBackground: 'battletree',
+  matchSideSprites: true,
   animationSpeed: 'normal',
   trainerName: '',
 };

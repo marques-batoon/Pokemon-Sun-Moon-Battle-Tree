@@ -15,6 +15,8 @@ interface Props {
   animatedScale?: number;
   /** Further multiplier for pixel sprites (96 px images, so they match the 3D ones' size on the stage). */
   pixelScale?: number;
+  /** Your side: show the front sprite, flipped, instead of the back one (so every Pokémon there matches). */
+  flipFront?: boolean;
   className?: string;
 }
 
@@ -24,10 +26,10 @@ interface Props {
  * type-colored placeholder if images fail or are turned off. Remount (key) on species change to
  * start over for a new forme.
  */
-export function PokemonSprite({ species, side, gender, shiny, scale: baseScale = 1, animatedScale = 1, pixelScale = 1, className = '' }: Props) {
+export function PokemonSprite({ species, side, gender, shiny, scale: baseScale = 1, animatedScale = 1, pixelScale = 1, flipFront = false, className = '' }: Props) {
   const { sprites, spriteStyle } = useAppSettings();
   const [level, setLevel] = useState(0);
-  const candidates = spriteCandidates(species, side, spriteStyle, { shiny, gender });
+  const candidates = spriteCandidates(species, side, spriteStyle, { shiny, gender, flipFront });
   if (!sprites || level >= candidates.length) return <SpritePlaceholder species={species} className={className} />;
   const info = candidates[level];
   const scale = baseScale * (isAnimatedSprite(info) ? animatedScale : info.pixelated ? pixelScale : 1);

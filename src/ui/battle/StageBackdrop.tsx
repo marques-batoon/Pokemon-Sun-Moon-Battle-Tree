@@ -374,8 +374,79 @@ const treeGround: Part = id => (
   </svg>
 );
 
-const SKIES: Partial<Record<BattleBackground, Part>> = { battletree: treeSky, stadium: stadiumSky, mountain: mountainSky, ocean: oceanSky, forest: forestSky };
-const GROUNDS: Partial<Record<BattleBackground, Part>> = { battletree: treeGround, stadium: stadiumGround, mountain: mountainGround, ocean: oceanGround, forest: forestGround };
+// ---- Spiral Mountain (Digimon Adventure): the summit of the Dark Masters' twisted mountain, overlooking the Digital
+// World far below at dusk: a digital grid across the sky and a data sphere, Infinity Mountain, forests, a server
+// city and the sea beyond a sea of clouds, twisted rock spires at the edge, and a rocky summit carved with a spiral
+// whose groove carries a flow of glowing data. ----
+
+/** The carved spiral on the summit, three turns out from the middle of the floor. */
+const SUMMIT_SPIRAL = (() => {
+  let d = '';
+  for (let t = 0; t <= 6 * Math.PI; t += 0.08) {
+    const r = 18 + 32 * t;
+    d += `${d ? 'L' : 'M'}${(500 + r * Math.cos(t)).toFixed(1)} ${(250 + r * Math.sin(t) * 0.42).toFixed(1)} `;
+  }
+  return d;
+})();
+const SUMMIT_ROCKS = scatter(60, 31, ['#3a3048', '#857598', '#5a4c6c'], [1.5, 6]);
+/** Grid lines across the sky, converging down toward the horizon. */
+const SKY_GRID = [
+  ...[34, 62, 96].map(y => `M0 ${y} Q500 ${y - 22} 1000 ${y}`),
+  ...Array.from({ length: 19 }, (_, i) => -400 + i * 100).map(x => `M${x} 0 L${(500 + (x - 500) * 0.55).toFixed(0)} 130`),
+].join(' ');
+const DATA_BITS = Array.from({ length: 16 }, (_, i) => ({ x: 40 + i * 61 + wobble(i, 30), y: 40 + ((i * 53) % 90), s: 3 + (i % 3) }));
+const CITY = Array.from({ length: 12 }, (_, i) => ({ x: 668 + i * 11, h: 10 + ((i * 7) % 5) * 7 }));
+
+const spiralSky: Part = id => (
+  <svg {...SKY_BOX}>
+    <defs>
+      <VGrad id={`${id}-sky`} stops={[[0, '#160f3c'], [0.45, '#4a2c70'], [0.8, '#b8637c'], [1, '#f0ae86']]} />
+      <radialGradient id={`${id}-sun`}>
+        <stop offset="0" stopColor="#d6fbff" stopOpacity="0.9" />
+        <stop offset="1" stopColor="#7af2ff" stopOpacity="0" />
+      </radialGradient>
+    </defs>
+    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+    <path d={SKY_GRID} fill="none" stroke="#7af2ff" strokeWidth="1" opacity="0.16" />
+    <g transform="translate(760 80)">
+      <circle r="64" fill={`url(#${id}-sun)`} />
+      <circle r="21" fill="#e9fdff" />
+      <circle r="30" fill="none" stroke="#7af2ff" strokeWidth="2" strokeDasharray="7 5" opacity="0.8" />
+      <circle r="39" fill="none" stroke="#7af2ff" strokeWidth="1" strokeDasharray="3 6" opacity="0.6" />
+    </g>
+    <g fill="#8af6ff" opacity="0.55">{DATA_BITS.map(b => <rect key={b.x} x={b.x} y={b.y} width={b.s} height={b.s} transform={`rotate(45 ${b.x} ${b.y})`} />)}</g>
+    {/* Infinity Mountain, where the children first looked out over File Island. */}
+    <path d="M370 184 L452 148 L484 106 L502 88 L520 108 L552 150 L640 184 Z" fill="#6c5c92" />
+    <path d="M484 106 L502 88 L520 108 L508 104 L502 112 L494 102 Z" fill="#a99ad0" opacity="0.7" />
+    <g fill="#556a86">{[250, 280, 310, 340, 600, 630, 820, 850, 880].map((x, i) => <circle key={x} cx={x} cy={180 + (i % 2) * 2} r={12 + (i % 3) * 3} />)}</g>
+    <g fill="#5d5288">{CITY.map(c => <rect key={c.x} x={c.x} y={184 - c.h} width="9" height={c.h} />)}</g>
+    <g fill="#ffd98a">{CITY.filter((_, i) => i % 2 === 0).map(c => <rect key={c.x} x={c.x + 3} y={184 - c.h + 4} width="2" height="2" />)}</g>
+    <rect y="182" width="1000" height="8" fill="#9c8fc6" opacity="0.8" />
+    <g fill="#f6d6e6" opacity="0.85">{Array.from({ length: 14 }, (_, i) => <ellipse key={i} cx={i * 78 + wobble(i, 20)} cy={194} rx={60} ry={9} />)}</g>
+    <g fill="#43375a">
+      <path d="M0 200 L0 96 Q26 78 44 98 Q64 124 54 156 Q86 166 112 200 Z" />
+      <path d="M1000 200 L1000 104 Q974 84 954 104 Q934 132 946 160 Q914 170 888 200 Z" />
+    </g>
+    <g fill="none" stroke="#6d5e85" strokeWidth="3" opacity="0.8">
+      <path d="M4 112 Q30 100 42 118 M8 142 Q36 132 50 150 M12 172 Q48 164 74 182" />
+      <path d="M996 120 Q970 108 958 124 M992 150 Q964 140 950 158 M988 178 Q952 170 926 186" />
+    </g>
+  </svg>
+);
+
+const spiralGround: Part = id => (
+  <svg {...GROUND_BOX}>
+    <defs><VGrad id={`${id}-rock`} stops={[[0, '#544766'], [0.1, '#76668a'], [1, '#4a3e5a']]} /></defs>
+    <rect width="1000" height="400" fill={`url(#${id}-rock)`} />
+    {SUMMIT_ROCKS.map(({ key, cx, cy, rx, ry, fill }) => <ellipse key={key} cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity="0.65" />)}
+    <path {...LINE} d={SUMMIT_SPIRAL} fill="none" stroke="#33293f" strokeWidth="9" strokeLinecap="round" />
+    <path {...LINE} d={SUMMIT_SPIRAL} fill="none" stroke="#a090c0" strokeWidth="2.5" transform="translate(0 -5)" opacity="0.8" />
+    <path {...LINE} className="data-flow" d={SUMMIT_SPIRAL} fill="none" stroke="#6ef2ff" strokeWidth="2" strokeDasharray="14 22" opacity="0.65" />
+  </svg>
+);
+
+const SKIES: Partial<Record<BattleBackground, Part>> = { battletree: treeSky, stadium: stadiumSky, mountain: mountainSky, ocean: oceanSky, forest: forestSky, spiralmountain: spiralSky };
+const GROUNDS: Partial<Record<BattleBackground, Part>> = { battletree: treeGround, stadium: stadiumGround, mountain: mountainGround, ocean: oceanGround, forest: forestGround, spiralmountain: spiralGround };
 
 /** The scenery behind the battle: the one picked in Settings, or `kind` (Settings' previews). */
 export function StageBackdrop({ kind }: { kind?: BattleBackground }) {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -216,5 +216,17 @@ describe('BlackWarGreymon\'s animations', () => {
     expect(moveSpec(classifyMove('Dark Gaia Force'))).toBe(dark);
     expect(moveSpec(classifyMove('Dramon Destroyer'))).toBe(destroyer);
     expect(moveSpec(classifyMove('Dramon Breaker'))).toBe(breaker);
+  });
+});
+
+describe('Abilities that take in a move', () => {
+  it('has its own animation for each absorbing Ability, Levitate, and a general one, with the Ability\'s name', () => {
+    const ids = ['waterabsorb', 'voltabsorb', 'dryskin', 'motordrive', 'lightningrod', 'stormdrain', 'sapsipper', 'flashfire', 'levitate'];
+    const specs = ids.map(id => abilitySpec(id));
+    expect(new Set(specs.map(key)).size).toBe(ids.length);
+    expect(specs).not.toContain(abilitySpec('soundproof'));
+    expect(abilitySpec('waterabsorb', 'Water Absorb').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Water Absorb', at: 'target' });
+    expect(abilitySpec('lightningrod').layers.some(l => l.kind === 'bolt')).toBe(true);
+    expect(abilitySpec('stormdrain').layers.some(l => l.kind === 'vortex')).toBe(true);
   });
 });

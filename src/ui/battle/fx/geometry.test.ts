@@ -8,8 +8,8 @@ describe('stage horizon', () => {
     expect(horizonVar['--horizon']).toBe('36%');
   });
 
-  it('offers the six battle backgrounds, the Battle Tree by default', () => {
-    expect(BATTLE_BACKGROUNDS.map(b => b.id)).toEqual(['battletree', 'grass', 'stadium', 'mountain', 'ocean', 'forest']);
+  it('offers the battle backgrounds, the Battle Tree by default', () => {
+    expect(BATTLE_BACKGROUNDS.map(b => b.id)).toEqual(['battletree', 'grass', 'stadium', 'mountain', 'ocean', 'forest', 'spiralmountain']);
     expect(DEFAULT_APP_SETTINGS.battleBackground).toBe('battletree');
   });
 });

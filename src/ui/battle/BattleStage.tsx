@@ -5,6 +5,8 @@ import type { Battle, Pokemon } from '@pkmn/client';
 import { ROOMS, SHIELD_CONDITIONS, type BattleAnimation } from '../../client/playback';
 
 import { useElementSize } from '../useElementSize';
+import { megaFormForSet } from '../../team/sets';
+import { hasBackSprite } from '../sprites';
 import { horizonVar, posKey, type Point } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
 import { actsAt, effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
@@ -37,9 +39,23 @@ interface SpotProps {
   playing: boolean;
   /** Pokémon whose faint animation has started (they disappear once it's over). */
   faintSeen: Set<string>;
+  flipFront?: boolean;
 }
 
-function Spot({ side, slot, pokemon, anim, playing, faintSeen }: SpotProps) {
+/**
+ * Whether your side shows front sprites, flipped (Settings: matching sprites on your side): when any Pokémon
+ * on it has no back sprite. Your whole team is known from the start (and what it Mega Evolves or warps into,
+ * by its item), so this doesn't change mid-battle; your partner's Pokémon in Multi count once seen.
+ */
+function useFlipFront(battle: Battle): boolean {
+  const { sprites, spriteStyle, matchSideSprites } = useAppSettings();
+  if (!sprites || !matchSideSprites) return false;
+  const mons = battle.sides.filter(s => s.n % 2 === 0).flatMap(s => s.team); // p1 and p3 (n 0 and 2): your half
+  const species = mons.flatMap(p => [p.speciesForme, megaFormForSet({ species: p.speciesForme, item: p.item ?? '' })]).filter((n): n is string => !!n);
+  return species.some(name => !hasBackSprite(name, spriteStyle));
+}
+
+function Spot({ side, slot, pokemon, anim, playing, faintSeen, flipFront = false }: SpotProps) {
   const fainting = anim?.kind === 'faint' && actsAt(anim, side, slot);
   if (fainting && pokemon) faintSeen.add(pokemon.originalIdent);
   // The client marks a Pokémon fainted as soon as its HP hits 0 (the KO hit), but it should stay
@@ -58,6 +74,7 @@ function Spot({ side, slot, pokemon, anim, playing, faintSeen }: SpotProps) {
       infatuated={!!visible && 'attract' in pokemon.volatiles}
       protect={visible ? protectVariant(pokemon) : null}
       hidden={visible ? semiInvulnerableOf(pokemon) : null}
+      flipFront={side === 'p1' && flipFront}
     />
   );
 }
@@ -81,6 +98,10 @@ function Pops({ anim, at }: { anim: BattleAnimation; at?: Point }) {
       return <div className={`fx-pop at-${side} ${anim.kind === 'boost' ? 'up' : 'down'}`} style={style}>{anim.kind === 'boost' ? '▲▲' : '▼▼'}</div>;
     case 'miss':
       return <div className={`fx-pop at-${side} muted-pop`} style={style}>miss</div>;
+    case 'ability':
+      // The HP an Ability gave for the move it took in (stat rises show on their own line).
+      if (anim.hpDelta !== undefined && anim.hpDelta >= 0.5) return <div className={`fx-pop at-${side} good late`} style={style}>+{Math.round(anim.hpDelta)}%</div>;
+      return null;
     default:
       return null;
   }
@@ -117,6 +138,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
   const shields = (s: Side) => SHIELD_CONDITIONS.filter(id => id in battle[s].sideConditions);
   const stageStyle = { '--spd': speed > 0 ? speed : 1, ...horizonVar } as CSSProperties;
   const { sprites, spriteStyle } = useAppSettings();
+  const flipFront = useFlipFront(battle);
   // 2D pixel sprites are drawn big and stand lower on the stage.
   const big = sprites && spriteStyle === '2d' ? 'pixel-sprites' : '';
   return (
@@ -133,7 +155,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
           anim={animation}
         />
         {(['p2', 'p1'] as const).flatMap(side => slots.map(slot => (
-          <Spot key={posKey(side, slot)} side={side} slot={slot} pokemon={battle[side].active[slot] ?? null} anim={animation} playing={playing} faintSeen={faintSeen} />
+          <Spot key={posKey(side, slot)} side={side} slot={slot} pokemon={battle[side].active[slot] ?? null} anim={animation} playing={playing} faintSeen={faintSeen} flipFront={flipFront} />
         )))}
         <ShieldWalls side="p2" conditions={shields('p2')} anim={animation} size={size} points={points} doubles={doubles} />
         <ShieldWalls side="p1" conditions={shields('p1')} anim={animation} size={size} points={points} doubles={doubles} />

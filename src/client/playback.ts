@@ -34,7 +34,13 @@ export type AnimationKind =
   /** Protect (or Detect, King's Shield, Spiky Shield, Baneful Bunker) blocks a move aimed at `side`. */
   | 'blocked'
   /** A status condition is cured (woke up, thawed, healed...). */
-  | 'cure';
+  | 'cure'
+  /**
+   * An Ability makes a move fail: Water Absorb, Volt Absorb, Motor Drive, Lightning Rod, Storm Drain, Sap Sipper,
+   * Flash Fire, Dry Skin (each its own animation), Levitate, or any other (Soundproof, Wonder Guard...). `side`/`slot`:
+   * the Pokémon with the Ability; `target`/`targetSlot`: the move's user, when known; `condition`: the Ability's id.
+   */
+  | 'ability';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -65,6 +71,8 @@ export interface BattleAnimation {
    * trickroom...), status (brn, par, psn, tox, slp, frz) or what damaged the Pokémon (brn, psn, confusion...).
    */
   condition?: string;
+  /** For 'ability': the Ability's name, as shown. */
+  label?: string;
   /** Duration at normal speed, in ms. */
   durationMs: number;
 }
@@ -120,6 +128,41 @@ export const STATUS_MS = 700;
 export const CANT_MS = 750;
 export const CONFUSED_MS = 750;
 export const BLOCKED_MS = 550;
+export const ABILITY_MS = 1100;
+
+/**
+ * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
+ * (each has its own animation). Other Abilities that make a move fail (Levitate, Soundproof, Wonder Guard...)
+ * get the general one, or Levitate's own.
+ */
+export const ABSORB_ABILITIES = ['waterabsorb', 'voltabsorb', 'dryskin', 'motordrive', 'lightningrod', 'stormdrain', 'sapsipper', 'flashfire'] as const;
+const isAbsorb = (id: string) => (ABSORB_ABILITIES as readonly string[]).includes(id);
+/** "ability: Water Absorb" (a [from] tag or a -start effect) -> "Water Absorb". */
+const abilityName = (tag: unknown) => (typeof tag === 'string' ? /^ability: (.+)$/i.exec(tag)?.[1] ?? null : null);
+/** Who used the last move, so an Ability's animation can show the attack being taken in. */
+const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number }>();
+
+/**
+ * Whether a move is taken in by an Ability before it can do anything (Water Absorb...), judging from the lines
+ * that follow it in the same action: then the move itself doesn't animate (as in the games), and the Ability's
+ * animation plays instead. Only single-target moves (a spread move can still hit the others).
+ */
+export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<string, unknown>, upcoming: readonly string[]): boolean {
+  const target = moveArgs[3];
+  if (!target || 'spread' in kwArgs) return false;
+  const pos = target.slice(0, 3);
+  for (const line of upcoming) {
+    if (line === '|' || /^\|(move|turn|upkeep|switch|drag|cant|faint)\|/.test(line)) return false;
+    const m = /^\|(-heal|-immune|-boost|-start|-ability)\|(p[1-4][ab]?)[^|]*\|?([^|]*)/.exec(line);
+    if (!m || !m[2].startsWith(pos)) continue;
+    // "-ability|p2a: Raichu|Lightning Rod|boost" names it plainly; the others say "ability: Water Absorb".
+    const name = m[1] === '-ability' ? m[3] : /ability: ([^|]+)/.exec(line)?.[1];
+    if (!name) continue;
+    const id = toId(name);
+    if (m[1] === '-immune' || isAbsorb(id)) return true;
+  }
+  return false;
+}
 
 /** Side conditions shown as a lasting screen in front of the side's Pokémon. */
 export const SHIELD_CONDITIONS = ['reflect', 'lightscreen', 'auroraveil', 'safeguard', 'mist'] as const;
@@ -134,6 +177,16 @@ const isFieldLayer = (id: string) => (TERRAINS as readonly string[]).includes(id
 
 /** Protection that blocks moves for a turn (the simulator reports them all as "move: Protect"). */
 const PROTECTIONS = new Set(['protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'matblock', 'wideguard', 'quickguard', 'craftyshield']);
+
+/** An Ability's animation on the Pokémon `ident`, with the attack coming from the last move's user. */
+function abilityStep(step: (a: Omit<BattleAnimation, 'id'> | null) => PlannedStep, battle: ClientBattle, ident: string, name: string, hpDelta?: number): PlannedStep {
+  const holder = at(ident);
+  const user = lastMoveUser.get(battle);
+  const from = user && user.side && !(user.side === holder.side && user.slot === holder.slot) ? user : null;
+  return step({
+    kind: 'ability', ...holder, target: from?.side ?? null, targetSlot: from?.slot, condition: toId(name), label: name, hpDelta, durationMs: ABILITY_MS,
+  });
+}
 
 /** Move animation length (normal speed) by what the move does. */
 export function moveDuration(fx: MoveFx): number {
@@ -174,7 +227,7 @@ export interface PlannedStep {
  * first plays a switch-out, and Mega Evolution (Paradox Evolution, Warp
  * Digivolution) plays a charge-up before the sprite changes.
  */
-export function planLine(args: readonly string[], kwArgs: Record<string, unknown>, battle: ClientBattle, hasText: boolean): PlannedStep[] {
+export function planLine(args: readonly string[], kwArgs: Record<string, unknown>, battle: ClientBattle, hasText: boolean, opts: { absorbed?: boolean } = {}): PlannedStep[] {
   const cmd = args[0];
   const base = DURATION[cmd] ?? (hasText ? TEXT_DURATION : 0);
   const step = (animation: Omit<BattleAnimation, 'id'> | null): PlannedStep => ({ animation, applyLine: true });
@@ -193,8 +246,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const zCategory = zCategories.get(battle);
       if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
       zCategories.delete(battle);
-      // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed).
-      const still = 'still' in kwArgs || 'miss' in kwArgs;
+      lastMoveUser.set(battle, { side, slot });
+      // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed). Taken in by an
+      // Ability (Water Absorb...): the Ability's own animation shows it instead.
+      const still = 'still' in kwArgs || 'miss' in kwArgs || !!opts.absorbed;
       return [step({
         kind: 'move', side, slot, target, targetSlot, spread, moveName: args[2], moveType: fx.type, moveCategory: fx.category, fx, still,
         durationMs: still ? 450 : moveDuration(fx),
@@ -217,6 +272,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // Drained HP: the life energy flows from the drained Pokémon to the one healing.
       if (cmd === '-damage' && from === 'leechseed' && other) return [step({ kind: 'leech', side, slot, target: other, targetSlot: otherSlot, hpDelta, durationMs: DRAIN_MS })];
       if (cmd === '-heal' && from === 'drain' && other) return [step({ kind: 'absorb', side, slot, target: other, targetSlot: otherSlot, hpDelta, durationMs: DRAIN_MS })];
+      const absorbing = cmd === '-heal' ? abilityName(kwArgs.from) : null;
+      if (absorbing && isAbsorb(toId(absorbing))) return [abilityStep(step, battle, args[1], absorbing, hpDelta)];
       const kind = cmd === '-heal' ? 'heal' : 'from' in kwArgs ? 'residual' : 'hit';
       // Residual damage remembers its cause (burn, poison, confusion, weather...) for its animation.
       return [step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, durationMs: base })];
@@ -264,6 +321,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
     case '-activate': {
       const effect = toId(args[2]);
       const who = at(args[1]);
+      // Flash Fire takes in a Fire move and powers up.
+      if (cmd === '-start' && abilityName(args[2]) && isAbsorb(toId(abilityName(args[2])!))) return [abilityStep(step, battle, args[1], abilityName(args[2])!)];
       // The engine's hint "Z-Move: Physical" / "Z-Move: Special" for the Z-Move about to be used.
       if (cmd === '-activate' && (effect === 'zmovephysical' || effect === 'zmovespecial')) {
         zCategories.set(battle, effect === 'zmovespecial' ? 'Special' : 'Physical');
@@ -304,14 +363,27 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
     }
     case '-status':
       return [step({ kind: 'status', ...at(args[1]), target: null, condition: toId(args[2]), durationMs: STATUS_MS })];
+    case '-ability':
+      // Motor Drive, Lightning Rod, Storm Drain, Sap Sipper take in a move ("-ability|p2a: Raichu|Lightning Rod|boost");
+      // the stat rise follows on its own line.
+      if (isAbsorb(toId(args[2]))) return [abilityStep(step, battle, args[1], args[2])];
+      return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     case '-boost':
-    case '-unboost':
+    case '-unboost': {
+      // Motor Drive, Lightning Rod, Storm Drain, Sap Sipper: the move is taken in for a stat boost.
+      const absorbing = cmd === '-boost' ? abilityName(kwArgs.from) : null;
+      if (absorbing && isAbsorb(toId(absorbing))) return [abilityStep(step, battle, args[1], absorbing)];
       return [step({ kind: cmd === '-boost' ? 'boost' : 'unboost', ...at(args[1]), target: null, durationMs: base })];
+    }
     case '-miss':
     case '-immune':
-    case '-fail':
+    case '-fail': {
+      // An Ability made the move fail (Water Absorb at full HP, Levitate, Soundproof...): its animation, not a miss.
+      const blocking = cmd === '-immune' ? abilityName(kwArgs.from) : null;
+      if (blocking) return [abilityStep(step, battle, args[1], blocking)];
       const id = cmd === '-miss' && args[2] ? args[2] : args[1];
       return [step({ kind: 'miss', ...at(id), target: null, durationMs: base })];
+    }
     default:
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
   }

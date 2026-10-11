@@ -131,13 +131,15 @@ export interface StageSpotProps {
   protect?: string | null;
   /** Out of reach for a turn (Dig, Fly, Dive, Phantom Force...): most attacks miss it. */
   hidden?: SemiInvulnerable | null;
+  /** Your side: show the front sprite, flipped (some Pokémon on your side has no back sprite; Settings). */
+  flipFront?: boolean;
 }
 
 /** What the badge over a hidden Pokémon says. */
 const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished' };
 
 /** One side of the field: Pokémon sprite, Substitute doll and status marks (no shadow under it, on request). */
-export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null, hidden = null }: StageSpotProps) {
+export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null, hidden = null, flipFront = false }: StageSpotProps) {
   const mine = actsAt(anim, side, slot) ? anim : null;
   const pos = posKey(side, slot);
   const v = anim && anim.id % 2 ? 'a' : 'b';
@@ -182,6 +184,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
               scale={(side === 'p1' ? 1.4 : 1.3) * (warp ? warpScale : mega ? MEGA_SCALE : 1)}
               animatedScale={boost}
               pixelScale={PIXEL_SCALE}
+              flipFront={flipFront}
             />
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />
