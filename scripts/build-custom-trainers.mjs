@@ -2,6 +2,8 @@
 // Builds the custom trainers (designed by the user, see DATA_NOTES.md "Custom
 // additions") from their Showdown exports in data-sources/custom/:
 //  - gym-leaders.txt -> src/data/custom/gym-leaders.json (special trainers);
+//  - elite-four.txt -> src/data/custom/elite-four.json (the Elite Four and Champions of
+//    Generations 1-7 as special trainers, weight 3.5);
 //  - battle-50-trainers.txt + battle-50-trainers.json -> src/data/custom/battle-50.json
 //    (trainers who can take the Battle Legends' battle-50 slot).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
@@ -44,6 +46,29 @@ const CLASS = { Bianca: 'Pokémon Trainer' };
  * pairs (Tate's Pokémon first). Designed by the user.
  */
 const PAIRS = [{ trainers: ['Tate', 'Liza'], multiLeads: [['Solrock', 'Lunatone'], ['Gallade', 'Gardevoir']] }];
+
+/**
+ * The Elite Four and Champions (Generations 1-7; Cynthia and Grimsley are already the game's
+ * special trainers, and Blue stays a Battle Legend). Region: the League they sit in (the Indigo
+ * Plateau's Gen 1 members as Kanto, its Gen 2 members as Johto). Kukui battles as a Pokémon Professor,
+ * as at the Alola League.
+ */
+const ELITE_FOUR = {
+  Kanto: ['Lorelei', 'Bruno', 'Agatha', 'Lance'],
+  Johto: ['Will', 'Koga', 'Karen'],
+  Hoenn: ['Sidney', 'Phoebe', 'Glacia', 'Drake', 'Steven', 'Wallace'],
+  Sinnoh: ['Aaron', 'Bertha', 'Flint', 'Lucian'],
+  Unova: ['Shauntal', 'Caitlin', 'Marshal', 'Alder', 'Iris'],
+  Kalos: ['Malva', 'Siebold', 'Wikstrom', 'Drasna', 'Diantha'],
+  Alola: ['Hala', 'Olivia', 'Acerola', 'Kahili', 'Molayne', 'Kukui'],
+};
+const CHAMPIONS = new Set(['Lance', 'Steven', 'Wallace', 'Alder', 'Iris', 'Diantha']);
+const ELITE_CLASS = name => (name === 'Kukui' ? 'Pokémon Professor' : CHAMPIONS.has(name) ? 'Champion' : 'Elite Four');
+const ELITE_FEMALE = new Set([
+  'Lorelei', 'Agatha', 'Karen', 'Phoebe', 'Glacia', 'Bertha', 'Shauntal', 'Caitlin', 'Iris', 'Malva', 'Drasna', 'Diantha', 'Olivia',
+  'Acerola', 'Kahili',
+]);
+const eliteRegion = name => Object.keys(ELITE_FOUR).find(r => ELITE_FOUR[r].includes(name));
 
 const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 const problems = [];
@@ -95,6 +120,15 @@ const gymLeaders = parseExports('gym-leaders.txt', name => ({
 }));
 for (const t of gymLeaders) if (!t.region) problems.push(`${t.name}: no region`);
 
+// --- Elite Four and Champions ---
+const eliteFour = parseExports('elite-four.txt', name => ({
+  class: ELITE_CLASS(name),
+  classGender: ELITE_FEMALE.has(name) ? 'F' : 'M',
+  region: eliteRegion(name),
+}));
+for (const t of eliteFour) if (!t.region) problems.push(`${t.name}: not in ELITE_FOUR`);
+for (const t of eliteFour) if (gymLeaders.some(g => g.name === t.name)) problems.push(`${t.name}: already a Gym Leader`);
+
 // --- Battle-50 trainers ---
 const battle50 = JSON.parse(readFileSync(new URL('battle-50-trainers.json', dir), 'utf8'));
 const battle50Trainers = parseExports('battle-50-trainers.txt', name => {
@@ -129,6 +163,15 @@ save('gym-leaders.json', {
   ],
   trainers: gymLeaders,
   pairs: PAIRS,
+});
+save('elite-four.json', {
+  source: 'Designed for the user (2026-10-10, on request): the Elite Four and Champions of Generations 1-7 as Showdown exports in data-sources/custom/elite-four.txt; built by scripts/build-custom-trainers.mjs. Not from any game.',
+  notes: [
+    'Each trainer is one special trainer with eight Pokémon, weight 3.5 (half a Gym Leader\'s), in Super Singles, Super Doubles and Super Multi (and All Star Mode).',
+    'Cynthia and Grimsley are the game\'s own special trainers; Blue stays a Battle Legend. Kukui battles as a Pokémon Professor, as at the Alola League.',
+    'IVs are the special-trainer IV (31); Abilities and genders are as exported. Every set passes the app\'s Gen 7 team validator.',
+  ],
+  trainers: eliteFour,
 });
 save('battle-50.json', {
   source: 'Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.',

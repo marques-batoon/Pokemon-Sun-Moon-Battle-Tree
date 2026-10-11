@@ -54,7 +54,7 @@ export interface SpecialTrainer extends TrainerBase {
   kind: 'special';
   number: null;
   versions: GameVersion[];
-  /** Relative weight within the special pool (Anabel 1, everyone else 7). */
+  /** Relative weight within the special pool (Anabel 1, the Elite Four and Champions 3.5, everyone else 7). */
   weight: number;
   requires?: 'lookerGuzzlordChapter';
   requiresNote?: string;

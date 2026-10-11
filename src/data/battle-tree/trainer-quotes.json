@@ -4298,6 +4298,567 @@
     "trainerWins": "Trust beats talent. Remember that.",
     "trainerLoses": "You trusted your team more than I trusted mine today. That won't happen twice."
    }
+  ],
+  "Lorelei": [
+   {
+    "greeting": "I came down from the cold north to see if Alola's heat can thaw my strategy. Shall we find out?",
+    "trainerWins": "Not even a crack in the ice. Alola's heat will have to try harder.",
+    "trainerLoses": "Thawed at last. I'll need a colder corner of this island to recover."
+   },
+   {
+    "greeting": "Four Island is quiet this time of year, so I came looking for a challenge. Don't let me leave disappointed.",
+    "trainerWins": "Back to Four Island with a win. The trip was worth it.",
+    "trainerLoses": "A trip worth taking after all. Four Island will hear about you."
+   },
+   {
+    "greeting": "Steady breath, clear eyes, cool head. That's how I battle. Can you keep up?",
+    "trainerWins": "A cool head wins out. Steady yourself and try again.",
+    "trainerLoses": "You kept a cooler head than I did. Well done."
+   }
+  ],
+  "Bruno": [
+   {
+    "greeting": "Hoo hah! I trained by the crashing waves this morning. Let me show you what that training built!",
+    "trainerWins": "Hoo hah! The waves taught me well. Train harder, and come back!",
+    "trainerLoses": "Bah! The waves will hear about this. Back to training I go!"
+   },
+   {
+    "greeting": "Muscles alone don't win battles. Spirit does! Show me yours, challenger!",
+    "trainerWins": "Your spirit wavered at the end. Strengthen it and face me again!",
+    "trainerLoses": "What spirit! You've earned my respect, challenger."
+   },
+   {
+    "greeting": "I eat, I train, I battle. Alola's fruit has fueled me well. Let's go!",
+    "trainerWins": "Well fueled and well fought! Time for another bowl of fruit.",
+    "trainerLoses": "Not even Alola's fruit could save me. A fine battle!"
+   }
+  ],
+  "Agatha": [
+   {
+    "greeting": "Hah! That old duffer Oak keeps bragging about trainers like you. Let's see if he's right.",
+    "trainerWins": "Oak can keep his bragging. You've got a long way to go, youngster.",
+    "trainerLoses": "Fine, fine. Oak was right this once. Don't you dare tell him I said so."
+   },
+   {
+    "greeting": "At my age, I've seen every trick in the book. Show me one I haven't.",
+    "trainerWins": "Nothing new under the sun. Come back with fresher tricks.",
+    "trainerLoses": "Hah! Now that was a trick I hadn't seen. Not bad at all."
+   },
+   {
+    "greeting": "These Alolan nights are wonderfully spooky. Perfect weather for a battle, wouldn't you say?",
+    "trainerWins": "A spooky night and a sweet victory. Run along home now.",
+    "trainerLoses": "Spooky night, sour ending. You've given an old lady a thrill."
+   }
+  ],
+  "Lance": [
+   {
+    "greeting": "I'm Lance, the dragon master. In this tree I'm just a challenger like you. Let's make it a battle worth remembering.",
+    "trainerWins": "A battle worth remembering, but not yours to win. Not yet.",
+    "trainerLoses": "That's a battle I'll remember. You fight like a true Champion."
+   },
+   {
+    "greeting": "My cape catches the island breeze nicely. Don't worry, it won't slow me down.",
+    "trainerWins": "The cape stays flying high. Train hard and challenge me again.",
+    "trainerLoses": "Even my cape is drooping. That was impressive."
+   },
+   {
+    "greeting": "I've chased villains across two regions. A battle with an honest trainer is a welcome change.",
+    "trainerWins": "Honest and brave, but not quite strong enough. Keep at it.",
+    "trainerLoses": "Honest, brave, and strong. The world needs more trainers like you."
+   }
+  ],
+  "Will": [
+   {
+    "greeting": "I have trained all around the world to sharpen my mind. Let us see whose focus is stronger.",
+    "trainerWins": "My focus held. Travel the world a little more, then return.",
+    "trainerLoses": "Your focus outshone mine. My travels are not yet over, it seems."
+   },
+   {
+    "greeting": "Do you like my mask? It hides nothing. My moves will show you who I am.",
+    "trainerWins": "Now you know who I am. Remember this battle well.",
+    "trainerLoses": "You saw right through me, mask and all. Remarkable."
+   },
+   {
+    "greeting": "Bravo, you've climbed this far. Allow me to perform the finale myself.",
+    "trainerWins": "And scene. The finale belongs to me, I'm afraid.",
+    "trainerLoses": "An unexpected ending. Bravo to you, sincerely."
+   }
+  ],
+  "Koga": [
+   {
+    "greeting": "Fwahahaha! A ninja strikes from the shadows, but today I shall face you openly. Prepare yourself!",
+    "trainerWins": "Fwahaha! Even in the open, the ninja prevails!",
+    "trainerLoses": "Defeated in the open... I must return to the shadows and reflect."
+   },
+   {
+    "greeting": "My daughter guards Fuchsia's Gym now, so I am free to test myself here. Do not hold back!",
+    "trainerWins": "Fwahaha! Janine would be proud of her father today!",
+    "trainerLoses": "Hmph. Janine will tease me endlessly about this one."
+   },
+   {
+    "greeting": "Patience, poison, and precision. Those are the tools of a ninja. Let us see your tools.",
+    "trainerWins": "Patience wins out. Sharpen your tools and return.",
+    "trainerLoses": "Your tools proved sharper than mine. A fine lesson."
+   }
+  ],
+  "Karen": [
+   {
+    "greeting": "Strong Pokémon, weak Pokémon... that's only how people see them. Battle with the ones you love.",
+    "trainerWins": "You chose your partners well. Now love them a little harder.",
+    "trainerLoses": "You truly battle with your favorites. That's what I like to see."
+   },
+   {
+    "greeting": "I'm Karen of the Elite Four. The night suits me, but I'll gladly battle under Alola's sun.",
+    "trainerWins": "Even in the sunshine, I come out on top.",
+    "trainerLoses": "Too much sun for me today. Well played."
+   },
+   {
+    "greeting": "Don't bother impressing me. Just show me the bond you share with your team.",
+    "trainerWins": "A bond, but not an unbreakable one. Work on it.",
+    "trainerLoses": "That bond is the real thing. I'm happy to have lost to it."
+   }
+  ],
+  "Sidney": [
+   {
+    "greeting": "Hey hey! I like that look in your eyes. Let's have a battle we can both enjoy!",
+    "trainerWins": "That was a blast! Get that look back in your eyes and try again.",
+    "trainerLoses": "Ha! You kept that look the whole way. That was fun!"
+   },
+   {
+    "greeting": "Life's too short for boring battles. Let's make this one wild!",
+    "trainerWins": "Wild enough for you? Come back when you want another ride.",
+    "trainerLoses": "Now that was wild! I'll be talking about this one for a while."
+   },
+   {
+    "greeting": "Alola's beaches have nothing on a good, rough battle. Ready to get scuffed up?",
+    "trainerWins": "Scuffed you right up. Hit the beach and heal, then come back.",
+    "trainerLoses": "I'm the one who got scuffed. Guess I'm hitting the beach."
+   }
+  ],
+  "Phoebe": [
+   {
+    "greeting": "I trained on Mt. Pyre, where the spirits are close. Do you feel them watching us now?",
+    "trainerWins": "The spirits enjoyed that. They're cheering for me, you know.",
+    "trainerLoses": "The spirits are cheering for you now. How lucky!"
+   },
+   {
+    "greeting": "Ahahaha! Alola's spooky caves are so much fun. Let's battle before I go exploring!",
+    "trainerWins": "Ahaha! Now I've got time for one more cave.",
+    "trainerLoses": "Ahaha... I'll go sulk in a dark cave for a bit."
+   },
+   {
+    "greeting": "My bond with my partners runs as deep as the mountain's roots. Show me your bond!",
+    "trainerWins": "Deep roots win. Grow yours a little deeper.",
+    "trainerLoses": "Your roots go deeper than mine. I'm impressed!"
+   }
+  ],
+  "Glacia": [
+   {
+    "greeting": "I traveled far from home to find a trainer hot-blooded enough to melt my ice. Could that be you?",
+    "trainerWins": "Hardly a puddle. I'll keep searching for real heat.",
+    "trainerLoses": "My ice has melted at last. You were worth the journey."
+   },
+   {
+    "greeting": "Alola's sun is far too warm for me. Let's finish this before I wilt.",
+    "trainerWins": "Finished, and I didn't even wilt. Lovely.",
+    "trainerLoses": "I've wilted completely. Point me to the shade, please."
+   },
+   {
+    "greeting": "Cool composure wins battles. Hot heads lose them. Which are you?",
+    "trainerWins": "A hot head, as I suspected. Cool off and return.",
+    "trainerLoses": "Cool when it counted. Well done."
+   }
+  ],
+  "Drake": [
+   {
+    "greeting": "Do you know what a trainer needs to command mighty beasts? Show me you have it!",
+    "trainerWins": "Not yet! You lack what it takes. Come back when you've found it.",
+    "trainerLoses": "You have it, no doubt about it. Superb!"
+   },
+   {
+    "greeting": "I've sailed rough seas all my life. A battle like this is just another storm to weather.",
+    "trainerWins": "Weathered the storm, as always. Keep your sails up, youngster.",
+    "trainerLoses": "That storm sank me. Your sailing is first-rate!"
+   },
+   {
+    "greeting": "Gwahaha! Alola's waters remind me of my seafaring days. Let's make some waves!",
+    "trainerWins": "Gwahaha! Waves made, battle won!",
+    "trainerLoses": "Gwahaha... the tide turned on me. Well fought!"
+   }
+  ],
+  "Steven": [
+   {
+    "greeting": "I came to Alola hunting for rare stones. Perhaps I'll find a rare trainer here as well.",
+    "trainerWins": "A promising find, but still unpolished. Keep at it.",
+    "trainerLoses": "A truly rare find. I'm glad I came to Alola."
+   },
+   {
+    "greeting": "Each stone tells a story, and so does each battle. Let's write a good one.",
+    "trainerWins": "A fine story, with me on top. Next time, you write the ending.",
+    "trainerLoses": "You wrote the ending this time. A wonderful story."
+   },
+   {
+    "greeting": "My father keeps asking me to visit the office. I'd much rather be here battling you.",
+    "trainerWins": "Worth skipping the office for. Thank you for the battle.",
+    "trainerLoses": "Perhaps I should have gone to the office after all. Well done!"
+   }
+  ],
+  "Wallace": [
+   {
+    "greeting": "Battles should be beautiful, like the sea at sunrise. Let us create something elegant together.",
+    "trainerWins": "Elegant, wasn't it? Polish your style, and we'll dance again.",
+    "trainerLoses": "Breathtaking! You've made something truly beautiful."
+   },
+   {
+    "greeting": "I've judged many contests, but today I'm the one on stage. Dazzle me!",
+    "trainerWins": "My performance takes the ribbon. Practice your routine and return.",
+    "trainerLoses": "You stole the show. Bravo, bravo!"
+   },
+   {
+    "greeting": "Sootopolis feels far away under Alola's sky. Let this battle bring a little of home here.",
+    "trainerWins": "A little bit of home, and a win. How lovely.",
+    "trainerLoses": "Even Sootopolis would applaud you. Splendid."
+   }
+  ],
+  "Aaron": [
+   {
+    "greeting": "I'm Aaron, and I love bugs! They're small, but they never give up. Neither will I!",
+    "trainerWins": "Small and tough! Just like I told you.",
+    "trainerLoses": "You never gave up either. I respect that a lot!"
+   },
+   {
+    "greeting": "Alola's jungles are full of amazing bugs. I spent all morning watching them. Now let's battle!",
+    "trainerWins": "Best morning ever! Watching bugs and winning!",
+    "trainerLoses": "Back to the jungle... the bugs will cheer me up."
+   },
+   {
+    "greeting": "Beauty and strength can go together. I'll prove it!",
+    "trainerWins": "Proven! Beautiful and strong.",
+    "trainerLoses": "You proved it better than I did. Wow."
+   }
+  ],
+  "Bertha": [
+   {
+    "greeting": "Well, would you look at that! A young trainer with fire in their eyes. Come show Grandma what you've got.",
+    "trainerWins": "Ahaha! Grandma still has some moves. Come visit again, dear.",
+    "trainerLoses": "My, my! You've worn this old lady out. Wonderful!"
+   },
+   {
+    "greeting": "I came to Alola for the warm sand and a little rest. A battle sounds even better!",
+    "trainerWins": "Sand, sun, and a win. What a vacation!",
+    "trainerLoses": "Well, now I really need that rest. Lovely battle, dear."
+   },
+   {
+    "greeting": "Don't let the gray hair fool you. My roots go deeper than any tree on this island.",
+    "trainerWins": "Deep roots hold firm. Mind your footing next time.",
+    "trainerLoses": "You've shaken my roots loose. Ahaha, well done!"
+   }
+  ],
+  "Flint": [
+   {
+    "greeting": "I'm Flint! I came to Alola to light a fire under some lazy trainers. You don't look lazy, though!",
+    "trainerWins": "That fire's burning bright! Keep feeding it and come back!",
+    "trainerLoses": "Whoa! You set me on fire! What a rush!"
+   },
+   {
+    "greeting": "My hair's a little flat in this humidity, but my spirit's still burning hot! Let's go!",
+    "trainerWins": "Hair's flat, but I'm still on top! Ha!",
+    "trainerLoses": "Burned out... I need a better hair product."
+   },
+   {
+    "greeting": "Nothing beats a hot battle. Not even a hot bowl of ramen! ...Okay, maybe it's close.",
+    "trainerWins": "Hot battle, now hot ramen. Perfect day!",
+    "trainerLoses": "Lost the battle. Guess I'll drown my sorrows in ramen."
+   }
+  ],
+  "Lucian": [
+   {
+    "greeting": "I was in the middle of a fascinating chapter. I trust our battle will be just as interesting.",
+    "trainerWins": "Interesting, though the ending was predictable. Back to my book.",
+    "trainerLoses": "An unexpected twist. I'll need to reread my strategy."
+   },
+   {
+    "greeting": "I read on the flight, on the beach, and in line for malasadas. Let us battle before I start another book.",
+    "trainerWins": "Battle done. Now, where was my bookmark?",
+    "trainerLoses": "I've lost the battle and my bookmark. A trying day."
+   },
+   {
+    "greeting": "Psychic power comes from a calm mind. Mine is quite calm. Is yours?",
+    "trainerWins": "Calm prevails. Steady your mind and try again.",
+    "trainerLoses": "Your mind was calmer than mine. Impressive."
+   }
+  ],
+  "Shauntal": [
+   {
+    "greeting": "I'm writing a novel about the trainers I meet. Let's give my next chapter a thrilling battle!",
+    "trainerWins": "What a chapter! You make a wonderful supporting character.",
+    "trainerLoses": "You've become the hero of my novel. I need to rewrite the ending!"
+   },
+   {
+    "greeting": "Excuse me! Your expression... it's perfect. Please battle me so I can describe it properly.",
+    "trainerWins": "Ah, the look on your face when you lost. I'll write that down.",
+    "trainerLoses": "Now I know your victorious expression. It's beautiful!"
+   },
+   {
+    "greeting": "Alola is overflowing with inspiration. Oh, I'm sorry, I just get so excited! Let's battle.",
+    "trainerWins": "Inspiration and a win. My pen is ready!",
+    "trainerLoses": "Defeat is inspiring too, in its own way. Thank you!"
+   }
+  ],
+  "Caitlin": [
+   {
+    "greeting": "I was having a lovely nap in the sun, but a strong trainer woke me. Was it you?",
+    "trainerWins": "Not quite strong enough to keep me awake. I'll resume my nap.",
+    "trainerLoses": "Oh, my! I'm wide awake now. You've earned that."
+   },
+   {
+    "greeting": "Elegance and strength are not opposites. Allow me to demonstrate.",
+    "trainerWins": "Demonstrated, I believe. Do refine your manners in battle.",
+    "trainerLoses": "You were the more elegant one today. How refreshing."
+   },
+   {
+    "greeting": "My butler worries when I travel alone. I told him I'd be battling, so now he worries more.",
+    "trainerWins": "I'll tell him I won. That should calm him.",
+    "trainerLoses": "He'll fuss over me all evening now. Well done."
+   }
+  ],
+  "Marshal": [
+   {
+    "greeting": "I am Marshal, disciple of Alder. I have come to test my training against yours. Ready?",
+    "trainerWins": "My master's teachings hold true. Train well and return.",
+    "trainerLoses": "My master will say I trained too little. You are strong."
+   },
+   {
+    "greeting": "Each punch, each kick, each breath. A battle is training made real. Begin!",
+    "trainerWins": "Training made real, and a victory earned.",
+    "trainerLoses": "My breath faltered. Your training surpasses mine."
+   },
+   {
+    "greeting": "Alola's waterfalls make excellent training spots. I meditated under one this morning.",
+    "trainerWins": "The waterfall's lessons served me well. Ossu!",
+    "trainerLoses": "Back under the waterfall I go. You've shown me my weakness."
+   }
+  ],
+  "Alder": [
+   {
+    "greeting": "Ha ha! The trees here are bigger than back home! Battling under them should be fun, eh?",
+    "trainerWins": "Ha ha! Fun, wasn't it? Come on, let's battle again sometime!",
+    "trainerLoses": "Ha! You had more fun than I did. That's the spirit!"
+   },
+   {
+    "greeting": "I've wandered all over looking for what makes a trainer strong. Show me what you've found.",
+    "trainerWins": "Not quite there yet, but you're on the right road. Keep wandering!",
+    "trainerLoses": "You've found it, haven't you? I'm still wandering, ha ha!"
+   },
+   {
+    "greeting": "Nothing like a good battle to make you feel young again! Don't go easy on this old man!",
+    "trainerWins": "Still got it! Feeling young as ever, ha!",
+    "trainerLoses": "Whew! Now I feel my age. Great battle, kid!"
+   }
+  ],
+  "Iris": [
+   {
+    "greeting": "I'm Iris! I'm a Champion, but here I'm just a trainer who loves battling. Let's go!",
+    "trainerWins": "Yay! That was super fun! Battle me again, okay?",
+    "trainerLoses": "Aww, I lost! But you were so strong. That was awesome!"
+   },
+   {
+    "greeting": "Alola is so warm and sparkly! I climbed a whole tree this morning. Now let's battle!",
+    "trainerWins": "Tree climbing, then winning! Best day!",
+    "trainerLoses": "Hmph. I'm gonna go climb another tree to feel better."
+   },
+   {
+    "greeting": "Drayden always says to battle with your whole heart. Mine's ready! Is yours?",
+    "trainerWins": "My heart was louder! You can try again anytime.",
+    "trainerLoses": "Your heart was louder than mine. Drayden would be impressed!"
+   }
+  ],
+  "Malva": [
+   {
+    "greeting": "Malva here, reporting live from the Battle Tree. Today's top story: your defeat.",
+    "trainerWins": "And that's the news. Do stay tuned for your next loss.",
+    "trainerLoses": "Breaking news: I've been beaten. How... unflattering."
+   },
+   {
+    "greeting": "The cameras aren't rolling, but I'll still look fabulous winning.",
+    "trainerWins": "Fabulous, as promised. Off you go.",
+    "trainerLoses": "Hmph. Not my best angle today."
+   },
+   {
+    "greeting": "Alola's heat is nothing compared to mine. Shall I demonstrate?",
+    "trainerWins": "Demonstration complete. Do try to keep up.",
+    "trainerLoses": "You handled the heat well. I'm almost impressed."
+   }
+  ],
+  "Siebold": [
+   {
+    "greeting": "I am Siebold, a chef by trade. A battle, like a fine meal, needs balance. Let us cook.",
+    "trainerWins": "A balanced dish, served to perfection. Bon appétit.",
+    "trainerLoses": "Your recipe was superior. I must revisit my kitchen."
+   },
+   {
+    "greeting": "I came to Alola to study its cuisine. The flavors here are inspiring my battle style.",
+    "trainerWins": "Alolan flavors and a sweet victory. Delicious.",
+    "trainerLoses": "Even the finest flavors couldn't save me. Well cooked."
+   },
+   {
+    "greeting": "Every battle is a work of art. Let us create a masterpiece together.",
+    "trainerWins": "A masterpiece, I daresay. Thank you for your part in it.",
+    "trainerLoses": "You've painted a finer picture than I. Magnificent."
+   }
+  ],
+  "Wikstrom": [
+   {
+    "greeting": "Well met, challenger! I am Wikstrom, a knight of the Elite Four. Let us cross blades!",
+    "trainerWins": "Victory to the knight! Polish your armor and return.",
+    "trainerLoses": "My armor is dented, but my pride is not! A worthy foe!"
+   },
+   {
+    "greeting": "A knight's honor demands I give you my all. I expect nothing less in return!",
+    "trainerWins": "Honor upheld! Train well, brave challenger.",
+    "trainerLoses": "You fought with true honor. I salute you!"
+   },
+   {
+    "greeting": "Even a knight enjoys Alola's beaches. My armor gets rather hot, though!",
+    "trainerWins": "Hot armor, cool victory! Ha ha!",
+    "trainerLoses": "Defeated and overheated! A knight's lot is hard."
+   }
+  ],
+  "Drasna": [
+   {
+    "greeting": "Oh my, how lovely to meet you! I simply adore strong trainers. Let's have a wonderful battle!",
+    "trainerWins": "That was wonderful! Do come visit me again, won't you?",
+    "trainerLoses": "Oh, how lovely! You're stronger than I imagined!"
+   },
+   {
+    "greeting": "Alola's flowers are so beautiful. I picked one for my hair. Now, shall we begin?",
+    "trainerWins": "A flower and a win. Such a lovely day!",
+    "trainerLoses": "Oh dear, my flower's wilted. Still, a lovely battle."
+   },
+   {
+    "greeting": "I may seem gentle, but my partners have quite a temper. Do be careful!",
+    "trainerWins": "I did warn you, dear! Their temper got the best of you.",
+    "trainerLoses": "My, you tamed their temper beautifully. Well done!"
+   }
+  ],
+  "Diantha": [
+   {
+    "greeting": "I'm Diantha. When I'm not filming, I battle. Today, I'm not filming. Shall we?",
+    "trainerWins": "Cut! That's a wrap. Wonderful work, though.",
+    "trainerLoses": "Cut! You stole every scene. What a star you are."
+   },
+   {
+    "greeting": "Battles are like movies. Every trainer is the star of their own story. Let's see yours.",
+    "trainerWins": "Your story isn't over. The sequel could be better!",
+    "trainerLoses": "What a story! I'd buy a ticket to see it again."
+   },
+   {
+    "greeting": "Alola's sunsets would make a beautiful backdrop for a film. Or a battle!",
+    "trainerWins": "A perfect sunset scene, with a happy ending for me.",
+    "trainerLoses": "A beautiful scene, and you were the hero. Lovely."
+   }
+  ],
+  "Hala": [
+   {
+    "greeting": "Hoh! Welcome, welcome! As Kahuna of Melemele, I'm always glad to meet a strong trainer!",
+    "trainerWins": "Hoh! Strong, but not yet strong enough! Keep training!",
+    "trainerLoses": "Hoh hoh! You've grown strong indeed! Melemele is proud!"
+   },
+   {
+    "greeting": "I ate three plates of malasadas before coming here. I'm full of energy! Let's battle!",
+    "trainerWins": "Hoh! The malasadas did their work! One more plate to celebrate!",
+    "trainerLoses": "Hoh... I think I need a fourth plate to recover."
+   },
+   {
+    "greeting": "A Kahuna must test challengers with all his heart. Show me your heart, young one!",
+    "trainerWins": "Your heart is strong, but your team needs more training. Hoh!",
+    "trainerLoses": "Your heart shone brighter than the sun. Wonderful!"
+   }
+  ],
+  "Olivia": [
+   {
+    "greeting": "Hey there! I'm Olivia, Kahuna of Akala. I hope you're ready, because I'm not holding back!",
+    "trainerWins": "Ha! Akala's Kahuna stays undefeated today!",
+    "trainerLoses": "Wow, you're tough! Akala should be proud of you."
+   },
+   {
+    "greeting": "My jewelry shop in Konikoni is closed today. So it's battle time!",
+    "trainerWins": "A win! Maybe I'll treat myself to something sparkly.",
+    "trainerLoses": "No sparkly treat for me today. Ugh!"
+   },
+   {
+    "greeting": "Love may be complicated, but battles are simple. Win or lose! Let's go!",
+    "trainerWins": "At least something in my life is going right! Ha!",
+    "trainerLoses": "Lost again... in battle and in love. Typical."
+   }
+  ],
+  "Acerola": [
+   {
+    "greeting": "Hey hey! I'm Acerola! The kids at the Aether House said I should go have fun, so here I am!",
+    "trainerWins": "Yay! I can't wait to tell the kids I won!",
+    "trainerLoses": "Aww, the kids will tease me so much. Still, that was fun!"
+   },
+   {
+    "greeting": "My family used to be royalty, you know. Now I'm just a girl who loves spooky stuff!",
+    "trainerWins": "Royal victory! Well, sort of royal. Hee hee!",
+    "trainerLoses": "No crown for me today. You're the royal one!"
+   },
+   {
+    "greeting": "Old things are the best. Old houses, old stories... and old-fashioned battles!",
+    "trainerWins": "Old-fashioned and still winning! Hee hee!",
+    "trainerLoses": "Maybe I need some new tricks. You're really good!"
+   }
+  ],
+  "Kahili": [
+   {
+    "greeting": "I'm Kahili. I just finished a round of golf. I hope you're more of a challenge than the back nine.",
+    "trainerWins": "Under par, as usual. Practice your swing and come back.",
+    "trainerLoses": "Over par... and over my head. Well played."
+   },
+   {
+    "greeting": "Wind direction, distance, angle... a battle is not so different from a golf shot.",
+    "trainerWins": "Right on the green. Read the wind better next time.",
+    "trainerLoses": "A gust carried my shot away. You read it well."
+   },
+   {
+    "greeting": "I've played courses all over the world. Alola is still my favorite. Let's battle.",
+    "trainerWins": "Home course advantage. Thank you for the game.",
+    "trainerLoses": "Even on my home course... Well, you earned that."
+   }
+  ],
+  "Molayne": [
+   {
+    "greeting": "I'm Molayne. I usually work at the observatory, but I needed a break from staring at the stars.",
+    "trainerWins": "A nice break. Now back to the stars I go.",
+    "trainerLoses": "I should've stayed with the stars. You shine brighter."
+   },
+   {
+    "greeting": "My cousin keeps building gadgets. I like to keep things simple. Shall we battle?",
+    "trainerWins": "Simple works. Tell your friends I said so.",
+    "trainerLoses": "Maybe I need a gadget or two after all."
+   },
+   {
+    "greeting": "Engineering and battling both reward patience. Let's see how patient you are.",
+    "trainerWins": "Patience pays off. Measure twice, battle once.",
+    "trainerLoses": "My calculations were off. Nicely done."
+   }
+  ],
+  "Kukui": [
+   {
+    "greeting": "Alola! I'm Professor Kukui! I study moves, and you're about to see some great ones. Woo!",
+    "trainerWins": "Woo! Those moves were something else, yeah? Keep at it, cousin!",
+    "trainerLoses": "Woo! You showed me moves I want to study! Thanks, cousin!"
+   },
+   {
+    "greeting": "Building the Alola League was a dream. Battling strong trainers like you is the reward!",
+    "trainerWins": "Dream realized, battle won! Come back anytime, yeah?",
+    "trainerLoses": "That's exactly the kind of trainer I built the League for!"
+   },
+   {
+    "greeting": "My wife says I battle too much. I say there's no such thing! Let's go!",
+    "trainerWins": "Can't wait to tell her I won! Woo!",
+    "trainerLoses": "She'll say she told me so. Still worth it!"
+   }
   ]
  },
  "multi": {
@@ -4371,7 +4932,7 @@
   ]
  },
  "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
- "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake).",
  "pairs": {
   "Brock & Misty": {
    "Brock": "Misty and I go way back. Pewter and Cerulean, rock and water. We know each other's moves by heart.",
@@ -5640,6 +6201,1950 @@
   "Clair & Drayden": {
    "Clair": "Drayden. Opelucid's dragon master. Finally, a partner worthy of Blackthorn's dragons.",
    "Drayden": "Clair has the pride of a true dragon tamer. Blackthorn and Opelucid, let us show you a dragon's might."
+  },
+  "Lorelei & Agatha": {
+   "Lorelei": "Agatha and I once guarded the Indigo Plateau side by side. Old colleagues, one goal: freeze you out.",
+   "Agatha": "Lorelei always was the chilly one. Leave the real chills to me, dearie."
+  },
+  "Lorelei & Blaine": {
+   "Lorelei": "Blaine, try not to melt my strategy with your volcano talk.",
+   "Blaine": "Quiz time, Lorelei! What melts ice fastest? Hah! Don't answer, just watch!"
+  },
+  "Lorelei & Brock": {
+   "Lorelei": "Brock, steady as Pewter's stone. A good wall to stand behind while I freeze the field.",
+   "Brock": "Lorelei of the Elite Four! I'll hold the line so your ice can do its work."
+  },
+  "Lorelei & Bruno": {
+   "Lorelei": "Bruno, warm up quietly, please. I need you focused, not shouting.",
+   "Bruno": "Hoo hah! Lorelei! The Indigo Plateau's old guard rides again!"
+  },
+  "Lorelei & Brycen": {
+   "Lorelei": "Brycen, I hear you once starred in films. Let's give this battle a chilling final scene.",
+   "Brycen": "Lorelei of Kanto. Ice from two regions, one very cold welcome."
+  },
+  "Lorelei & Candice": {
+   "Lorelei": "Candice, your energy could melt a glacier. Aim it at our opponent, please.",
+   "Candice": "Lorelei! An ice legend from Kanto! I'm so focused right now, I promise!"
+  },
+  "Lorelei & Erika": {
+   "Lorelei": "Erika, try to stay awake. This will be a cold, quick battle.",
+   "Erika": "Lorelei... how refreshing to have a cool breeze beside me in this heat."
+  },
+  "Lorelei & Giovanni": {
+   "Lorelei": "Giovanni. I'll battle beside you, but I'm keeping one eye on you.",
+   "Giovanni": "The Elite Four's ice. Freeze them in place; I'll handle the rest."
+  },
+  "Lorelei & Glacia": {
+   "Lorelei": "Glacia, two ice masters from two Leagues. Our opponent may need a blanket.",
+   "Glacia": "Lorelei, how lovely. Let's show them what true cold feels like."
+  },
+  "Lorelei & Janine": {
+   "Lorelei": "Janine, your father speaks very highly of you. Let's see why.",
+   "Janine": "Lorelei! Father says you're the coolest trainer he knows. Literally!"
+  },
+  "Lorelei & Koga": {
+   "Lorelei": "Koga, ice and poison. Please, no smoke bombs near my glasses.",
+   "Koga": "Fwahaha! Lorelei! The Plateau's frost and a ninja's venom. A fearsome blend!"
+  },
+  "Lorelei & Lance": {
+   "Lorelei": "Lance, it's like the old days at the Plateau. Try not to steal the whole spotlight.",
+   "Lance": "Lorelei, your ice and my dragons, side by side once more. Just like old times."
+  },
+  "Lorelei & Lt. Surge": {
+   "Lorelei": "Lt. Surge, please lower your voice. Ice requires concentration.",
+   "Lt. Surge": "Ice and lightning, soldier! Lorelei, let's freeze 'em and fry 'em!"
+  },
+  "Lorelei & Misty": {
+   "Lorelei": "Misty, water freezes. Let's use that to our advantage.",
+   "Misty": "Lorelei! Your ice and my water? We'll build one giant iceberg!"
+  },
+  "Lorelei & Pryce": {
+   "Lorelei": "Pryce, your decades on the ice put my years to shame. I'm honored.",
+   "Pryce": "Lorelei. Young ice, old ice. Together, they don't crack."
+  },
+  "Lorelei & Sabrina": {
+   "Lorelei": "Sabrina, I suppose you already know how this battle ends.",
+   "Sabrina": "Lorelei. I foresee frost. A great deal of frost."
+  },
+  "Lorelei & Sina": {
+   "Lorelei": "Sina, Alolan ice? I'm curious to see how it holds up in this heat.",
+   "Sina": "Lorelei, an ice master from Kanto! Dexio is going to be so jealous!"
+  },
+  "Bruno & Agatha": {
+   "Bruno": "Agatha! Your ghosts and my fists. A strange team, but a strong one!",
+   "Agatha": "Bruno, try not to punch anything I need. Hah!"
+  },
+  "Bruno & Blaine": {
+   "Bruno": "Blaine! Burn them hot, and I'll hit them hard!",
+   "Blaine": "Bruno! Which is tougher, my quizzes or your punches? Trick question: neither, today!"
+  },
+  "Bruno & Brawly": {
+   "Bruno": "Brawly! A surfer with fists like stone. Show me your power!",
+   "Brawly": "Whoa, Bruno! Big waves, big muscles! Let's crash this battle!"
+  },
+  "Bruno & Brock": {
+   "Bruno": "Brock! Rock-solid as always. Stand firm beside me!",
+   "Brock": "Bruno, I'm taking notes on your training regimen after this!"
+  },
+  "Bruno & Bugsy": {
+   "Bruno": "Bugsy! Small but sharp, like a well-placed jab!",
+   "Bugsy": "Bruno, I've researched your training methods. Very effective, statistically!"
+  },
+  "Bruno & Chuck": {
+   "Bruno": "Chuck! Waterfall training never gets old, does it? Hoo hah!",
+   "Chuck": "WAHAHAH! Bruno! Two fighting men, four fists! Let's go!"
+  },
+  "Bruno & Clair": {
+   "Bruno": "Clair! Your dragons and my discipline. Let's crush them!",
+   "Clair": "Bruno. Just keep pace with my dragons, and we'll be fine."
+  },
+  "Bruno & Erika": {
+   "Bruno": "Erika! Stay alert! No napping in the middle of a battle!",
+   "Erika": "Bruno... please don't shout. I'm quite awake, thank you."
+  },
+  "Bruno & Falkner": {
+   "Bruno": "Falkner! You take the skies, I'll take the ground!",
+   "Falkner": "Bruno, the Elite Four's mightiest fists. I'm honored to fly beside you."
+  },
+  "Bruno & Giovanni": {
+   "Bruno": "Giovanni. I don't trust you, but I'll battle beside you. Hmph!",
+   "Giovanni": "Bruno. All muscle. Good. I need the muscle."
+  },
+  "Bruno & Hala": {
+   "Bruno": "Hala! A Kahuna with power to match my own! Hoo hah!",
+   "Hala": "Hoh! Bruno, your training is legendary! Let's see it up close!"
+  },
+  "Bruno & Janine": {
+   "Bruno": "Janine! Your father trained you well. Let's prove it!",
+   "Janine": "Bruno! Father's old colleague! I'll keep up, I promise!"
+  },
+  "Bruno & Jasmine": {
+   "Bruno": "Jasmine. Gentle, yet tough as steel. I respect that.",
+   "Jasmine": "Um... Bruno, please don't be too rough with our opponent."
+  },
+  "Bruno & Karen": {
+   "Bruno": "Karen! The Johto Elite Four fights as one!",
+   "Karen": "Bruno, try not to flex mid-battle. It's distracting."
+  },
+  "Bruno & Koga": {
+   "Bruno": "Koga! Ninja and fighter, guarding the Plateau together once more!",
+   "Koga": "Fwahaha! Bruno, your fists and my poison. None shall stand!"
+  },
+  "Bruno & Lance": {
+   "Bruno": "Lance! The Plateau's old guard, back together! Hoo hah!",
+   "Lance": "Bruno, it's good to fight beside you again, old friend."
+  },
+  "Bruno & Lt. Surge": {
+   "Bruno": "Surge! A soldier's discipline matches a fighter's! Hoo hah!",
+   "Lt. Surge": "Bruno! My drill sergeant would've loved you! Fall in, soldier!"
+  },
+  "Bruno & Marshal": {
+   "Bruno": "Marshal! I hear Alder trained you well. Show me!",
+   "Marshal": "Bruno of the Elite Four. Your discipline is famous in Unova too. Let us begin."
+  },
+  "Bruno & Maylene": {
+   "Bruno": "Maylene! Barefoot and fearless! I like your style!",
+   "Maylene": "Bruno! I've studied your fighting style for years! Let's do this!"
+  },
+  "Bruno & Misty": {
+   "Bruno": "Misty! Cerulean's tomboyish mermaid! Strong water, strong will!",
+   "Misty": "Bruno, don't splash around too much. That's my job!"
+  },
+  "Bruno & Morty": {
+   "Bruno": "Morty! You see the future? Then you know we'll win!",
+   "Morty": "Bruno... I sense great strength. And great volume."
+  },
+  "Bruno & Pryce": {
+   "Bruno": "Pryce! An elder of battle. I'll match your patience with power!",
+   "Pryce": "Bruno. You remind me of my younger days. Hot-headed, and strong."
+  },
+  "Bruno & Sabrina": {
+   "Bruno": "Sabrina! Mind and muscle, together at last!",
+   "Sabrina": "Bruno. I sense your next move: something very loud."
+  },
+  "Bruno & Whitney": {
+   "Bruno": "Whitney! No tears today, win or lose! Fight hard!",
+   "Whitney": "Bruno, you're so strong! Don't let me lose, okay?"
+  },
+  "Bruno & Will": {
+   "Bruno": "Will! The Johto Elite Four stands together!",
+   "Will": "Bruno, try to be subtle. Just this once."
+  },
+  "Agatha & Acerola": {
+   "Agatha": "Acerola! A young lady who loves spooky things. You remind me of myself, long ago.",
+   "Acerola": "Agatha! A grandma who loves ghosts! Can I call you Granny? Hee hee!"
+  },
+  "Agatha & Blaine": {
+   "Agatha": "Blaine, you old coot! Still asking riddles at your age?",
+   "Blaine": "Agatha! Riddle me this: which of us is older? Hah! Better not answer!"
+  },
+  "Agatha & Brock": {
+   "Agatha": "Brock, dear boy. Stand still and let my ghosts do the work.",
+   "Brock": "Agatha, ma'am! I'll keep you safe out there!"
+  },
+  "Agatha & Erika": {
+   "Agatha": "Erika, you look half asleep. My ghosts will wake you up!",
+   "Erika": "Agatha, your ghosts are rather charming in their own way."
+  },
+  "Agatha & Fantina": {
+   "Agatha": "Fantina, you dance with your ghosts. I just scare people with mine!",
+   "Fantina": "Agatha! Ze ghosts, zey adore you! Come, let us dance!"
+  },
+  "Agatha & Giovanni": {
+   "Agatha": "Giovanni. I've outlived plenty of crooks. Behave yourself.",
+   "Giovanni": "Agatha. Even I respect that much experience."
+  },
+  "Agatha & Janine": {
+   "Agatha": "Janine, your father was quite the rascal in his day.",
+   "Janine": "Agatha! Ghosts and ninjas, both sneaky! We'll be perfect together!"
+  },
+  "Agatha & Koga": {
+   "Agatha": "Koga, you old sneak. Still hiding behind smoke?",
+   "Koga": "Fwahaha! Agatha, mistress of shadows. We are kindred spirits!"
+  },
+  "Agatha & Lance": {
+   "Agatha": "Lance, still flying around in that cape, I see.",
+   "Lance": "Agatha, it's an honor to stand beside you again."
+  },
+  "Agatha & Lt. Surge": {
+   "Agatha": "Surge, my ghosts don't scare easy. Neither do I.",
+   "Lt. Surge": "Agatha! You're tougher than any soldier I ever served with!"
+  },
+  "Agatha & Misty": {
+   "Agatha": "Misty dear, don't be frightened of my ghosts.",
+   "Misty": "Agatha! Your ghosts are creepy... in a good way, I think!"
+  },
+  "Agatha & Morty": {
+   "Agatha": "Morty, the seer of Ecruteak. You see the ghosts too, don't you?",
+   "Morty": "Agatha... the spirits around you are ancient and powerful."
+  },
+  "Agatha & Phoebe": {
+   "Agatha": "Phoebe, Mt. Pyre's ghost girl. Show this old lady your bond.",
+   "Phoebe": "Agatha! A ghost master from Kanto! The spirits are so excited!"
+  },
+  "Agatha & Sabrina": {
+   "Agatha": "Sabrina, your mind tricks against my ghosts. Who's spookier, eh?",
+   "Sabrina": "Agatha. Our powers have always been at odds. Not today."
+  },
+  "Agatha & Shauntal": {
+   "Agatha": "Shauntal, are you writing about me? Make me sound scarier.",
+   "Shauntal": "Agatha! A ghost master from Kanto! My next chapter is writing itself!"
+  },
+  "Lance & Alder": {
+   "Lance": "Alder, Unova's free-spirited Champion. Let's show them two Champions at once.",
+   "Alder": "Ha ha! Lance, the dragon master! Two Champions, one wild battle!"
+  },
+  "Lance & Blaine": {
+   "Lance": "Blaine, keep the flames high. My dragons love the heat.",
+   "Blaine": "Lance! Quiz: what do dragons and volcanoes have in common? Fire! Let's win!"
+  },
+  "Lance & Brock": {
+   "Lance": "Brock, your steadiness gives my dragons room to fly.",
+   "Brock": "Lance, the Champion himself! I'll hold the line!"
+  },
+  "Lance & Bugsy": {
+   "Lance": "Bugsy, your research is impressive. Let's add some field data.",
+   "Bugsy": "Lance! I've always wanted to study how you battle up close!"
+  },
+  "Lance & Chuck": {
+   "Lance": "Chuck, your strength is matched only by your enthusiasm.",
+   "Chuck": "Lance! WAHAHAH! Let's crush them together!"
+  },
+  "Lance & Clair": {
+   "Lance": "Clair, cousin. Let's show them what Blackthorn's dragon clan can do.",
+   "Clair": "Lance. Don't you dare outshine me. We do this as equals."
+  },
+  "Lance & Cynthia": {
+   "Lance": "Cynthia, Sinnoh's Champion. It's a privilege to battle beside you.",
+   "Cynthia": "Lance. Two Champions together. Our opponent is in for a long day."
+  },
+  "Lance & Diantha": {
+   "Lance": "Diantha, I've seen your films. Let's give them a real show.",
+   "Diantha": "Lance, the dragon master! What a co-star. Shall we?"
+  },
+  "Lance & Drake": {
+   "Lance": "Drake, a dragon tamer from Hoenn. Let's see whose dragons roar louder.",
+   "Drake": "Gwahaha! Lance! Two dragon masters in one battle! Glorious!"
+  },
+  "Lance & Drasna": {
+   "Lance": "Drasna, your gentle way with dragons is admirable.",
+   "Drasna": "Oh my, Lance! The famous dragon master! What a treat!"
+  },
+  "Lance & Drayden": {
+   "Lance": "Drayden, the dragon master of Opelucid. An honor.",
+   "Drayden": "Lance. Your name flies far. Let us see the dragons behind it."
+  },
+  "Lance & Erika": {
+   "Lance": "Erika, your calm balances my dragons' fury.",
+   "Erika": "Lance... please keep your dragons away from the flower beds."
+  },
+  "Lance & Falkner": {
+   "Lance": "Falkner, take to the skies. My dragons will follow.",
+   "Falkner": "Lance! Flying beside dragons is a dream come true!"
+  },
+  "Lance & Giovanni": {
+   "Lance": "Giovanni. I've broken up your organization before. Don't make me regret this.",
+   "Giovanni": "Lance. Let's settle our differences on the opponent instead."
+  },
+  "Lance & Iris": {
+   "Lance": "Iris, Unova's young Champion. Your dragons have such spirit.",
+   "Iris": "Lance! You're like a dragon superhero! Let's win together!"
+  },
+  "Lance & Janine": {
+   "Lance": "Janine, your father would be proud to see you here.",
+   "Janine": "Lance! Father says you're the toughest Champion there is!"
+  },
+  "Lance & Jasmine": {
+   "Lance": "Jasmine, your steel and my dragons. A sturdy pair.",
+   "Jasmine": "Lance... I'll do my best not to slow you down."
+  },
+  "Lance & Karen": {
+   "Lance": "Karen, the Johto Elite Four at full strength.",
+   "Karen": "Lance. Don't hog the spotlight, Champion."
+  },
+  "Lance & Koga": {
+   "Lance": "Koga, a ninja beside the Champion. Strike true.",
+   "Koga": "Fwahaha! Lance! Let us show them the might of the Plateau!"
+  },
+  "Lance & Lt. Surge": {
+   "Lance": "Surge, let's coordinate. Dragons in the air, thunder on the ground.",
+   "Lt. Surge": "Roger that, Lance! Air support and thunder, coming right up!"
+  },
+  "Lance & Misty": {
+   "Lance": "Misty, keep the waters rough. My dragons thrive in a storm.",
+   "Misty": "Lance! I'll make the waves, you make them roar!"
+  },
+  "Lance & Morty": {
+   "Lance": "Morty, what do your visions say about this battle?",
+   "Morty": "Lance... I see dragons soaring to victory."
+  },
+  "Lance & Pryce": {
+   "Lance": "Pryce, ice and dragons rarely mix. Let's prove that wrong.",
+   "Pryce": "Lance. Mind the cold, young dragon master."
+  },
+  "Lance & Sabrina": {
+   "Lance": "Sabrina, your foresight and my dragons. A formidable combination.",
+   "Sabrina": "Lance. I already know how this ends. You'll like it."
+  },
+  "Lance & Steven": {
+   "Lance": "Steven, Hoenn's stone-loving Champion. Let's make this battle shine.",
+   "Steven": "Lance, it's an honor. Your dragons are rarer than any stone I've found."
+  },
+  "Lance & Wallace": {
+   "Lance": "Wallace, your elegance meets my power. Interesting.",
+   "Wallace": "Lance! A dragon master's might paired with my grace. Exquisite!"
+  },
+  "Lance & Whitney": {
+   "Lance": "Whitney, keep your spirits up. We'll win this together.",
+   "Whitney": "Lance! You're so cool! I won't cry, I promise!"
+  },
+  "Lance & Will": {
+   "Lance": "Will, focus your mind. My dragons will clear the way.",
+   "Will": "Lance, our Champion. I'll follow your lead... gracefully."
+  },
+  "Will & Anabel": {
+   "Will": "Anabel, the Salon Maiden. Our minds should be in perfect sync.",
+   "Anabel": "Will. I can feel your focus. Let's read our opponent together."
+  },
+  "Will & Bugsy": {
+   "Will": "Bugsy, your analytical mind would make a fine psychic.",
+   "Bugsy": "Will! I'd love to study how that mask affects your focus!"
+  },
+  "Will & Caitlin": {
+   "Will": "Caitlin, a lady of elegance and mind. Shall we perform?",
+   "Caitlin": "Will. Your mask is rather theatrical. I approve."
+  },
+  "Will & Chuck": {
+   "Will": "Chuck, please try to think before you punch.",
+   "Chuck": "Will! Thinking is overrated! WAHAHAH!"
+  },
+  "Will & Clair": {
+   "Will": "Clair, your pride is formidable. Let's aim it at our foes.",
+   "Clair": "Will. Don't slow me down with your poses."
+  },
+  "Will & Dexio": {
+   "Will": "Dexio, a student of the mind. Let's show them true focus.",
+   "Dexio": "Will of the Elite Four! I've studied your psychic techniques for years!"
+  },
+  "Will & Falkner": {
+   "Will": "Falkner, soar high. My mind will guide your path.",
+   "Falkner": "Will, your psychic power and my birds. Let's take to the sky!"
+  },
+  "Will & Jasmine": {
+   "Will": "Jasmine, your quiet strength steadies the mind.",
+   "Jasmine": "Will... your mask is a little scary. But I trust you."
+  },
+  "Will & Karen": {
+   "Will": "Karen, the Johto Elite Four united. Let's be elegant about it.",
+   "Karen": "Will. Less posing, more battling."
+  },
+  "Will & Koga": {
+   "Will": "Koga, a ninja's patience and my focus. Perfect harmony.",
+   "Koga": "Fwahaha! Will! Strike from the mind, strike from the shadows!"
+  },
+  "Will & Lucian": {
+   "Will": "Lucian, a fellow scholar of the mind. Shall we study our opponent?",
+   "Lucian": "Will. I'll mark my page and give you my full attention."
+  },
+  "Will & Morty": {
+   "Will": "Morty, a seer and a psychic. Our opponent can hide nothing.",
+   "Morty": "Will. I see your mask... and the focus behind it."
+  },
+  "Will & Pryce": {
+   "Will": "Pryce, your patience is the mark of a true master.",
+   "Pryce": "Will. Your mind is sharp. Keep it cool."
+  },
+  "Will & Sabrina": {
+   "Will": "Sabrina, the strongest mind in Kanto. Let's combine our power.",
+   "Sabrina": "Will. I foresaw you'd say that. Let's begin."
+  },
+  "Will & Whitney": {
+   "Will": "Whitney, stay calm. A calm mind wins battles.",
+   "Whitney": "Will, you're kinda creepy... but cool! Let's win!"
+  },
+  "Koga & Blaine": {
+   "Koga": "Blaine! Two old Kanto Gym Leaders! Let us burn and poison!",
+   "Blaine": "Koga! Ninja quiz: what vanishes in a puff of smoke? Our opponents! Hah!"
+  },
+  "Koga & Brock": {
+   "Koga": "Brock, the rock of Pewter. Hold firm while I strike!",
+   "Brock": "Koga! I'll be your shield. You handle the sneaky stuff!"
+  },
+  "Koga & Bugsy": {
+   "Koga": "Bugsy, your insects and my poison. A deadly pairing.",
+   "Bugsy": "Koga! Did you know some insects are natural ninjas? Fascinating!"
+  },
+  "Koga & Chuck": {
+   "Koga": "Chuck, your fists are loud. My strikes are silent. Together, unstoppable.",
+   "Chuck": "Koga! A real ninja! I've always wanted to train with one!"
+  },
+  "Koga & Clair": {
+   "Koga": "Clair, let my poison wear them down for your dragons.",
+   "Clair": "Koga. Do your ninja tricks. I'll finish them off."
+  },
+  "Koga & Erika": {
+   "Koga": "Erika, poison and flowers. Nature's most dangerous combination.",
+   "Erika": "Koga... I do hope your poison won't wilt my flowers."
+  },
+  "Koga & Falkner": {
+   "Koga": "Falkner, strike from above. I strike from the shadows.",
+   "Falkner": "Koga! Your stealth and my speed. They won't see us coming!"
+  },
+  "Koga & Giovanni": {
+   "Koga": "Giovanni. Two Kanto Gym Leaders with... complicated pasts.",
+   "Giovanni": "Koga. Your ninja skills would have served me well, once."
+  },
+  "Koga & Janine": {
+   "Koga": "Janine, my daughter! Show your father how much you've grown!",
+   "Janine": "Father! I've trained every single day! Watch me!"
+  },
+  "Koga & Jasmine": {
+   "Koga": "Jasmine, your gentle steel is surprisingly hard to poison.",
+   "Jasmine": "Koga... um, please keep the poison away from me, okay?"
+  },
+  "Koga & Karen": {
+   "Koga": "Karen, darkness and poison. They will never see the end coming.",
+   "Karen": "Koga, keep your ninja act subtle. Let's go."
+  },
+  "Koga & Lt. Surge": {
+   "Koga": "Surge, your thunder is loud enough to cover my approach.",
+   "Lt. Surge": "Koga! Stealth and firepower! A perfect combat unit!"
+  },
+  "Koga & Misty": {
+   "Koga": "Misty, worry not. My poison won't touch your waters.",
+   "Misty": "Koga, keep your toxins out of my pool, okay?"
+  },
+  "Koga & Morty": {
+   "Koga": "Morty, a mystic and a ninja. Both walk unseen.",
+   "Morty": "Koga. Your shadow moves before you do."
+  },
+  "Koga & Plumeria": {
+   "Koga": "Plumeria, a fellow master of poison. Crude, but effective.",
+   "Plumeria": "Koga, huh? A real ninja. Don't get any ideas, old man."
+  },
+  "Koga & Pryce": {
+   "Koga": "Pryce, an old master. Your patience rivals a ninja's.",
+   "Pryce": "Koga. Patience is the root of all skill. You understand."
+  },
+  "Koga & Roxie": {
+   "Koga": "Roxie, poison and punk rock. Unusual, yet potent.",
+   "Roxie": "Koga! A poison ninja?! That's so metal! Let's rock!"
+  },
+  "Koga & Sabrina": {
+   "Koga": "Sabrina, you may read minds, but can you read a ninja's?",
+   "Sabrina": "Koga. Your mind is a maze. Fortunately, I enjoy mazes."
+  },
+  "Koga & Whitney": {
+   "Koga": "Whitney, stay focused. A ninja never cries.",
+   "Whitney": "Koga! A real ninja! This is so cool! I won't cry!"
+  },
+  "Karen & Bugsy": {
+   "Karen": "Bugsy, you study your partners closely. That's real love.",
+   "Bugsy": "Karen! I've read all about your philosophy on favorites!"
+  },
+  "Karen & Chuck": {
+   "Karen": "Chuck, love your partners as much as you love training.",
+   "Chuck": "Karen! My partners are my training buddies! WAHAH!"
+  },
+  "Karen & Clair": {
+   "Karen": "Clair, pride is fine. Just remember who you battle for.",
+   "Clair": "Karen. I battle for my dragons. Always."
+  },
+  "Karen & Falkner": {
+   "Karen": "Falkner, your love for your birds shows. Good.",
+   "Falkner": "Karen, my birds and your style. Let's fly!"
+  },
+  "Karen & Grimsley": {
+   "Karen": "Grimsley, a gambler's darkness and mine. Let's not leave this to chance.",
+   "Grimsley": "Karen. The night favors us both. I'll bet everything on our win."
+  },
+  "Karen & Jasmine": {
+   "Karen": "Jasmine, you clearly cherish your team. I respect that.",
+   "Jasmine": "Karen... thank you. I'll do my best for them."
+  },
+  "Karen & Morty": {
+   "Karen": "Morty, can you see whether we win? Never mind. We will.",
+   "Morty": "Karen. The future looks dark... in your favor."
+  },
+  "Karen & Pryce": {
+   "Karen": "Pryce, decades with the same partners. That's true love.",
+   "Pryce": "Karen. You understand. Bonds deepen with time."
+  },
+  "Karen & Sidney": {
+   "Karen": "Sidney, you're loud, but your bond with your team is real.",
+   "Sidney": "Karen! Darkness from Johto and Hoenn! Let's have some fun!"
+  },
+  "Karen & Whitney": {
+   "Karen": "Whitney, battle with your favorites and you'll never lose heart.",
+   "Whitney": "Karen! You're so cool! My favorites are ready!"
+  },
+  "Sidney & Anabel": {
+   "Sidney": "Anabel, the cool-headed Salon Maiden. Let's heat things up a little!",
+   "Anabel": "Sidney. I can feel your excitement from here. Let's channel it."
+  },
+  "Sidney & Brawly": {
+   "Sidney": "Brawly! Surf's up, and so is the battle!",
+   "Brawly": "Sidney! Let's ride this wave all the way to the win!"
+  },
+  "Sidney & Drake": {
+   "Sidney": "Drake, old man! The Hoenn Elite Four is back in action!",
+   "Drake": "Gwahaha! Sidney! Make some noise, lad!"
+  },
+  "Sidney & Flannery": {
+   "Sidney": "Flannery! You've got fire. I like that!",
+   "Flannery": "Sidney! Let's turn the heat all the way up on these two!"
+  },
+  "Sidney & Glacia": {
+   "Sidney": "Glacia, you stay cool. I'll handle the trash talk.",
+   "Glacia": "Sidney, do try to be less rowdy. It's terribly warm already."
+  },
+  "Sidney & Grimsley": {
+   "Sidney": "Grimsley! A gambler with style! Let's roll the dice!",
+   "Grimsley": "Sidney. Your energy is a gamble in itself. I like the odds."
+  },
+  "Sidney & Juan": {
+   "Sidney": "Juan, all grace and water. Let me add a little edge.",
+   "Juan": "Sidney, such energy! Do try to keep it artistic."
+  },
+  "Sidney & Norman": {
+   "Sidney": "Norman, Petalburg's tough dad! Let's do this!",
+   "Norman": "Sidney. Your energy is contagious. Let's win this."
+  },
+  "Sidney & Phoebe": {
+   "Sidney": "Phoebe! Ghosts and darkness. Now that's a spooky combo!",
+   "Phoebe": "Sidney! The spirits like your energy. Ahaha!"
+  },
+  "Sidney & Roxanne": {
+   "Sidney": "Roxanne, the brainy one! Let's see you smash some rocks!",
+   "Roxanne": "Sidney. I've studied your battles. Very unorthodox, and very effective."
+  },
+  "Sidney & Steven": {
+   "Sidney": "Steven! The Champion who'd rather be hunting rocks! Ready to shine?",
+   "Steven": "Sidney, let's show them the Hoenn League's real strength."
+  },
+  "Sidney & Wallace": {
+   "Sidney": "Wallace, I'll bring the noise, you bring the beauty.",
+   "Wallace": "Sidney, do try to be graceful. Just a little."
+  },
+  "Sidney & Wally": {
+   "Sidney": "Wally! You've grown a lot, kid. Let's rock!",
+   "Wally": "Sidney! I'm ready! I won't hold you back!"
+  },
+  "Sidney & Wattson": {
+   "Sidney": "Wattson! Old man energy! You laugh even louder than I do!",
+   "Wattson": "Wahahahah! Sidney! Let's electrify this battle!"
+  },
+  "Sidney & Winona": {
+   "Sidney": "Winona, you fly high. I'll keep it gritty down here.",
+   "Winona": "Sidney, your energy is boundless. Let's soar."
+  },
+  "Phoebe & Acerola": {
+   "Phoebe": "Acerola! You love spooky things too? We're going to be best friends!",
+   "Acerola": "Phoebe! A ghost girl from Hoenn! Let's be spooky together!"
+  },
+  "Phoebe & Anabel": {
+   "Phoebe": "Anabel! Can you sense the spirits too?",
+   "Anabel": "Phoebe. I sense... something. Probably your ghosts."
+  },
+  "Phoebe & Brawly": {
+   "Phoebe": "Brawly! Ghosts and waves! Let's make a splash!",
+   "Brawly": "Phoebe! Your ghosts give me chills... the good kind!"
+  },
+  "Phoebe & Drake": {
+   "Phoebe": "Drake! The Hoenn Elite Four, together again!",
+   "Drake": "Gwahaha! Phoebe! Your ghosts and my dragons, a fearsome crew!"
+  },
+  "Phoebe & Fantina": {
+   "Phoebe": "Fantina! You dance with ghosts? Teach me!",
+   "Fantina": "Phoebe! Ze little ghost girl! Let us dance with ze spirits!"
+  },
+  "Phoebe & Flannery": {
+   "Phoebe": "Flannery! Fire and ghosts, spooky campfire style!",
+   "Flannery": "Phoebe, your ghosts are creepy! I love it! Let's go!"
+  },
+  "Phoebe & Glacia": {
+   "Phoebe": "Glacia, your ice and my ghosts. Chills all around!",
+   "Glacia": "Phoebe dear, try not to haunt our opponent too much."
+  },
+  "Phoebe & Juan": {
+   "Phoebe": "Juan! Your style is so fancy! Let's battle!",
+   "Juan": "Phoebe, a spirited young lady. Let us paint something beautiful."
+  },
+  "Phoebe & Morty": {
+   "Phoebe": "Morty! A ghost master from Johto! Do you feel the spirits too?",
+   "Morty": "Phoebe. The spirits around you are joyful."
+  },
+  "Phoebe & Norman": {
+   "Phoebe": "Norman! Petalburg's strongest dad! The spirits are cheering for us!",
+   "Norman": "Phoebe. I'll follow your lead, spirits and all."
+  },
+  "Phoebe & Roxanne": {
+   "Phoebe": "Roxanne! You're so smart! Can you study ghosts?",
+   "Roxanne": "Phoebe, ghosts are a fascinating subject. Let's research them in battle."
+  },
+  "Phoebe & Shauntal": {
+   "Phoebe": "Shauntal! Write a book about me! A spooky one!",
+   "Shauntal": "Phoebe! A bubbly ghost trainer! You'd be such a fun character!"
+  },
+  "Phoebe & Steven": {
+   "Phoebe": "Steven! Our Champion! Did you bring any pretty stones for me?",
+   "Steven": "Phoebe, Mt. Pyre's spirits are watching. Let's not disappoint them."
+  },
+  "Phoebe & Wallace": {
+   "Phoebe": "Wallace! You're even prettier than your contest posters!",
+   "Wallace": "Phoebe, how delightful. Your spirit is radiant."
+  },
+  "Phoebe & Wally": {
+   "Phoebe": "Wally! You look so much healthier now! Let's battle!",
+   "Wally": "Phoebe! Your ghosts are scary, but I'm brave now!"
+  },
+  "Phoebe & Wattson": {
+   "Phoebe": "Wattson! You're so loud! The ghosts love it!",
+   "Wattson": "Wahahahah! Phoebe! Let's give 'em a fright!"
+  },
+  "Phoebe & Winona": {
+   "Phoebe": "Winona! Ghosts on the ground, birds in the sky!",
+   "Winona": "Phoebe, let's fly high above the spirits."
+  },
+  "Glacia & Anabel": {
+   "Glacia": "Anabel, your composure is refreshing. Cool heads together.",
+   "Anabel": "Glacia. Your calm matches mine. Let's begin."
+  },
+  "Glacia & Brawly": {
+   "Glacia": "Brawly, all that surfing must keep you cool. Good.",
+   "Brawly": "Glacia! Ice and waves! Let's make some icebergs!"
+  },
+  "Glacia & Brycen": {
+   "Glacia": "Brycen, a fellow master of ice. Let's freeze them solid.",
+   "Brycen": "Glacia. Your ice is elegant. Mine is fierce. A fine pairing."
+  },
+  "Glacia & Candice": {
+   "Glacia": "Candice, your enthusiasm is a little warm for my taste.",
+   "Candice": "Glacia! An ice legend from Hoenn! I'm so focused right now!"
+  },
+  "Glacia & Drake": {
+   "Glacia": "Drake, try not to get too fired up. It melts my concentration.",
+   "Drake": "Gwahaha! Glacia! Ice and dragons, a cold front coming through!"
+  },
+  "Glacia & Flannery": {
+   "Glacia": "Flannery, please don't melt me. We're on the same side.",
+   "Flannery": "Glacia! Fire and ice! Total opposites! Let's win anyway!"
+  },
+  "Glacia & Juan": {
+   "Glacia": "Juan, your graceful style is quite cool.",
+   "Juan": "Glacia, ice and water together. Truly a work of art."
+  },
+  "Glacia & Norman": {
+   "Glacia": "Norman, your steadiness is reassuring.",
+   "Norman": "Glacia. Let's keep this cool and controlled."
+  },
+  "Glacia & Pryce": {
+   "Glacia": "Pryce, your mastery of ice inspires me.",
+   "Pryce": "Glacia. Young frost from Hoenn. Show me your chill."
+  },
+  "Glacia & Roxanne": {
+   "Glacia": "Roxanne, your analytical approach suits me.",
+   "Roxanne": "Glacia, ice can crack rock, scientifically speaking. Let's apply that."
+  },
+  "Glacia & Sina": {
+   "Glacia": "Sina, Alolan ice must be rare in this heat.",
+   "Sina": "Glacia! An ice master from Hoenn! This is awesome!"
+  },
+  "Glacia & Steven": {
+   "Glacia": "Steven, our Champion. Let's keep this cool.",
+   "Steven": "Glacia, your ice is as clear as any crystal I've found."
+  },
+  "Glacia & Wallace": {
+   "Glacia": "Wallace, your elegance and my ice. A beautiful combination.",
+   "Wallace": "Glacia, how lovely. Let's freeze them in style."
+  },
+  "Glacia & Wally": {
+   "Glacia": "Wally, stay calm and you'll do fine.",
+   "Wally": "Glacia! Your ice is so cool! I'll stay calm, I promise!"
+  },
+  "Glacia & Wattson": {
+   "Glacia": "Wattson, please try to keep your voice down.",
+   "Wattson": "Wahahahah! Glacia! Ice and electricity! What a shock!"
+  },
+  "Glacia & Winona": {
+   "Glacia": "Winona, the cold sky suits your birds. Fly them through my snow.",
+   "Winona": "Glacia, let's bring a chill to the skies of Fortree."
+  },
+  "Drake & Anabel": {
+   "Drake": "Anabel! Calm as the sea before a storm. Good.",
+   "Anabel": "Drake. Your dragons' strength is almost overwhelming."
+  },
+  "Drake & Brawly": {
+   "Drake": "Brawly! A fellow lover of the sea! Let's make waves!",
+   "Brawly": "Drake! The old sea dog himself! Let's surf to victory!"
+  },
+  "Drake & Clair": {
+   "Drake": "Clair! Dragon blood runs strong in you!",
+   "Clair": "Drake. Just keep up with my dragons, old man."
+  },
+  "Drake & Drasna": {
+   "Drake": "Drasna! A gentle dragon tamer. Your dragons must love you.",
+   "Drasna": "Oh my, Drake! Your dragons are so lovely and fierce!"
+  },
+  "Drake & Drayden": {
+   "Drake": "Drayden! Two old dragon tamers! Let's show the youngsters!",
+   "Drayden": "Drake. Your experience shows. Let us battle as one."
+  },
+  "Drake & Flannery": {
+   "Drake": "Flannery! Fire and dragons, a hot combination!",
+   "Flannery": "Drake! Dragons love the heat, right? Let's burn them up!"
+  },
+  "Drake & Iris": {
+   "Drake": "Iris! A young dragon tamer with fire in her heart!",
+   "Iris": "Drake! You're like a pirate dragon master! So cool!"
+  },
+  "Drake & Juan": {
+   "Drake": "Juan! The sea and dragons, eh? A fine combination!",
+   "Juan": "Drake. Your seafaring spirit is delightful."
+  },
+  "Drake & Norman": {
+   "Drake": "Norman! A strong father! Let's fight like family!",
+   "Norman": "Drake. A seasoned veteran. Lead the way, and I'll follow."
+  },
+  "Drake & Roxanne": {
+   "Drake": "Roxanne! Brains and dragons! A good mix!",
+   "Roxanne": "Drake, I've studied dragon behavior extensively. This should be fun."
+  },
+  "Drake & Steven": {
+   "Drake": "Steven! Our Champion! Let's sail into battle!",
+   "Steven": "Drake, your dragons are a force of nature."
+  },
+  "Drake & Wallace": {
+   "Drake": "Wallace! The sea's most elegant trainer!",
+   "Wallace": "Drake, let me add a little elegance to your storm."
+  },
+  "Drake & Wally": {
+   "Drake": "Wally! You've grown into a strong trainer!",
+   "Wally": "Drake! Your dragons are amazing! I'll do my best!"
+  },
+  "Drake & Wattson": {
+   "Drake": "Wattson! Gwahaha! Two loud old men!",
+   "Wattson": "Wahahahah! Drake! Let's shake things up!"
+  },
+  "Drake & Winona": {
+   "Drake": "Winona! Birds and dragons rule the sky!",
+   "Winona": "Drake, your dragons fly with real power. Let's soar together."
+  },
+  "Steven & Alder": {
+   "Steven": "Alder, Unova's Champion. I hear you wander as much as I do.",
+   "Alder": "Ha ha! Steven! A fellow wanderer! Find any good rocks lately?"
+  },
+  "Steven & Anabel": {
+   "Steven": "Anabel, I've heard about your talents at the Battle Frontier. Impressive.",
+   "Anabel": "Steven. I sense your love for rare things. Let's add a rare victory."
+  },
+  "Steven & Brawly": {
+   "Steven": "Brawly, Dewford has some of the best caves for stone hunting.",
+   "Brawly": "Steven! You found rocks in Granite Cave, right? Let's rock this battle!"
+  },
+  "Steven & Byron": {
+   "Steven": "Byron, a man who knows his steel and stone. A pleasure.",
+   "Byron": "Steven! Gahaha! A fellow steel lover! Let's dig in!"
+  },
+  "Steven & Colress": {
+   "Steven": "Colress, your scientific mind would appreciate my stone collection.",
+   "Colress": "Steven. Steel, science, and stones. A fascinating combination."
+  },
+  "Steven & Cynthia": {
+   "Steven": "Cynthia, a Champion who studies myths. Shall we make one?",
+   "Cynthia": "Steven. I hear you collect rare stones. I collect rare battles."
+  },
+  "Steven & Diantha": {
+   "Steven": "Diantha, Kalos's Champion. Your screen presence is quite something.",
+   "Diantha": "Steven, the Hoenn Champion. Let's give them a performance to remember."
+  },
+  "Steven & Flannery": {
+   "Steven": "Flannery, Lavaridge's hot springs are lovely. Let's bring that heat.",
+   "Flannery": "Steven! Let's turn up the heat on these two!"
+  },
+  "Steven & Iris": {
+   "Steven": "Iris, the young Champion of Unova. Your energy is remarkable.",
+   "Iris": "Steven! You're a Champion too? Let's be super Champions together!"
+  },
+  "Steven & Jasmine": {
+   "Steven": "Jasmine, your steel has a quiet strength. I appreciate that.",
+   "Jasmine": "Steven... um, your steel is so polished. Let's do our best."
+  },
+  "Steven & Juan": {
+   "Steven": "Juan, Sootopolis's master. Wallace speaks so highly of you.",
+   "Juan": "Steven. My former student has excellent taste in friends."
+  },
+  "Steven & Molayne": {
+   "Steven": "Molayne, a fellow steel enthusiast from Alola. Let's see your steel shine.",
+   "Molayne": "Steven! Your reputation reaches all the way to Hokulani. Let's do this."
+  },
+  "Steven & Norman": {
+   "Steven": "Norman, Petalburg's Gym Leader. Let's show them Hoenn's strength.",
+   "Norman": "Steven. A Champion beside me. I'll do my best."
+  },
+  "Steven & Roxanne": {
+   "Steven": "Roxanne, Rustboro is close to my father's company. We're practically neighbors.",
+   "Roxanne": "Steven! I've read so much about your stone research!"
+  },
+  "Steven & Wallace": {
+   "Steven": "Wallace, my friend. It's been too long since we battled side by side.",
+   "Wallace": "Steven! My dear friend! Let us make this battle as dazzling as your stones."
+  },
+  "Steven & Wally": {
+   "Steven": "Wally, you've grown into a fine trainer. Let's see how far you've come.",
+   "Wally": "Steven! I'll show you how strong I've become!"
+  },
+  "Steven & Wattson": {
+   "Steven": "Wattson, Mauville's power keeps Hoenn running. Let's power up.",
+   "Wattson": "Wahahahah! Steven! Let's shock them with some steel!"
+  },
+  "Steven & Wikstrom": {
+   "Steven": "Wikstrom, a knight of steel. A fine companion for a stone collector.",
+   "Wikstrom": "Well met, Steven! Your steel and mine shall form an unbreakable wall!"
+  },
+  "Steven & Winona": {
+   "Steven": "Winona, Fortree's skies are beautiful. Let's take them.",
+   "Winona": "Steven, Fortree's skies welcome you. Let's soar to victory together."
+  },
+  "Wallace & Alder": {
+   "Wallace": "Alder, your free spirit is quite refreshing. Let's make it beautiful.",
+   "Alder": "Ha ha! Wallace! Fancy clothes, strong battles! I like it!"
+  },
+  "Wallace & Anabel": {
+   "Wallace": "Anabel, your poise is admirable. Let's create something elegant.",
+   "Anabel": "Wallace. I can sense your grace. Let's begin."
+  },
+  "Wallace & Brawly": {
+   "Wallace": "Brawly, the waves and you are one. Let's ride them together.",
+   "Brawly": "Wallace! Water buddies! Let's make a splash!"
+  },
+  "Wallace & Crasher Wake": {
+   "Wallace": "Crasher Wake, your water is a torrent. Mine is a stream. Let's flood them.",
+   "Crasher Wake": "Wallace! The water master of Hoenn! Let's make a tidal wave!"
+  },
+  "Wallace & Cress": {
+   "Wallace": "Cress, a gentleman of water. How refined.",
+   "Cress": "Wallace. Your water is as elegant as my tea service. Let's begin."
+  },
+  "Wallace & Cynthia": {
+   "Wallace": "Cynthia, two Champions together. Let's make it a masterpiece.",
+   "Cynthia": "Wallace. Your elegance is legendary. Let's show them."
+  },
+  "Wallace & Diantha": {
+   "Wallace": "Diantha, a film star and a contest star. Let's dazzle them.",
+   "Diantha": "Wallace! Your style is impeccable. Let's give them a show!"
+  },
+  "Wallace & Flannery": {
+   "Wallace": "Flannery, your fire and my water. Opposites, yet elegant.",
+   "Flannery": "Wallace! Fire and water? We'll steam them like Lavaridge's springs!"
+  },
+  "Wallace & Iris": {
+   "Wallace": "Iris, a young Champion. Your energy is so bright.",
+   "Iris": "Wallace! You're so sparkly! Let's win together!"
+  },
+  "Wallace & Juan": {
+   "Wallace": "Master Juan, it's an honor to battle beside my teacher.",
+   "Juan": "Wallace, my former student. Let us show them what true elegance means."
+  },
+  "Wallace & Marlon": {
+   "Wallace": "Marlon, the sea's free spirit. Let's make waves together.",
+   "Marlon": "Yo, Wallace! Water buddies! Let's crash this battle!"
+  },
+  "Wallace & Misty": {
+   "Wallace": "Misty, a fellow water master. Let's show them how it's done.",
+   "Misty": "Wallace! Your water is so beautiful! Let's do this!"
+  },
+  "Wallace & Norman": {
+   "Wallace": "Norman, your strength and my grace. A fine pairing.",
+   "Norman": "Wallace. Let's show them Hoenn's strength."
+  },
+  "Wallace & Roxanne": {
+   "Wallace": "Roxanne, your intellect and my elegance. Let's begin.",
+   "Roxanne": "Wallace. I've studied your contest techniques. Fascinating."
+  },
+  "Wallace & Siebold": {
+   "Wallace": "Siebold, a chef and an artist. Your water must be exquisite.",
+   "Siebold": "Wallace. A fellow aesthete. Let us create a masterpiece in water."
+  },
+  "Wallace & Wally": {
+   "Wallace": "Wally, I'm so proud of how far you've come.",
+   "Wally": "Wallace! You were Champion once! I'll make you proud!"
+  },
+  "Wallace & Wattson": {
+   "Wallace": "Wattson, your energy is contagious. Let's make it beautiful.",
+   "Wattson": "Wahahahah! Wallace! Let's shock them with style!"
+  },
+  "Wallace & Winona": {
+   "Wallace": "Winona, your birds and my water. Let's paint the sky.",
+   "Winona": "Wallace, let's create a beautiful battle together."
+  },
+  "Aaron & Bertha": {
+   "Aaron": "Bertha! The Sinnoh Elite Four's grandma! I'll protect you, I promise!",
+   "Bertha": "Aaron, dear, you and your little bugs are so full of life. Grandma's proud."
+  },
+  "Aaron & Bugsy": {
+   "Aaron": "Bugsy! A fellow bug lover! Let's prove bugs are the best!",
+   "Bugsy": "Aaron! I've read your notes on bug training. Let's gather some field data together!"
+  },
+  "Aaron & Burgh": {
+   "Aaron": "Burgh! You paint bugs, I battle with them! Both are beautiful!",
+   "Burgh": "Aaron! Your passion is the perfect color for my next canvas. Let's paint a win!"
+  },
+  "Aaron & Byron": {
+   "Aaron": "Byron! Bugs can be tough as steel, you know! Watch!",
+   "Byron": "Gahaha! Aaron! Show me those little critters can hold their own!"
+  },
+  "Aaron & Candice": {
+   "Aaron": "Candice! My bugs hate the cold, so please aim your ice at them, not us!",
+   "Candice": "Aaron! Bugs AND focus? You've got the right idea! Let's go!"
+  },
+  "Aaron & Crasher Wake": {
+   "Aaron": "Crasher Wake! Your splashing makes my bugs nervous!",
+   "Crasher Wake": "Wahahah! Aaron! Don't worry, little buddy, I only splash the bad guys!"
+  },
+  "Aaron & Cynthia": {
+   "Aaron": "Cynthia! It's an honor to battle beside our Champion!",
+   "Cynthia": "Aaron. You've never once doubted your bugs. That's why you're strong."
+  },
+  "Aaron & Fantina": {
+   "Aaron": "Fantina! I've seen bugs dance in the moonlight. You'd love it!",
+   "Fantina": "Aaron! Ze bugs, zey dance? Magnifique! Show me after we win!"
+  },
+  "Aaron & Flint": {
+   "Aaron": "Flint! Just don't burn my bugs, okay? They're very important!",
+   "Flint": "Aaron! Ha! I'll aim the fire away from your buddies, promise!"
+  },
+  "Aaron & Gardenia": {
+   "Aaron": "Gardenia! Bugs and plants go together perfectly!",
+   "Gardenia": "Aaron! My plants and your bugs, a whole little forest! Let's grow a win!"
+  },
+  "Aaron & Guzma": {
+   "Aaron": "Guzma! You like bugs too? Then you can't be all bad!",
+   "Guzma": "Aaron, huh? A kid who actually gets bugs. Fine. Let's smash 'em together."
+  },
+  "Aaron & Lucian": {
+   "Aaron": "Lucian! Can you put the book down for this one? Please?",
+   "Lucian": "Aaron. I'll read up on bugs later. For now, you have my attention."
+  },
+  "Aaron & Maylene": {
+   "Aaron": "Maylene! Bugs are small but strong, just like you!",
+   "Maylene": "Aaron! You're right, size isn't everything! Let's hit them hard!"
+  },
+  "Aaron & Roark": {
+   "Aaron": "Roark! I found the coolest beetles near your mine once!",
+   "Roark": "Aaron! Bugs in my mine?! Ha, as long as they help us win!"
+  },
+  "Aaron & Volkner": {
+   "Aaron": "Volkner! Come on, cheer up! Bugs never get bored, and neither should you!",
+   "Volkner": "Aaron... your energy is a lot. Fine, I'll try to keep up."
+  },
+  "Bertha & Byron": {
+   "Bertha": "Byron, you old miner! Let's dig into this one together!",
+   "Byron": "Bertha! Gahaha! Two Sinnoh old-timers! Let's show the youngsters how it's done!"
+  },
+  "Bertha & Candice": {
+   "Bertha": "Candice, dear, you're positively buzzing. Let's put that energy to work.",
+   "Candice": "Bertha! I'm so focused! Let's win this one for you, Grandma!"
+  },
+  "Bertha & Clay": {
+   "Bertha": "Clay, a fellow lover of good, solid earth. Let's get our hands dirty!",
+   "Clay": "Bertha! A ground master from Sinnoh! Let's mine ourselves a victory!"
+  },
+  "Bertha & Crasher Wake": {
+   "Bertha": "Crasher Wake, loud as ever! My old ears can still hear you from Pastoria!",
+   "Crasher Wake": "Bertha! Wahahah! Sorry, Grandma! Let's make this a muddy win!"
+  },
+  "Bertha & Cynthia": {
+   "Bertha": "Cynthia, dear, it's so nice to battle beside our Champion for once.",
+   "Cynthia": "Bertha. Your experience and my strategy. Our opponent doesn't stand a chance."
+  },
+  "Bertha & Fantina": {
+   "Bertha": "Fantina, dear, your dancing is lovely. Shall we dance our way to a win?",
+   "Fantina": "Bertha! Ze lovely grandmother! Oui, we dance together!"
+  },
+  "Bertha & Flint": {
+   "Bertha": "Flint, keep that fire burning, dear, and mind your hair.",
+   "Flint": "Bertha! You're the best grandma in the whole League! Let's go!"
+  },
+  "Bertha & Gardenia": {
+   "Bertha": "Gardenia, plants need good earth to grow. I'll provide it.",
+   "Gardenia": "Bertha! Your earth and my plants! We'll grow a victory!"
+  },
+  "Bertha & Giovanni": {
+   "Bertha": "Giovanni. The earth doesn't care who you are. Neither do I.",
+   "Giovanni": "Bertha. A master of the ground. I respect that much, at least."
+  },
+  "Bertha & Lucian": {
+   "Bertha": "Lucian, put that book down and help Grandma out, would you?",
+   "Lucian": "Bertha. Very well. Bookmark in place, I'm all yours."
+  },
+  "Bertha & Maylene": {
+   "Bertha": "Maylene, dear, don't you want some shoes? The sand's hot!",
+   "Maylene": "Bertha! I fight better barefoot! Hot sand's just more training!"
+  },
+  "Bertha & Roark": {
+   "Bertha": "Roark, you've grown into such a fine young man. Your father must be proud.",
+   "Roark": "Bertha! Rocks and ground, like Oreburgh and the League! Let's go!"
+  },
+  "Bertha & Volkner": {
+   "Bertha": "Volkner, dear, cheer up! A battle with Grandma will do you good.",
+   "Volkner": "Bertha... fine. I can't say no to you."
+  },
+  "Flint & Blaine": {
+   "Flint": "Blaine! Fire buddies! Got a quiz about afros? Let's burn it up!",
+   "Blaine": "Flint! Quiz: what's hotter than a volcano? Your hairdo! Hah!"
+  },
+  "Flint & Byron": {
+   "Flint": "Byron! Fire melts steel! Just kidding, we're on the same side!",
+   "Byron": "Gahaha! Flint! Let's forge a victory in your flames!"
+  },
+  "Flint & Candice": {
+   "Flint": "Candice! Fire and ice! Don't worry, I won't melt you!",
+   "Candice": "Flint! Your fire's great, but focus is what wins! Let's go!"
+  },
+  "Flint & Chili": {
+   "Flint": "Chili! A fellow hothead! Let's set this place ablaze!",
+   "Chili": "Flint! Your fire burns even hotter than my kitchen! Let's go!"
+  },
+  "Flint & Crasher Wake": {
+   "Flint": "Crasher Wake! Fire and water! Full steam ahead!",
+   "Crasher Wake": "Wahahah! Flint! A steamy win coming right up!"
+  },
+  "Flint & Cynthia": {
+   "Flint": "Cynthia! Let's show them Sinnoh's best, like the old days at the League!",
+   "Cynthia": "Flint. Your fire never dims. Let's win this together."
+  },
+  "Flint & Fantina": {
+   "Flint": "Fantina! Fire and ghosts! Spooky hot!",
+   "Fantina": "Flint! Ze man with ze fiery hair! Let us dance!"
+  },
+  "Flint & Flannery": {
+   "Flint": "Flannery! Another fire lover! You've got real spark!",
+   "Flannery": "Flint! Your passion's even hotter than Lavaridge's springs!"
+  },
+  "Flint & Gardenia": {
+   "Flint": "Gardenia! Don't worry, I'll keep my fire away from your plants!",
+   "Gardenia": "Flint! You'd better! My garden still remembers the last time!"
+  },
+  "Flint & Kiawe": {
+   "Flint": "Kiawe! A fire dancer! Let's light up the whole island!",
+   "Kiawe": "Flint! Your burning spirit could fuel a whole dance! Let's go!"
+  },
+  "Flint & Lucian": {
+   "Flint": "Lucian! Close the book and feel the heat!",
+   "Lucian": "Flint. Very well. You've always been hard to ignore."
+  },
+  "Flint & Malva": {
+   "Flint": "Malva! Two fire masters! Let's make headlines!",
+   "Malva": "Flint. Your fire is... adequate. Try to keep up."
+  },
+  "Flint & Maylene": {
+   "Flint": "Maylene! Fire and fists, a knockout combo!",
+   "Maylene": "Flint! Let's give them everything we've got!"
+  },
+  "Flint & Roark": {
+   "Flint": "Roark! Fire and stone! We'll heat things up!",
+   "Roark": "Flint! I'll lay the foundation, you light the fuse!"
+  },
+  "Flint & Volkner": {
+   "Flint": "Volkner, buddy! I came all this way to fire you up! Let's go!",
+   "Volkner": "Flint... fine. For you, I'll try. Don't make me regret it."
+  },
+  "Lucian & Anabel": {
+   "Lucian": "Anabel, I've read about the Battle Frontier's Salon Maiden. Let's see if the books were right.",
+   "Anabel": "Lucian. Your thoughts are as orderly as a library. Let's begin."
+  },
+  "Lucian & Byron": {
+   "Lucian": "Byron, I've read about your excavations in Canalave. Fascinating work.",
+   "Byron": "Gahaha! Lucian! A bookworm and a miner! Let's dig in!"
+  },
+  "Lucian & Caitlin": {
+   "Lucian": "Caitlin, a fellow psychic. Shall we study our opponent together?",
+   "Caitlin": "Lucian. Your calm is refreshing. Do keep the book closed, though."
+  },
+  "Lucian & Candice": {
+   "Lucian": "Candice, your devotion to focus is admirable.",
+   "Candice": "Lucian! Focus! I'm so focused right now, see?"
+  },
+  "Lucian & Crasher Wake": {
+   "Lucian": "Crasher Wake, I'll need you to be a little quieter. I'm thinking.",
+   "Crasher Wake": "Wahahah! Lucian! No time for thinking! Time for wrestling!"
+  },
+  "Lucian & Cynthia": {
+   "Lucian": "Cynthia, our Champion. I'm honored to battle beside you.",
+   "Cynthia": "Lucian. Have you read the new book on Sinnoh's myths? Later. Battle first."
+  },
+  "Lucian & Dexio": {
+   "Lucian": "Dexio, a student of the mind. Let's see what you've learned.",
+   "Dexio": "Lucian! I've read about your techniques. Let's do this!"
+  },
+  "Lucian & Fantina": {
+   "Lucian": "Fantina, your dancing is quite distracting. Let's focus.",
+   "Fantina": "Lucian! Ze bookworm! Close ze book and dance with me!"
+  },
+  "Lucian & Gardenia": {
+   "Lucian": "Gardenia, plants and the mind. Both grow with care.",
+   "Gardenia": "Lucian! Plants and books! Let's grow a win together!"
+  },
+  "Lucian & Maylene": {
+   "Lucian": "Maylene, mind and body. A fine combination.",
+   "Maylene": "Lucian! You bring the brains, I'll bring the fists!"
+  },
+  "Lucian & Roark": {
+   "Lucian": "Roark, I've read about Oreburgh's mines. Fascinating history.",
+   "Roark": "Lucian! You should visit sometime! I'll give you a tour after this!"
+  },
+  "Lucian & Sabrina": {
+   "Lucian": "Sabrina, the Psychic master of Kanto. I've read of your power.",
+   "Sabrina": "Lucian. Your mind is quiet. I like that. Let's begin."
+  },
+  "Lucian & Volkner": {
+   "Lucian": "Volkner, cheer up. A good battle is like a good book.",
+   "Volkner": "Lucian... fine. Let's turn the page."
+  },
+  "Shauntal & Acerola": {
+   "Shauntal": "Acerola! A ghost-loving girl with royal blood! You'd make a perfect heroine!",
+   "Acerola": "Shauntal! You write spooky stories? Put me in one! Hee hee!"
+  },
+  "Shauntal & Alder": {
+   "Shauntal": "Alder, my Champion! Er, former Champion. I've written whole chapters about you!",
+   "Alder": "Ha ha! Shauntal! Make me sound heroic, eh? Let's give you something to write!"
+  },
+  "Shauntal & Bianca": {
+   "Shauntal": "Bianca, you're such a lively character. Please don't trip during the battle!",
+   "Bianca": "Shauntal! I'll be careful, I promise! Um, mostly!"
+  },
+  "Shauntal & Brycen": {
+   "Shauntal": "Brycen, a retired film star! Your story deserves a whole novel!",
+   "Brycen": "Shauntal. My acting days are behind me. Write about this battle instead."
+  },
+  "Shauntal & Burgh": {
+   "Shauntal": "Burgh, you paint, I write. Let's make this battle a work of art!",
+   "Burgh": "Shauntal! Words and colors! Our opponent will become a masterpiece!"
+  },
+  "Shauntal & Caitlin": {
+   "Shauntal": "Caitlin, my fellow Elite Four member. Please stay awake for this one!",
+   "Caitlin": "Shauntal, dear. Your scribbling woke me. I may as well battle."
+  },
+  "Shauntal & Cheren": {
+   "Shauntal": "Cheren, a teacher now! Your journey would make a wonderful novel.",
+   "Cheren": "Shauntal. Please write that I studied hard. Because I did."
+  },
+  "Shauntal & Chili": {
+   "Shauntal": "Chili, your fiery temper makes for great dialogue!",
+   "Chili": "Shauntal! Write me as the hero! The fiery, handsome hero!"
+  },
+  "Shauntal & Cilan": {
+   "Shauntal": "Cilan, I'd love to hear you describe our opponent. Your words are so vivid!",
+   "Cilan": "Shauntal! This battle has the bouquet of a fine novel! Let's begin!"
+  },
+  "Shauntal & Clay": {
+   "Shauntal": "Clay, the gruff miner with a heart of gold. A classic character!",
+   "Clay": "Shauntal, eh? Just don't make me the villain in that book of yours!"
+  },
+  "Shauntal & Colress": {
+   "Shauntal": "Colress... a scientist with a mysterious past. I have so many questions!",
+   "Colress": "Shauntal. Observe and record. On that, we agree entirely."
+  },
+  "Shauntal & Cress": {
+   "Shauntal": "Cress, so cool and composed. You'd be the mysterious rival!",
+   "Cress": "Shauntal. As long as you describe my form accurately. Let's begin."
+  },
+  "Shauntal & Drayden": {
+   "Shauntal": "Drayden, a mayor and a dragon master! Your story writes itself!",
+   "Drayden": "Shauntal. Write that we won. That will be enough."
+  },
+  "Shauntal & Elesa": {
+   "Shauntal": "Elesa, a model on the runway and in battle. So glamorous!",
+   "Elesa": "Shauntal! Make sure you describe my outfit, okay? Let's shine!"
+  },
+  "Shauntal & Fantina": {
+   "Shauntal": "Fantina! You dance with ghosts. I write about them. Let's haunt them together!",
+   "Fantina": "Shauntal! Ze writer of ghosts! Put a dance in your next book, oui?"
+  },
+  "Shauntal & Grimsley": {
+   "Shauntal": "Grimsley, my colleague. Your gambles make for thrilling chapters!",
+   "Grimsley": "Shauntal. I'll wager this chapter ends in our favor."
+  },
+  "Shauntal & Iris": {
+   "Shauntal": "Iris, the girl who became Champion! What a story!",
+   "Iris": "Shauntal! Are you gonna write about me? Make my dragons look super cool!"
+  },
+  "Shauntal & Lenora": {
+   "Shauntal": "Lenora, a museum director with a mind for mysteries! I adore it.",
+   "Lenora": "Shauntal. History and stories go hand in hand. Let's make some history."
+  },
+  "Shauntal & Marlon": {
+   "Shauntal": "Marlon, a laid-back surfer! You'd steal every scene!",
+   "Marlon": "Shauntal! Dude, write me riding the biggest wave ever! Let's go!"
+  },
+  "Shauntal & Marshal": {
+   "Shauntal": "Marshal, my stoic colleague. Please, say more than three words today!",
+   "Marshal": "Shauntal. Fewer words. More battle."
+  },
+  "Shauntal & Morty": {
+   "Shauntal": "Morty, a seer who speaks with spirits! Tell me everything!",
+   "Morty": "Shauntal. The spirits say your story will have a happy ending."
+  },
+  "Shauntal & Roxie": {
+   "Shauntal": "Roxie, a punk rocker! Your lyrics would make wonderful epigraphs!",
+   "Roxie": "Shauntal! Write me a song after this! A loud one!"
+  },
+  "Shauntal & Skyla": {
+   "Shauntal": "Skyla, a pilot! The adventure novels practically write themselves!",
+   "Skyla": "Shauntal! Let's give your book an aerial battle scene!"
+  },
+  "Caitlin & Alder": {
+   "Caitlin": "Alder, our former Champion. Do try to be a little less... boisterous.",
+   "Alder": "Ha ha! Caitlin! Woke up just for me, eh? Let's have some fun!"
+  },
+  "Caitlin & Anabel": {
+   "Caitlin": "Anabel, a fellow lady of the Battle Frontier circuit. Shall we?",
+   "Anabel": "Caitlin. I sense such poise in you. Let's begin."
+  },
+  "Caitlin & Bianca": {
+   "Caitlin": "Bianca, dear, please don't trip. It would wake me completely.",
+   "Bianca": "Caitlin! I'll do my best! You look so elegant!"
+  },
+  "Caitlin & Brycen": {
+   "Caitlin": "Brycen, a former star of the screen. How refined.",
+   "Brycen": "Caitlin. Your elegance is cinematic. Let's begin."
+  },
+  "Caitlin & Burgh": {
+   "Caitlin": "Burgh, your art is lovely, but do keep the paint off my dress.",
+   "Burgh": "Caitlin! You're a portrait waiting to happen! Let's battle beautifully!"
+  },
+  "Caitlin & Cheren": {
+   "Caitlin": "Cheren, a serious young teacher. How admirable.",
+   "Cheren": "Caitlin. I'll follow your lead. Elegantly, if I can."
+  },
+  "Caitlin & Chili": {
+   "Caitlin": "Chili, your fiery temper is rather loud. I was napping.",
+   "Chili": "Caitlin! Sorry! But you'll be wide awake after this battle!"
+  },
+  "Caitlin & Cilan": {
+   "Caitlin": "Cilan, a connoisseur. I appreciate refined tastes.",
+   "Cilan": "Caitlin! Your elegance has a rich, sophisticated bouquet!"
+  },
+  "Caitlin & Clay": {
+   "Caitlin": "Clay, your manners could use some polish. But your strength is real.",
+   "Clay": "Caitlin, eh? Fancy lady, strong mind. Let's get to it."
+  },
+  "Caitlin & Colress": {
+   "Caitlin": "Colress, your experiments are fascinating, if a bit unsettling.",
+   "Colress": "Caitlin. Your psychic abilities would make an excellent study. Later."
+  },
+  "Caitlin & Cress": {
+   "Caitlin": "Cress, a gentleman of water. How refreshing.",
+   "Cress": "Caitlin. Your poise matches my own. Let's begin."
+  },
+  "Caitlin & Cynthia": {
+   "Caitlin": "Cynthia. I spent my youth at Sinnoh's Battle Frontier. It's an honor to battle beside its Champion.",
+   "Cynthia": "Caitlin. I summer in Undella Town, so we're nearly neighbors in Unova too. Shall we?"
+  },
+  "Caitlin & Dexio": {
+   "Caitlin": "Dexio, a student of psychic power. Let's see what you've learned.",
+   "Dexio": "Caitlin! I've studied your techniques! It's an honor!"
+  },
+  "Caitlin & Drayden": {
+   "Caitlin": "Drayden, Opelucid's dignified mayor. A pleasure.",
+   "Drayden": "Caitlin. Dignity and strength. Let us show them both."
+  },
+  "Caitlin & Elesa": {
+   "Caitlin": "Elesa, a model. Your poise on the runway is quite something.",
+   "Elesa": "Caitlin! You're so graceful! Let's make this battle sparkle!"
+  },
+  "Caitlin & Grimsley": {
+   "Caitlin": "Grimsley, my colleague. Please don't gamble with our victory.",
+   "Grimsley": "Caitlin. The odds are always in our favor when you're awake."
+  },
+  "Caitlin & Iris": {
+   "Caitlin": "Iris, our young Champion. Do try to sit still.",
+   "Iris": "Caitlin! You're so pretty! Can you teach me to be elegant after this?"
+  },
+  "Caitlin & Lenora": {
+   "Caitlin": "Lenora, your museum must hold many treasures. Shall we add a victory?",
+   "Lenora": "Caitlin. Your elegance belongs in a gallery. Let's begin."
+  },
+  "Caitlin & Marlon": {
+   "Caitlin": "Marlon, you're very... relaxed. Please, focus.",
+   "Marlon": "Caitlin, dude! You're even chiller than me! Let's go!"
+  },
+  "Caitlin & Marshal": {
+   "Caitlin": "Marshal, my stoic colleague. Let's be efficient.",
+   "Marshal": "Caitlin. Efficiency suits us both. Begin."
+  },
+  "Caitlin & Roxie": {
+   "Caitlin": "Roxie, please lower your volume. Some of us were sleeping.",
+   "Roxie": "Caitlin! Wake up! It's time to rock!"
+  },
+  "Caitlin & Sabrina": {
+   "Caitlin": "Sabrina, a fellow psychic. Our minds should align nicely.",
+   "Sabrina": "Caitlin. I foresaw your elegance. Let's begin."
+  },
+  "Caitlin & Skyla": {
+   "Caitlin": "Skyla, your adventurous spirit is charming.",
+   "Skyla": "Caitlin! You're like a princess! Let's soar to victory!"
+  },
+  "Marshal & Alder": {
+   "Marshal": "Master! It is an honor to battle beside you. I will not disappoint.",
+   "Alder": "Marshal, my student! Ha ha! Show me how much you've grown!"
+  },
+  "Marshal & Bianca": {
+   "Marshal": "Bianca. Stay behind me. I will protect you.",
+   "Bianca": "Marshal! You're so strong! I'll try my best too!"
+  },
+  "Marshal & Brawly": {
+   "Marshal": "Brawly. A fighter who rides the waves. Your balance must be strong.",
+   "Brawly": "Marshal! Surfing's the best training! Let's crash this battle!"
+  },
+  "Marshal & Brycen": {
+   "Marshal": "Brycen. Your discipline is evident. Let us begin.",
+   "Brycen": "Marshal. Cold focus and strong fists. A good pairing."
+  },
+  "Marshal & Burgh": {
+   "Marshal": "Burgh. Your art requires discipline, as does battle.",
+   "Burgh": "Marshal! You're so stoic! Like a statue! Let's win!"
+  },
+  "Marshal & Cheren": {
+   "Marshal": "Cheren. My master spoke highly of your growth.",
+   "Cheren": "Marshal. Alder's teachings shaped us both. Let's honor them."
+  },
+  "Marshal & Chili": {
+   "Marshal": "Chili. Channel your fire into your fists.",
+   "Chili": "Marshal! Fire and fists! Let's burn them up!"
+  },
+  "Marshal & Chuck": {
+   "Marshal": "Chuck. A master of the waterfall. I have heard of your training.",
+   "Chuck": "Marshal! WAHAHAH! A disciple of Alder! Let's see your training!"
+  },
+  "Marshal & Cilan": {
+   "Marshal": "Cilan. Your words are many. Let your actions speak.",
+   "Cilan": "Marshal! Your fighting spirit has such a robust flavor!"
+  },
+  "Marshal & Clay": {
+   "Marshal": "Clay. Strength from the earth. I respect it.",
+   "Clay": "Marshal, eh? Tough as a mine shaft. Let's get to it."
+  },
+  "Marshal & Colress": {
+   "Marshal": "Colress. I do not trust your science. But I will fight beside you.",
+   "Colress": "Marshal. Your physical conditioning is fascinating. Let's begin."
+  },
+  "Marshal & Cress": {
+   "Marshal": "Cress. Calm water. Calm mind. Good.",
+   "Cress": "Marshal. Your stoicism is refreshing. Let's begin."
+  },
+  "Marshal & Drayden": {
+   "Marshal": "Drayden. A master of dragons and discipline.",
+   "Drayden": "Marshal. Alder's student. Let us show them Unova's strength."
+  },
+  "Marshal & Elesa": {
+   "Marshal": "Elesa. Your speed is admirable.",
+   "Elesa": "Marshal! You're so serious! Let's have some fun, too!"
+  },
+  "Marshal & Grimsley": {
+   "Marshal": "Grimsley. No gambling in battle.",
+   "Grimsley": "Marshal. Everything is a gamble. Even your punches."
+  },
+  "Marshal & Hala": {
+   "Marshal": "Hala. A Kahuna who trains with his whole body. I would learn from you.",
+   "Hala": "Hoh! Marshal! A fighter of true discipline! Let's show them our strength!"
+  },
+  "Marshal & Iris": {
+   "Marshal": "Iris. You are our Champion. I will follow your lead.",
+   "Iris": "Marshal! You're super strong! Let's win together!"
+  },
+  "Marshal & Lenora": {
+   "Marshal": "Lenora. Your strength is quiet, but real.",
+   "Lenora": "Marshal. Discipline like yours belongs in a museum. Let's make history."
+  },
+  "Marshal & Marlon": {
+   "Marshal": "Marlon. Focus your spirit. Then ride your wave.",
+   "Marlon": "Marshal, dude! You're so intense! Let's go!"
+  },
+  "Marshal & Maylene": {
+   "Marshal": "Maylene. A fighter who trains without shoes. I respect that discipline.",
+   "Maylene": "Marshal! Alder's student! Let's give it everything we've got!"
+  },
+  "Marshal & Roxie": {
+   "Marshal": "Roxie. Your music is loud. Your battles must be louder.",
+   "Roxie": "Marshal! You're so quiet! Let's make some noise!"
+  },
+  "Marshal & Skyla": {
+   "Marshal": "Skyla. Your courage is admirable.",
+   "Skyla": "Marshal! You punch, I'll fly! Let's go!"
+  },
+  "Alder & Bianca": {
+   "Alder": "Bianca! Still worrying your father? Ha ha! Let's battle!",
+   "Bianca": "Alder! Thanks for all your advice back then! I'll do my best!"
+  },
+  "Alder & Brycen": {
+   "Alder": "Brycen! A star of the silver screen, eh? Let's put on a show!",
+   "Brycen": "Alder. Your free spirit is infectious. Let's begin."
+  },
+  "Alder & Burgh": {
+   "Alder": "Burgh! Your art is as free as the wind! I like it!",
+   "Burgh": "Alder! You're a work of art yourself! Let's battle!"
+  },
+  "Alder & Cheren": {
+   "Alder": "Cheren! You've grown so much since our talk about strength. I'm proud of you!",
+   "Cheren": "Alder. I'm still searching for what strength means. But I'm closer now."
+  },
+  "Alder & Chili": {
+   "Alder": "Chili! A hothead, just like me when I was young! Ha ha!",
+   "Chili": "Alder! The old Champion's still got fire! Let's burn this battle up!"
+  },
+  "Alder & Cilan": {
+   "Alder": "Cilan! Your words are as rich as your cooking!",
+   "Cilan": "Alder! Your spirit has a bold, free-range flavor!"
+  },
+  "Alder & Clay": {
+   "Alder": "Clay! The old miner of Driftveil! Let's dig in!",
+   "Clay": "Alder, eh? The wandering Champion. Let's get to work."
+  },
+  "Alder & Colress": {
+   "Alder": "Colress. I'll trust you this once. Don't make me regret it.",
+   "Colress": "Alder. Your Champion's intuition is a fascinating variable."
+  },
+  "Alder & Cress": {
+   "Alder": "Cress! Cool as a mountain stream!",
+   "Cress": "Alder. Your free spirit is refreshing. Let's begin."
+  },
+  "Alder & Cynthia": {
+   "Alder": "Cynthia! Two Champions together, eh? Let's have some fun!",
+   "Cynthia": "Alder. Your free spirit is a nice change of pace. Let's win."
+  },
+  "Alder & Diantha": {
+   "Alder": "Diantha! A movie star and a Champion! Ha ha! What a combo!",
+   "Diantha": "Alder! Your free spirit would make a wonderful film. Let's win."
+  },
+  "Alder & Drayden": {
+   "Alder": "Drayden! Two Unova veterans! Let's show the young ones how it's done!",
+   "Drayden": "Alder. Experience on both sides of this field. Let us battle as one."
+  },
+  "Alder & Elesa": {
+   "Alder": "Elesa! You shine as bright as lightning!",
+   "Elesa": "Alder! You're so fun! Let's shine together!"
+  },
+  "Alder & Grimsley": {
+   "Alder": "Grimsley! Still gambling? Ha ha! Let's bet on a win!",
+   "Grimsley": "Alder. I'd wager on you any day. Let's begin."
+  },
+  "Alder & Iris": {
+   "Alder": "Iris! The young Champion! You've grown so much since I handed over the title!",
+   "Iris": "Alder! I've been training super hard! Watch me!"
+  },
+  "Alder & Lenora": {
+   "Alder": "Lenora! The museum's keeper! Let's make some history!",
+   "Lenora": "Alder. Your free spirit belongs in the history books."
+  },
+  "Alder & Marlon": {
+   "Alder": "Marlon! A free spirit like me! Let's ride this wave!",
+   "Marlon": "Alder, dude! You're even more laid-back than me! Let's ride!"
+  },
+  "Alder & Roxie": {
+   "Alder": "Roxie! Rock on, young lady! Play me a song after this!",
+   "Roxie": "Alder! You're the coolest old guy! Let's rock!"
+  },
+  "Alder & Skyla": {
+   "Alder": "Skyla! Fly high, kid! I'll keep my feet on the ground!",
+   "Skyla": "Alder! Let's soar to victory! I'll take you flying after!"
+  },
+  "Iris & Bianca": {
+   "Iris": "Bianca! You're always so cheerful! Let's win together!",
+   "Bianca": "Iris! You're the Champion now? Wow! I'll do my best!"
+  },
+  "Iris & Brycen": {
+   "Iris": "Brycen! You were in movies? So cool!",
+   "Brycen": "Iris. The young Champion. Let's give them a show."
+  },
+  "Iris & Burgh": {
+   "Iris": "Burgh! Can you paint my dragons after this?",
+   "Burgh": "Iris! Your dragons would make a beautiful painting! Let's win first!"
+  },
+  "Iris & Cheren": {
+   "Iris": "Cheren! You're a teacher now? That's so grown-up!",
+   "Cheren": "Iris. You're the Champion now. That's even more grown-up."
+  },
+  "Iris & Chili": {
+   "Iris": "Chili! Your fire is so hot! Let's burn them up!",
+   "Chili": "Iris! Your dragons and my fire! Let's turn up the heat!"
+  },
+  "Iris & Cilan": {
+   "Iris": "Cilan! Your cooking is the best! Let's win so we can eat!",
+   "Cilan": "Iris! This battle has a sweet and spicy aroma! Let's begin!"
+  },
+  "Iris & Clair": {
+   "Iris": "Clair! A dragon master from Johto! Let's show them dragon power!",
+   "Clair": "Iris. A young dragon master. Let's see your pride."
+  },
+  "Iris & Clay": {
+   "Iris": "Clay! You're so grumpy! Let's win anyway!",
+   "Clay": "Iris, eh? The little Champion. Let's get to it."
+  },
+  "Iris & Colress": {
+   "Iris": "Colress! Are you still being weird? Just kidding! Let's battle!",
+   "Colress": "Iris. Your dragons' power is a fascinating variable."
+  },
+  "Iris & Cress": {
+   "Iris": "Cress! You're so calm! Teach me how after we win!",
+   "Cress": "Iris. Your energy is refreshing. Let's begin."
+  },
+  "Iris & Cynthia": {
+   "Iris": "Cynthia! You're so cool! I wanna be a Champion like you!",
+   "Cynthia": "Iris. You already are. Let's win together."
+  },
+  "Iris & Diantha": {
+   "Iris": "Diantha! You're a movie star AND a Champion? So cool!",
+   "Diantha": "Iris! Your energy would light up any screen! Let's win!"
+  },
+  "Iris & Drasna": {
+   "Iris": "Drasna! You love dragons too? Let's be dragon buddies!",
+   "Drasna": "Oh my, Iris! What a lovely young dragon tamer! Let's win!"
+  },
+  "Iris & Drayden": {
+   "Iris": "Drayden! Let's show them what we learned together in Opelucid!",
+   "Drayden": "Iris. You've grown into a fine Champion. Let us battle as one."
+  },
+  "Iris & Elesa": {
+   "Iris": "Elesa! You're so pretty! Let's shine together!",
+   "Elesa": "Iris! Your energy is electric! You'd be a natural on the runway!"
+  },
+  "Iris & Grimsley": {
+   "Iris": "Grimsley! No gambling! We're gonna win for sure!",
+   "Grimsley": "Iris. With you, the odds are always in our favor."
+  },
+  "Iris & Lenora": {
+   "Iris": "Lenora! Your museum has so many cool dragon bones!",
+   "Lenora": "Iris. That skeleton you love is still on display. Let's make some history."
+  },
+  "Iris & Marlon": {
+   "Iris": "Marlon! Let's ride the waves to victory! Can dragons surf?",
+   "Marlon": "Iris, dude! You're so energetic! Let's go!"
+  },
+  "Iris & Roxie": {
+   "Iris": "Roxie! Your band is so loud! Let's rock this battle!",
+   "Roxie": "Iris! The Champion's a total rock star! Let's rock!"
+  },
+  "Iris & Skyla": {
+   "Iris": "Skyla! Race you to the sky! My dragons are super fast!",
+   "Skyla": "Iris! Your dragons and my birds! Let's soar!"
+  },
+  "Malva & Blaine": {
+   "Malva": "Blaine, I'd interview you, but I suspect you'd answer in riddles.",
+   "Blaine": "Malva! Quiz for the reporter: what's hotter than breaking news? My volcano! Hah!"
+  },
+  "Malva & Chili": {
+   "Malva": "Chili, a hothead from Unova. Try not to embarrass us on camera.",
+   "Chili": "Malva! A fire master on TV! Let's make the headlines sizzle!"
+  },
+  "Malva & Dexio": {
+   "Malva": "Dexio. Sycamore's assistant. Do try to keep up.",
+   "Dexio": "Malva. Your fire is formidable. I'll support you however I can."
+  },
+  "Malva & Diantha": {
+   "Malva": "Diantha. Kalos's darling Champion. Let's give the cameras a show.",
+   "Diantha": "Malva, you always know how to make the headlines. Shall we write tonight's?"
+  },
+  "Malva & Drasna": {
+   "Malva": "Drasna, so sweet and so terrifying. My favorite kind of colleague.",
+   "Drasna": "Oh, Malva! The Kalos Elite Four together! How lovely!"
+  },
+  "Malva & Flannery": {
+   "Malva": "Flannery, Lavaridge's little flame. Let's see if you can keep up with me.",
+   "Flannery": "Malva! A fire master from Kalos! I'll burn just as bright, you'll see!"
+  },
+  "Malva & Kiawe": {
+   "Malva": "Kiawe, a fire dancer. Very telegenic. Don't let it go to your head.",
+   "Kiawe": "Malva. Your flames are fierce. Let our fire dance together."
+  },
+  "Malva & Siebold": {
+   "Malva": "Siebold, my colleague. Try to battle, not just cook.",
+   "Siebold": "Malva. Fire and water, like a well-seasoned broth. Let us begin."
+  },
+  "Malva & Sina": {
+   "Malva": "Sina. Ice beside my fire. How... ironic.",
+   "Sina": "Malva! Don't melt my ice, okay? We're on the same team!"
+  },
+  "Malva & Wikstrom": {
+   "Malva": "Wikstrom, please stop bowing to the camera. It isn't even on.",
+   "Wikstrom": "Malva! A knight's honor to battle beside you! Even off camera!"
+  },
+  "Siebold & Chili": {
+   "Siebold": "Chili, a chef of fire. Your passion is a spice all its own.",
+   "Chili": "Siebold! A real chef from Kalos! Let's cook up something spicy!"
+  },
+  "Siebold & Cilan": {
+   "Siebold": "Cilan, a connoisseur. Your palate must be exquisite.",
+   "Cilan": "Siebold! This battle has the aroma of a Kalosian feast! Let's begin!"
+  },
+  "Siebold & Crasher Wake": {
+   "Siebold": "Crasher Wake, your water is wild. Mine is refined. Together, a balanced dish.",
+   "Crasher Wake": "Wahahah! Siebold! Let's make a splash so big it fills a soup pot!"
+  },
+  "Siebold & Cress": {
+   "Siebold": "Cress, a fellow master of water and service. How elegant.",
+   "Cress": "Siebold. Your cuisine is legendary. Let's serve them a defeat."
+  },
+  "Siebold & Dexio": {
+   "Siebold": "Dexio. Professor Sycamore's assistant. I trust you're well fed.",
+   "Dexio": "Siebold! I've eaten at your restaurant! It was incredible!"
+  },
+  "Siebold & Diantha": {
+   "Siebold": "Diantha, our Champion. Let us create a masterpiece.",
+   "Diantha": "Siebold, your cooking and battling are both works of art. Shall we?"
+  },
+  "Siebold & Drasna": {
+   "Siebold": "Drasna, your kindness is like a warm soup. Let's begin.",
+   "Drasna": "Oh, Siebold! I've missed your cooking! Let's win so you can make dinner!"
+  },
+  "Siebold & Juan": {
+   "Siebold": "Juan, an artist of water. I am honored.",
+   "Juan": "Siebold. A fellow artist. Let us make this battle a masterpiece."
+  },
+  "Siebold & Mallow": {
+   "Siebold": "Mallow, a young chef of Alola. Tell me, what is your specialty?",
+   "Mallow": "Siebold! A famous chef! Let's win, then cook together, okay?"
+  },
+  "Siebold & Marlon": {
+   "Siebold": "Marlon, your energy is like a fresh catch of the day.",
+   "Marlon": "Siebold, dude! A chef who battles! Let's cook 'em!"
+  },
+  "Siebold & Misty": {
+   "Siebold": "Misty, Cerulean's water master. Let us make waves together.",
+   "Misty": "Siebold! A water master who cooks! Let's win and grab dinner!"
+  },
+  "Siebold & Sina": {
+   "Siebold": "Sina. Ice and water, like a chilled consommé. Refreshing.",
+   "Sina": "Siebold! Can you make me some shave ice after this? Please?"
+  },
+  "Siebold & Wikstrom": {
+   "Siebold": "Wikstrom, my colleague. Shall we serve our opponents a defeat?",
+   "Wikstrom": "Siebold! A knight and a chef! A feast of victory awaits!"
+  },
+  "Wikstrom & Byron": {
+   "Wikstrom": "Byron! A fellow master of steel! Let us forge a victory!",
+   "Byron": "Gahaha! Wikstrom! A steel knight! Let's dig in!"
+  },
+  "Wikstrom & Colress": {
+   "Wikstrom": "Colress, a man of science and steel. I shall protect you!",
+   "Colress": "Wikstrom. Your armor is a fascinating feat of engineering."
+  },
+  "Wikstrom & Dexio": {
+   "Wikstrom": "Dexio! A young scholar! Fear not, I shall defend you!",
+   "Dexio": "Wikstrom! A real knight! Professor Sycamore won't believe this!"
+  },
+  "Wikstrom & Diantha": {
+   "Wikstrom": "Lady Diantha! It is my honor to fight at your side!",
+   "Diantha": "Wikstrom, you're always so gallant. Let's win this for Kalos!"
+  },
+  "Wikstrom & Drasna": {
+   "Wikstrom": "Lady Drasna! A knight shall protect you!",
+   "Drasna": "Oh, Wikstrom! You're always so chivalrous! Let's win!"
+  },
+  "Wikstrom & Jasmine": {
+   "Wikstrom": "Lady Jasmine! Your steel is gentle yet true!",
+   "Jasmine": "Wikstrom... you're so polite. I'll do my best."
+  },
+  "Wikstrom & Molayne": {
+   "Wikstrom": "Molayne! A steel master from Alola! Let us stand firm!",
+   "Molayne": "Wikstrom. A knight of steel. Let's see that armor in action."
+  },
+  "Wikstrom & Sina": {
+   "Wikstrom": "Lady Sina! Your ice shall gleam beside my steel!",
+   "Sina": "Wikstrom! You're so gallant! Dexio could learn a thing or two from you!"
+  },
+  "Drasna & Clair": {
+   "Drasna": "Clair, a fellow dragon tamer! Your dragons look so proud!",
+   "Clair": "Drasna. Your gentleness is deceptive. I like it."
+  },
+  "Drasna & Dexio": {
+   "Drasna": "Dexio, dear! Does Professor Sycamore know you're out here battling?",
+   "Dexio": "Drasna! He does, and he said to learn everything I can from the Elite Four!"
+  },
+  "Drasna & Diantha": {
+   "Drasna": "Diantha, our Champion! Let's have a wonderful battle together!",
+   "Diantha": "Drasna, your dragons are as lovely as you are. Let's win."
+  },
+  "Drasna & Drayden": {
+   "Drasna": "Drayden, a dragon master from Unova! How lovely!",
+   "Drayden": "Drasna. Your gentle hand with dragons is rare. Let us battle."
+  },
+  "Drasna & Sina": {
+   "Drasna": "Sina, dear! Your ice sparkles so beautifully! Let's win together!",
+   "Sina": "Drasna! Your dragons look so friendly! Are they, though?"
+  },
+  "Diantha & Brycen": {
+   "Diantha": "Brycen! A fellow actor! I loved your films. Shall we share the stage?",
+   "Brycen": "Diantha. A true star of the screen. Let us give them a final scene."
+  },
+  "Diantha & Cynthia": {
+   "Diantha": "Cynthia, two Champions together. Let's make this a blockbuster.",
+   "Cynthia": "Diantha. Your poise is remarkable. Let's give them a show."
+  },
+  "Diantha & Dexio": {
+   "Diantha": "Dexio! Professor Sycamore's assistant! Let's give them our best scene!",
+   "Dexio": "Diantha! The Champion herself! I'll try not to miss my cue!"
+  },
+  "Diantha & Sina": {
+   "Diantha": "Sina! Your energy lights up the whole set! Let's shine together!",
+   "Sina": "Diantha! The Champion of Kalos! I'm your biggest fan!"
+  },
+  "Hala & Acerola": {
+   "Hala": "Acerola! Ula'ula's little Captain! Hoh! Your spirit is as big as my belly!",
+   "Acerola": "Hala! You laugh so loud the ghosts at the old Megamart hide! Let's win!"
+  },
+  "Hala & Brawly": {
+   "Hala": "Hoh! Brawly! A fighter who rides the waves! My grandson would love you!",
+   "Brawly": "Hala! A Kahuna who fights with his fists? That's totally gnarly!"
+  },
+  "Hala & Chuck": {
+   "Hala": "Hoh! Chuck! I hear you train under waterfalls. Melemele has a few you'd like!",
+   "Chuck": "WAHAHAH! Hala! Your laugh is as mighty as your punches!"
+  },
+  "Hala & Guzma": {
+   "Hala": "Guzma, my boy. I always knew there was good in you. Show me today.",
+   "Guzma": "Hala. Don't start, old man. ...Fine. Let's win this."
+  },
+  "Hala & Kahili": {
+   "Hala": "Kahili! Back from your tour abroad! Hoh! How was the competition?",
+   "Kahili": "Hala. Tough, but not as tough as a Kahuna. Let's play this hole together."
+  },
+  "Hala & Kiawe": {
+   "Hala": "Kiawe! I've seen your fire dance at the festival. Bring that passion here! Hoh!",
+   "Kiawe": "Kahuna Hala! I'll burn with everything I have beside you!"
+  },
+  "Hala & Kukui": {
+   "Hala": "Kukui! The professor who gave Alola its League! Hoh! Let's honor it!",
+   "Kukui": "Hala! Woo! Battling beside the Kahuna who keeps the islands strong!"
+  },
+  "Hala & Mallow": {
+   "Hala": "Mallow! After this, I'm ordering everything at Aina's Kitchen! Hoh!",
+   "Mallow": "Hala! I'll cook up a feast big enough for even your appetite!"
+  },
+  "Hala & Maylene": {
+   "Hala": "Hoh! Maylene! Barefoot on the hot sand! You have a Kahuna's toughness!",
+   "Maylene": "Hala! You train like a true martial artist! Let's go all out!"
+  },
+  "Hala & Molayne": {
+   "Hala": "Molayne! Still gazing at the stars on Ula'ula? Hoh! Gaze at our win!",
+   "Molayne": "Hala. I'll calculate the trajectory. You supply the force."
+  },
+  "Hala & Olivia": {
+   "Hala": "Olivia! Two Kahunas together! Hoh! Melemele and Akala, side by side!",
+   "Olivia": "Hala! Let's show them why the islands chose us!"
+  },
+  "Hala & Plumeria": {
+   "Hala": "Plumeria. Even Team Skull's big sister deserves a strong partner. Let's win.",
+   "Plumeria": "Hala. Don't get sentimental on me, old man. Just fight."
+  },
+  "Olivia & Acerola": {
+   "Olivia": "Acerola! Win this with me and I'll find you something sparkly at my shop!",
+   "Acerola": "Olivia! A necklace with a little ghost charm, please! Hee hee!"
+  },
+  "Olivia & Brock": {
+   "Olivia": "Brock! A rock lover from Kanto? Okay, you're officially my favorite partner!",
+   "Brock": "Olivia! A Kahuna who sells gems! You're... wow. Um. I'll hold the line!"
+  },
+  "Olivia & Guzma": {
+   "Olivia": "Guzma. Behave yourself on my battlefield, got it?",
+   "Guzma": "Olivia. Relax, Kahuna. Team Skull's on its best behavior. Mostly."
+  },
+  "Olivia & Kahili": {
+   "Olivia": "Kahili! Golf can wait, the Elite Four needs you!",
+   "Kahili": "Olivia. Your rocks make a fine bunker. I'll aim around them."
+  },
+  "Olivia & Kiawe": {
+   "Olivia": "Kiawe! My island's fiery Captain! Show 'em that fire dance!",
+   "Kiawe": "Kahuna Olivia! Akala's fire burns for you!"
+  },
+  "Olivia & Kukui": {
+   "Olivia": "Kukui! You built the League, so you'd better not lose in it!",
+   "Kukui": "Olivia! Woo! Akala's Kahuna rocks, literally!"
+  },
+  "Olivia & Mallow": {
+   "Olivia": "Mallow! Akala's sweetest Captain! Let's win and celebrate at your place!",
+   "Mallow": "Olivia! I'll whip up something sparkly for my Kahuna!"
+  },
+  "Olivia & Molayne": {
+   "Olivia": "Molayne! Rock and steel! Nothing's getting through us!",
+   "Molayne": "Olivia. Solid materials, solid plan. I approve."
+  },
+  "Olivia & Plumeria": {
+   "Olivia": "Plumeria. I'm keeping an eye on you, girl.",
+   "Plumeria": "Olivia. Watch all you want, Kahuna. I'm here to win."
+  },
+  "Olivia & Roark": {
+   "Olivia": "Roark! A miner! You must find amazing stones! Wanna trade?",
+   "Roark": "Olivia! A Kahuna with a jewelry shop! Let's dig in!"
+  },
+  "Olivia & Roxanne": {
+   "Olivia": "Roxanne! A rock scholar! Bet you'd love Akala's fossils!",
+   "Roxanne": "Olivia! I've read about Alola's geology! Let's put theory into practice!"
+  },
+  "Acerola & Fantina": {
+   "Acerola": "Fantina! Do your ghosts like to dance? Mine love it!",
+   "Fantina": "Acerola! Ze little ghost princess! Oui, we dance!"
+  },
+  "Acerola & Guzma": {
+   "Acerola": "Guzma! Be nice, okay? Some of the kids at the Aether House think you're cool.",
+   "Guzma": "Acerola. Tell the brats Big Bad Guzma says hi. Now let's go."
+  },
+  "Acerola & Kahili": {
+   "Acerola": "Kahili! Teach me golf after this? I promise not to haunt your clubs!",
+   "Kahili": "Acerola. Deal. Just keep your ghosts off the fairway."
+  },
+  "Acerola & Kiawe": {
+   "Acerola": "Kiawe! Captain buddies! Even your fire can't scare my ghosts!",
+   "Kiawe": "Acerola! Your ghosts and my fire! A spooky bonfire!"
+  },
+  "Acerola & Kukui": {
+   "Acerola": "Professor Kukui! You should study ghost moves! They're the best!",
+   "Kukui": "Acerola! Woo! Spooky moves! I'm taking notes!"
+  },
+  "Acerola & Mallow": {
+   "Acerola": "Mallow! Let's win so you can make that sweet treat you promised!",
+   "Mallow": "Acerola! I'll make your favorite! Spooky-sweet!"
+  },
+  "Acerola & Molayne": {
+   "Acerola": "Molayne! You used to be a Captain too, right? Let's do our best!",
+   "Molayne": "Acerola. Former Captain and current Elite Four. Let's be efficient."
+  },
+  "Acerola & Morty": {
+   "Acerola": "Morty! You can see spirits too? Wanna be spooky friends?",
+   "Morty": "Acerola. The spirits around you are... giggling. Fascinating."
+  },
+  "Acerola & Plumeria": {
+   "Acerola": "Plumeria! The kids say you're actually really nice!",
+   "Plumeria": "Acerola. Don't spread that around, kid. Let's win."
+  },
+  "Kahili & Falkner": {
+   "Kahili": "Falkner, a fellow lover of the sky. Let's read the wind together.",
+   "Falkner": "Kahili! An Elite Four master of birds! Let's take to the skies!"
+  },
+  "Kahili & Guzma": {
+   "Kahili": "Guzma. Keep your temper on the fairway, would you?",
+   "Guzma": "Kahili. Sure, golf lady. Just don't slow me down."
+  },
+  "Kahili & Kiawe": {
+   "Kahili": "Kiawe. Your fire could warm up a cold morning round.",
+   "Kiawe": "Kahili! It's an honor to battle beside the Elite Four!"
+  },
+  "Kahili & Kukui": {
+   "Kahili": "Professor Kukui. You built the League I came home for.",
+   "Kukui": "Kahili! Woo! Glad you came back to Alola, yeah?"
+  },
+  "Kahili & Mallow": {
+   "Kahili": "Mallow. A good meal after a good round. That's the plan.",
+   "Mallow": "Kahili! I'll make you a power lunch for your next tournament!"
+  },
+  "Kahili & Molayne": {
+   "Kahili": "Molayne. You calculate angles too. We'll get along.",
+   "Molayne": "Kahili. Trajectories, wind speed... yes, we'll get along."
+  },
+  "Kahili & Plumeria": {
+   "Kahili": "Plumeria. Stay out of the rough.",
+   "Plumeria": "Kahili. I'm always in the rough, golf lady. Let's win."
+  },
+  "Kahili & Skyla": {
+   "Kahili": "Skyla, a pilot. You understand the wind like I do.",
+   "Skyla": "Kahili! A golfer who reads the wind! Let's soar!"
+  },
+  "Kahili & Winona": {
+   "Kahili": "Winona, a fellow master of the sky. Let's soar.",
+   "Winona": "Kahili, your birds are as graceful as your swing."
+  },
+  "Molayne & Byron": {
+   "Molayne": "Byron, a steel master from Sinnoh. Let's see how your steel holds up.",
+   "Byron": "Gahaha! Molayne! Alolan steel! Let's dig in!"
+  },
+  "Molayne & Colress": {
+   "Molayne": "Colress. A fellow engineer. Let's see your science in action.",
+   "Colress": "Molayne. Your engineering mind is fascinating. Let's begin."
+  },
+  "Molayne & Guzma": {
+   "Molayne": "Guzma. Simple plan: you smash, I calculate.",
+   "Guzma": "Molayne. Calculate all you want. I'm still smashing."
+  },
+  "Molayne & Jasmine": {
+   "Molayne": "Jasmine, a steel master from Johto. Gentle, but strong. I like that.",
+   "Jasmine": "Molayne... you're so calm. I'll do my best beside you."
+  },
+  "Molayne & Kiawe": {
+   "Molayne": "Kiawe. Fire and steel. A forge, really.",
+   "Kiawe": "Molayne! Let's forge a victory in Wela's flames!"
+  },
+  "Molayne & Kukui": {
+   "Molayne": "Professor Kukui. You built the League; I'll build us a strategy.",
+   "Kukui": "Molayne! Woo! Engineered for victory!"
+  },
+  "Molayne & Mallow": {
+   "Molayne": "Mallow. I'll trade you a look through the telescope for a plate of your cooking.",
+   "Mallow": "Molayne! Deal! I've always wanted to see the stars up close!"
+  },
+  "Molayne & Plumeria": {
+   "Molayne": "Plumeria. Let's keep this efficient.",
+   "Plumeria": "Molayne. Fine by me, nerd."
+  },
+  "Kukui & Crasher Wake": {
+   "Kukui": "Crasher Wake! A fellow masked wrestler! Woo! Let's put on a show!",
+   "Crasher Wake": "Wahahah! Kukui! I know a wrestler when I see one! Let's slam them!"
+  },
+  "Kukui & Guzma": {
+   "Kukui": "Guzma! Let's show 'em Alola's tough guys can work together, yeah?",
+   "Guzma": "Kukui. Don't get cute, Professor. Just keep up."
+  },
+  "Kukui & Kiawe": {
+   "Kukui": "Kiawe! Your fire dance is the best move in Alola! Woo!",
+   "Kiawe": "Professor! I'll show you a move worth studying!"
+  },
+  "Kukui & Mallow": {
+   "Kukui": "Mallow! After this, let's grab a bite at your place! Woo!",
+   "Mallow": "Professor Kukui! I'll cook you a victory feast!"
+  },
+  "Kukui & Plumeria": {
+   "Kukui": "Plumeria! Let's make this a good one, yeah?",
+   "Plumeria": "Professor. Don't get preachy. Let's just win."
   }
  },
  "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both)."

@@ -31,8 +31,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets and 22 battle-50 sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets and 264 Elite Four and Champion sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
     // Only custom sets fix their Ability (the game rolls it).
     expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
@@ -69,12 +69,25 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders and 4 battle-50 trainers', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers and 33 Elite Four and Champions', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47, 4 + 4]);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33, 4 + 4]);
     expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
-    expect(TRAINERS.slice(252).map(t => [t.name, t.class, t.kind, t.custom, t.iv, t.sprite, t.roster.length])).toEqual([
+    // The Elite Four and Champions come last (earlier ids, kept in saved runs, don't move): weight 3.5, eight Pokémon each.
+    const elite = TRAINERS.slice(256);
+    expect(elite.every(t => t.kind === 'special' && t.custom && t.weight === 3.5 && t.iv === 31 && t.versions.length === 2 && t.roster.length === 8)).toBe(true);
+    expect(elite.map(t => t.name)).toEqual([
+      'Lorelei', 'Bruno', 'Agatha', 'Lance', 'Will', 'Koga', 'Karen', 'Sidney', 'Phoebe', 'Glacia', 'Drake', 'Steven', 'Wallace', 'Aaron', 'Bertha',
+      'Flint', 'Lucian', 'Shauntal', 'Caitlin', 'Marshal', 'Alder', 'Iris', 'Malva', 'Siebold', 'Wikstrom', 'Drasna', 'Diantha', 'Hala', 'Olivia',
+      'Acerola', 'Kahili', 'Molayne', 'Kukui',
+    ]);
+    const cls = (name: string) => elite.find(t => t.name === name)!.class;
+    expect(['Lance', 'Steven', 'Wallace', 'Alder', 'Iris', 'Diantha'].map(cls)).toEqual(Array(6).fill('Champion'));
+    expect([cls('Lorelei'), cls('Hala'), cls('Kukui')]).toEqual(['Elite Four', 'Elite Four', 'Pokémon Professor']);
+    // Cynthia and Grimsley stay the game's own special trainers; Blue stays a Battle Legend only.
+    expect(TRAINERS.filter(t => ['Cynthia', 'Grimsley', 'Blue'].includes(t.name)).every(t => !t.custom)).toBe(true);
+    expect(TRAINERS.slice(252, 256).map(t => [t.name, t.class, t.kind, t.custom, t.iv, t.sprite, t.roster.length])).toEqual([
       ['Marques', 'Pokémon Trainer', 'legend', true, 31, '/trainers/marques.png', 3],
       ['Thomas', 'Pokémon Trainer', 'legend', true, 31, '/trainers/thomas.png', 3],
       ['Tai', 'Battle Legend', 'legend', true, 31, '/trainers/tai.png', 8],
@@ -93,7 +106,7 @@ describe('trainers.json', () => {
     expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([4, 4, 3]);
   });
 
-  it("lets every Gym Leader field 4 Pokémon under the clauses (Doubles)", () => {
+  it("lets every Gym Leader, Elite Four member and Champion field 4 Pokémon under the clauses (Doubles)", () => {
     for (const t of TRAINERS.filter(x => x.kind === 'special' && x.custom)) expect(maxClauseTeam(t.roster, 4), t.name).toBe(4);
   });
 
@@ -151,7 +164,7 @@ describe('brackets.json', () => {
     }
   });
 
-  it('special pool has the game\'s 8 trainers per version (Anabel at 1/50 of their weight), plus every Gym Leader', () => {
+  it('special pool has the game\'s 8 trainers per version (Anabel at 1/50 of their weight), plus every Gym Leader, Elite Four member and Champion', () => {
     const all = BRACKETS.specialTrainerPool.trainerIds.map(id => TRAINERS[id] as SpecialTrainer);
     expect(all.filter(t => t.custom).map(t => t.id)).toEqual(TRAINERS.filter(t => t.kind === 'special' && t.custom).map(t => t.id));
     const specials = all.filter(t => !t.custom);
@@ -260,7 +273,7 @@ describe('trainer-quotes.json', () => {
       seen.add(key);
       lines.push(...Object.values(entry));
     }
-    expect(seen.size).toBeGreaterThanOrEqual(317);
+    expect(seen.size).toBeGreaterThanOrEqual(317 + 486);
     const usual = Object.values(TRAINER_QUOTES).flat().map(q => q.greeting);
     for (const text of lines) {
       expect(text.trim().length).toBeGreaterThan(0);
@@ -287,6 +300,22 @@ describe('trainer-quotes.json', () => {
     // Nothing in common (Kanto Leader and Sinnoh's Champion), or a regular trainer: their usual lines.
     expect(trainerQuotes(brock, key, [brock, cynthia])).toBe(alone);
     expect(trainerQuotes(brock, key, [brock, florian])).toBe(alone);
+  });
+
+  it('gives the Elite Four and Champions pair lines with relatives, mentors, fellow Champions and their region or type', async () => {
+    const { trainerQuotes, TRAINER_PAIR_GREETINGS } = await import('./index');
+    const key = 'run-3|battle-7';
+    const line = (a: string, b: string) => trainerQuotes(byName(a), key, [byName(a), byName(b)])!.greeting;
+    expect(line('Koga', 'Janine')).toBe(TRAINER_PAIR_GREETINGS['Koga & Janine'].Koga);
+    expect(line('Janine', 'Koga')).toBe(TRAINER_PAIR_GREETINGS['Koga & Janine'].Janine);
+    expect(line('Lance', 'Clair')).toMatch(/cousin/i);
+    expect(line('Wallace', 'Juan')).toMatch(/teacher/i);
+    expect(line('Flint', 'Volkner')).toMatch(/Volkner/);
+    // Champions from different regions, and two Kalos Elite Four members.
+    expect(line('Lance', 'Cynthia')).toMatch(/Cynthia/);
+    expect(line('Malva', 'Siebold')).toMatch(/Siebold/);
+    // Nothing in common: their usual lines.
+    expect(trainerQuotes(byName('Kahili'), key, [byName('Kahili'), byName('Brock')])).toBe(trainerQuotes(byName('Kahili'), key));
   });
 
   it('picks one set per battle, the same every time for that battle, and uses all three', async () => {

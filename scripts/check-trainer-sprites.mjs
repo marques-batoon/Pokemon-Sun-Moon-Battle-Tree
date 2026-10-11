@@ -11,8 +11,9 @@ import { fileURLToPath } from 'node:url';
 const DATA = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'battle-tree');
 const sprites = JSON.parse(readFileSync(join(DATA, 'trainer-sprites.json'), 'utf8'));
 const { trainers: gameTrainers } = JSON.parse(readFileSync(join(DATA, 'trainers.json'), 'utf8'));
-// The Gym Leaders (custom special trainers) from src/data/custom/gym-leaders.json.
+// The Gym Leaders and the Elite Four and Champions (custom special trainers) from src/data/custom/.
 const gymLeaders = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'gym-leaders.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+const eliteFour = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'elite-four.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
 // Custom battle-50 trainers bring their own sprite file (public/...): check it's there.
 const battle50 = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'battle-50.json'), 'utf8')).trainers;
 const PUBLIC = join(DATA, '..', '..', '..', 'public');
@@ -21,7 +22,7 @@ if (missingFiles.length) {
   console.error('Custom sprite files missing from public/:', missingFiles.join(', '));
   process.exitCode = 1;
 }
-const trainers = [...gameTrainers, ...gymLeaders];
+const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour];
 
 const missing = [];
 for (const t of trainers) {

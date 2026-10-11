@@ -6,6 +6,7 @@ import rulesJson from './rules.json';
 import quotesJson from './trainer-quotes.json';
 import gymLeadersJson from '../custom/gym-leaders.json';
 import battle50Json from '../custom/battle-50.json';
+import eliteFourJson from '../custom/elite-four.json';
 import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
 
 export * from './types';
@@ -19,27 +20,27 @@ interface CustomSet { species: string; item: string; ability: string; nature: st
 interface CustomTrainer { name: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[] }
 
 /**
- * The Gym Leaders (custom special trainers designed by the user, see DATA_NOTES.md
- * "Custom additions"), appended after the game's sets and trainers so ids stay
- * array indices. Weight 7 in both versions, IV 31, like the game's special trainers.
+ * Custom special trainers (see DATA_NOTES.md "Custom additions"), appended after the sets and
+ * trainers before them so ids stay array indices: the Gym Leaders (weight 7, like the game's
+ * special trainers) and the Elite Four and Champions (weight 3.5). Both versions, IV 31.
  */
-function customTrainers(list: CustomTrainer[]) {
+function customTrainers(list: CustomTrainer[], firstSet: number, firstTrainer: number, weight: number, file: string) {
   const sets: TreeSet[] = [];
   const trainers: SpecialTrainer[] = list.map((t, i) => {
     const roster = t.sets.map((s, j) => {
-      const id = GAME_SETS.length + sets.length;
+      const id = firstSet + sets.length;
       sets.push({ id, label: `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
       return id;
     });
     return {
-      id: GAME_TRAINERS.length + i, name: t.name, class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'special',
-      number: null, versions: ['sun', 'moon'], weight: 7, custom: true, region: t.region,
-      source: { sets: 'custom: data-sources/custom/gym-leaders.txt (designed by the user)' },
+      id: firstTrainer + i, name: t.name, class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'special',
+      number: null, versions: ['sun', 'moon'], weight, custom: true, region: t.region,
+      source: { sets: `custom: data-sources/custom/${file}` },
     };
   });
   return { sets, trainers };
 }
-const CUSTOM = customTrainers(gymLeadersJson.trainers as CustomTrainer[]);
+const CUSTOM = customTrainers(gymLeadersJson.trainers as CustomTrainer[], GAME_SETS.length, GAME_TRAINERS.length, 7, 'gym-leaders.txt (designed by the user)');
 
 interface Battle50Entry { format: Format; course: Course; battle: number; trainers: string[]; weight: number }
 
@@ -79,9 +80,15 @@ function battle50Trainers(firstSet: number, firstTrainer: number) {
   return { sets, trainers, bosses };
 }
 const BATTLE_50 = battle50Trainers(GAME_SETS.length + CUSTOM.sets.length, GAME_TRAINERS.length + CUSTOM.trainers.length);
+/** The Elite Four and Champions of Generations 1-7, after everything else (earlier ids, kept in saved runs, don't move). */
+const ELITE_FOUR = customTrainers(
+  eliteFourJson.trainers as CustomTrainer[],
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length, GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length,
+  3.5, 'elite-four.txt (designed for the user)',
+);
 
-export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets];
-export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers];
+export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets];
+export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers];
 const GAME_BRACKETS = bracketsJson as unknown as BracketsFile;
 
 /**
@@ -110,15 +117,18 @@ const withModes = <T extends Partial<Record<Course, CourseSchedule>>>(courses: T
 });
 
 /**
- * brackets.json, with the Gym Leaders in the special-trainer pool (Super Singles, Doubles and Multi),
- * the Battle Legends every 50 battles of Super, and All Star Mode.
+ * brackets.json, with the Gym Leaders and the Elite Four and Champions in the special-trainer pool
+ * (Super Singles, Doubles and Multi), the Battle Legends every 50 battles of Super, and All Star Mode.
  */
 export const BRACKETS: BracketsFile = {
   ...GAME_BRACKETS,
   singles: withModes(GAME_BRACKETS.singles),
   doubles: withModes(GAME_BRACKETS.doubles),
   multi: withModes(GAME_BRACKETS.multi),
-  specialTrainerPool: { ...GAME_BRACKETS.specialTrainerPool, trainerIds: [...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id)] },
+  specialTrainerPool: {
+    ...GAME_BRACKETS.specialTrainerPool,
+    trainerIds: [...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id)],
+  },
 };
 
 const trainerByName = (name: string) => TRAINERS.find(t => t.kind === 'special' && t.name === name)!;

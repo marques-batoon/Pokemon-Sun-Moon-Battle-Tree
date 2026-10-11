@@ -472,6 +472,21 @@ describe('All Star Mode', () => {
     expect(controller.run('singles-allstar')!.status).toBe('ready');
   });
 
+  it('gives every special trainer and Battle Legend 31 IVs in All Star Mode, in every format', () => {
+    const all31 = (team: { ivs: Record<string, number> }[]) => team.every(p => Object.values(p.ivs).every(iv => iv === 31));
+    for (let i = 0; i < 30; i++) {
+      for (let n = 1; n <= 10; n++) {
+        for (const format of ['singles', 'doubles'] as const) {
+          const o = planOpponent(`iv-${format}-${i}`, format, 'allstar', n, { ...DEFAULT_SETTINGS, anabelUnlocked: i % 2 === 0 });
+          expect(['special', 'legend']).toContain(o.kind);
+          expect(all31(o.team), `${format} ${n}`).toBe(true);
+        }
+        const m = planOpponent(`iv-multi-${i}`, 'multi', 'allstar', n, DEFAULT_SETTINGS, SINA);
+        expect(all31(m.team) && all31(m.second!.team), `multi ${n}`).toBe(true);
+      }
+    }
+  });
+
   it('works for Doubles and Multi too (Multi with a partner), with Battle Legends every 5th battle', () => {
     for (let i = 0; i < 20; i++) {
       for (const n of [1, 2, 3, 4]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n, DEFAULT_SETTINGS).kind).toBe('special');

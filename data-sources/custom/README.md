@@ -42,6 +42,15 @@ team, ...).
   give Marques and Thomas the same number of entries in matching order. No Pokémon
   names. No `npm run data:custom` needed for lines; `npm test` checks them.
 
+## Elite Four and Champions
+
+- **Teams:** `elite-four.txt`, same format, one section per trainer (eight Pokémon each).
+  Who they are (class, gender, region) is set in `scripts/build-custom-trainers.mjs`
+  (`ELITE_FOUR`, `CHAMPIONS`, `ELITE_FEMALE`); a new name must be added there too.
+  They're special trainers at weight 3.5. `npm test` checks every set against the
+  game's rules (learnsets, Abilities, items).
+- **Lines and pair greetings:** `trainer-quotes.json`, like the Gym Leaders'.
+
 ## Gym Leaders
 
 - **Teams:** `gym-leaders.txt`, same format; "Brock 1" and "Brock 2" are both Brock.
