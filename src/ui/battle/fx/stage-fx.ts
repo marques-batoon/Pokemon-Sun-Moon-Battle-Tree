@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, berrySpec, blockedSpec, cantSpec, chargedSpec, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_POP, berrySpec, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
 } from './catalog';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
@@ -60,10 +60,12 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
       }
     case 'charged': return `fx-powerup-${v}`;
     case 'berry': return `fx-munch-${v}`;
+    case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'ability': {
       // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
       const id = anim.condition ?? '';
       if (id === 'levitate') return 'fx-levitate';
+      if (id === 'airballoon') return 'fx-balloon-float';
       if (['waterabsorb', 'voltabsorb', 'dryskin'].includes(id)) return `fx-absorb-${v}`;
       if ((ABSORB_ABILITIES as readonly string[]).includes(id)) return `fx-powerup-${v}`;
       return `fx-power-${v}`;
@@ -103,7 +105,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'warp-start': return warpStart(anim.condition);
     case 'warp': return warpBurst(anim.condition);
     case 'sub-start': return SUB_START;
-    case 'sub-hit': return SUB_HIT;
+    case 'sub-hit': return anim.crit ? { ...SUB_HIT, layers: [...SUB_HIT.layers, ...CRIT.layers] } : SUB_HIT;
     case 'sub-end': return SUB_END;
     case 'seeded': return SEEDED;
     case 'leech':
@@ -117,6 +119,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'ability': return abilitySpec(anim.condition ?? '', anim.label);
     case 'charged': return chargedSpec(anim.label);
     case 'berry': return anim.label ? berrySpec(anim.label, !!anim.target) : null;
+    case 'balloon-pop': return BALLOON_POP;
+    case 'hit': return anim.crit ? CRIT : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':
     case 'field-end': return anim.condition ? fieldSpec(anim.condition, anim.kind === 'field-end') : null;

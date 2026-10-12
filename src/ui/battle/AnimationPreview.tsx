@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, BALLOON_POP_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -51,7 +51,7 @@ const POLIWRATH_Z_MOVES = new Set(Object.values(POLIWRATHIUM_Z.moves).map(z => z
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 /** Abilities that take in or stop a move, for the preview (the healing ones show +25%). */
-const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Soundproof'];
+const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Air Balloon', 'Soundproof'];
 const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 /** Berries for the preview (what each does next: HP, a cure, a stat rise, weakening a hit). */
 const PREVIEW_BERRIES = ['Sitrus Berry', 'Lum Berry', 'Chesto Berry', 'Liechi Berry', 'Salac Berry', 'Occa Berry', 'Figy Berry', 'Custap Berry', 'Enigma Berry'];
@@ -111,7 +111,7 @@ function applyStep(f: FieldState, step: Step): FieldState {
 }
 
 /** `zCategory`: a type Z-Move's category comes from its base move (Physical or Special). */
-function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical' | 'Special' = 'Physical'): Step[] {
+function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical' | 'Special' = 'Physical', crit = false): Step[] {
   const classified = classifyMove(name);
   const fx = zFromBaseMove(name) ? { ...classified, category: zCategory } : classified;
   const foe = other(side);
@@ -143,8 +143,8 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
     steps.push({ kind: 'blocked', side: foe, target: null, condition: f.protect[foe]!, durationMs: BLOCKED_MS });
   } else if (fx.category !== 'Status') {
     steps.push(f.sub[foe]
-      ? { kind: 'sub-hit', side: foe, target: null, durationMs: SUB_HIT_MS }
-      : { kind: 'hit', side: foe, target: null, hpDelta: -38, durationMs: 600 });
+      ? { kind: 'sub-hit', side: foe, target: null, crit: crit || undefined, durationMs: SUB_HIT_MS }
+      : { kind: 'hit', side: foe, target: null, hpDelta: crit ? -55 : -38, crit: crit || undefined, durationMs: 600 });
     if (gen7.moves.get(name)?.drain) steps.push({ kind: 'absorb', side, target: foe, hpDelta: 19, durationMs: DRAIN_MS });
   }
   return steps;
@@ -189,6 +189,7 @@ export function AnimationPreview() {
   const speed = ANIMATION_SPEED_FACTOR[settings.animationSpeed] || 1;
   const [move, setMove] = useState('Earthquake');
   const [zCategory, setZCategory] = useState<'Physical' | 'Special'>('Physical');
+  const [crit, setCrit] = useState(false);
   const [side, setSide] = useState<Side>('p1');
   const [warpForm, setWarpForm] = useState(WARP_DIGIMON[0].warp.name);
   const [field, setField] = useState<FieldState>(EMPTY);
@@ -259,7 +260,8 @@ export function AnimationPreview() {
             </select>{' '}move
           </label>
         )}
-        <button className="primary" onClick={() => play(moveSteps(move, side, field, zCategory))}>Play</button>
+        <label className="small"><input type="checkbox" checked={crit} onChange={e => setCrit(e.target.checked)} /> Critical hit</label>
+        <button className="primary" onClick={() => play(moveSteps(move, side, field, zCategory, crit))}>Play</button>
         <button disabled={field.mega[side]} onClick={() => play([
           { kind: 'mega-start', side, target: null, durationMs: MEGA_START_MS },
           { kind: 'mega', side, target: null, durationMs: MEGA_MS },
@@ -272,6 +274,9 @@ export function AnimationPreview() {
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
         ])}>{isDarkWarp(warpForm) ? 'Dark Warp Digivolve' : 'Warp Digivolve'}</button>
         <button onClick={() => play([{ kind: 'charged', side, target: null, label: 'Electromorphosis', durationMs: CHARGED_MS }])}>Electromorphosis</button>
+        <button onClick={() => play([
+          { kind: 'balloon-pop', side: other(side), target: null, durationMs: BALLOON_POP_MS },
+        ])}>{side === 'p1' ? "Opponent's" : 'Your'} Air Balloon pops</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
           {side === 'p1' ? 'Opponent' : 'You'}{' '}takes it in{' '}

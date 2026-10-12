@@ -931,6 +931,48 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes wire-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
 /* An Ability's name popping up over the Pokémon as it takes in a move (Water Absorb...). */
+/* A critical hit: small bold text over the Pokémon hit, no pill. */
+.fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(12px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 #003a4a, -1px -1px 0 #003a4a, 1px -1px 0 #003a4a, -1px 1px 0 #003a4a, 0 0 6px rgb(0 200 255 / 0.8); animation-name: fx-crit; }
+@keyframes fx-crit { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); } 14% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 75% { opacity: 1; transform: translate(-50%, -80%); } 100% { opacity: 0; transform: translate(-50%, -105%); } }
+
+/* Air Balloon: a red balloon on a string beside the Pokémon's head; it rises and bobs, or (.pop) swells and bursts. */
+.fx-balloon { z-index: 3; }
+.fx-balloon .balloon-rise { position: absolute; left: 0; top: 0; animation: balloon-rise var(--dur) ease-out both; animation-delay: inherit; animation-duration: inherit; }
+.fx-balloon .balloon-body { position: absolute; left: calc(var(--s) * -0.5); top: calc(var(--s) * -0.6); width: var(--s); height: calc(var(--s) * 1.18); border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  background: radial-gradient(circle at 33% 28%, rgb(255 255 255 / 0.75) 0 11%, transparent 13%), radial-gradient(circle at 45% 40%, var(--c) 55%, color-mix(in srgb, var(--c) 65%, #000)); box-shadow: 0 2px 4px rgb(0 0 0 / 0.25); }
+.fx-balloon .balloon-body::after { content: ''; position: absolute; left: 50%; bottom: -10%; width: 20%; height: 13%; transform: translateX(-50%); background: color-mix(in srgb, var(--c) 75%, #000); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.fx-balloon .balloon-string { position: absolute; left: -1px; top: calc(var(--s) * 0.68); width: 1.5px; height: var(--len); background: rgb(70 70 70 / 0.75); border-radius: 1px; transform-origin: 50% 0; transform: rotate(8deg); }
+.fx-balloon .scrap { position: absolute; left: 0; top: 0; width: calc(var(--s) * 0.22); height: calc(var(--s) * 0.16); background: var(--c); border-radius: 30% 70% 40% 60%; opacity: 0; animation: balloon-scrap var(--dur) ease-out both; animation-delay: inherit; animation-duration: inherit; }
+.fx-balloon.pop .balloon-rise { animation-name: balloon-pop-shake; }
+.fx-balloon.pop .balloon-body { animation: balloon-burst var(--dur) ease-in both; animation-delay: inherit; animation-duration: inherit; }
+.fx-balloon.pop .balloon-string { animation: balloon-string-fall var(--dur) ease-in both; animation-delay: inherit; animation-duration: inherit; }
+@keyframes balloon-rise {
+  0% { opacity: 0; transform: translateY(40px) scale(0.4); }
+  20% { opacity: 1; transform: translateY(-6px) scale(1.04); }
+  30% { transform: none; }
+  50% { transform: translateY(-6px) rotate(-5deg); }
+  70% { transform: translateY(1px) rotate(4deg); }
+  88% { opacity: 1; transform: translateY(-3px); }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+@keyframes balloon-pop-shake {
+  0% { opacity: 0; transform: translateY(20px) scale(0.5); }
+  14% { opacity: 1; transform: none; }
+  26% { transform: rotate(-7deg); } 34% { transform: rotate(7deg); } 42% { transform: rotate(-5deg); } 50% { transform: rotate(4deg); }
+  56%, 100% { opacity: 1; transform: none; }
+}
+@keyframes balloon-burst { 0%, 44% { transform: none; opacity: 1; } 54% { transform: scale(1.22, 1.16); opacity: 1; } 57% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes balloon-string-fall { 0%, 56% { opacity: 1; transform: rotate(8deg); } 100% { opacity: 0; transform: translateY(calc(var(--len) * 0.9)) rotate(30deg); } }
+@keyframes balloon-scrap { 0%, 55% { opacity: 0; transform: translate(-50%, -50%); } 58% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) + 14px)) rotate(var(--rot)) scale(0.7); } }
+/* The Pokémon floats on its balloon (a Ground move passing under it), or drops down when it pops. */
+.fx-balloon-float { animation: balloon-float calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes balloon-float { 0%, 100% { transform: none; } 25% { transform: translateY(-12%); } 50% { transform: translateY(-10%); } 75% { transform: translateY(-12%); } }
+.fx-balloon-drop-a { animation: balloon-drop-a calc(850ms * var(--spd, 1)) ease-in-out; }
+.fx-balloon-drop-b { animation: balloon-drop-b calc(850ms * var(--spd, 1)) ease-in-out; }
+@keyframes balloon-drop-a { 0% { transform: none; } 15%, 54% { transform: translateY(-8%); } 66% { transform: translateY(2%); } 76% { transform: translateY(-1%); } 86%, 100% { transform: none; } }
+@keyframes balloon-drop-b { 0% { transform: none; } 15%, 54% { transform: translateY(-8%); } 66% { transform: translateY(2%); } 76% { transform: translateY(-1%); } 86%, 100% { transform: none; } }
+
 /* A Berry eaten: it pops up (or flies over, stolen), is eaten in two bites with crumbs, and is gone. */
 .fx-berry { z-index: 4; }
 .fx-berry .berry-body { position: absolute; left: 0; top: 0; animation: berry-pop var(--dur) both; animation-delay: inherit; animation-duration: inherit; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.35)); }

@@ -214,7 +214,7 @@ function planWithLookahead(p1Team: string, p2Team: string, turns: [string, strin
   const planned: Planned[] = [];
   lines.forEach((line, i) => {
     const { args, kwArgs } = Protocol.parseBattleLine(line);
-    const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, lines.slice(i + 1));
+    const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, lines.slice(i + 1), client);
     for (const step of planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true, { absorbed })) {
       if (step.animation) planned.push(step.animation);
     }
@@ -336,5 +336,50 @@ describe('planLine: Berries', () => {
   it('leaves other used-up items as text', () => {
     expect(plan('|-enditem|p1a: Snorlax|Occa Berry|[weaken]')?.kind).not.toBe('berry');
     expect(plan('|-enditem|p1a: Snorlax|Air Balloon')?.kind).not.toBe('berry');
+  });
+});
+
+describe('planLine: Air Balloon', () => {
+  const held = (species: string, item: string, ability: string, moves: string[]) => set(species, ability, moves).replace(species, `${species} @ ${item}`);
+
+  it('a Ground move into an Air Balloon: no move animation, the balloon floats the Pokémon over it; then it pops when hit', () => {
+    const steps = planWithLookahead(held('Garchomp', 'Expert Belt', 'Rough Skin', ['Earthquake', 'Dragon Claw']), held('Heatran', 'Air Balloon', 'Flash Fire', ['Splash']), [['move 1', 'move 1'], ['move 2', 'move 1']]);
+    expect(steps.find(s => s.kind === 'move' && s.moveName === 'Earthquake')).toMatchObject({ still: true });
+    expect(steps.filter(s => s.kind === 'ability')).toEqual([expect.objectContaining({ side: 'p2', target: 'p1', condition: 'airballoon', label: 'Air Balloon' })]);
+    expect(steps.some(s => s.kind === 'miss')).toBe(false);
+    const kinds = steps.map(s => s.kind);
+    expect(steps.find(s => s.kind === 'balloon-pop')).toMatchObject({ side: 'p2' });
+    expect(kinds.lastIndexOf('hit')).toBeLessThan(kinds.indexOf('balloon-pop'));
+  });
+
+  it('keeps the miss animation for a type immunity of a Pokémon that happens to hold one', () => {
+    const steps = planWithLookahead(held('Snorlax', 'Leftovers', 'Thick Fat', ['Return']), held('Gengar', 'Air Balloon', 'Levitate', ['Splash']), [['move 1', 'move 1']]);
+    expect(steps.some(s => s.kind === 'ability')).toBe(false);
+    expect(steps.find(s => s.kind === 'move' && s.moveName === 'Return')).toMatchObject({ still: false });
+    expect(steps.some(s => s.kind === 'miss')).toBe(true);
+  });
+});
+
+describe('planLine: critical hits', () => {
+  it('marks the damage of a critical hit (not the rest), after the move', () => {
+    const steps = planBattle(set('Absol', 'Super Luck', ['Night Slash']).replace('Absol', 'Absol @ Scope Lens'), set('Snorlax', 'Thick Fat', ['Splash']).replace('Snorlax', 'Snorlax @ Leftovers'), [['move 1', 'move 1']]);
+    const kinds = steps.map(s => s.kind);
+    const hit = steps.find(s => s.kind === 'hit');
+    expect(hit).toMatchObject({ side: 'p2', crit: true });
+    expect(kinds.indexOf('move')).toBeLessThan(kinds.indexOf('hit'));
+    expect(steps.filter(s => s.crit)).toHaveLength(1);
+  });
+
+  it('shows on a Substitute taking it, and is forgotten by the next move', () => {
+    const client = new ClientBattle(new Generations(Dex));
+    const plan = (line: string) => {
+      const { args, kwArgs } = Protocol.parseBattleLine(line);
+      return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0]?.animation;
+    };
+    plan('|-crit|p2a: Snorlax');
+    expect(plan('|-activate|p2a: Snorlax|Substitute|[damage]')).toMatchObject({ kind: 'sub-hit', crit: true });
+    plan('|-crit|p2a: Snorlax');
+    plan('|move|p1a: Absol|Night Slash|p2a: Snorlax');
+    expect(plan('|-damage|p2a: Snorlax|50/100')?.crit).toBeUndefined();
   });
 });

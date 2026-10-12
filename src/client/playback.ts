@@ -47,7 +47,9 @@ export type AnimationKind =
    * A Berry is eaten (`label`: its name). `side`/`slot`: who eats it; `target`/`targetSlot`: whose Berry it was
    * when it was stolen and eaten by Bug Bite or Pluck (else null).
    */
-  | 'berry';
+  | 'berry'
+  /** The Pokémon's Air Balloon pops (hit by an attack). */
+  | 'balloon-pop';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -80,6 +82,8 @@ export interface BattleAnimation {
   condition?: string;
   /** For 'ability': the Ability's name, as shown. */
   label?: string;
+  /** For 'hit' and 'sub-hit': it was a critical hit ("CRIT" shows over the Pokémon). */
+  crit?: boolean;
   /** Duration at normal speed, in ms. */
   durationMs: number;
 }
@@ -138,6 +142,7 @@ export const BLOCKED_MS = 550;
 export const ABILITY_MS = 1100;
 export const CHARGED_MS = 750;
 export const BERRY_MS = 1000;
+export const BALLOON_POP_MS = 850;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -148,15 +153,31 @@ export const ABSORB_ABILITIES = ['waterabsorb', 'voltabsorb', 'dryskin', 'motord
 const isAbsorb = (id: string) => (ABSORB_ABILITIES as readonly string[]).includes(id);
 /** "ability: Water Absorb" (a [from] tag or a -start effect) -> "Water Absorb". */
 const abilityName = (tag: unknown) => (typeof tag === 'string' ? /^ability: (.+)$/i.exec(tag)?.[1] ?? null : null);
-/** Who used the last move, so an Ability's animation can show the attack being taken in. */
-const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number }>();
+/** Who used the last move (and its type), so an Ability's animation can show the attack being taken in. */
+const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number; type?: string }>();
+/** Pokémon a critical hit was just announced for ("-crit" comes before the damage), by side and slot. */
+const pendingCrits = new WeakMap<ClientBattle, Set<string>>();
+const critKey = (ident: string | undefined) => { const { side, slot } = at(ident); return `${side}${slot}`; };
+/** Takes (and clears) a critical hit announced for this Pokémon. */
+function takeCrit(battle: ClientBattle, ident: string | undefined): boolean {
+  return pendingCrits.get(battle)?.delete(critKey(ident)) ?? false;
+}
+
+/**
+ * Air Balloon: a Ground-type move doesn't affect its holder. The protocol only says "-immune" (no "[from]"), so
+ * the battle state tells: the Pokémon holds an Air Balloon (announced when it came in) and the move is Ground-type.
+ */
+function balloonImmune(battle: ClientBattle, ident: string | undefined, moveType: string | undefined): boolean {
+  const { side, slot } = at(ident);
+  return moveType === 'Ground' && !!side && battle[side].active[slot]?.item === 'airballoon';
+}
 
 /**
  * Whether a move is taken in by an Ability before it can do anything (Water Absorb...), judging from the lines
  * that follow it in the same action: then the move itself doesn't animate (as in the games), and the Ability's
  * animation plays instead. Only single-target moves (a spread move can still hit the others).
  */
-export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<string, unknown>, upcoming: readonly string[]): boolean {
+export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<string, unknown>, upcoming: readonly string[], battle?: ClientBattle): boolean {
   const target = moveArgs[3];
   if (!target || 'spread' in kwArgs) return false;
   const pos = target.slice(0, 3);
@@ -164,6 +185,8 @@ export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<st
     if (line === '|' || /^\|(move|turn|upkeep|switch|drag|cant|faint)\|/.test(line)) return false;
     const m = /^\|(-heal|-immune|-boost|-start|-ability)\|(p[1-4][ab]?)[^|]*\|?([^|]*)/.exec(line);
     if (!m || !m[2].startsWith(pos)) continue;
+    // A Ground move into an Air Balloon: the balloon's animation instead (like Levitate's).
+    if (m[1] === '-immune' && !/\[from\]/.test(line) && battle && balloonImmune(battle, target, classifyMove(moveArgs[2]).type)) return true;
     // "-ability|p2a: Raichu|Lightning Rod|boost" names it plainly; the others say "ability: Water Absorb".
     const name = m[1] === '-ability' ? m[3] : /ability: ([^|]+)/.exec(line)?.[1];
     if (!name) continue;
@@ -255,7 +278,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const zCategory = zCategories.get(battle);
       if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
       zCategories.delete(battle);
-      lastMoveUser.set(battle, { side, slot });
+      lastMoveUser.set(battle, { side, slot, type: fx.type });
+      pendingCrits.delete(battle);
       // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed). Taken in by an
       // Ability (Water Absorb...): the Ability's own animation shows it instead.
       const still = 'still' in kwArgs || 'miss' in kwArgs || !!opts.absorbed;
@@ -285,7 +309,15 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (absorbing && isAbsorb(toId(absorbing))) return [abilityStep(step, battle, args[1], absorbing, hpDelta)];
       const kind = cmd === '-heal' ? 'heal' : 'from' in kwArgs ? 'residual' : 'hit';
       // Residual damage remembers its cause (burn, poison, confusion, weather...) for its animation.
-      return [step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, durationMs: base })];
+      const crit = kind === 'hit' && takeCrit(battle, args[1]);
+      return [step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, ...(crit ? { crit } : {}), durationMs: base })];
+    }
+    case '-crit': {
+      // Shown with the damage that follows (or the Substitute taking it): "CRIT" over the Pokémon.
+      const set = pendingCrits.get(battle) ?? new Set<string>();
+      set.add(critKey(args[1]));
+      pendingCrits.set(battle, set);
+      return [step(null)];
     }
     case 'switch':
     case 'drag': {
@@ -344,7 +376,7 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (effect === 'substitute') {
         if (cmd === '-start') return [step({ kind: 'sub-start', ...who, target: null, durationMs: SUB_START_MS })];
         if (cmd === '-end') return [step({ kind: 'sub-end', ...who, target: null, durationMs: SUB_END_MS })];
-        if ('damage' in kwArgs) return [step({ kind: 'sub-hit', ...who, target: null, durationMs: SUB_HIT_MS })];
+        if ('damage' in kwArgs) return [step({ kind: 'sub-hit', ...who, target: null, crit: takeCrit(battle, args[1]) || undefined, durationMs: SUB_HIT_MS })];
       }
       if (effect === 'leechseed' && cmd === '-start') return [step({ kind: 'seeded', ...who, target: null, durationMs: SEEDED_MS })];
       if (effect === 'confusion' && cmd !== '-end') return [step({ kind: 'confused', ...who, target: null, durationMs: CONFUSED_MS })];
@@ -396,6 +428,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
         const eater = stolen ? at(kwArgs.of as string) : holder;
         return [step({ kind: 'berry', ...eater, target: stolen ? holder.side : null, targetSlot: stolen ? holder.slot : undefined, label: args[2], durationMs: BERRY_MS })];
       }
+      // An Air Balloon pops when an attack hits its holder.
+      if (toId(args[2]) === 'airballoon') return [step({ kind: 'balloon-pop', ...at(args[1]), target: null, durationMs: BALLOON_POP_MS })];
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
     case '-miss':
@@ -404,6 +438,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // An Ability made the move fail (Water Absorb at full HP, Levitate, Soundproof...): its animation, not a miss.
       const blocking = cmd === '-immune' ? abilityName(kwArgs.from) : null;
       if (blocking) return [abilityStep(step, battle, args[1], blocking)];
+      // A Ground move doesn't affect a Pokémon floating on its Air Balloon: shown like Levitate.
+      if (cmd === '-immune' && !('from' in kwArgs) && balloonImmune(battle, args[1], lastMoveUser.get(battle)?.type)) return [abilityStep(step, battle, args[1], 'Air Balloon')];
       const id = cmd === '-miss' && args[2] ? args[2] : args[1];
       return [step({ kind: 'miss', ...at(id), target: null, durationMs: base })];
     }

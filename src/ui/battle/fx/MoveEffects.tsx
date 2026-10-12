@@ -237,10 +237,36 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
     }
     case 'label': {
       // Over the Pokémon, or under its feet when there's no room above (the opponents near the top of the stage).
+      // A critical hit's text stays over the Pokémon (over its head, or as high as the stage allows).
       const p = anchor(layer.at);
       const above = p.y - 70 * ctx.k;
-      const y = above >= 24 * ctx.k ? above : (p.ground ?? p.y + 60 * ctx.k) + 16 * ctx.k;
-      return <span key={i} className="fxl fx-label" style={css({ '--x': px(p.x), '--y': px(y), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000) })}>{layer.text}</span>;
+      const y = layer.variant === 'crit'
+        ? Math.max(p.y - (p.size ?? 110 * ctx.k) * 0.42, 12 * ctx.k)
+        : above >= 24 * ctx.k ? above : (p.ground ?? p.y + 60 * ctx.k) + 16 * ctx.k;
+      return <span key={i} className={`fxl fx-label${layer.variant ? ` ${layer.variant}` : ''}`} style={css({ '--x': px(p.x), '--y': px(y), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000) })}>{layer.text}</span>;
+    }
+    case 'balloon': {
+      // Tied to the Pokémon, beside its head on the side away from the foe (the opponents face left, yours right).
+      const p = anchor(layer.at);
+      const h = p.size ?? 110 * ctx.k;
+      const s = Math.min(30 * ctx.k, h * 0.3);
+      const away = p.x > ctx.w / 2 ? 1 : -1;
+      const y = Math.max(p.y - h * 0.42, s * 0.75 + 4);
+      return (
+        <span key={i} className={`fxl fx-balloon${layer.pop ? ' pop' : ''}`} style={css({
+          '--x': px(p.x + away * (h * 0.24 + s * 0.3)), '--y': px(y), '--s': px(s), '--len': px(Math.max(h * 0.22, s * 0.6)), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000),
+        })}>
+          <span className="balloon-rise">
+            <span className="balloon-string" />
+            <span className="balloon-body" />
+            {layer.pop && Array.from({ length: 8 }, (_, c) => {
+              const a = (c / 8) * Math.PI * 2 + rand(ctx.seed, c, 31) * 0.6;
+              const d = s * (0.9 + rand(ctx.seed, c, 32) * 0.7);
+              return <span key={c} className="scrap" style={css({ '--tx': px(Math.cos(a) * d), '--ty': px(Math.sin(a) * d), '--rot': deg(rand(ctx.seed, c, 33) * 540 - 270) })} />;
+            })}
+          </span>
+        </span>
+      );
     }
     case 'banner':
       return <span key={i} className="fxl fx-banner" style={css({ '--x': '0px', '--y': px(ctx.h * 0.4), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1200) })}>{layer.text}</span>;
@@ -366,7 +392,7 @@ interface Props {
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
     case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
-    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': return l.at === 'target';
+    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  abilitySpec, ATTACKS, berrySpec, cantSpec, chargedSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BALLOON_POP, berrySpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -256,5 +256,16 @@ describe('Berries', () => {
     expect(eaten).not.toHaveProperty('from');
     expect(berrySpec('Lum Berry', true).layers.find(l => l.kind === 'berry')).toMatchObject({ from: 'target' });
     expect(key(berrySpec('Sitrus Berry'))).not.toBe(key(berrySpec('Oran Berry')));
+  });
+});
+
+describe('Air Balloon and critical hits', () => {
+  it('floats the Pokémon on its balloon (like Levitate), pops it, and labels critical hits', () => {
+    const balloon = abilitySpec('airballoon', 'Air Balloon');
+    expect(balloon.layers.find(l => l.kind === 'balloon')).toMatchObject({ at: 'target' });
+    expect(balloon.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Air Balloon' });
+    expect(key(abilitySpec('airballoon'))).not.toBe(key(abilitySpec('levitate')));
+    expect(BALLOON_POP.layers.find(l => l.kind === 'balloon')).toMatchObject({ pop: true, at: 'user' });
+    expect(CRIT.layers).toEqual([expect.objectContaining({ kind: 'label', text: 'CRIT', color: '#3ee8ff', variant: 'crit', at: 'user' })]);
   });
 });

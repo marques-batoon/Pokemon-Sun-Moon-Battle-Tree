@@ -306,7 +306,7 @@ export class BattleClient {
       // [silent] lines change state without a message (as in Showdown's own client).
       item.text = 'silent' in kwArgs ? '' : this.formatter!.formatText(args, kwArgs);
       // A move taken in by an Ability (Water Absorb...) doesn't animate: look at the lines queued after it.
-      const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, this.upcomingLines());
+      const absorbed = args[0] === 'move' && absorbedByAbility(args as readonly string[], kwArgs as Record<string, unknown>, this.upcomingLines(), battle);
       item.steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, battle, !!item.text.trim(), { absorbed });
       this.splitMegaText(item.steps);
     }

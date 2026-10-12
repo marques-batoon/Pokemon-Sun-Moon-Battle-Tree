@@ -60,7 +60,8 @@ export type Layer =
   /** Heavy fists (blocks of ice) forming around both of the user's arms, which then smash into the target together. */
   | { kind: 'gauntlets'; color: string; color2?: string; size: number; delay?: number; dur?: number }
   /** A small name tag popping up over a spot (an Ability's name as it acts). */
-  | { kind: 'label'; at: Anchor; text: string; color: string; delay?: number; dur?: number }
+  /** `variant` 'crit': small bold text without the pill (critical hits). */
+  | { kind: 'label'; at: Anchor; text: string; color: string; variant?: 'crit'; delay?: number; dur?: number }
   /** Mega Evolution: an egg-shaped shell of swirling rainbow energy around the Pokémon. */
   | { kind: 'cocoon'; at: Anchor; size: number; delay?: number; dur?: number }
   /** Mega Evolution: the Mega Evolution symbol (a ring around a helix) flashing over the Pokémon. */
@@ -69,7 +70,11 @@ export type Layer =
    * A Berry (its item icon) pops up over the Pokémon (or flies over from `from`, when stolen) and is eaten in two
    * bites, crumbs flying: `color` is the crumbs'.
    */
-  | { kind: 'berry'; at: Anchor; item: string; from?: Anchor; color: string; delay?: number; dur?: number };
+  | { kind: 'berry'; at: Anchor; item: string; from?: Anchor; color: string; delay?: number; dur?: number }
+  /**
+   * An Air Balloon tied to the Pokémon: it rises up beside its head and bobs (`pop`: it swells, shakes and bursts).
+   */
+  | { kind: 'balloon'; at: Anchor; color: string; pop?: boolean; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -920,6 +925,9 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
   ] },
 };
 
+/** The Air Balloon's colour (red, as its item picture). */
+const AIR_BALLOON = '#e8404a';
+
 /**
  * An Ability takes in a move, which fails (as in the games, the move itself doesn't animate). Here "user" is
  * the move's user and "target" the Pokémon with the Ability: the attack's element flies across and is soaked
@@ -973,6 +981,13 @@ export const ABILITY_FX: Record<string, FxSpec> = {
     { kind: 'particles', at: 'target', shape: 'flame', motion: 'rise', color: '#ff5a00', color2: '#ffd23f', count: 14, size: 22, spread: 70, delay: 600, dur: 700 },
     { kind: 'aura', at: 'target', color: '#ff6a00', size: 220, delay: 650, dur: 500 },
   ]) },
+  // Air Balloon (an item, shown like Levitate): the ground quakes beneath, but the Pokémon floats over it on its
+  // balloon (sprite class fx-balloon-float).
+  airballoon: { layers: [
+    { kind: 'ground', color: '#a07a4a', dur: 600 },
+    { kind: 'balloon', at: 'target', color: AIR_BALLOON, dur: 1100 },
+    { kind: 'particles', at: 'target', shape: 'rock', motion: 'spray', color: '#a07a4a', color2: '#d8b98a', count: 7, size: 9, spread: 55, delay: 100, dur: 600 },
+  ] },
   // The ground quakes beneath, but the Pokémon floats over it (sprite class fx-levitate).
   levitate: { layers: [
     { kind: 'ground', color: '#a07a4a', dur: 600 },
@@ -982,7 +997,7 @@ export const ABILITY_FX: Record<string, FxSpec> = {
 };
 const ABILITY_COLORS: Record<string, string> = {
   waterabsorb: '#2f7fe0', dryskin: '#2a93c8', voltabsorb: '#c99400', motordrive: '#c99400', lightningrod: '#c99400',
-  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8',
+  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8', airballoon: '#d0343c',
 };
 /** Any other Ability that stops a move. */
 const ABILITY_BLOCK: FxSpec = { layers: [
@@ -1009,6 +1024,16 @@ export function chargedSpec(ability?: string): FxSpec {
     ...(ability ? [{ kind: 'label', at: 'user', text: ability, color: '#c99400', delay: 100, dur: 650 } as Layer] : []),
   ] };
 }
+
+/** An Air Balloon pops: it shows beside the Pokémon's head, swells and bursts into scraps; the Pokémon drops down. */
+export const BALLOON_POP: FxSpec = { layers: [
+  { kind: 'balloon', at: 'user', color: AIR_BALLOON, pop: true, dur: 850 },
+] };
+
+/** A critical hit: small cyan "CRIT" text over the Pokémon hit, with the damage (after the move's animation). */
+export const CRIT: FxSpec = { layers: [
+  { kind: 'label', at: 'user', text: 'CRIT', color: '#3ee8ff', variant: 'crit', dur: 650 },
+] };
 
 /** Crumb colours by Berry (roughly the fruit's colour); others use BERRY_CRUMBS. */
 const BERRY_COLORS: Record<string, string> = {
