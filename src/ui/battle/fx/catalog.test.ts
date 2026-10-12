@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  abilitySpec, ATTACKS, cantSpec, chargedSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, berrySpec, cantSpec, chargedSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -246,5 +246,15 @@ describe('Charge', () => {
     expect(chargedSpec().layers.some(l => l.kind === 'particles' && l.motion === 'converge')).toBe(true);
     expect(chargedSpec().layers.some(l => l.kind === 'label')).toBe(false);
     expect(chargedSpec('Electromorphosis').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Electromorphosis', at: 'user' });
+  });
+});
+
+describe('Berries', () => {
+  it('shows the Berry being eaten, flying over from its holder when stolen', () => {
+    const eaten = berrySpec('Sitrus Berry').layers.find(l => l.kind === 'berry');
+    expect(eaten).toMatchObject({ item: 'Sitrus Berry', at: 'user' });
+    expect(eaten).not.toHaveProperty('from');
+    expect(berrySpec('Lum Berry', true).layers.find(l => l.kind === 'berry')).toMatchObject({ from: 'target' });
+    expect(key(berrySpec('Sitrus Berry'))).not.toBe(key(berrySpec('Oran Berry')));
   });
 });

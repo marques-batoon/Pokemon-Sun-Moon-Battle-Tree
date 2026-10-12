@@ -1,15 +1,25 @@
-import { SETS, TRAINERS, trainerKey, type SpecialTrainer } from '../data/battle-tree';
+import { SETS, TRAINERS, trainerKey, type LegendTrainer, type SpecialTrainer } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
 import { pickUpTo, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
-import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, partnerPrice, type PartnerBook, type RunPartner } from './types';
+import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, priceOf, type PartnerBook, type RunPartner } from './types';
 
-/** Special trainers (the only Multi partners), by name (trainerKey): partners are stored by it. */
-export function specialTrainer(name: string): SpecialTrainer {
-  const trainer = TRAINERS.find((t): t is SpecialTrainer => t.kind === 'special' && trainerKey(t) === name);
-  if (!trainer) throw new Error(`${name} isn't a special trainer.`);
+/** Who can be a Multi partner: special trainers and (since 2026-10-11) Battle Legends. */
+export type PartnerTrainer = SpecialTrainer | LegendTrainer;
+
+/**
+ * A special trainer or Battle Legend by name (trainerKey): partners are stored by it. Red and Blue each have a
+ * Normal and a Super version (the same Pokémon): their Super one.
+ */
+export function partnerTrainer(name: string): PartnerTrainer {
+  const matches = TRAINERS.filter((t): t is PartnerTrainer => (t.kind === 'special' || t.kind === 'legend') && trainerKey(t) === name);
+  const trainer = matches.find(t => t.kind === 'special') ?? matches.find(t => t.kind === 'legend' && t.course !== 'normal') ?? matches[0];
+  if (!trainer) throw new Error(`${name} isn't a special trainer or Battle Legend.`);
   return trainer;
 }
+
+/** Whether beating this trainer puts them in the partner shop (special trainers and Battle Legends). */
+export const isPartnerKind = (kind: string) => kind === 'special' || kind === 'legend';
 
 /**
  * The Pokémon you can choose a partner's two from: up to six of their Battle Tree
@@ -17,7 +27,7 @@ export function specialTrainer(name: string): SpecialTrainer {
  * Species and Item Clause. Rolled once, when you get the partner.
  */
 export function rollOffer(name: string, rng: Rng): number[] {
-  return pickUpTo(specialTrainer(name), PARTNER_OFFER_SIZE, rng).map(s => s.id);
+  return pickUpTo(partnerTrainer(name), PARTNER_OFFER_SIZE, rng).map(s => s.id);
 }
 
 /**
@@ -29,13 +39,14 @@ export function defaultPartnerBook(): PartnerBook {
   return { owned, beaten: {} };
 }
 
-/** The partner for a challenge: an owned partner and two different Pokémon from their offer, lead first. */
-/** Special trainers you can buy now (beaten, not owned yet), with their price. */
+/** Special trainers and Battle Legends you can buy now (beaten, not owned yet), with their price. */
 export function partnersForSale(book: PartnerBook): { name: string; timesBeaten: number; price: number }[] {
   return Object.entries(book.beaten)
     .filter(([name, times]) => times > 0 && !book.owned[name])
-    .map(([name, times]) => ({ name, timesBeaten: times, price: partnerPrice(times) }));
+    .map(([name, times]) => ({ name, timesBeaten: times, price: priceOf(book, name)! }));
 }
+
+/** The partner for a challenge: an owned partner and two different Pokémon from their offer, lead first. */
 
 export function runPartner(name: string, setIds: readonly number[], book: PartnerBook): RunPartner {
   const entry = book.owned[name];
@@ -43,7 +54,7 @@ export function runPartner(name: string, setIds: readonly number[], book: Partne
   if (setIds.length !== PARTNER_BRING || new Set(setIds).size !== PARTNER_BRING || setIds.some(id => !entry.offer.includes(id))) {
     throw new Error(`Choose ${PARTNER_BRING} of ${name}'s Pokémon.`);
   }
-  return { name, trainerId: specialTrainer(name).id, setIds: [...setIds] };
+  return { name, trainerId: partnerTrainer(name).id, setIds: [...setIds] };
 }
 
 /**

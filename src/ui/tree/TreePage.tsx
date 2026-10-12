@@ -130,7 +130,7 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
   );
 }
 
-const ALL_STAR_TEXT = 'Unrated: no records, BP or partner progress. Special trainers in every battle, and the Battle Legends draw every 5th battle.';
+const ALL_STAR_TEXT = 'Unrated (no records), but it earns BP. Special trainers in every battle, and the Battle Legends draw every 10th battle. Anyone beaten here for the first time comes into the partner shop at 10000 BP.';
 const COURSE_TEXT: Record<Format, Partial<Record<Course, string>>> = {
   singles: {
     normal: '20 battles, bringing 3. Battle Legend Red waits at battle 20; beating him unlocks Super Singles.',
@@ -223,8 +223,10 @@ function PartnerShop({ controller, profile }: { controller: RunController; profi
         <span className="bp-balance">{balance} BP</span>
       </div>
       <p className="muted small">
-        Beat a special trainer in any challenge and you can buy them as a Multi partner for {PARTNER_PRICE.first} BP.
-        Each time you beat them again, their price drops by {PARTNER_PRICE.dropPerWin} BP (down to {PARTNER_PRICE.lowest} BP).
+        Beat a special trainer or Battle Legend in any challenge and you can buy them as a Multi partner for {PARTNER_PRICE.first} BP
+        ({PARTNER_PRICE.allStarFirst} BP if you first beat them in All Star Mode). Each time you beat them again, their price drops
+        by {PARTNER_PRICE.dropPerWin} BP ({PARTNER_PRICE.allStarDropPerWin} BP in All Star Mode), down to {PARTNER_PRICE.lowest} BP;
+        a win outside All Star Mode brings a price above {PARTNER_PRICE.first} BP down to {PARTNER_PRICE.first} BP.
         Each partner offers {PARTNER_OFFER_SIZE} of their Pokémon; you choose two when you start a Super Multi challenge.
       </p>
       <h4>Your partners</h4>
@@ -242,7 +244,7 @@ function PartnerShop({ controller, profile }: { controller: RunController; profi
           ))}
         </div>
       ) : (
-        <p className="muted small">Nobody to buy yet. Special trainers appear every 10th battle of a Super challenge.</p>
+        <p className="muted small">Nobody to buy yet. Special trainers appear every 10th battle of a Super challenge (every battle in All Star Mode), and Battle Legends every 50th (every 10th in All Star Mode).</p>
       )}
       {error && <p className="problems">{error}</p>}
     </div>
@@ -299,7 +301,8 @@ function RunResult({ run, best, superUnlocked, retryFrom, onRetry, onDone }: {
         <div><dt>BP earned</dt><dd>{run.bp}</dd></div>
         <div><dt>Best</dt><dd>{best}</dd></div>
       </dl>
-      {run.debug && <p className="muted small">Unranked run: not counted toward records or unlocks.</p>}
+      {run.debug ? <p className="muted small">Unranked run: not counted toward records or unlocks, and no BP or partner progress.</p>
+        : run.course === 'allstar' && <p className="muted small">All Star Mode is unrated: no records, but the BP and partner progress count.</p>}
       {retryFrom !== null && (
         <p className="muted small">
           Start a new challenge from battle {retryFrom} with the same team{run.partner ? ` and partner (${run.partner.name})` : ''}: your streak starts at {retryFrom - 1}. Only offered right after a loss (this session).

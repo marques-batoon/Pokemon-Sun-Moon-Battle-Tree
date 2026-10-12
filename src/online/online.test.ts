@@ -299,7 +299,7 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     guest.dispose();
   });
 
-  it('lets the host switch the room to All Star Mode before a streak starts: specials every battle, Battle Legends every 5th', async () => {
+  it('lets the host switch the room to All Star Mode before a streak starts: specials every battle, Battle Legends every 10th', async () => {
     const handlers = new Set<(msg: FromEngine) => void>();
     const engine: EngineTransport = { send: () => {}, listen: h => { handlers.add(h); return () => { handlers.delete(h); }; }, dispose: () => {} };
     const relay = memoryRelay();
@@ -315,14 +315,16 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     host.setCourse('allstar');
     await waitFor(() => guest.getSnapshot().lobby.course === 'allstar');
     const kinds: string[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       kinds.push(host.getSnapshot().lobby.next.map(id => TRAINERS[id].kind).join('+'));
       host.startBattle();
       const battleId = host.getSnapshot().battleId!;
       handlers.forEach(h => h({ type: 'end', battleId, result: { winner: 'p1', turns: 3, seed: [0, 0, 0, 0] as never, inputLog: [] } }));
       host.leaveBattleScreen();
     }
-    expect(kinds).toEqual(['special+special', 'special+special', 'special+special', 'special+special', 'legend+legend']);
+    // Special trainers (Izzy and Kaito bring Battle Legend Tai: legend+special), then the Battle Legends at 10.
+    expect(kinds.slice(0, 9).every(k => k === 'special+special' || k === 'legend+special')).toBe(true);
+    expect(kinds[9]).toBe('legend+legend');
     // Mid-streak, the mode stays.
     expect(() => host.setCourse('super')).toThrow(/before a streak/);
     host.dispose();

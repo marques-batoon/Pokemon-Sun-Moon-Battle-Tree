@@ -96,7 +96,7 @@ describe('Agumon\'s warp items change what it learns', () => {
     expect(canHoldItem('Gabumon', 'Blackwargreyite')).toBe(false);
     expect(megaFormForSet({ species: 'Agumon', item: 'Blackwargreyite' })).toBe('BlackWarGreymon');
     expect(eligibleSpecies().map(s => s.name)).not.toContain('BlackWarGreymon');
-    expect(gen7.species.get('BlackWarGreymon')?.types).toEqual(['Fire', 'Dark']);
+    expect(gen7.species.get('BlackWarGreymon')?.types).toEqual(['Dragon', 'Dark']);
   });
 });
 

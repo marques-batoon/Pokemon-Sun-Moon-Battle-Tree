@@ -10281,14 +10281,14 @@
   "Tai & Kaito": {
    "Tai": [
     {
-     "greeting": "Kaito's from another world, but our partners started out exactly alike. And he calls me senpai! Let's go!",
+     "greeting": "Kaito's from another world, but our partners started out exactly alike. And he treats me like his mentor! Let's go!",
      "trainerWins": "Two paths, one win! Nice backup, Kaito!",
      "trainerLoses": "Okay, charging in wasn't the move. Kaito, don't apologize, that one's on me!"
     },
     {
-     "greeting": "We only met when we both got zapped into this world, and Kaito already calls me senpai. Gotta live up to that!",
+     "greeting": "We only met when we both got zapped into this world, and Kaito already looks up to me. Gotta live up to that!",
      "trainerWins": "Courage and a choice. Turns out that's a great combo!",
-     "trainerLoses": "Chin up, Kaito. Even senpais lose sometimes. We'll get them next time."
+     "trainerLoses": "Chin up, Kaito. Even mentors lose sometimes. We'll get them next time."
     },
     {
      "greeting": "Kaito keeps watching how I battle like there's a test later. Fine by me. Let's show him how it's done!",

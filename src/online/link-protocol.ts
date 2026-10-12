@@ -11,7 +11,7 @@ import { PARTNER_BRING } from '../run/types';
 
 /** What the guest sees between battles. */
 export interface LobbyView {
-  /** The room's mode: Super Multi, or All Star Mode (special trainers every battle, Battle Legends every 5th). */
+  /** The room's mode: Super Multi, or All Star Mode (special trainers every battle, Battle Legends every 10th). */
   course: OnlineCourse;
   /** Battles won in a row together. */
   streak: number;

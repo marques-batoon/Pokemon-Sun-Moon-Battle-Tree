@@ -41,13 +41,27 @@ function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): 
     try {
       owned[name] = { offer: entry.offer ?? rollOffer(name, new Rng(`migrated-partner|${name}`)) };
     } catch {
-      // Not a special trainer (corrupt entry): drop it.
+      // Not a special trainer or Battle Legend (corrupt entry): drop it.
     }
   }
   const beaten: PartnerBook['beaten'] = {};
   for (const name of [...(saved.available ?? []), ...Object.keys(saved.scoutable ?? {})]) beaten[name] = 1;
   for (const [name, times] of Object.entries(saved.beaten ?? {})) if (Number.isInteger(times) && times > 0) beaten[name] = times;
-  return { owned, beaten };
+  // Prices are kept since 2026-10-11; before, they came from the number of wins (priceOf still does that for these).
+  const prices: Record<string, number> = {};
+  for (const [name, price] of Object.entries(saved.prices ?? {})) if (beaten[name] && Number.isInteger(price) && price > 0) prices[name] = price;
+  return { owned, beaten, prices };
+}
+
+/**
+ * All Star runs saved before 2026-10-11 were all marked debug (All Star Mode earned nothing); now it earns BP and
+ * partner progress, so only practice runs (random AI) and debug starts (a later battle) stay debug. (A debug choice
+ * of opponents can't be told apart: such a run counts as an ordinary All Star run.)
+ */
+function migrateRun(run: RunState): RunState {
+  if (run.course !== 'allstar' || !run.debug) return run;
+  const firstBattle = run.history[0]?.battle ?? run.battle;
+  return { ...run, debug: (run.settings?.ai ?? 'heuristic') !== 'heuristic' || firstBattle > 1 };
 }
 
 /**
@@ -96,7 +110,7 @@ export class RunStore {
       // Saves from before Doubles: superUnlocked was one boolean (Singles) and runs had no format.
       const unlocked = file.profile.superUnlocked as TreeProfile['superUnlocked'] | boolean;
       const superUnlocked = typeof unlocked === 'boolean' ? { singles: unlocked, doubles: false } : { ...base.superUnlocked, ...unlocked };
-      const runs = Object.fromEntries(Object.entries(file.runs ?? {}).map(([k, r]) => [k, { ...r, format: r.format ?? 'singles' }]));
+      const runs = Object.fromEntries(Object.entries(file.runs ?? {}).map(([k, r]) => [k, migrateRun({ ...r, format: r.format ?? 'singles' })]));
       // Saves from before Multi have no partners or spent BP.
       return {
         profile: {

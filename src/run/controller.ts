@@ -2,12 +2,12 @@ import type { BattleClient, BattleSnapshot } from '../client/battle-client';
 import type { AIKind } from '../engine/protocol';
 import { pairedTrainer, trainerKey, TRAINERS } from '../data/battle-tree';
 import type { PokemonSet } from '../team/types';
-import { partnerTeam, rollOffer, runPartner } from './partners';
+import { isPartnerKind, partnerTeam, rollOffer, runPartner } from './partners';
 import { Rng } from './rng';
 import type { RunStore, TreeState } from './run-store';
 import { bpForWin, courseSchedule, displayName, planChosenOpponent, planOpponent } from './selection';
 import {
-  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, needsSuper, opponentLabel, partnerPrice, retryStart, runKey,
+  bpBalance, BRING, CHECKPOINTS, checkpointsFor, COURSES, DEFAULT_SETTINGS, isSuperUnlocked, MIN_REGISTERED, needsSuper, opponentLabel, priceAfterWin, priceOf, retryStart, runKey, countsForRecords,
   type Course, type Format, type PlannedOpponent, type RunKey, type RunSettings, type RunState, type TreeProfile, type UnlockFormat,
 } from './types';
 
@@ -146,9 +146,9 @@ export class RunController {
       next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
       ...(partner && { partner }),
       history: [],
-      // Checkpoint and retry starts count; debug starts ("start at battle N"), practice runs and All Star
-      // Mode (unrated: no records, BP or partner progress) don't, and neither does a retry of a run that didn't.
-      debug: debugStart > 1 || fullSettings.ai !== 'heuristic' || course === 'allstar' || (!!opts.retry && !!offer?.debug),
+      // Checkpoint and retry starts count; debug starts ("start at battle N") and practice runs don't, and neither
+      // does a retry of a run that didn't. (All Star Mode isn't debug: it earns BP and partner progress, but no records.)
+      debug: debugStart > 1 || fullSettings.ai !== 'heuristic' || (!!opts.retry && !!offer?.debug),
       startedAt: t,
       updatedAt: t,
     };
@@ -274,16 +274,15 @@ export class RunController {
   }
 
   /**
-   * Buys a special trainer you've beaten as a Multi partner: 1000 BP after one win, 100 BP less for
-   * each further win, at least 100 (partnerPrice).
+   * Buys a special trainer or Battle Legend you've beaten as a Multi partner, at their price (PARTNER_PRICE:
+   * 1000 BP, or 10000 BP if first beaten in All Star Mode, coming down with further wins).
    * Their offer (the six Pokémon you'll choose their two from) is rolled now.
    */
   buyPartner(name: string): void {
     const { profile } = this.store.getState();
-    const timesBeaten = profile.partners.beaten[name] ?? 0;
-    if (!timesBeaten) throw new Error(`Beat ${name} in a challenge before buying them as a partner.`);
+    const price = priceOf(profile.partners, name);
+    if (price === undefined) throw new Error(`Beat ${name} in a challenge before buying them as a partner.`);
     if (profile.partners.owned[name]) throw new Error(`${name} is already your partner.`);
-    const price = partnerPrice(timesBeaten);
     if (bpBalance(profile) < price) throw new Error(`${name} costs ${price} BP.`);
     const offer = rollOffer(name, new Rng(`partner-offer|${name}|${this.now()}`));
     this.store.updateProfile(p => ({
@@ -318,14 +317,16 @@ export class RunController {
     const cleared = length !== null && run.battle >= length;
     const key = runKey(run.format, run.course);
 
+    // BP and partner progress: every run but debug and practice ones (All Star Mode too); records and unlocks: not All Star Mode.
     if (!run.debug) {
+      const records = countsForRecords(run);
       this.store.updateProfile(p => ({
         ...p,
         bpTotal: p.bpTotal + bp,
         // Beating the Normal course's Battle Legend unlocks that format's Super course.
-        superUnlocked: run.format === 'multi' ? p.superUnlocked : { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
-        records: { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } },
-        partners: withBeaten(p, run.next),
+        superUnlocked: run.format === 'multi' || !records ? p.superUnlocked : { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
+        records: records ? { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } } : p.records,
+        partners: withBeaten(p, run.next, run.course === 'allstar'),
       }));
     }
 
@@ -350,7 +351,7 @@ export class RunController {
   }
 
   private finish(run: RunState) {
-    if (!run.debug) {
+    if (countsForRecords(run)) {
       this.store.updateProfile(p => {
         const key = runKey(run.format, run.course);
         return { ...p, records: { ...p.records, [key]: { best: Math.max(p.records[key].best, run.wins), last: run.wins } } };
@@ -385,15 +386,20 @@ const LOCKED: Record<Format, string> = {
   multi: 'Super Multi unlocks once Super Singles and Super Doubles are both unlocked.',
 };
 
-/** Counts a win over each special trainer just beaten (Battle Legends don't count): it sets their partner price. */
-function withBeaten(p: TreeProfile, next: PlannedOpponent): TreeProfile['partners'] {
+/**
+ * Counts a win over each special trainer and Battle Legend just beaten, and sets their partner price
+ * (priceAfterWin: first beaten in All Star Mode, they come into the shop at 10000 BP).
+ */
+function withBeaten(p: TreeProfile, next: PlannedOpponent, allStar: boolean): TreeProfile['partners'] {
   const beaten = { ...p.partners.beaten };
+  const prices = { ...p.partners.prices };
   for (const t of [next, ...(next.second ? [next.second] : [])]) {
-    if (t.kind !== 'special') continue;
+    if (!isPartnerKind(t.kind)) continue;
     const name = trainerKey(TRAINERS[t.trainerId]);
+    prices[name] = priceAfterWin(priceOf(p.partners, name), allStar);
     beaten[name] = (beaten[name] ?? 0) + 1;
   }
-  return { ...p.partners, beaten };
+  return { ...p.partners, beaten, prices };
 }
 
 export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';

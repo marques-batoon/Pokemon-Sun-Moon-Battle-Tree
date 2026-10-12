@@ -192,7 +192,7 @@ export class OnlineRoom {
 
   /**
    * Host: the room's mode, Super Multi or All Star Mode (special trainers in every battle, the
-   * battle-50 draw every 5th; online streaks earn no records or BP either way). Only before the
+   * battle-50 draw every 10th; online streaks earn no records or BP either way). Only before the
    * streak's first win, like where it starts.
    */
   setCourse(course: OnlineCourse): void {

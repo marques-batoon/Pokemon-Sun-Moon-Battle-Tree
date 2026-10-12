@@ -141,6 +141,8 @@ describe('Kaito (Digimon Tamer)', () => {
       for (const text of [q.greeting, q.trainerWins, q.trainerLoses]) {
         expect(text.length).toBeLessThanOrEqual(120);
         expect(text).not.toMatch(pokemon);
+        // Kaito looks up to Tai, without the word itself (on request).
+        expect(text).not.toMatch(/senpai/i);
       }
     }
   });

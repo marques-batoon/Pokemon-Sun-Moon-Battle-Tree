@@ -313,3 +313,28 @@ describe('planLine: Charge', () => {
       .toMatchObject({ kind: 'charged', side: 'p2', label: 'Electromorphosis' });
   });
 });
+
+describe('planLine: Berries', () => {
+  const plan = (line: string) => {
+    const client = new ClientBattle(new Generations(Dex));
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0].animation;
+  };
+
+  it('plays a Berry being eaten by its holder, before what it does', () => {
+    const steps = planBattle(set('Snorlax', 'Thick Fat', ['Splash']).replace('Snorlax', 'Snorlax @ Lum Berry'), set('Breloom', 'Technician', ['Spore']), [['move 1', 'move 1']]);
+    const kinds = steps.map(s => s.kind);
+    expect(steps.find(s => s.kind === 'berry')).toMatchObject({ side: 'p1', target: null, label: 'Lum Berry' });
+    expect(kinds.indexOf('berry')).toBeLessThan(kinds.indexOf('cure'));
+  });
+
+  it('flies a stolen Berry over to the Bug Bite / Pluck user, who eats it', () => {
+    expect(plan('|-enditem|p1a: Snorlax|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p2a: Scizor'))
+      .toMatchObject({ kind: 'berry', side: 'p2', target: 'p1', label: 'Sitrus Berry' });
+  });
+
+  it('leaves other used-up items as text', () => {
+    expect(plan('|-enditem|p1a: Snorlax|Occa Berry|[weaken]')?.kind).not.toBe('berry');
+    expect(plan('|-enditem|p1a: Snorlax|Air Balloon')?.kind).not.toBe('berry');
+  });
+});

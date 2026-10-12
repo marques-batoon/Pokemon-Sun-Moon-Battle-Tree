@@ -4,7 +4,7 @@
 export type StatId = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 export type StatTable = Record<StatId, number>;
 export type GameVersion = 'sun' | 'moon';
-/** 'allstar': All Star Mode (custom, unrated): special trainers every battle, the battle-50 draw every 5th. */
+/** 'allstar': All Star Mode (custom, unrated): special trainers every battle, the battle-50 draw every 10th; earns BP and partner progress. */
 export type Course = 'normal' | 'super' | 'allstar';
 export type Format = 'singles' | 'doubles' | 'multi';
 
@@ -83,7 +83,7 @@ export type ScheduleRule =
   | { battles: [number, number | null]; pool: string }
   | { battles: [number, number]; boss: string }
   | { everyNth: number; special: true }
-  /** Custom: the boss battle recurs every N battles (Battle Legends every 50; All Star Mode every 5). */
+  /** Custom: the boss battle recurs every N battles (Battle Legends every 50; All Star Mode every 10). */
   | { everyNth: number; boss: string }
   /** Custom: special trainers for these battles (All Star Mode). */
   | { battles: [number, number | null]; special: true };

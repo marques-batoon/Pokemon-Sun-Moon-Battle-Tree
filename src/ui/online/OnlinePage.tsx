@@ -204,12 +204,12 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
           <span>Mode</span>
           <select value={lobby.course} onChange={e => room.setCourse(e.target.value as 'super' | 'allstar')}>
             <option value="super">Super Multi</option>
-            <option value="allstar">All Star Multi · special trainers every battle, Battle Legends every 5th</option>
+            <option value="allstar">All Star Multi · special trainers every battle, Battle Legends every 10th</option>
           </select>
         </label>
       )}
       {!host && lobby.course === 'allstar' && (
-        <p className="small"><span className="tag">All Star Mode</span> Special trainers every battle, Battle Legends every 5th.</p>
+        <p className="small"><span className="tag">All Star Mode</span> Special trainers every battle, Battle Legends every 10th.</p>
       )}
 
       {host && !lobby.inBattle && snap.fresh && (

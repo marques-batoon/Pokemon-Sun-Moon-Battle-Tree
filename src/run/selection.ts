@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, multiPartners, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { ALL_STAR_LEGEND_EVERY, BOSSES, BRACKETS, multiPartners, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -93,8 +93,11 @@ export function bossCandidates(bossKey: string): { key: string; boss: Boss; weig
     .filter(([, b]) => b.format === scheduled.format && b.course === scheduled.course && b.battle === scheduled.battle)
     .map(([key, boss]) => ({ key, boss, weight: boss.weight ?? 7 }));
 }
-function chooseBoss(bossKey: string, rng: Rng): Boss {
-  const candidates = bossCandidates(bossKey);
+/** `exclude`: trainers who can't appear (Multi: your partner, who may be a Battle Legend you bought). */
+function chooseBoss(bossKey: string, rng: Rng, exclude: ReadonlySet<number> = new Set()): Boss {
+  const all = bossCandidates(bossKey);
+  const allowed = all.filter(c => !exclude.has(c.boss.trainerId) && (c.boss.partnerTrainerId === undefined || !exclude.has(c.boss.partnerTrainerId)));
+  const candidates = allowed.length ? allowed : all;
   return candidates.length === 1 ? candidates[0].boss : rng.weighted(candidates, c => c.weight).boss;
 }
 
@@ -169,7 +172,8 @@ export function planOpponent(
   if (partnersTwin) exclude.add(partnersTwin.partnerId);
   const slot = scheduleSlot(format, course, battle);
   if (slot.type === 'boss') {
-    const boss = chooseBoss(slot.bossKey, rng);
+    // A Battle Legend you have as your partner isn't drawn: another battle-50 pair comes instead.
+    const boss = chooseBoss(slot.bossKey, rng, exclude);
     const first = planTrainer({ trainer: TRAINERS[boss.trainerId], replacedAnabel: false }, format, rng);
     if (!multi) return { battle, ...first, seedText };
     return { battle, ...first, seedText, second: planTrainer({ trainer: TRAINERS[boss.partnerTrainerId!], replacedAnabel: false }, format, rng) };
@@ -247,12 +251,16 @@ export function planChosenOpponent(runSeed: string, format: Format, battle: numb
   return { battle, ...planTrainer(choose(firstId), format, rng), seedText, second: planTrainer(choose(secondId), format, rng) };
 }
 
-/** BP for winning battle N (rules.json battlePoints). */
+/**
+ * BP for winning battle N (rules.json battlePoints). A Super Battle Legend battle pays like battle 50 whenever it
+ * comes back. All Star Mode (app choice, on request 2026-10-11: it earns BP) pays as Super, its Battle Legend
+ * battles (every 10th) like battle 50.
+ */
 export function bpForWin(course: Course, battle: number): number {
-  // All Star Mode earns no BP; a Super Battle Legend battle pays like battle 50 whenever it comes back.
-  if (course === 'allstar') return 0;
-  const at = course === 'super' && battle % 50 === 0 ? 50 : battle;
-  const row = RULES.battlePoints[course].find(r => at >= r.battles[0] && (r.battles[1] === null || at <= r.battles[1]));
+  const table = course === 'allstar' ? 'super' : course;
+  const legend = (course === 'super' && battle % 50 === 0) || (course === 'allstar' && battle % ALL_STAR_LEGEND_EVERY === 0);
+  const at = legend ? 50 : battle;
+  const row = RULES.battlePoints[table].find(r => at >= r.battles[0] && (r.battles[1] === null || at <= r.battles[1]));
   if (!row) throw new Error(`No BP entry for ${course} battle ${battle}`);
   return row.bp;
 }

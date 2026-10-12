@@ -52,12 +52,12 @@ describe('schedule', () => {
     expect(scheduleSlot('singles', 'normal', 20)).toEqual({ type: 'boss', bossKey: 'red-normal' });
   });
 
-  it('runs All Star Mode: special trainers every battle, the battle-50 draw every 5th, endless', () => {
+  it('runs All Star Mode: special trainers every battle, the battle-50 draw every 10th, endless', () => {
     for (const format of ['singles', 'doubles', 'multi'] as const) {
       expect(courseSchedule(format, 'allstar').length).toBeNull();
-      for (const n of [1, 2, 3, 4, 6, 9, 11, 49, 51, 99]) expect(scheduleSlot(format, 'allstar', n).type, `${format} ${n}`).toBe('special');
+      for (const n of [1, 2, 3, 4, 5, 6, 9, 11, 15, 49, 51, 99, 105]) expect(scheduleSlot(format, 'allstar', n).type, `${format} ${n}`).toBe('special');
       const boss = scheduleSlot(format, 'super', 50);
-      for (const n of [5, 10, 15, 50, 100, 105]) expect(scheduleSlot(format, 'allstar', n), `${format} ${n}`).toEqual(boss);
+      for (const n of [10, 20, 50, 100, 110]) expect(scheduleSlot(format, 'allstar', n), `${format} ${n}`).toEqual(boss);
     }
   });
 
@@ -230,8 +230,8 @@ describe('Battle Points', () => {
     expect([1, 10, 11, 19, 20].map(n => bpForWin('normal', n))).toEqual([1, 1, 2, 2, 20]);
     expect([1, 10, 11, 20, 21, 30, 31, 40, 41, 49, 50, 51, 100, 150, 299, 300].map(n => bpForWin('super', n)))
       .toEqual([2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 50, 7, 50, 50, 7, 50]);
-    // All Star Mode earns none.
-    expect([1, 5, 50].map(n => bpForWin('allstar', n))).toEqual([0, 0, 0]);
+    // All Star Mode pays as Super, its Battle Legend battles (every 10th) like battle 50.
+    expect([1, 5, 9, 10, 11, 50, 51, 70].map(n => bpForWin('allstar', n))).toEqual([2, 2, 2, 50, 3, 50, 7, 50]);
     let normalTotal = 0;
     for (let n = 1; n <= 20; n++) normalTotal += bpForWin('normal', n);
     expect(normalTotal).toBe(10 * 1 + 9 * 2 + 20);

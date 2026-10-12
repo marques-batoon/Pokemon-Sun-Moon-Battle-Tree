@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Dex, TeamValidator, type PokemonSet as SimSet } from '@pkmn/sim';
 import { SETS, trainerKey, trainerQuotes, TRAINER_QUOTES, TRAINERS } from '../data/battle-tree';
 import { treeSetToPokemonSet } from '../run/opponent';
-import { specialTrainer } from '../run/partners';
+import { partnerTrainer } from '../run/partners';
 import { Rng } from '../run/rng';
 import { planOpponent, scheduleSlot } from '../run/selection';
 import { DEFAULT_SETTINGS } from '../run/types';
@@ -59,7 +59,7 @@ describe('evil team leaders and admins', () => {
     expect([aqua.name, aqua.class]).toEqual(['Matt', 'Team Aqua Admin']);
     expect(trainerQuotes(aqua, 'k')).not.toBe(trainerQuotes(digimon, 'k'));
     expect(trainerSpriteId(aqua)).toBe('matt');
-    expect(specialTrainer('Matt (Team Aqua)')).toBe(aqua);
+    expect(partnerTrainer('Matt (Team Aqua)')).toBe(aqua);
   });
 
   it('never puts two versions of the same character in one Multi Battle, or against your partner', () => {

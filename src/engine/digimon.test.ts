@@ -219,7 +219,7 @@ describe('BlackWarGreymon (Dark Warp Digivolution) and the Dramon moves', () => 
     const w = dex.species.get('BlackWarGreymon');
     expect(w.exists).toBe(true);
     expect([w.baseSpecies, w.battleOnly, w.requiredItem]).toEqual(['Agumon', 'Agumon', 'Blackwargreyite']);
-    expect(w.types).toEqual(['Fire', 'Dark']);
+    expect(w.types).toEqual(['Dragon', 'Dark']);
     expect(w.baseStats).toEqual({ hp: 78, atk: 145, def: 95, spa: 130, spd: 86, spe: 100 });
     expect(Object.values(w.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
     expect(w.abilities).toEqual({ 0: 'Tough Claws' });

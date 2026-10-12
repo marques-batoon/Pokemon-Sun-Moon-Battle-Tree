@@ -1,24 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import type { BattleClient, BattleSnapshot, StartOptions } from '../client/battle-client';
 import { BattleClient as RealBattleClient } from '../client/battle-client';
-import { multiPartners, TRAINERS } from '../data/battle-tree';
+import { multiPartners, trainerKey, TRAINERS } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
 import { createInProcessTransport } from '../engine/in-process-transport';
 import { memoryStore, type KeyValueStore } from '../storage/kv';
 import { importShowdownText } from '../team/showdown-text';
 import { RunController, type RunTeam } from './controller';
-import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, specialTrainer } from './partners';
+import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, partnerTrainer } from './partners';
 import { Rng } from './rng';
 import { RunStore } from './run-store';
 import { bpForWin, planChosenOpponent, planOpponent, teamSizeFor } from './selection';
 import { canField } from './opponent';
 import { SETS } from '../data/battle-tree';
-import { bpBalance, DEFAULT_SETTINGS, partnerPrice, type RunState } from './types';
+import { bpBalance, DEFAULT_SETTINGS, partnerPrice, priceAfterWin, priceOf, type RunState } from './types';
 
 const PLAYER_SETS = importShowdownText(TEST_PLAYER_TEAM_TEXT).teams[0].sets;
 const SINGLES_TEAM: RunTeam = { sourceTeamId: null, name: 'Test team', sets: PLAYER_SETS, bring: [0, 1, 2] };
 const MULTI_TEAM: RunTeam = { ...SINGLES_TEAM, bring: [0, 1] };
-const SINA = specialTrainer('Sina').id;
+const SINA = partnerTrainer('Sina').id;
 /** The first two Pokémon of a partner's offer (what a player might pick). */
 const picks = (name: string) => ({ name, setIds: defaultPartnerBook().owned[name].offer.slice(0, 2) });
 
@@ -153,8 +153,8 @@ describe('Multi: planning opponents', () => {
   });
 
   it('always pairs Tate with Liza, leading with Solrock + Lunatone or Gallade + Gardevoir', () => {
-    const tate = specialTrainer('Tate').id;
-    const liza = specialTrainer('Liza').id;
+    const tate = partnerTrainer('Tate').id;
+    const liza = partnerTrainer('Liza').id;
     const species = (id: number) => SETS[id].species;
     let seen = 0;
     for (let n = 0; n < 600; n++) {
@@ -175,7 +175,7 @@ describe('Multi: planning opponents', () => {
   });
 
   it('lets Tate and Liza appear on their own in Singles', () => {
-    const tate = specialTrainer('Tate').id;
+    const tate = partnerTrainer('Tate').id;
     const plans = Array.from({ length: 2000 }, (_, n) => planOpponent(`solo-${n}`, 'singles', 'super', 10, DEFAULT_SETTINGS));
     expect(plans.some(p => p.trainerId === tate)).toBe(true);
     expect(plans.every(p => !p.second)).toBe(true);
@@ -194,7 +194,7 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(book.beaten).toEqual({});
     for (const [name, { offer }] of Object.entries(book.owned)) {
       expect(offer).toHaveLength(6);
-      for (const id of offer) expect(specialTrainer(name).roster).toContain(id);
+      for (const id of offer) expect(partnerTrainer(name).roster).toContain(id);
     }
     expect(defaultPartnerBook()).toEqual(book);
   });
@@ -220,16 +220,16 @@ describe('Multi: partners and the Super Multi course', () => {
     controller.debugUnlockSuper('doubles');
     expect(() => controller.startRun({ format: 'multi', course: 'normal', team: MULTI_TEAM, settings: DEFAULT_SETTINGS })).toThrow(/no normal multi/);
     expect(() => start()).toThrow(/Choose a partner/);
-    expect(() => start({ name: 'Cynthia', setIds: specialTrainer('Cynthia').roster.slice(0, 2) })).toThrow(/don't have Cynthia/);
+    expect(() => start({ name: 'Cynthia', setIds: partnerTrainer('Cynthia').roster.slice(0, 2) })).toThrow(/don't have Cynthia/);
     // Two different Pokémon, both from the offer.
     const offer = defaultPartnerBook().owned.Dexio.offer;
     expect(() => start({ name: 'Dexio', setIds: [offer[0]] })).toThrow(/Choose 2/);
     expect(() => start({ name: 'Dexio', setIds: [offer[0], offer[0]] })).toThrow(/Choose 2/);
-    const outside = specialTrainer('Dexio').roster.find(id => !offer.includes(id))!;
+    const outside = partnerTrainer('Dexio').roster.find(id => !offer.includes(id))!;
     expect(() => start({ name: 'Dexio', setIds: [offer[0], outside] })).toThrow(/Choose 2/);
     expect(() => controller.startRun({ format: 'multi', course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, partner: picks('Sina') })).toThrow(/exactly 2/);
     const run = start({ name: 'Dexio', setIds: [offer[3], offer[1]] });
-    expect(run.partner).toEqual({ name: 'Dexio', trainerId: specialTrainer('Dexio').id, setIds: [offer[3], offer[1]] });
+    expect(run.partner).toEqual({ name: 'Dexio', trainerId: partnerTrainer('Dexio').id, setIds: [offer[3], offer[1]] });
     expect(run.next.second).toBeDefined();
   });
 
@@ -267,11 +267,12 @@ describe('Multi: partners and the Super Multi course', () => {
     const name = TRAINERS[winThrough(controller, battle, 'singles-super', 9).next.trainerId].name;
     winThrough(controller, battle, 'singles-super', 10);
     expect(store.getState().profile.partners.beaten).toEqual({ [name]: 1 });
+    expect(store.getState().profile.partners.prices).toEqual({ [name]: 1000 });
     expect(partnersForSale(store.getState().profile.partners)).toEqual([{ name, timesBeaten: 1, price: 1000 }]);
     expect(() => controller.buyPartner(name)).toThrow(/costs 1000 BP/);
 
     // Beating them twice more takes 200 BP off.
-    store.updateProfile(p => ({ ...p, partners: { ...p.partners, beaten: { [name]: 3 } }, bpTotal: p.bpTotal + 800 }));
+    store.updateProfile(p => ({ ...p, partners: { ...p.partners, beaten: { [name]: 3 }, prices: { [name]: priceAfterWin(priceAfterWin(1000, false), false) } }, bpTotal: p.bpTotal + 800 }));
     expect(partnersForSale(store.getState().profile.partners)[0].price).toBe(800);
     const before = store.getState().profile;
     controller.buyPartner(name);
@@ -281,7 +282,7 @@ describe('Multi: partners and the Super Multi course', () => {
     const { offer } = after.partners.owned[name];
     expect(offer.length).toBeGreaterThanOrEqual(2);
     expect(offer.length).toBeLessThanOrEqual(6);
-    for (const id of offer) expect(specialTrainer(name).roster).toContain(id);
+    for (const id of offer) expect(partnerTrainer(name).roster).toContain(id);
     expect(bpBalance(after)).toBe(bpBalance(before) - 800);
     // Now they can be a partner, with two Pokémon from their offer.
     controller.debugUnlockSuper('multi');
@@ -336,10 +337,28 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(partners.beaten).toEqual({ Wally: 1, Guzma: 1 });
     expect(partnersForSale(partners).map(p => p.price)).toEqual([1000, 1000]);
   });
+
+  it('keeps saved prices, and lets All Star runs saved before they earned BP earn it (not practice or debug ones)', () => {
+    const kv = memoryStore();
+    const { controller } = setup(kv);
+    controller.debugUnlockSuper('singles');
+    controller.debugUnlockSuper('doubles');
+    controller.startRun({ course: 'allstar', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: 'old-a' });
+    controller.startRun({ format: 'doubles', course: 'allstar', team: { ...SINGLES_TEAM, sets: [...SINGLES_TEAM.sets, ...SINGLES_TEAM.sets.slice(0, 1)], bring: [0, 1, 2, 3] }, settings: { ...DEFAULT_SETTINGS, ai: 'random' }, seedText: 'old-b' });
+    const file = JSON.parse(kv.get('tree.v1')!);
+    for (const key of ['singles-allstar', 'doubles-allstar']) file.runs[key].debug = true;
+    file.profile.partners.beaten = { Cynthia: 2, Wally: 1 };
+    file.profile.partners.prices = { Cynthia: 9990, Nobody: 5 };
+    kv.set('tree.v1', JSON.stringify(file));
+    const { profile, runs } = new RunStore(kv).getState();
+    expect([runs['singles-allstar']!.debug, runs['doubles-allstar']!.debug]).toEqual([false, true]);
+    expect(profile.partners.prices).toEqual({ Cynthia: 9990 });
+    expect(partnersForSale(profile.partners).map(p => [p.name, p.price])).toEqual([['Cynthia', 9990], ['Wally', 1000]]);
+  });
 });
 
 describe('Debug: choosing the next opponents', () => {
-  const id = (name: string) => specialTrainer(name).id;
+  const id = (name: string) => partnerTrainer(name).id;
 
   it('replaces the next opponent with the chosen special trainer and makes the run unranked', () => {
     const { controller, battle } = setup();
@@ -448,27 +467,37 @@ describe('Multi: a real battle through the run', () => {
 });
 
 describe('All Star Mode', () => {
-  it('needs Super unlocked, and is unrated: no BP, no records, no partner progress', () => {
+  it('needs Super unlocked, and is unrated (no records), but earns BP and partner progress', () => {
     const { controller, battle, store } = setup();
     expect(() => controller.startRun({ course: 'allstar', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS })).toThrow(/unlocks/);
     controller.debugUnlockSuper('singles');
     const run = controller.startRun({ course: 'allstar', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: 'all-star' });
-    expect([run.course, run.battle, run.debug]).toEqual(['allstar', 1, true]);
-    // Battles 1-4 are special trainers, battle 5 the battle-50 draw.
+    expect([run.course, run.battle, run.debug]).toEqual(['allstar', 1, false]);
+    // Battles 1-9 are special trainers, battle 10 the battle-50 draw (Battle Legends), and again at 20.
     const kinds: string[] = [];
-    for (let n = 1; n <= 10; n++) {
-      kinds.push(controller.run('singles-allstar')!.next.kind);
+    const wins = new Map<string, number>();
+    for (let n = 1; n <= 20; n++) {
+      const next = controller.run('singles-allstar')!.next;
+      kinds.push(next.kind);
+      const name = trainerKey(TRAINERS[next.trainerId]);
+      wins.set(name, (wins.get(name) ?? 0) + 1);
       controller.startBattle('singles-allstar');
       battle.end('p1');
     }
-    expect(kinds).toEqual(['special', 'special', 'special', 'special', 'legend', 'special', 'special', 'special', 'special', 'legend']);
+    const specials = Array<string>(9).fill('special');
+    expect(kinds).toEqual([...specials, 'legend', ...specials, 'legend']);
+    // BP as in Super (2 for battles 1-10, 3 for 11-20), its Battle Legend battles paying 50.
+    const bp = 9 * 2 + 50 + 9 * 3 + 50;
     const after = controller.run('singles-allstar')!;
-    expect([after.wins, after.bp, after.battle]).toEqual([10, 0, 11]);
+    expect([after.wins, after.bp, after.battle]).toEqual([20, bp, 21]);
     const { profile } = store.getState();
-    expect(profile.bpTotal).toBe(0);
+    expect(profile.bpTotal).toBe(bp);
     expect(profile.records['singles-allstar']).toEqual({ best: 0, last: 0 });
-    // Beating special trainers here doesn't put them in the partner shop (or lower their price).
-    expect(profile.partners.beaten).toEqual({});
+    // Everyone beaten here for the first time comes into the shop at 10000 BP, 10 BP less for each further win
+    // here; Battle Legends too.
+    expect(profile.partners.beaten).toEqual(Object.fromEntries(wins));
+    expect(profile.partners.prices).toEqual(Object.fromEntries([...wins].map(([name, n]) => [name, 10000 - 10 * (n - 1)])));
+    expect(partnersForSale(profile.partners).some(p => TRAINERS.some(t => t.kind === 'legend' && trainerKey(t) === p.name))).toBe(true);
     // It has its own save slot: a Super Singles challenge can run alongside it.
     controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: 'super' });
     expect(controller.run('singles-allstar')!.status).toBe('ready');
@@ -489,10 +518,10 @@ describe('All Star Mode', () => {
     }
   });
 
-  it('works for Doubles and Multi too (Multi with a partner), with Battle Legends every 5th battle', () => {
+  it('works for Doubles and Multi too (Multi with a partner), with Battle Legends every 10th battle', () => {
     for (let i = 0; i < 20; i++) {
-      for (const n of [1, 2, 3, 4]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n, DEFAULT_SETTINGS).kind).toBe('special');
-      expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 5, DEFAULT_SETTINGS).kind).toBe('legend');
+      for (const n of [1, 2, 3, 4, 5, 9]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n, DEFAULT_SETTINGS).kind).toBe('special');
+      expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 10, DEFAULT_SETTINGS).kind).toBe('legend');
       const multi = planOpponent(`asm-${i}`, 'multi', 'allstar', 3, DEFAULT_SETTINGS, SINA);
       // Izzy and Kaito bring Tai (a Battle Legend), Tai first.
       const tamer = multiPartners(multi.second!.trainerId).includes(multi.trainerId);
@@ -506,6 +535,53 @@ describe('All Star Mode', () => {
       const plan = planOpponent(`as-anabel-${i}`, 'singles', 'allstar', 1, locked);
       expect([plan.kind, TRAINERS[plan.trainerId].name === 'Anabel']).toEqual(['special', false]);
     }
-    expect(bpForWin('allstar', 5)).toBe(0);
+    expect([bpForWin('allstar', 5), bpForWin('allstar', 10), bpForWin('allstar', 15), bpForWin('allstar', 60), bpForWin('allstar', 61)]).toEqual([2, 50, 3, 50, 7]);
+  });
+
+  it('prices partners by where you beat them: 10000 BP first met in All Star Mode, 1000 BP elsewhere', () => {
+    expect([priceAfterWin(undefined, false), priceAfterWin(undefined, true)]).toEqual([1000, 10000]);
+    // All Star Mode: 10 BP off each win; elsewhere 100 BP off, and a price above 1000 BP comes down to 1000.
+    expect([priceAfterWin(10000, true), priceAfterWin(1000, true), priceAfterWin(10000, false), priceAfterWin(990, false)]).toEqual([9990, 990, 1000, 890]);
+    expect([priceAfterWin(105, true), priceAfterWin(150, false)]).toEqual([100, 100]);
+    // Saves from before prices were kept: from the number of wins.
+    expect(priceOf({ owned: {}, beaten: { Cynthia: 3 } }, 'Cynthia')).toBe(partnerPrice(3));
+    expect(priceOf({ owned: {}, beaten: {} }, 'Cynthia')).toBeUndefined();
+  });
+
+  it('beating someone outside All Star Mode brings their All Star price down to 1000 BP', () => {
+    const seed = Array.from({ length: 50 }, (_, i) => `cap-${i}`).find(s => {
+      const p = planOpponent(s, 'singles', 'super', 10, DEFAULT_SETTINGS);
+      return p.kind === 'special' && !['Sina', 'Dexio'].includes(TRAINERS[p.trainerId].name);
+    })!;
+    const name = trainerKey(TRAINERS[planOpponent(seed, 'singles', 'super', 10, DEFAULT_SETTINGS).trainerId]);
+    const { controller, battle, store } = setup();
+    controller.debugUnlockSuper('singles');
+    store.updateProfile(p => ({ ...p, partners: { ...p.partners, beaten: { [name]: 4 }, prices: { [name]: 9970 } } }));
+    controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: seed });
+    winThrough(controller, battle, 'singles-super', 10);
+    expect(store.getState().profile.partners.prices?.[name]).toBe(1000);
+    expect(store.getState().profile.partners.beaten[name]).toBe(5);
+  });
+
+  it('lets a Battle Legend be your partner; the battle-50 draw then brings another pair', () => {
+    const red = partnerTrainer('Red');
+    expect([red.kind, red.kind === 'legend' && red.course]).toEqual(['legend', 'super']);
+    const offer = rollOffer('Red', new Rng('red-offer'));
+    for (const id of offer) expect(red.roster).toContain(id);
+    const { controller, store } = setup();
+    controller.debugUnlockSuper('multi');
+    store.updateProfile(p => ({ ...p, partners: { ...p.partners, owned: { ...p.partners.owned, Red: { offer } } } }));
+    const run = controller.startRun({ format: 'multi', course: 'super', team: MULTI_TEAM, settings: DEFAULT_SETTINGS, partner: { name: 'Red', setIds: offer.slice(0, 2) } });
+    expect(run.partner?.trainerId).toBe(red.id);
+    expect(partnerTeam(run.partner!).map(s => s.species)).toEqual(offer.slice(0, 2).map(id => SETS[id].species));
+    const reds = TRAINERS.filter(t => trainerKey(t) === 'Red').map(t => t.id);
+    for (let i = 0; i < 40; i++) {
+      for (const [course, n] of [['super', 50], ['allstar', 10]] as const) {
+        const o = planOpponent(`legend-partner-${i}`, 'multi', course, n, DEFAULT_SETTINGS, red.id);
+        expect([o.kind, o.second!.kind]).toEqual(['legend', 'legend']);
+        expect(reds).not.toContain(o.trainerId);
+        expect(reds).not.toContain(o.second!.trainerId);
+      }
+    }
   });
 });

@@ -19,8 +19,8 @@ export const BATTLE_TITLE: Record<Format, string> = { singles: 'Single Battles',
 
 /** Why a run doesn't count toward records. */
 export function unrankedReason(run: RunState): string | null {
-  if (!run.debug) return null;
-  if (run.course === 'allstar') return 'All Star Mode is unrated: no records, BP or partner progress';
-  if ((run.settings.ai ?? 'heuristic') !== 'heuristic') return 'Practice against the random AI';
-  return 'Debug run (debug tools used: a later start or chosen opponents)';
+  if ((run.settings.ai ?? 'heuristic') !== 'heuristic') return 'Practice against the random AI (no BP or partner progress either)';
+  if (run.debug) return 'Debug run (debug tools used: a later start or chosen opponents; no BP or partner progress either)';
+  if (run.course === 'allstar') return 'All Star Mode is unrated: no records (it earns BP and partner progress)';
+  return null;
 }

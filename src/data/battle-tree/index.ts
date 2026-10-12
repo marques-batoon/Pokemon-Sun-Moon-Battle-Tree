@@ -153,11 +153,13 @@ const superBossKey = (schedule: CourseSchedule) => {
   if (!rule || !('boss' in rule)) throw new Error('No Battle Legend in the Super schedule');
   return rule.boss;
 };
-/** All Star Mode (custom, unrated): special trainers in every battle, and every 5th the battle-50 draw. */
+/** All Star Mode: the Battle Legends' draw (battle 50 of Super) comes every 10th battle (every 5th before 2026-10-11). */
+export const ALL_STAR_LEGEND_EVERY = 10;
+/** All Star Mode (custom, unrated): special trainers in every battle, and every 10th the battle-50 draw. */
 function allStar(superSchedule: CourseSchedule): CourseSchedule {
   return {
     length: null, endsAfterLength: false, specialTrainers: true,
-    schedule: [{ everyNth: 5, boss: superBossKey(superSchedule) }, { battles: [1, null], special: true }],
+    schedule: [{ everyNth: ALL_STAR_LEGEND_EVERY, boss: superBossKey(superSchedule) }, { battles: [1, null], special: true }],
   };
 }
 const withModes = <T extends Partial<Record<Course, CourseSchedule>>>(courses: T): T & Record<'super' | 'allstar', CourseSchedule> => ({

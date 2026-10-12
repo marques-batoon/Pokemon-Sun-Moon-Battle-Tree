@@ -46,7 +46,7 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
   return (
     <section className="panel run-screen">
       <header className="run-head">
-        <h2>{courseLabel(run.format, run.course)}{run.debug && <UnrankedTag run={run} />}</h2>
+        <h2>{courseLabel(run.format, run.course)}<UnrankedTag run={run} /></h2>
         <dl className="run-stats">
           <div><dt>Streak</dt><dd>{run.wins}</dd></div>
           <div><dt>Next battle</dt><dd>{run.battle}{length ? ` / ${length}` : ''}</dd></div>
@@ -58,7 +58,7 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
       <OpponentCard
         trainers={foes.map(f => f.trainer)}
         greetings={foes.map(f => f.greeting)}
-        detail={run.course === 'allstar' ? `Battle ${run.battle} · All Star Mode (no BP)` : `Battle ${run.battle} · win for ${bpForWin(run.course, run.battle)} BP`}
+        detail={`Battle ${run.battle}${run.course === 'allstar' ? ' · All Star Mode' : ''} · win for ${bpForWin(run.course, run.battle)} BP${run.debug ? ' (not counted: unranked)' : ''}`}
         battleKey={`${run.id}:${run.battle}`}
       />
 

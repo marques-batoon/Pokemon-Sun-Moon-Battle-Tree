@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { SETS } from '../../data/battle-tree';
-import { specialTrainer } from '../../run/partners';
+import { partnerTrainer } from '../../run/partners';
 import { PartnerPortrait } from '../components/PartnerPortrait';
 import { PokemonSprite } from '../components/PokemonSprite';
 
@@ -18,7 +18,7 @@ interface Props {
 
 /** A Multi partner: square portrait and name (and, during a challenge, pictures of their two Pokémon). */
 export function PartnerCard({ name, team, onSelect, selected = false, children }: Props) {
-  const trainer = specialTrainer(name);
+  const trainer = partnerTrainer(name);
   const body = (
     <>
       <PartnerPortrait trainer={trainer} size={88} />

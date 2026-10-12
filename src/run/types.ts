@@ -29,12 +29,22 @@ export const MIN_REGISTERED: Record<Format, number> = {
 const MULTI_PARTNERS = RULES.multiPartners as { scoutCost: number; defaultPartners: string[] };
 export const DEFAULT_PARTNERS: readonly string[] = MULTI_PARTNERS.defaultPartners;
 /**
- * BP to buy a partner (app choice, requested 2026-10-08; the game's scouting costs 10, rules.json
- * multiPartners.scoutCost): 1000 after beating them once, 100 less for each further win, at least 100.
+ * BP to buy a partner (special trainers and Battle Legends; app choice, requested 2026-10-08 and 2026-10-11; the
+ * game's scouting costs 10, rules.json multiPartners.scoutCost). Beaten for the first time: 1000 BP, or 10000 BP in
+ * All Star Mode. Each further win: 100 BP less (All Star Mode: 10 BP less), at least 100; a win outside All Star
+ * Mode brings a price above 1000 down to 1000.
  */
-export const PARTNER_PRICE = { first: 1000, dropPerWin: 100, lowest: 100 } as const;
+export const PARTNER_PRICE = { first: 1000, dropPerWin: 100, lowest: 100, allStarFirst: 10000, allStarDropPerWin: 10 } as const;
+/** The price after beating them `timesBeaten` times outside All Star Mode (how prices were kept before 2026-10-11). */
 export const partnerPrice = (timesBeaten: number): number =>
   Math.max(PARTNER_PRICE.lowest, PARTNER_PRICE.first - PARTNER_PRICE.dropPerWin * (Math.max(1, timesBeaten) - 1));
+/** A partner's price after another win over them (`current`: undefined if never beaten), in All Star Mode or not. */
+export function priceAfterWin(current: number | undefined, allStar: boolean): number {
+  if (current === undefined) return allStar ? PARTNER_PRICE.allStarFirst : PARTNER_PRICE.first;
+  if (allStar) return Math.max(PARTNER_PRICE.lowest, current - PARTNER_PRICE.allStarDropPerWin);
+  if (current > PARTNER_PRICE.first) return PARTNER_PRICE.first;
+  return Math.max(PARTNER_PRICE.lowest, current - PARTNER_PRICE.dropPerWin);
+}
 /** How many of a partner's Pokémon you choose their two from. App choice (requested 2026-10-08). */
 export const PARTNER_OFFER_SIZE = 6;
 /** Pokémon a Multi partner brings. */
@@ -131,7 +141,11 @@ export interface RunState {
   /** Multi Battles: the partner chosen for this challenge. */
   partner?: RunPartner;
   history: BattleRecord[];
-  /** Unranked: started at battle > 1 (debug) or against the random AI (practice). Never counts toward records or unlocks. */
+  /**
+   * Unranked: started at battle > 1 or with chosen opponents (debug), or against the random AI (practice). Never counts
+   * toward records or unlocks, and earns no BP or partner progress. (All Star Mode is unrated too, but earns BP and
+   * partner progress: countsForRecords.)
+   */
   debug: boolean;
   startedAt: number;
   updatedAt: number;
@@ -168,9 +182,21 @@ export interface PartnerBook {
    * (up to PARTNER_OFFER_SIZE, rolled when you got them) you choose their two Pokémon from.
    */
   owned: Record<string, { offer: number[] }>;
-  /** How many times you've beaten each special trainer (ranked runs). Beaten ones you don't own can be bought (partnerPrice). */
+  /** How many times you've beaten each special trainer and Battle Legend (not in debug or practice runs). */
   beaten: Record<string, number>;
+  /**
+   * The price of each one beaten (PARTNER_PRICE, priceAfterWin), kept for those you don't own yet. Older saves
+   * have none: their price comes from the number of wins (partnerPrice).
+   */
+  prices?: Record<string, number>;
 }
+
+/** What a beaten trainer costs now (undefined if never beaten). */
+export const priceOf = (book: PartnerBook, name: string): number | undefined =>
+  book.prices?.[name] ?? (book.beaten[name] ? partnerPrice(book.beaten[name]) : undefined);
+
+/** Whether a run's streak counts toward records and unlocks (not debug or practice runs, nor All Star Mode). */
+export const countsForRecords = (run: Pick<RunState, 'debug' | 'course'>) => !run.debug && run.course !== 'allstar';
 
 export interface TreeProfile {
   /** Super Singles / Super Doubles unlocked by beating the Normal course's Battle Legend (Red / Blue). */

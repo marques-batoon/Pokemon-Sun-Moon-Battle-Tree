@@ -85,7 +85,7 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
               <small className="muted">
                 {c === 'normal' ? ` · 20 battles, Battle Legend ${legend} at 20`
                   : !superUnlocked ? (multi ? ' · locked: unlock Super Singles and Super Doubles first' : ` · locked: beat ${legend} in ${label('normal')}`)
-                  : c === 'allstar' ? ` · unrated (no records, BP or partner progress): special trainers${multi ? ' in pairs' : ''} every battle, Battle Legends every 5th`
+                  : c === 'allstar' ? ` · unrated (no records; earns BP): special trainers${multi ? ' in pairs' : ''} every battle, Battle Legends every 10th`
                   : multi ? ' · endless, Battle Legends every 50 battles, special trainers in pairs every 10'
                   : ' · endless, Battle Legends every 50 battles, special trainers every 10'}
               </small>

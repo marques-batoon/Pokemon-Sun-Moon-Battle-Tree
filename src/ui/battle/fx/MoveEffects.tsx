@@ -312,17 +312,19 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       );
     }
     case 'berry': {
-      // Over the Pokémon's head (lower when there's no room above, near the top of the stage); a stolen Berry
-      // flies over from its holder first.
-      const p = anchor(layer.at);
-      const s = 54 * ctx.k;
-      const h = p.size ?? 110 * ctx.k;
-      const y = Math.max(p.y - h * 0.36, s * 0.6 + 4);
-      const from = layer.from ? anchor(layer.from) : null;
-      const fy = from ? Math.max(from.y - (from.size ?? 110 * ctx.k) * 0.36, s * 0.6 + 4) : y;
+      // In front of the Pokémon's face, about head height, on the side it faces (the opponents face left, your
+      // Pokémon right); a stolen Berry flies over from in front of its holder first.
+      const s = 36 * ctx.k;
+      const mouth = (q: Point) => {
+        const h = q.size ?? 110 * ctx.k;
+        const toward = q.x > ctx.w / 2 ? -1 : 1;
+        return { x: q.x + toward * h * 0.3, y: Math.max(q.y - h * 0.3, s * 0.6 + 4) };
+      };
+      const { x, y } = mouth(anchor(layer.at));
+      const from = layer.from ? mouth(anchor(layer.from)) : null;
       return (
         <span key={i} className={`fxl fx-berry${from ? ' stolen' : ''}`} style={css({
-          '--x': px(p.x), '--y': px(y), '--fx': px(from ? from.x - p.x : 0), '--fy': px(fy - y), '--s': px(s), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000),
+          '--x': px(x), '--y': px(y), '--fx': px(from ? from.x - x : 0), '--fy': px(from ? from.y - y : 0), '--s': px(s), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000),
         })}>
           <span className="berry-body">
             <span className="berry-bites" style={itemIconStyle(layer.item, Math.round(s)) ?? undefined}>{itemIconStyle(layer.item) ? null : <span className="berry-fallback" />}</span>
