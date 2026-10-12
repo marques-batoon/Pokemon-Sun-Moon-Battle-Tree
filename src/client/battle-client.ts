@@ -76,6 +76,12 @@ export interface StartOptions {
   ai: AIKind;
 }
 
+/**
+ * The text shown under the stage for an event. Showdown's log puts minor messages in parentheses
+ * ("(Snorlax ate its Lum Berry!)"); on their own as the caption they read better without.
+ */
+const caption = (lines: string[]) => lines.map(t => t.replace(/^\((.*)\)$/, '$1')).join(' ');
+
 type QueueItem =
   | { kind: 'line'; line: string; steps?: PlannedStep[]; text?: string }
   | { kind: 'request'; line: string }
@@ -308,12 +314,12 @@ export class BattleClient {
     if (step.text) {
       const lines = step.text.split('\n').map(t => t.trim()).filter(Boolean);
       for (const t of lines) draft.log.push(this.entry('line', t));
-      if (lines.length) draft.caption = lines.join(' ');
+      if (lines.length) draft.caption = caption(lines);
     }
     if (step.applyLine) {
       const lines = (item.text ?? '').split('\n').map(t => t.trim()).filter(Boolean);
       for (const t of lines) draft.log.push(this.entry(line.startsWith('|turn|') ? 'turn' : 'line', t));
-      if (lines.length) draft.caption = lines.join(' ');
+      if (lines.length) draft.caption = caption(lines);
       if (args[0] === 'turn') draft.currentMove = null;
       draft.fieldTimers = nextTimers(draft.fieldTimers, args as readonly string[], kwArgs as Record<string, unknown>);
       battle.add(args, kwArgs);

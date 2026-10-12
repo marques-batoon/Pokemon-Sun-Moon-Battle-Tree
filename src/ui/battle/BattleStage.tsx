@@ -69,6 +69,7 @@ function Spot({ side, slot, pokemon, anim, playing, faintSeen, flipFront = false
       anim={anim}
       substitute={!!visible && 'substitute' in pokemon.volatiles}
       seeded={!!visible && 'leechseed' in pokemon.volatiles}
+      charged={!!visible && 'charge' in pokemon.volatiles}
       status={visible ? pokemon.status : undefined}
       confused={!!visible && 'confusion' in pokemon.volatiles}
       infatuated={!!visible && 'attract' in pokemon.volatiles}

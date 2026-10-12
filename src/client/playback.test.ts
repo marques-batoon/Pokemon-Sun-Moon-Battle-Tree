@@ -277,3 +277,39 @@ describe('planLine: moves taken in by an Ability (Water Absorb, Volt Absorb...)'
     expect(absorbedByAbility(['move', 'p1a: Pikachu', 'Thunderbolt', 'p2a: Raichu'], {}, ['|-ability|p2b: Gyarados|Intimidate|boost'])).toBe(false);
   });
 });
+
+describe('planLine: Charge', () => {
+  const RAICHU = set('Raichu', 'Static', ['Charge', 'Thunderbolt']);
+  const SNORLAX = set('Snorlax', 'Thick Fat', ['Splash']);
+
+  it('charges the user up, and the battle client holds the charge (the lasting glow) until its next move', () => {
+    const steps = planBattle(RAICHU, SNORLAX, [['move 1', 'move 1']]);
+    expect(steps.filter(s => s.kind === 'charged')).toEqual([expect.objectContaining({ side: 'p1', label: undefined })]);
+
+    const sim = new Battle({ formatid: 'gen7customgame' as ID, seed: '1,2,3,4' });
+    sim.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(RAICHU)) });
+    sim.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(SNORLAX)) });
+    sim.makeChoices('team 1', 'team 1');
+    const client = new ClientBattle(new Generations(Dex));
+    const feed = () => {
+      for (const line of sim.log.splice(0)) {
+        if (line.startsWith('|split|')) continue;
+        const { args, kwArgs } = Protocol.parseBattleLine(line);
+        client.add(args, kwArgs);
+      }
+    };
+    sim.makeChoices('move 1', 'move 1');
+    feed();
+    expect('charge' in client.p1.active[0]!.volatiles).toBe(true);
+    sim.makeChoices('move 2', 'move 1');
+    feed();
+    expect('charge' in client.p1.active[0]!.volatiles).toBe(false);
+  });
+
+  it('names the Ability when one charges it (Electromorphosis)', () => {
+    const client = new ClientBattle(new Generations(Dex));
+    const { args, kwArgs } = Protocol.parseBattleLine('|-start|p2a: HerculesKabuterimon|Charge|[from] ability: Electromorphosis');
+    expect(planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0].animation)
+      .toMatchObject({ kind: 'charged', side: 'p2', label: 'Electromorphosis' });
+  });
+});

@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, BLOCKED_MS, CANT_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -27,7 +27,7 @@ type Step = Omit<BattleAnimation, 'id'>;
 const GROUPS: { label: string; moves: string[] }[] = [
   { label: 'Physical', moves: ['Return', 'Flare Blitz', 'Waterfall', 'Wild Charge', 'Leaf Blade', 'Icicle Crash', 'Close Combat', 'Poison Jab', 'Earthquake', 'Brave Bird', 'Zen Headbutt', 'X-Scissor', 'Stone Edge', 'Shadow Claw', 'Outrage', 'Crunch', 'Iron Head', 'Play Rough'] },
   { label: 'Special', moves: ['Hyper Voice', 'Flamethrower', 'Hydro Pump', 'Thunderbolt', 'Energy Ball', 'Ice Beam', 'Aura Sphere', 'Sludge Bomb', 'Earth Power', 'Air Slash', 'Psychic', 'Bug Buzz', 'Power Gem', 'Shadow Ball', 'Dragon Pulse', 'Dark Pulse', 'Flash Cannon', 'Moonblast'] },
-  { label: 'Status', moves: ['Swords Dance', 'Calm Mind', 'Growl', 'Screech', 'Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract', 'Leech Seed', 'Substitute', 'Protect', 'Detect', "King's Shield", 'Spiky Shield', 'Baneful Bunker', 'Recover', 'Roost', 'Rain Dance', 'Sunny Day', 'Electric Terrain', 'Grassy Terrain', 'Psychic Terrain', 'Misty Terrain', 'Trick Room', 'Magic Room', 'Wonder Room', 'Gravity', 'Reflect', 'Light Screen', 'Aurora Veil', 'Safeguard', 'Mist', 'Stealth Rock', 'Spikes', 'Tailwind', 'Roar'] },
+  { label: 'Status', moves: ['Swords Dance', 'Calm Mind', 'Charge', 'Growl', 'Screech', 'Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract', 'Leech Seed', 'Substitute', 'Protect', 'Detect', "King's Shield", 'Spiky Shield', 'Baneful Bunker', 'Recover', 'Roost', 'Rain Dance', 'Sunny Day', 'Electric Terrain', 'Grassy Terrain', 'Psychic Terrain', 'Misty Terrain', 'Trick Room', 'Magic Room', 'Wonder Room', 'Gravity', 'Reflect', 'Light Screen', 'Aurora Veil', 'Safeguard', 'Mist', 'Stealth Rock', 'Spikes', 'Tailwind', 'Roar'] },
   { label: 'Draining', moves: ['Giga Drain', 'Drain Punch', 'Draining Kiss', 'Leech Life', 'Horn Leech'] },
   {
     label: 'Z-Moves',
@@ -53,6 +53,8 @@ const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 /** Abilities that take in or stop a move, for the preview (the healing ones show +25%). */
 const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Soundproof'];
 const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
+/** Berries for the preview (what each does next: HP, a cure, a stat rise, weakening a hit). */
+const PREVIEW_BERRIES = ['Sitrus Berry', 'Lum Berry', 'Chesto Berry', 'Liechi Berry', 'Salac Berry', 'Occa Berry', 'Figy Berry', 'Custap Berry', 'Enigma Berry'];
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
 interface FieldState {
@@ -61,6 +63,8 @@ interface FieldState {
   digimon: Record<Side, { form: string; stage: 1 | 2 } | null>;
   sub: Record<Side, boolean>;
   seeded: Record<Side, boolean>;
+  /** Charge / Electromorphosis: lasts until its next move (Charge) or Electric move (Electromorphosis). */
+  charged: Record<Side, boolean>;
   shields: Record<Side, string[]>;
   status: Record<Side, string | undefined>;
   confused: Record<Side, boolean>;
@@ -71,7 +75,7 @@ interface FieldState {
 }
 const EMPTY: FieldState = {
   mega: { p1: false, p2: false }, digimon: { p1: null, p2: null }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
-  status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
+  charged: { p1: false, p2: false }, status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
   protect: { p1: null, p2: null }, terrain: null, rooms: [],
 };
 const MAJOR_STATUS = ['par', 'brn', 'psn', 'tox', 'slp', 'frz'];
@@ -84,7 +88,12 @@ function applyStep(f: FieldState, step: Step): FieldState {
   const s = step.side;
   if (!s) return f;
   switch (step.kind) {
-    case 'move': return step.fx?.kind === 'protect' && step.fx.moveId !== 'endure' ? { ...f, protect: { ...f.protect, [s]: step.fx.moveId } } : f;
+    case 'move': {
+      // Charge wears off once the Pokémon uses another move (shown as the move starts, in the preview).
+      const g = f.charged[s] && step.fx?.moveId !== 'charge' ? { ...f, charged: { ...f.charged, [s]: false } } : f;
+      return step.fx?.kind === 'protect' && step.fx.moveId !== 'endure' ? { ...g, protect: { ...g.protect, [s]: step.fx.moveId } } : g;
+    }
+    case 'charged': return { ...f, charged: { ...f.charged, [s]: true } };
     case 'status': return { ...f, status: { ...f.status, [s]: c } };
     case 'cure': return { ...f, status: { ...f.status, [s]: undefined } };
     case 'confused': return { ...f, confused: { ...f.confused, [s]: true } };
@@ -110,6 +119,7 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
   const steps: Step[] = [];
   if (fx.kind === 'z') steps.push({ kind: 'zpower', side, target: null, durationMs: 1100 });
   steps.push({ kind: 'move', side, target, moveName: name, moveType: fx.type, moveCategory: fx.category, fx, durationMs: moveDuration(fx) });
+  if (fx.moveId === 'charge') steps.push({ kind: 'charged', side, target: null, durationMs: CHARGED_MS });
   if (fx.kind === 'substitute' && !f.sub[side]) {
     steps.push({ kind: 'sub-start', side, target: null, durationMs: SUB_START_MS });
     steps.push({ kind: 'hit', side, target: null, hpDelta: -25, durationMs: 600 });
@@ -261,6 +271,7 @@ export function AnimationPreview() {
           { kind: 'warp-start', side, target: null, condition: warpForm, durationMs: WARP_START_MS },
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
         ])}>{isDarkWarp(warpForm) ? 'Dark Warp Digivolve' : 'Warp Digivolve'}</button>
+        <button onClick={() => play([{ kind: 'charged', side, target: null, label: 'Electromorphosis', durationMs: CHARGED_MS }])}>Electromorphosis</button>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
           {side === 'p1' ? 'Opponent' : 'You'}{' '}takes it in{' '}
@@ -271,6 +282,26 @@ export function AnimationPreview() {
           }}>
             <option value="">Ability…</option>
             {PREVIEW_ABILITIES.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+        </label>
+        <label>
+          {side === 'p1' ? 'You' : 'Opponent'}{' '}eat{side === 'p1' ? '' : 's'}{' '}
+          <select aria-label="Eat a Berry" value="" onChange={e => {
+            const v = e.target.value;
+            e.target.value = '';
+            if (!v) return;
+            // "steal:": Bug Bite / Pluck, eating the other Pokémon's Berry.
+            const stolen = v.startsWith('steal:');
+            const berry = stolen ? v.slice('steal:'.length) : v;
+            play([
+              { kind: 'berry', side, target: stolen ? other(side) : null, label: berry, durationMs: BERRY_MS },
+              ...(berry === 'Sitrus Berry' || berry === 'Figy Berry' || berry === 'Enigma Berry' ? [{ kind: 'heal', side, target: null, hpDelta: 25, durationMs: 500 } as Step] : []),
+              ...(berry === 'Liechi Berry' || berry === 'Salac Berry' ? [{ kind: 'boost', side, target: null, durationMs: 450 } as Step] : []),
+            ]);
+          }}>
+            <option value="">Berry…</option>
+            {PREVIEW_BERRIES.map(b => <option key={b} value={b}>{b}</option>)}
+            <option value="steal:Sitrus Berry">Bug Bite: steal a Sitrus Berry</option>
           </select>
         </label>
         <label>
@@ -304,7 +335,7 @@ export function AnimationPreview() {
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
               key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : s === side && POLIWRATH_Z_MOVES.has(move) && !field.mega[s] ? POLIWRATHIUM_Z.user : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
-              substitute={field.sub[s]} seeded={field.seeded[s]} status={field.status[s]} confused={field.confused[s]}
+              substitute={field.sub[s]} seeded={field.seeded[s]} charged={field.charged[s]} status={field.status[s]} confused={field.confused[s]}
               infatuated={field.infatuated[s]} protect={field.protect[s]} hidden={hidden[s]}
             />
           ))}

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  abilitySpec, ATTACKS, cantSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, cantSpec, chargedSpec, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -238,5 +238,13 @@ describe('HerculesKabuterimon\'s animations', () => {
     expect(burst.layers.find(l => l.kind === 'rings')).toMatchObject({ color: '#ffd43b' });
     expect(key(burst)).not.toBe(key(warpBurst('WarGreymon')));
     expect(moveSpec(classifyMove('Giga Blaster'))).toBe(SIGNATURE_MOVES.gigablaster);
+  });
+});
+
+describe('Charge', () => {
+  it('gathers sparks into the Pokémon, naming the Ability when one charged it', () => {
+    expect(chargedSpec().layers.some(l => l.kind === 'particles' && l.motion === 'converge')).toBe(true);
+    expect(chargedSpec().layers.some(l => l.kind === 'label')).toBe(false);
+    expect(chargedSpec('Electromorphosis').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Electromorphosis', at: 'user' });
   });
 });

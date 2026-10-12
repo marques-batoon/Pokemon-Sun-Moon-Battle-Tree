@@ -183,6 +183,24 @@ export function substituteSprite(side: SpriteSide): SpriteInfo {
   return { url: s.url, w: s.w, h: s.h, pixelated: s.pixelated };
 }
 
+/** Showdown's item icon sheet: 24-px icons, 16 to a row. */
+const ITEM_ICON = 24;
+const ITEM_SHEET_WIDTH = 16 * ITEM_ICON;
+
+/** URL of the item icon sheet (one image for every item icon). */
+export const itemSheetUrl = (): string => Icons.getItem('Sitrus Berry').url;
+
+/** A held item's icon drawn `size` px wide (pixel art, scaled from the sheet), as inline styles; null if it has none. */
+export function itemIconStyle(item: string, size = ITEM_ICON): CSSProperties | null {
+  const icon = Icons.getItem(item);
+  if (!icon.left && !icon.top) return null;
+  const k = size / ITEM_ICON;
+  return {
+    display: 'block', width: size, height: size, imageRendering: 'pixelated',
+    background: `transparent url(${icon.url}) no-repeat ${icon.left * k}px ${icon.top * k}px / ${ITEM_SHEET_WIDTH * k}px auto`,
+  };
+}
+
 /** Small menu icon (sprite sheet) as inline styles. */
 export function iconStyle(species: string): CSSProperties {
   const css = Icons.getPokemon(SPRITE_ALIASES[species] ?? species).css;

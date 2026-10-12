@@ -64,7 +64,12 @@ export type Layer =
   /** Mega Evolution: an egg-shaped shell of swirling rainbow energy around the Pokémon. */
   | { kind: 'cocoon'; at: Anchor; size: number; delay?: number; dur?: number }
   /** Mega Evolution: the Mega Evolution symbol (a ring around a helix) flashing over the Pokémon. */
-  | { kind: 'megasymbol'; at: Anchor; size: number; delay?: number; dur?: number };
+  | { kind: 'megasymbol'; at: Anchor; size: number; delay?: number; dur?: number }
+  /**
+   * A Berry (its item icon) pops up over the Pokémon (or flies over from `from`, when stolen) and is eaten in two
+   * bites, crumbs flying: `color` is the crumbs'.
+   */
+  | { kind: 'berry'; at: Anchor; item: string; from?: Anchor; color: string; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -989,6 +994,46 @@ export function abilitySpec(id: string, name?: string): FxSpec {
   const spec = ABILITY_FX[id] ?? ABILITY_BLOCK;
   if (!name) return spec;
   return { ...spec, layers: [...spec.layers, { kind: 'label', at: 'target', text: name, color: ABILITY_COLORS[id] ?? '#5a6a8a', delay: 150, dur: 950 }] };
+}
+
+/**
+ * Charged (Charge, or Electromorphosis): sparks gather into the Pokémon and it crackles with a yellow glow; its
+ * next Electric move has double power. The lasting cue on the sprite is .charge-aura (StageSpot). From an
+ * Ability, its name pops up too.
+ */
+export function chargedSpec(ability?: string): FxSpec {
+  return { layers: [
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe066', color2: '#fff6b0', count: 14, size: 13, spread: 95, dur: 500 },
+    { kind: 'aura', at: 'user', color: '#ffd43b', size: 180, delay: 250, dur: 500 },
+    { kind: 'rings', at: 'user', color: '#fff3a0', count: 2, size: 150, delay: 300, dur: 450 },
+    ...(ability ? [{ kind: 'label', at: 'user', text: ability, color: '#c99400', delay: 100, dur: 650 } as Layer] : []),
+  ] };
+}
+
+/** Crumb colours by Berry (roughly the fruit's colour); others use BERRY_CRUMBS. */
+const BERRY_COLORS: Record<string, string> = {
+  sitrusberry: '#f2d23c', oranberry: '#3f86d8', lumberry: '#7cc95a', chestoberry: '#7a5bc8', cheriberry: '#e8484a', pechaberry: '#f39ac0',
+  rawstberry: '#5fbfa0', aspearberry: '#f2e05c', persimberry: '#f08a5c', leppaberry: '#e05a3c', figyberry: '#e8504a', wikiberry: '#8a5cc8',
+  magoberry: '#f59ab8', aguavberry: '#7cc95a', iapapaberry: '#f2d23c', liechiberry: '#e8484a', ganlonberry: '#5a6ad8', salacberry: '#5fb85a',
+  petayaberry: '#f07ab0', apicotberry: '#4a7ad8', lansatberry: '#e8484a', starfberry: '#7cc95a', enigmaberry: '#5a4a6a', micleberry: '#7cc95a',
+  custapberry: '#e8604a', jabocaberry: '#f2c23c', rowapberry: '#4a8ad8', keeberry: '#f0c040', marangaberry: '#4a6ad8',
+  occaberry: '#f07a3a', passhoberry: '#4a9ae0', wacanberry: '#f2d23c', rindoberry: '#6ac05a', yacheberry: '#5ab0e0', chopleberry: '#e0503a',
+  kebiaberry: '#5aa05a', shucaberry: '#e0c05a', cobaberry: '#5a8ae0', payapaberry: '#b05ac8', tangaberry: '#7ac05a', chartiberry: '#e8d050',
+  kasibberry: '#9a6ac8', habanberry: '#e0503a', colburberry: '#7a5ab0', babiriberry: '#6ab05a', chilanberry: '#f0d070', roseliberry: '#f07ab0',
+};
+const BERRY_CRUMBS = '#e8b04a';
+
+/**
+ * A Berry is eaten: it pops up over the Pokémon (or, stolen by Bug Bite / Pluck, flies over from its holder) and
+ * is gone in two bites, with crumbs; the Pokémon munches (sprite class) and a soft glow follows. What the Berry
+ * does (healing, a stat rise, a cure) plays next, from its own lines.
+ */
+export function berrySpec(item: string, stolen = false): FxSpec {
+  const color = BERRY_COLORS[item.toLowerCase().replace(/[^a-z0-9]/g, '')] ?? BERRY_CRUMBS;
+  return { layers: [
+    { kind: 'berry', at: 'user', item, ...(stolen ? { from: 'target' as Anchor } : {}), color, dur: 1000 },
+    { kind: 'aura', at: 'user', color, size: 150, delay: 720, dur: 380 },
+  ] };
 }
 
 /** Z-Power charge-up before any Z-Move. */

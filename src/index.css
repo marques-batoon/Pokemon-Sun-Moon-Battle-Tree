@@ -931,6 +931,61 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes wire-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
 /* An Ability's name popping up over the Pokémon as it takes in a move (Water Absorb...). */
+/* A Berry eaten: it pops up (or flies over, stolen), is eaten in two bites with crumbs, and is gone. */
+.fx-berry { z-index: 4; }
+.fx-berry .berry-body { position: absolute; left: 0; top: 0; animation: berry-pop var(--dur) both; animation-delay: inherit; animation-duration: inherit; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.35)); }
+.fx-berry.stolen .berry-body { animation-name: berry-steal; }
+.fx-berry .berry-bites { display: block; width: var(--s); height: var(--s); animation: berry-bite var(--dur) linear both; animation-delay: inherit; animation-duration: inherit; }
+.fx-berry .berry-fallback { position: absolute; inset: 18%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff8 0 14%, transparent 15%), var(--c); }
+.fx-berry .crumb { position: absolute; left: 0; top: 0; width: calc(5px * var(--k, 1)); height: calc(5px * var(--k, 1)); border-radius: 1px; background: var(--c); opacity: 0; animation: berry-crumb var(--dur) ease-out both; animation-delay: inherit; animation-duration: inherit; }
+.fx-berry .crumb.late { animation-name: berry-crumb-late; }
+@keyframes berry-pop {
+  0% { transform: translate(-50%, -20%) scale(0); opacity: 0; }
+  12% { transform: translate(-50%, -62%) scale(1.18); opacity: 1; }
+  20%, 30% { transform: translate(-50%, -50%) scale(1); }
+  40% { transform: translate(-50%, -56%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1); }
+  53% { transform: translate(-50%, -50%) scale(0.9, 1.06); }
+  58%, 72% { transform: translate(-50%, -50%) scale(1); }
+  75% { transform: translate(-50%, -50%) scale(0.88, 1.06); }
+  80% { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  90%, 100% { transform: translate(-50%, -40%) scale(0.5); opacity: 0; }
+}
+@keyframes berry-steal {
+  0% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(0.4); opacity: 0; }
+  8% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(1); opacity: 1; }
+  24% { transform: translate(calc(-50% + var(--fx) * 0.5), calc(-50% + var(--fy) * 0.5 - 50px)) scale(1.05) rotate(180deg); }
+  40% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+  50% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+  53% { transform: translate(-50%, -50%) scale(0.9, 1.06) rotate(360deg); }
+  58%, 72% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+  75% { transform: translate(-50%, -50%) scale(0.88, 1.06) rotate(360deg); }
+  80% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); opacity: 1; }
+  90%, 100% { transform: translate(-50%, -40%) scale(0.5) rotate(360deg); opacity: 0; }
+}
+@keyframes berry-bite {
+  0%, 51% { clip-path: polygon(0 0, 58% 0, 100% 0, 100% 0, 100% 0, 100% 28%, 100% 36%, 100% 50%, 100% 62%, 100% 70%, 100% 100%, 0 100%); }
+  53%, 73% { clip-path: polygon(0 0, 58% 0, 100% 0, 100% 0, 100% 0, 100% 28%, 66% 36%, 58% 50%, 66% 62%, 100% 70%, 100% 100%, 0 100%); }
+  75%, 100% { clip-path: polygon(0 0, 44% 0, 46% 18%, 54% 28%, 64% 30%, 68% 36%, 62% 40%, 58% 50%, 66% 62%, 100% 70%, 100% 100%, 0 100%); }
+}
+@keyframes berry-crumb {
+  0%, 51% { opacity: 0; transform: translate(-50%, -50%); }
+  53% { opacity: 1; transform: translate(calc(-50% + var(--s) * 0.15), -50%); }
+  76% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(160deg); }
+  100% { opacity: 0; }
+}
+@keyframes berry-crumb-late {
+  0%, 73% { opacity: 0; transform: translate(-50%, -50%); }
+  75% { opacity: 1; transform: translate(calc(-50% + var(--s) * 0.1), calc(-50% - var(--s) * 0.1)); }
+  98% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(-160deg); }
+  100% { opacity: 0; }
+}
+/* The Pokémon munches as it bites. */
+.fx-munch-a { animation: munch-a calc(1000ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }
+.fx-munch-b { animation: munch-b calc(1000ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }
+@keyframes munch-a { 0%, 48%, 60%, 70%, 82%, 100% { transform: none; } 53%, 75% { transform: scale(1.03, 0.95); } }
+@keyframes munch-b { 0%, 48%, 60%, 70%, 82%, 100% { transform: none; } 53%, 75% { transform: scale(1.03, 0.95); } }
+
 .fx-label { transform: translate(-50%, -50%); padding: calc(3px * var(--k, 1)) calc(10px * var(--k, 1)); border-radius: 999px; background: var(--c); color: #fff; font-weight: 800; font-size: calc(13px * var(--k, 1)); white-space: nowrap; border: 2px solid rgb(255 255 255 / 0.85); box-shadow: 0 2px 6px rgb(0 0 0 / 0.3); z-index: 4; animation-name: fx-label; }
 @keyframes fx-label { 0% { opacity: 0; transform: translate(-50%, -30%) scale(0.8); } 15% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; transform: translate(-50%, -55%); } 100% { opacity: 0; transform: translate(-50%, -75%); } }
 /* Levitate: the Pokémon rises over the quake, then settles. */
@@ -1017,6 +1072,19 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes semi-shadow { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(0.8); } }
 .semi-cue-phantom { width: 40%; height: 40%; bottom: 20%; border-radius: 50%; background: radial-gradient(closest-side, rgb(138 92 200 / 0.35), transparent); animation: semi-phantom 1400ms ease-in-out infinite; }
 @keyframes semi-phantom { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+/* Charged (Charge, Electromorphosis): a pulsing yellow glow with sparks flickering around the Pokémon, and a tag. */
+.charge-aura { position: absolute; inset: -4% -8% 0; pointer-events: none; z-index: 2; border-radius: 50% 50% 40% 40%; background: radial-gradient(closest-side, rgb(255 226 70 / 0.32), rgb(255 226 70 / 0.08) 70%, transparent 82%); animation: charge-pulse 1.1s ease-in-out infinite; }
+.charge-aura .spark { position: absolute; width: 13%; height: 17%; background: #ffe066; clip-path: polygon(58% 0, 18% 56%, 46% 56%, 32% 100%, 84% 38%, 56% 38%, 74% 0); filter: drop-shadow(0 0 4px #fff3a0); opacity: 0; animation: charge-spark 1.4s linear infinite; }
+.charge-aura .spark:nth-child(1) { left: 8%; top: 34%; }
+.charge-aura .spark:nth-child(2) { right: 6%; top: 22%; animation-delay: 0.45s; }
+.charge-aura .spark:nth-child(3) { left: 46%; top: 6%; animation-delay: 0.9s; }
+.sprite-wrap.charged .poke-sprite { animation: charged-glow 1.1s ease-in-out infinite; }
+.sprite-wrap.charged.seeded .poke-sprite { animation: charged-seeded-glow 1.1s ease-in-out infinite; }
+@keyframes charged-glow { 0%, 100% { filter: drop-shadow(0 0 3px rgb(255 214 50 / 0.7)); } 50% { filter: drop-shadow(0 0 9px rgb(255 214 50 / 1)) drop-shadow(0 0 2px #fff6b0); } }
+@keyframes charged-seeded-glow { 0%, 100% { filter: drop-shadow(0 0 3px rgb(255 214 50 / 0.7)) drop-shadow(0 0 2px rgb(122 199 76 / 0.6)); } 50% { filter: drop-shadow(0 0 9px rgb(255 214 50 / 1)) drop-shadow(0 0 5px rgb(122 199 76 / 0.9)); } }
+@keyframes charge-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes charge-spark { 0%, 58% { opacity: 0; transform: scale(0.6); } 64% { opacity: 1; transform: scale(1.15); } 74% { opacity: 0.9; transform: scale(1) rotate(12deg); } 86%, 100% { opacity: 0; transform: scale(0.8); } }
+.semi-badge.charge-badge { background: rgb(176 128 0 / 0.88); }
 .semi-badge { position: absolute; left: 50%; top: 4%; transform: translateX(-50%); z-index: 3; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; color: #fff; background: rgb(20 20 30 / 0.75); pointer-events: auto; }
 .spot.semi-sky .semi-badge { top: auto; bottom: 12%; }
 @media (prefers-reduced-motion: reduce) { .semi-cue, .semi-cue::before, .semi-cue::after { animation: none; } }
@@ -1213,7 +1281,9 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   .sprite-wrap, .stage-field, .sprite-sub, .sub-doll-inner { animation-duration: 1ms !important; animation-delay: 0ms !important; }
   .move-fx { display: none; }
   .stage::after, .shield-wall, .seed, .sprite-wrap.seeded .poke-sprite, .cond-marks .mark, .mark-confusion .orbit, .ice-block::after,
-  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor, .bg-ocean .waves, .bg-spiralmountain .data-flow { animation: none; }
+  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor, .bg-ocean .waves, .bg-spiralmountain .data-flow, .charge-aura { animation: none; }
+  .charge-aura .spark { animation: none; opacity: 0.8; }
+  .sprite-wrap.charged .poke-sprite { animation: none; filter: drop-shadow(0 0 6px rgb(255 214 50 / 0.9)); }
 }
 
 /* Debug: animation preview */

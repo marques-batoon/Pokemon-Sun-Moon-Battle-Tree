@@ -4,6 +4,7 @@
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
 import type { Anchor, FxSpec, Layer, Shape } from './catalog';
 import { foeSide, HORIZON, posKey, sideOfPos, spotPoint, type Point, type Pos } from './geometry';
+import { itemIconStyle } from '../../sprites';
 
 type Vars = Record<`--${string}`, string | number>;
 const px = (n: number) => `${Math.round(n * 10) / 10}px`;
@@ -308,6 +309,30 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
           <path d="M64 20 C 28 36, 72 64, 36 80" fill="none" stroke="url(#fx-mega-rainbow)" strokeWidth="8" strokeLinecap="round" />
           <circle cx="50" cy="50" r="7" fill="#ffffff" />
         </svg>
+      );
+    }
+    case 'berry': {
+      // Over the Pokémon's head (lower when there's no room above, near the top of the stage); a stolen Berry
+      // flies over from its holder first.
+      const p = anchor(layer.at);
+      const s = 54 * ctx.k;
+      const h = p.size ?? 110 * ctx.k;
+      const y = Math.max(p.y - h * 0.36, s * 0.6 + 4);
+      const from = layer.from ? anchor(layer.from) : null;
+      const fy = from ? Math.max(from.y - (from.size ?? 110 * ctx.k) * 0.36, s * 0.6 + 4) : y;
+      return (
+        <span key={i} className={`fxl fx-berry${from ? ' stolen' : ''}`} style={css({
+          '--x': px(p.x), '--y': px(y), '--fx': px(from ? from.x - p.x : 0), '--fy': px(fy - y), '--s': px(s), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1000),
+        })}>
+          <span className="berry-body">
+            <span className="berry-bites" style={itemIconStyle(layer.item, Math.round(s)) ?? undefined}>{itemIconStyle(layer.item) ? null : <span className="berry-fallback" />}</span>
+          </span>
+          {Array.from({ length: 6 }, (_, c) => {
+            const a = (c / 6) * Math.PI * 2 + rand(ctx.seed, c, 21) * 0.8;
+            const d = s * (0.55 + rand(ctx.seed, c, 22) * 0.45);
+            return <span key={c} className={`crumb${c % 2 ? ' late' : ''}`} style={css({ '--tx': px(Math.cos(a) * d), '--ty': px(Math.sin(a) * d * 0.7 + s * 0.25) })} />;
+          })}
+        </span>
       );
     }
     case 'pillar': {

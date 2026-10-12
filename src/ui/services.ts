@@ -9,6 +9,7 @@ import { TeamStore } from '../storage/team-store';
 import { RunController } from '../run/controller';
 import { RunStore } from '../run/run-store';
 import { battleName } from '../online/trainer-name';
+import { preloadBattleSprites } from './sprite-preload';
 
 let transport: EngineTransport | null = null;
 let battleClient: BattleClient | null = null;
@@ -33,12 +34,18 @@ export function engine(): EngineTransport {
 /**
  * A battle client that plays at the animation speed from Settings and follows changes to it.
  * Online Multi Battles pass their own transport (the guest's is the room) and perspective.
+ * Starting a battle ("Battle!") also starts loading every sprite it can show (sprite-preload).
  */
 export function newBattleClient(transport: EngineTransport = engine(), perspective: 'p1' | 'p3' = 'p1'): BattleClient {
   const settings = getSettingsStore();
   const speed = () => ANIMATION_SPEED_FACTOR[settings.getSettings().animationSpeed] ?? 1;
   const client = new BattleClient(transport, { speed: speed(), perspective });
   const unsubscribe = settings.subscribe(() => client.setSpeed(speed()));
+  const start = client.start.bind(client);
+  client.start = opts => {
+    preloadBattleSprites(opts, settings.getSettings());
+    return start(opts);
+  };
   const dispose = client.dispose.bind(client);
   client.dispose = () => { unsubscribe(); dispose(); };
   return client;

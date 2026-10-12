@@ -40,7 +40,14 @@ export type AnimationKind =
    * Flash Fire, Dry Skin (each its own animation), Levitate, or any other (Soundproof, Wonder Guard...). `side`/`slot`:
    * the Pokémon with the Ability; `target`/`targetSlot`: the move's user, when known; `condition`: the Ability's id.
    */
-  | 'ability';
+  | 'ability'
+  /** The Pokémon becomes charged (Charge, or Electromorphosis: `label`): its next Electric move has double power. */
+  | 'charged'
+  /**
+   * A Berry is eaten (`label`: its name). `side`/`slot`: who eats it; `target`/`targetSlot`: whose Berry it was
+   * when it was stolen and eaten by Bug Bite or Pluck (else null).
+   */
+  | 'berry';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -129,6 +136,8 @@ export const CANT_MS = 750;
 export const CONFUSED_MS = 750;
 export const BLOCKED_MS = 550;
 export const ABILITY_MS = 1100;
+export const CHARGED_MS = 750;
+export const BERRY_MS = 1000;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -321,6 +330,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
     case '-activate': {
       const effect = toId(args[2]);
       const who = at(args[1]);
+      // Charged up (Charge, or an Ability: Electromorphosis): its next Electric move is doubled.
+      if (cmd === '-start' && effect === 'charge') {
+        return [step({ kind: 'charged', ...who, target: null, label: abilityName(kwArgs.from) ?? undefined, durationMs: CHARGED_MS })];
+      }
       // Flash Fire takes in a Fire move and powers up.
       if (cmd === '-start' && abilityName(args[2]) && isAbsorb(toId(abilityName(args[2])!))) return [abilityStep(step, battle, args[1], abilityName(args[2])!)];
       // The engine's hint "Z-Move: Physical" / "Z-Move: Special" for the Z-Move about to be used.
@@ -374,6 +387,16 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const absorbing = cmd === '-boost' ? abilityName(kwArgs.from) : null;
       if (absorbing && isAbsorb(toId(absorbing))) return [abilityStep(step, battle, args[1], absorbing)];
       return [step({ kind: cmd === '-boost' ? 'boost' : 'unboost', ...at(args[1]), target: null, durationMs: base })];
+    }
+    case '-enditem': {
+      // A Berry eaten by its holder ("[eat]"), or stolen and eaten by Bug Bite / Pluck ("[from] stealeat", "[of]" the eater).
+      const stolen = toId(kwArgs.from as string | undefined) === 'stealeat' && typeof kwArgs.of === 'string';
+      if ('eat' in kwArgs || stolen) {
+        const holder = at(args[1]);
+        const eater = stolen ? at(kwArgs.of as string) : holder;
+        return [step({ kind: 'berry', ...eater, target: stolen ? holder.side : null, targetSlot: stolen ? holder.slot : undefined, label: args[2], durationMs: BERRY_MS })];
+      }
+      return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
     case '-miss':
     case '-immune':

@@ -111,7 +111,7 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   // Agumon learns this list instead of its own.
   base: AGUMON,
   warp: {
-    name: 'BlackWarGreymon', types: ['Fire', 'Dark'], color: 'Black',
+    name: 'BlackWarGreymon', types: ['Dragon', 'Dark'], color: 'Black',
     baseStats: { hp: 78, atk: 145, def: 95, spa: 130, spd: 86, spe: 100 },
     abilities: { 0: 'Tough Claws' }, weightkg: 120,
   },

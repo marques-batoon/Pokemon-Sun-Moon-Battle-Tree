@@ -103,6 +103,15 @@ function ProtectBubble({ variant }: { variant: string }) {
   return <span className={`protect-bubble ${s.spiky ? 'spiky' : ''}`} style={{ '--c': s.color } as CSSProperties} aria-hidden />;
 }
 
+/** Charged (Charge, Electromorphosis): a crackling yellow glow with sparks until it uses its next Electric move. */
+function ChargeAura() {
+  return (
+    <span className="charge-aura" aria-hidden>
+      <span className="spark" /><span className="spark" /><span className="spark" />
+    </span>
+  );
+}
+
 /** Leech Seed: seeds with sprouts stuck to the Pokémon. */
 function SeedMarks() {
   return (
@@ -123,6 +132,8 @@ export interface StageSpotProps {
   substitute?: boolean;
   /** Seeded by Leech Seed. */
   seeded?: boolean;
+  /** Charged (Charge, Electromorphosis): its next Electric move has double power. */
+  charged?: boolean;
   /** Major status: brn, par, psn, tox, slp, frz. */
   status?: string;
   confused?: boolean;
@@ -139,7 +150,7 @@ export interface StageSpotProps {
 const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished' };
 
 /** One side of the field: Pokémon sprite, Substitute doll and status marks (no shadow under it, on request). */
-export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, status, confused = false, infatuated = false, protect = null, hidden = null, flipFront = false }: StageSpotProps) {
+export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, charged = false, status, confused = false, infatuated = false, protect = null, hidden = null, flipFront = false }: StageSpotProps) {
   const mine = actsAt(anim, side, slot) ? anim : null;
   const pos = posKey(side, slot);
   const v = anim && anim.id % 2 ? 'a' : 'b';
@@ -169,10 +180,11 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
           <span className="semi-badge" title="Most attacks will miss it this turn">{HIDDEN_LABEL[hidden]}</span>
         </>
       )}
+      {pokemon && charged && !hidden && <span className="semi-badge charge-badge" title="Its next Electric move has double power">Charged</span>}
       {pokemon && (
         <div className={`sprite-sub ${subClass}`}>
           <div
-            className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''} ${warp || boost > 1 ? 'is-large' : ''}`}
+            className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${charged ? 'charged' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''} ${warp || boost > 1 ? 'is-large' : ''}`}
             style={size !== 1 ? { '--sprite-size': size } as CSSProperties : undefined}
           >
             <PokemonSprite
@@ -186,6 +198,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
               pixelScale={PIXEL_SCALE}
               flipFront={flipFront}
             />
+            {charged && <ChargeAura />}
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />
           </div>
