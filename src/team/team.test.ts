@@ -16,6 +16,8 @@ describe('Lv. 50 stat calculation', () => {
     // Garchomp 108/130/95/80/85/102, Jolly, 4 HP / 252 Atk / 252 Spe, 31 IVs.
     const chomp = set('Garchomp', { nature: 'Jolly', evs: spread({ hp: 4, atk: 252, spe: 252 }) });
     expect(calcStats(chomp)).toEqual({ hp: 184, atk: 182, def: 115, spa: 90, spd: 105, spe: 169 });
+    // The team builder's Lv. 100 option: the familiar 358 / 359 / 226 / 176 / 206 / 333 Jolly Garchomp.
+    expect(calcStats(chomp, 100)).toEqual({ hp: 358, atk: 359, def: 226, spa: 176, spd: 206, spe: 333 });
     // Shedinja always has 1 HP.
     expect(calcStats(set('Shedinja', { evs: spread({ hp: 252 }) })).hp).toBe(1);
     // 0 IV / Brave lowers Speed: Aegislash base 60 Spe -> floor((120+0+0)*50/100)+5 = 65, * 0.9 = 58.

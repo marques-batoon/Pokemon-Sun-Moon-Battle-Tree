@@ -80,10 +80,10 @@ export function withIv(set: PokemonSet, stat: StatID, value: number): PokemonSet
 
 /** Final stats at the battle level (min(level, 50)), as the game computes them. */
 /** Stats at the battle level; for a Paradoxorb holder, its Paradox form's stats. */
-export function calcStats(set: PokemonSet): StatsTable {
+/** Final stats at the battle level, or at `level` (the team builder can also show Lv. 100). */
+export function calcStats(set: PokemonSet, level = battleLevel(set)): StatsTable {
   const species = gen7.species.get(battleSpecies(set));
   const nature = gen7.natures.get(set.nature) as Nature | undefined;
-  const level = battleLevel(set);
   const out = fill(0);
   if (!species) return out;
   for (const stat of STAT_IDS) {

@@ -38,6 +38,8 @@ export interface AppSettings {
    * front sprites, flipped, so your side matches (otherwise only that one is a flipped front sprite).
    */
   matchSideSprites: boolean;
+  /** Team builder: also show each Pokémon's stats at Lv. 100 (battles are always at Lv. 50). */
+  showLevel100Stats: boolean;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
@@ -53,6 +55,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   spriteStyle: '2d',
   battleBackground: 'battletree',
   matchSideSprites: true,
+  showLevel100Stats: false,
   animationSpeed: 'normal',
   trainerName: '',
 };

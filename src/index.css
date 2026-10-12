@@ -264,7 +264,7 @@ button.danger { color: var(--bad); }
 .stat-table caption { text-align: left; padding-bottom: 4px; }
 .stat-table th, .stat-table td { padding: 3px 6px; text-align: left; }
 .stat-table thead th { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
-.stat-table tbody th { width: 56px; }
+.stat-table tbody th { width: 56px; white-space: nowrap; }
 .stat-base { width: 26%; }
 .stat-base, .base-track { vertical-align: middle; }
 .base-num { display: inline-block; width: 32px; }
@@ -273,6 +273,10 @@ button.danger { color: var(--bad); }
 .ev-cell { display: flex; gap: 6px; align-items: center; }
 .ev-cell input[type='range'] { flex: 1; min-width: 60px; }
 .stat-total { font-weight: 700; width: 56px; text-align: right !important; }
+.stat-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.lv100-toggle { cursor: pointer; white-space: nowrap; }
+/* Lv. 100 stats (team builder option): for comparison, lighter than the battle-level totals. */
+.stat-lv100 { width: 56px; text-align: right !important; opacity: 0.75; font-weight: 600; white-space: nowrap; }
 .stat-plus { color: var(--bad); }
 .stat-minus { color: var(--accent); }
 @media (max-width: 520px) { .ev-cell input[type='range'] { display: none; } .stat-base { width: auto; } .base-track { display: none; } }
