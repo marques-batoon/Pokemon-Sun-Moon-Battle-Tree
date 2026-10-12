@@ -62,7 +62,8 @@ const GABUMON_MOVES = [
   'U-turn', 'Water Pulse', 'Wild Charge', 'Zen Headbutt',
 ];
 
-// Tentomon (added 2026-10-11, designed by the user): the level-up and TM lists given for HerculesKabuterimon.
+// Tentomon (added 2026-10-11, designed by the user): the level-up and TM lists given for HerculesKabuterimon
+// (Tera Blast taken out and Hidden Power added, on request).
 const TENTOMON_MOVES = [...new Set([
   // Level-up
   'Tackle', 'Growl', 'Thunder Shock', 'String Shot', 'Harden', 'Struggle Bug', 'Charge', 'Spark', 'Super Shocker', 'Bug Bite',
@@ -74,7 +75,7 @@ const TENTOMON_MOVES = [...new Set([
   'Giga Impact', 'Hard Press', 'Heavy Slam', 'Helping Hand', 'Hyper Beam', 'Infestation', 'Iron Defense', 'Iron Head', 'Leech Life',
   'Light Screen', 'Lunge', 'Magnet Rise', 'Metal Sound', 'Mud-Slap', 'Pounce', 'Protect', 'Rain Dance', 'Reflect', 'Rest',
   'Rock Slide', 'Rock Tomb', 'Screech', 'Signal Beam', 'Skitter Smack', 'Sleep Talk', 'Solar Beam', 'Struggle Bug', 'Substitute',
-  'Sunny Day', 'Swift', 'Swords Dance', 'Tera Blast', 'Thunder', 'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Trailblaze',
+  'Sunny Day', 'Swift', 'Swords Dance', 'Hidden Power', 'Thunder', 'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Trailblaze',
   'U-turn', 'Venoshock', 'Volt Switch', 'Wild Charge', 'X-Scissor', 'Zap Cannon',
 ])];
 
@@ -269,7 +270,8 @@ export function digimonCanLearn(species: string, move: string, item?: string | n
   if (!isDigimon(species)) return null;
   const warp = BY_ITEM.get(toId(item ?? ''));
   const learns = warp && toId(warp.base.name) === toId(species) ? ITEM_LEARNS.get(toId(warp.item)) : BASE_LEARNS.get(toId(species));
-  return !!learns?.has(toId(move));
+  // Hidden Power of any type ("Hidden Power [Ice]") is Hidden Power.
+  return !!learns?.has(toId(move).replace(/^hiddenpower[a-z]+$/, 'hiddenpower'));
 }
 
 /**

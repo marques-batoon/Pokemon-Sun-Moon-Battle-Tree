@@ -1,7 +1,7 @@
 {
  "source": "Designed for the user (2026-10-11, on request): the evil teams' leaders and admins of Generations 1-7 as Showdown exports in data-sources/custom/evil-teams.txt; built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
-  "Each trainer is one special trainer with eight Pokémon, weight 3.5, in Super Singles, Super Doubles and Super Multi (and All Star Mode).",
+  "Each trainer is one special trainer with eight Pokémon, weight 1 (Courtney 7; changed on request 2026-10-11, they were 3.5), in Super Singles, Super Doubles and Super Multi (and All Star Mode).",
   "Archie and Maxie appear twice (Ruby / Sapphire / Emerald: no Megas; Omega Ruby / Alpha Sapphire: with their Megas); \"key\" tells them apart in the data, \"person\" keeps the two versions out of the same battle.",
   "Giovanni (a Gym Leader here), Guzma, Plumeria and Colress were already special trainers. IVs 31; Abilities and genders as exported. Every set passes the app's Gen 7 team validator."
  ],
@@ -11,6 +11,7 @@
    "class": "Rocket Executive",
    "classGender": "M",
    "region": "Johto",
+   "weight": 1,
    "sets": [
     {
      "species": "Houndoom",
@@ -179,6 +180,7 @@
    "class": "Rocket Executive",
    "classGender": "F",
    "region": "Johto",
+   "weight": 1,
    "sets": [
     {
      "species": "Arbok",
@@ -347,6 +349,7 @@
    "class": "Rocket Executive",
    "classGender": "M",
    "region": "Johto",
+   "weight": 1,
    "sets": [
     {
      "species": "Crobat",
@@ -515,6 +518,7 @@
    "class": "Rocket Executive",
    "classGender": "M",
    "region": "Johto",
+   "weight": 1,
    "sets": [
     {
      "species": "Weezing",
@@ -682,6 +686,7 @@
    "class": "Magma Leader",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Camerupt",
@@ -852,6 +857,7 @@
    "class": "Team Magma Leader",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Camerupt",
@@ -1020,6 +1026,7 @@
    "class": "Team Magma Admin",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Camerupt",
@@ -1188,6 +1195,7 @@
    "class": "Team Magma Admin",
    "classGender": "F",
    "region": "Hoenn",
+   "weight": 7,
    "sets": [
     {
      "species": "Camerupt",
@@ -1358,6 +1366,7 @@
    "class": "Aqua Leader",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Sharpedo",
@@ -1528,6 +1537,7 @@
    "class": "Team Aqua Leader",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Sharpedo",
@@ -1697,6 +1707,7 @@
    "class": "Team Aqua Admin",
    "classGender": "M",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Sharpedo",
@@ -1865,6 +1876,7 @@
    "class": "Team Aqua Admin",
    "classGender": "F",
    "region": "Hoenn",
+   "weight": 1,
    "sets": [
     {
      "species": "Sharpedo",
@@ -2033,6 +2045,7 @@
    "class": "Galactic Boss",
    "classGender": "M",
    "region": "Sinnoh",
+   "weight": 1,
    "sets": [
     {
      "species": "Weavile",
@@ -2201,6 +2214,7 @@
    "class": "Commander",
    "classGender": "F",
    "region": "Sinnoh",
+   "weight": 1,
    "sets": [
     {
      "species": "Purugly",
@@ -2369,6 +2383,7 @@
    "class": "Commander",
    "classGender": "F",
    "region": "Sinnoh",
+   "weight": 1,
    "sets": [
     {
      "species": "Skuntank",
@@ -2537,6 +2552,7 @@
    "class": "Commander",
    "classGender": "M",
    "region": "Sinnoh",
+   "weight": 1,
    "sets": [
     {
      "species": "Toxicroak",
@@ -2705,6 +2721,7 @@
    "class": "Commander",
    "classGender": "M",
    "region": "Sinnoh",
+   "weight": 1,
    "sets": [
     {
      "species": "Electrode",
@@ -2873,6 +2890,7 @@
    "class": "Pokémon Trainer",
    "classGender": "M",
    "region": "Unova",
+   "weight": 1,
    "sets": [
     {
      "species": "Zoroark",
@@ -3041,6 +3059,7 @@
    "class": "Team Plasma",
    "classGender": "M",
    "region": "Unova",
+   "weight": 1,
    "sets": [
     {
      "species": "Hydreigon",
@@ -3209,6 +3228,7 @@
    "class": "Team Plasma",
    "classGender": "M",
    "region": "Unova",
+   "weight": 1,
    "sets": [
     {
      "species": "Weavile",
@@ -3377,6 +3397,7 @@
    "class": "Team Flare Boss",
    "classGender": "M",
    "region": "Kalos",
+   "weight": 1,
    "sets": [
     {
      "species": "Gyarados",
@@ -3545,6 +3566,7 @@
    "class": "Team Flare Admin",
    "classGender": "M",
    "region": "Kalos",
+   "weight": 1,
    "sets": [
     {
      "species": "Malamar",
@@ -3713,6 +3735,7 @@
    "class": "Team Flare Admin",
    "classGender": "F",
    "region": "Kalos",
+   "weight": 1,
    "sets": [
     {
      "species": "Liepard",
@@ -3881,6 +3904,7 @@
    "class": "Team Flare Admin",
    "classGender": "F",
    "region": "Kalos",
+   "weight": 1,
    "sets": [
     {
      "species": "Weavile",
@@ -4049,6 +4073,7 @@
    "class": "Aether President",
    "classGender": "F",
    "region": "Alola",
+   "weight": 1,
    "sets": [
     {
      "species": "Clefable",
@@ -4217,6 +4242,7 @@
    "class": "Aether Branch Chief",
    "classGender": "M",
    "region": "Alola",
+   "weight": 1,
    "sets": [
     {
      "species": "Hypno",

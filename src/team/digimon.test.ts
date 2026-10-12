@@ -110,7 +110,9 @@ describe('Tentomon in the team builder', () => {
     expect(gen7.abilities.get('Electromorphosis')?.exists).toBe(true);
     const moves = (await learnableMoves('Tentomon')).map(m => m.name);
     expect(moves).toHaveLength(new Set(DIGIMON_BASE_MOVES.Tentomon).size);
-    for (const m of ['Super Shocker', 'Giga Blaster', 'Hard Press', 'Pounce', 'Trailblaze', 'Skitter Smack', 'Quiver Dance', 'Signal Beam']) expect(moves).toContain(m);
+    for (const m of ['Super Shocker', 'Giga Blaster', 'Hard Press', 'Pounce', 'Trailblaze', 'Skitter Smack', 'Quiver Dance', 'Signal Beam', 'Hidden Power']) expect(moves).toContain(m);
+    // On request: no Tera Blast (the other Digimon keep theirs), and Hidden Power instead.
+    expect(moves).not.toContain('Tera Blast');
     expect((await learnableMoves('Tentomon', 'Herculeskabuterite')).map(m => m.name)).toEqual(moves);
     expect(allMoves().map(m => m.name)).not.toContain('Giga Blaster');
   });

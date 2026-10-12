@@ -83,15 +83,19 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
   });
 
-  it('special trainers from both versions: shared trainers weight 7 (Anabel 1), each version exclusive 3.5; Gym Leaders 7, Elite Four and Champions, evil teams and Izzy 3.5', () => {
+  it('special trainers from both versions: shared trainers weight 7 (Anabel 3.5), each version exclusive 3.5; Gym Leaders 7 (Giovanni 1), Elite Four and Champions 3.5, evil teams 1 (Courtney 7), Izzy and Kaito 7', () => {
     const pool = specialPool();
-    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 1);
+    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 2);
     const weightOf = (name: string) => pool.find(p => p.trainer.name === name)!.weight;
-    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca']) expect(weightOf(name), name).toBe(7);
-    expect(weightOf('Anabel')).toBe(1);
-    for (const name of ['Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui', 'Cyrus', 'Archie', 'Lusamine', 'Izzy']) expect(weightOf(name), name).toBe(3.5);
+    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca', 'Courtney', 'Izzy', 'Kaito']) expect(weightOf(name), name).toBe(7);
+    // Anabel 3.5 (on request; the game's 1 is a seventh of the others').
+    for (const name of ['Anabel', 'Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui']) expect(weightOf(name), name).toBe(3.5);
+    // The evil team leaders and admins: 1 (Courtney 7).
+    for (const name of ['Cyrus', 'Archie', 'Maxie', 'Lusamine', 'Ghetsis', 'Tabitha', 'Shelly']) expect(weightOf(name), name).toBe(1);
+    // Giovanni (a Gym Leader here): 1, on request.
+    expect(weightOf('Giovanni')).toBe(1);
     const total = pool.reduce((s, t) => s + t.weight, 0);
-    expect(total).toBe(50 + 47 * 7 + 33 * 3.5 + 26 * 3.5 + 3.5);
+    expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 7 + 7);
 
     const n = 100_000;
     const counts = drawTrainers('super', 30, SETTINGS, n, 'special');
@@ -112,7 +116,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(Math.abs(byVersion.sun - byVersion.moon)).toBeLessThan(4.5 * Math.sqrt(2 * n * p));
   });
 
-  it('never shows Anabel when locked; her share (weight 1) goes to the previous bracket\'s trainers', () => {
+  it('never shows Anabel when locked; her share (weight 3.5) goes to the previous bracket\'s trainers', () => {
     const settings = { ...SETTINGS, anabelUnlocked: false };
     const rng = new Rng('anabel-locked');
     const n = 100_000;
@@ -126,7 +130,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
         replacements.set(trainer.id, (replacements.get(trainer.id) ?? 0) + 1);
       }
     }
-    const p = 1 / specialPool().reduce((s, t) => s + t.weight, 0);
+    const p = specialPool().find(t => t.trainer.name === 'Anabel')!.weight / specialPool().reduce((s, t) => s + t.weight, 0);
     expect(Math.abs(replaced - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
     const pool = BRACKETS.pools['b11-19'].trainerIds;
     for (const id of replacements.keys()) expect(pool).toContain(id);

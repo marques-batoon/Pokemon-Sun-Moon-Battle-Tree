@@ -31,8 +31,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets and 8 DigiDestined sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 8);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets and 16 Digimon Tamer sets (Izzy, Kaito), with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 16);
     // Labels name the trainer by key, so the two Archies' sets stay apart.
     expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
@@ -71,18 +71,23 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, and the DigiDestined (Izzy)', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, and the Digimon Tamers (Izzy, Kaito)', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 1);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26 + 1, 4 + 4]);
-    // Izzy comes last (earlier ids don't move): a special trainer at 3.5 with his own sprite, leading with Tentomon.
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 2);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26 + 2, 4 + 4]);
+    // Izzy comes last (earlier ids don't move): a special trainer at 7 with his own sprite, leading with Tentomon.
     const izzy = TRAINERS[315] as SpecialTrainer;
-    expect([izzy.name, izzy.class, izzy.kind, izzy.weight, izzy.iv, izzy.sprite, izzy.roster.length]).toEqual(['Izzy', 'DigiDestined', 'special', 3.5, 31, '/trainers/izzy.png', 8]);
+    expect([izzy.name, izzy.class, izzy.kind, izzy.weight, izzy.iv, izzy.sprite, izzy.roster.length]).toEqual(['Izzy', 'DigiDestined', 'special', 7, 31, '/trainers/izzy.png', 8]);
     expect([SETS[izzy.leadSetId!].species, SETS[izzy.leadSetId!].item]).toEqual(['Tentomon', 'Herculeskabuterite']);
+    // Then Kaito (a Digimon Tamer), at 7, leading with Agumon holding Blackwargreyite.
+    const kaito = TRAINERS[316] as SpecialTrainer;
+    expect([kaito.name, kaito.class, kaito.kind, kaito.weight, kaito.iv, kaito.sprite, kaito.roster.length]).toEqual(['Kaito', 'Digimon Tamer', 'special', 7, 31, '/trainers/kaito.png', 8]);
+    expect([SETS[kaito.leadSetId!].species, SETS[kaito.leadSetId!].item]).toEqual(['Agumon', 'Blackwargreyite']);
     // Every special trainer has a unique key (lines, pictures, partners), even when names repeat.
     const specials = TRAINERS.filter(t => t.kind === 'special');
     expect(new Set(specials.map(trainerKey)).size).toBe(specials.length);
-    expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === 7 && t.iv === 31 && t.versions.length === 2)).toBe(true);
+    // Gym Leaders: 7, except Giovanni (1, on request).
+    expect(TRAINERS.slice(205, 252).every(t => t.kind === 'special' && t.custom && t.weight === (t.name === 'Giovanni' ? 1 : 7) && t.iv === 31 && t.versions.length === 2)).toBe(true);
     // The Elite Four and Champions come last (earlier ids, kept in saved runs, don't move): weight 3.5, eight Pokémon each.
     const elite = TRAINERS.slice(256, 289);
     expect(elite.every(t => t.kind === 'special' && t.custom && t.weight === 3.5 && t.iv === 31 && t.versions.length === 2 && t.roster.length === 8)).toBe(true);
@@ -175,7 +180,7 @@ describe('brackets.json', () => {
     }
   });
 
-  it('special pool has the game\'s 8 trainers per version (Anabel at 1/50 of their weight), plus every Gym Leader, Elite Four member and Champion', () => {
+  it('special pool has the game\'s 8 trainers per version (Anabel at 3.5, on request: 1/15 of their weight; the game: 1/50), plus every custom special trainer', () => {
     const all = BRACKETS.specialTrainerPool.trainerIds.map(id => TRAINERS[id] as SpecialTrainer);
     expect(all.filter(t => t.custom).map(t => t.id)).toEqual(TRAINERS.filter(t => t.kind === 'special' && t.custom).map(t => t.id));
     const specials = all.filter(t => !t.custom);
@@ -183,7 +188,7 @@ describe('brackets.json', () => {
       const pool = specials.filter(t => t.versions.includes(v));
       expect(pool).toHaveLength(8);
       const total = pool.reduce((a, t) => a + t.weight, 0);
-      expect(pool.find(t => t.name === 'Anabel')!.weight / total).toBeCloseTo(1 / 50);
+      expect(pool.find(t => t.name === 'Anabel')!.weight / total).toBeCloseTo(1 / 15);
     }
     const names = (v: 'sun' | 'moon') => specials.filter(t => t.versions.length === 1 && t.versions[0] === v).map(t => t.name).sort();
     expect(names('sun')).toEqual(['Kiawe', 'Plumeria', 'Sina']);

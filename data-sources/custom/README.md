@@ -42,12 +42,12 @@ team, ...).
   give Marques and Thomas the same number of entries in matching order. No Pokémon
   names. No `npm run data:custom` needed for lines; `npm test` checks them.
 
-## The DigiDestined (Izzy)
+## The DigiDestined and Digimon Tamers (Izzy, Kaito)
 
-- **Teams:** `digidestined.txt`, same format, one section per trainer (Izzy has eight Pokémon).
+- **Teams:** `digidestined.txt`, same format, one section per trainer (eight Pokémon each).
 - **Who, how often, partners:** `digidestined.json`. Each trainer has a class ("DigiDestined"),
   gender, sprite (in `public/trainers/`), `lead` (the Pokémon that always leads: Izzy's Tentomon),
-  `weight` in the special-trainer pool (Izzy 3.5) and `partners`: as an opponent in a Multi Battle
+  `weight` in the special-trainer pool (Izzy and Kaito 7) and `partners`: as an opponent in a Multi Battle
   they always battle alongside one of these, picked with equal chance, and the partner goes first
   (on the left). A partner can be a Battle Legend (Tai) or another trainer in this file. To give
   Izzy Mimi or Joe as partners too, add them here (with their own teams) and list them in his
@@ -70,12 +70,14 @@ team, ...).
 - **Teams:** `evil-teams.txt`, one section per trainer, titled with their key: the
   name, or "Archie (RSE)" / "Archie (ORAS)" style when two share a name. Class,
   gender and region are in `scripts/build-custom-trainers.mjs` (`EVIL_TEAMS`); a new
-  trainer must be added there too. Weight 3.5. `npm test` checks every set.
+  trainer must be added there too. Weight 1 each (Courtney 7): `EVIL_WEIGHT` and `weight` in
+  `EVIL_TEAMS`. `npm test` checks every set.
 - **Lines and pair greetings:** `trainer-quotes.json`, under the same key.
 
 ## Gym Leaders
 
 - **Teams:** `gym-leaders.txt`, same format; "Brock 1" and "Brock 2" are both Brock.
+- **Weight:** 7 each, like the game's special trainers; Giovanni 1 (`GYM_WEIGHT` in `scripts/build-custom-trainers.mjs`).
 - **Lines:** `trainer-quotes.json` under their names (three entries each).
 - **Pair greetings (Multi Battles):** `trainer-quotes.json` under `"pairs"`. When two
   special trainers who share a region or a type (Brock and Misty, Misty and Juan...)

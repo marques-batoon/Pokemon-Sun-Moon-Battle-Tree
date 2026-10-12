@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BattleClient, BattleSnapshot, StartOptions } from '../client/battle-client';
 import { BattleClient as RealBattleClient } from '../client/battle-client';
-import { TRAINERS } from '../data/battle-tree';
+import { multiPartners, TRAINERS } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
 import { createInProcessTransport } from '../engine/in-process-transport';
 import { memoryStore, type KeyValueStore } from '../storage/kv';
@@ -145,9 +145,9 @@ describe('Multi: planning opponents', () => {
       const plan = planOpponent(`anabel-${n}`, 'multi', 'super', 20, settings, SINA);
       for (const t of [plan, plan.second!]) {
         expect(TRAINERS[t.trainerId].name).not.toBe('Anabel');
-        // Izzy brings Tai (a Battle Legend) as his partner.
-        const izzysTai = t === plan && TRAINERS[plan.second!.trainerId].name === 'Izzy';
-        expect(t.kind).toBe(t.replacedAnabel ? 'regular' : izzysTai ? 'legend' : 'special');
+        // Izzy and Kaito bring Tai (a Battle Legend) as their partner.
+        const tamersTai = t === plan && multiPartners(plan.second!.trainerId).includes(plan.trainerId);
+        expect(t.kind).toBe(t.replacedAnabel ? 'regular' : tamersTai ? 'legend' : 'special');
       }
     }
   });
@@ -494,7 +494,9 @@ describe('All Star Mode', () => {
       for (const n of [1, 2, 3, 4]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n, DEFAULT_SETTINGS).kind).toBe('special');
       expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 5, DEFAULT_SETTINGS).kind).toBe('legend');
       const multi = planOpponent(`asm-${i}`, 'multi', 'allstar', 3, DEFAULT_SETTINGS, SINA);
-      expect([multi.kind, multi.second!.kind]).toEqual(['special', 'special']);
+      // Izzy and Kaito bring Tai (a Battle Legend), Tai first.
+      const tamer = multiPartners(multi.second!.trainerId).includes(multi.trainerId);
+      expect([multi.kind, multi.second!.kind]).toEqual([tamer ? 'legend' : 'special', 'special']);
       expect([multi.trainerId, multi.second!.trainerId]).not.toContain(SINA);
       expect(planOpponent(`asm-${i}`, 'multi', 'allstar', 10, DEFAULT_SETTINGS, SINA).second!.kind).toBe('legend');
     }

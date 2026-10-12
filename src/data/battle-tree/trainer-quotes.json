@@ -5318,6 +5318,23 @@
     "trainerWins": "Wait till I tell Tai! He never believes my theories until he sees them work.",
     "trainerLoses": "Tai would say I overthought it. Please don't tell him he was right."
    }
+  ],
+  "Kaito": [
+   {
+    "greeting": "I don't give orders. I give information. My partner decides what to do with it. Your move.",
+    "trainerWins": "Three seconds. That's all it took. ...Good battle, though.",
+    "trainerLoses": "You read us better than most. My partner will want a rematch. So will I."
+   },
+   {
+    "greeting": "People see my team and assume the worst. Fine. Battle us, then decide for yourself who we are.",
+    "trainerWins": "Labels don't win battles. Choices do.",
+    "trainerLoses": "You didn't judge us. You just beat us. I can respect that."
+   },
+   {
+    "greeting": "Nobody owns my partner. We fight beside each other because we chose to. Don't mistake that for weakness.",
+    "trainerWins": "We chose this fight, and we chose to win it.",
+    "trainerLoses": "We'll be back. Not because anyone told us to. Because we want to."
+   }
   ]
  },
  "multi": {
@@ -10223,7 +10240,7 @@
   }
  },
  "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both).",
- "duosNote": "Team-up lines for a trainer and their Multi Battle partner (Izzy always battles alongside Tai as an opponent), three sets each in matching order: used whenever the two battle together. Add an entry for each new partner (Mimi, Joe...).",
+ "duosNote": "Team-up lines for a trainer and their Multi Battle partner (Izzy and Kaito always battle alongside Tai as opponents), three sets each in matching order: used whenever the two battle together. Add an entry for each new partner (Mimi, Joe...).",
  "duos": {
   "Tai & Izzy": {
    "Tai": [
@@ -10258,6 +10275,42 @@
      "greeting": "Our partners changed when we crossed over, but our teamwork didn't. Right, Tai?",
      "trainerWins": "Courage and Knowledge, perfectly synchronized. Prodigious!",
      "trainerLoses": "Tai, I think our variables need recalibrating."
+    }
+   ]
+  },
+  "Tai & Kaito": {
+   "Tai": [
+    {
+     "greeting": "Kaito's from another world, but our partners started out exactly alike. And he calls me senpai! Let's go!",
+     "trainerWins": "Two paths, one win! Nice backup, Kaito!",
+     "trainerLoses": "Okay, charging in wasn't the move. Kaito, don't apologize, that one's on me!"
+    },
+    {
+     "greeting": "We only met when we both got zapped into this world, and Kaito already calls me senpai. Gotta live up to that!",
+     "trainerWins": "Courage and a choice. Turns out that's a great combo!",
+     "trainerLoses": "Chin up, Kaito. Even senpais lose sometimes. We'll get them next time."
+    },
+    {
+     "greeting": "Kaito keeps watching how I battle like there's a test later. Fine by me. Let's show him how it's done!",
+     "trainerWins": "See, Kaito? Trust your partner, then charge! You're getting it.",
+     "trainerLoses": "Even the guy you look up to loses sometimes, Kaito. What counts is getting back up."
+    }
+   ],
+   "Kaito": [
+    {
+     "greeting": "We met the day we both landed in this world. Tai fights like he was born to lead. I'm taking notes.",
+     "trainerWins": "Nice backup? You did the hard part, Tai. ...I'm still learning from you.",
+     "trainerLoses": "I won't say it. You stood in front of all of us. Next time, I'll cover you better."
+    },
+    {
+     "greeting": "Tai looked at my partner and didn't flinch. Most people do. I'd follow someone like that anywhere.",
+     "trainerWins": "Courage like his is rare. I'm glad this world dropped me next to him.",
+     "trainerLoses": "I am planning the rematch. And I'm asking Tai how he stays so steady."
+    },
+    {
+     "greeting": "I've only known Tai since we were both pulled into this world, and I already know who I want to learn from.",
+     "trainerWins": "So that's how you lead from the front. ...Thanks for showing me, Tai.",
+     "trainerLoses": "Getting back up. Right. I'll remember that one, Tai."
     }
    ]
   }

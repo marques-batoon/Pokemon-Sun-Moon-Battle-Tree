@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, multiPartners, pairedTrainer, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { BOSSES, BRACKETS, multiPartners, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -124,6 +124,12 @@ export function multiDuo(trainerId: number): [number, number] | null {
 
 export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
 
+/**
+ * Multi Battles: the chance that the second opponent is someone the first has pair greetings with (Brock and
+ * Misty...), on request; otherwise it's an ordinary weighted draw (which can still pair them).
+ */
+export const PAIR_TEAMMATE_CHANCE = 0.15;
+
 /** A trainer and any other version of the same character (both Archies): never two of them in one battle. */
 const samePersonIds = (id: number) => TRAINERS.filter(t => samePerson(t, TRAINERS[id])).map(t => t.id);
 
@@ -192,6 +198,16 @@ export function planOpponent(
   // A paired trainer can't be the second opponent without their partner (Tate and Liza; Izzy and Tai).
   for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
   for (const t of TRAINERS) if (multiPartners(t.id).length) exclude.add(t.id);
+  // 15% of the time (on request), the teammate is someone the first opponent has pair greetings with (by weight).
+  if (slot.type === 'special') {
+    const locked = (t: SpecialTrainer) => t.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked;
+    const friends = new Set(pairGreetingPartners(first.trainerId));
+    const candidates = specialPool().filter(p => friends.has(p.trainer.id) && !exclude.has(p.trainer.id) && !locked(p.trainer));
+    if (candidates.length && rng.next() < PAIR_TEAMMATE_CHANCE) {
+      const friend = rng.weighted(candidates, p => p.weight).trainer;
+      return { battle, ...first, seedText, second: planTrainer({ trainer: friend, replacedAnabel: false }, format, rng) };
+    }
+  }
   const second = chooseTrainer(format, course, battle, settings, rng, exclude);
   return { battle, ...first, seedText, second: planTrainer(second, format, rng) };
 }

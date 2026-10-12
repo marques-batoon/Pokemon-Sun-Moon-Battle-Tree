@@ -14,7 +14,12 @@ import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer,
 export * from './types';
 
 const GAME_SETS = setsJson.sets as TreeSet[];
-const GAME_TRAINERS = trainersJson.trainers as Trainer[];
+/**
+ * App changes to the game's special-trainer weights, on request (the game's own stay in trainers.json):
+ * Anabel 3.5 (2026-10-11; the game: 1, a seventh of the others').
+ */
+const WEIGHT_CHANGES: Record<string, number> = { Anabel: 3.5 };
+const GAME_TRAINERS = (trainersJson.trainers as Trainer[]).map(t => (t.kind === 'special' && t.name in WEIGHT_CHANGES ? { ...t, weight: WEIGHT_CHANGES[t.name] } : t));
 /** The game's Super Battle Legends (Red, Blue), by name: battle-50 entries can name them too. */
 const gameLegend = (name: string) => GAME_TRAINERS.find(t => t.kind === 'legend' && t.course === 'super' && t.name === name);
 
@@ -33,7 +38,8 @@ export const samePerson = (a: Trainer, b: Trainer) => a.id === b.id || (a.person
 /**
  * Custom special trainers (see DATA_NOTES.md "Custom additions"), appended after the sets and
  * trainers before them so ids stay array indices: the Gym Leaders (weight 7, like the game's
- * special trainers), the Elite Four and Champions and the evil teams (weight 3.5). Both versions, IV 31.
+ * special trainers), the Elite Four and Champions (3.5), the evil teams (1, Courtney 7) and the
+ * DigiDestined (Izzy 7). A trainer's own `weight` wins over the group's. Both versions, IV 31.
  */
 function customTrainers(list: CustomTrainer[], firstSet: number, firstTrainer: number, weight: number, file: string) {
   const sets: TreeSet[] = [];
@@ -101,15 +107,15 @@ const ELITE_FOUR = customTrainers(
   3.5, 'elite-four.txt (designed for the user)',
 );
 
-/** The evil teams' leaders and admins of Generations 1-7, after the Elite Four (earlier ids don't move). */
+/** The evil teams' leaders and admins of Generations 1-7, after the Elite Four (earlier ids don't move): weight 1, Courtney 7. */
 const EVIL_TEAMS = customTrainers(
   evilTeamsJson.trainers as CustomTrainer[],
   GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length,
   GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length,
-  3.5, 'evil-teams.txt (designed for the user)',
+  1, 'evil-teams.txt (designed for the user)',
 );
 
-/** The DigiDestined (Izzy), after the evil teams (earlier ids don't move): weight as given (3.5), own sprite and lead. */
+/** The DigiDestined (Izzy), after the evil teams (earlier ids don't move): weight as given (Izzy 7), own sprite and lead. */
 const DIGIDESTINED_LIST = digidestinedJson.trainers as CustomTrainer[];
 const DIGIDESTINED = customTrainers(
   DIGIDESTINED_LIST,
@@ -233,6 +239,16 @@ const DUO_PARTNER = new Map<number, number>([
   ...Object.values(BATTLE_50.bosses).filter(b => b.partnerTrainerId !== undefined)
     .flatMap(b => [[b.trainerId, b.partnerTrainerId!], [b.partnerTrainerId!, b.trainerId]] as [number, number][]),
 ]);
+
+/** Special trainers who have pair greetings with this one (TRAINER_PAIR_GREETINGS), by id. */
+export function pairGreetingPartners(trainerId: number): number[] {
+  const me = trainerKey(TRAINERS[trainerId]);
+  return Object.values(TRAINER_PAIR_GREETINGS)
+    .filter(entry => me in entry)
+    .flatMap(entry => Object.keys(entry).filter(name => name !== me))
+    .map(name => TRAINERS.find(t => t.kind === 'special' && trainerKey(t) === name)?.id)
+    .filter((id): id is number => id !== undefined && !samePerson(TRAINERS[id], TRAINERS[trainerId]));
+}
 
 /** What `trainer` says to greet you when battling alongside `other` (null: no special greeting for this pair). */
 export function pairGreeting(trainer: Trainer, other: Trainer): string | null {

@@ -1,7 +1,7 @@
 {
  "source": "Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
-  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy: 3.5).",
+  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy and Kaito: 7).",
   "\"lead\": the species that always leads their team. \"partners\": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).",
   "IV 31 like every special trainer; IV lines are ignored. Sprites are the user's own pixel art in public/trainers/."
  ],
@@ -12,7 +12,7 @@
    "classGender": "M",
    "region": "Digital World",
    "sprite": "/trainers/izzy.png",
-   "weight": 3.5,
+   "weight": 7,
    "lead": "Tentomon",
    "partners": [
     "Tai"
@@ -176,6 +176,180 @@
       "Rock Blast",
       "Close Combat",
       "Swords Dance"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Kaito",
+   "class": "Digimon Tamer",
+   "classGender": "M",
+   "region": "Digital World",
+   "sprite": "/trainers/kaito.png",
+   "weight": 7,
+   "lead": "Agumon",
+   "partners": [
+    "Tai"
+   ],
+   "sets": [
+    {
+     "species": "Agumon",
+     "item": "Blackwargreyite",
+     "ability": "Tough Claws",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Dramon Destroyer",
+      "Flare Blitz",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Silvally-Dark",
+     "item": "Dark Memory",
+     "ability": "RKS System",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Multi-Attack",
+      "Iron Head",
+      "Flame Charge"
+     ]
+    },
+    {
+     "species": "Hydreigon",
+     "item": "Choice Specs",
+     "ability": "Levitate",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dark Pulse",
+      "Draco Meteor",
+      "Flash Cannon",
+      "Fire Blast"
+     ]
+    },
+    {
+     "species": "Absol",
+     "item": "Absolite",
+     "ability": "Justified",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Sucker Punch",
+      "Knock Off",
+      "Play Rough"
+     ]
+    },
+    {
+     "species": "Aegislash",
+     "item": "Weakness Policy",
+     "ability": "Stance Change",
+     "nature": "Quiet",
+     "evs": {
+      "hp": 252,
+      "atk": 4,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Shadow Ball",
+      "Flash Cannon",
+      "Shadow Sneak",
+      "King's Shield"
+     ]
+    },
+    {
+     "species": "Bisharp",
+     "item": "Black Glasses",
+     "ability": "Defiant",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Sucker Punch",
+      "Iron Head",
+      "Knock Off",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Tyranitar",
+     "item": "Assault Vest",
+     "ability": "Sand Stream",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Stone Edge",
+      "Crunch",
+      "Earthquake",
+      "Fire Punch"
+     ]
+    },
+    {
+     "species": "Mimikyu",
+     "item": "Life Orb",
+     "ability": "Disguise",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Shadow Claw",
+      "Play Rough",
+      "Shadow Sneak"
      ]
     }
    ]

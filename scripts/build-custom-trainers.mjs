@@ -8,8 +8,9 @@
 //    Generations 1-7 as special trainers, weight 3.5);
 //  - battle-50-trainers.txt + battle-50-trainers.json -> src/data/custom/battle-50.json
 //    (trainers who can take the Battle Legends' battle-50 slot).
-//  - digidestined.txt + digidestined.json -> src/data/custom/digidestined.json (the DigiDestined
-//    as special trainers: own sprite, a Pokémon that always leads, fixed Multi Battle partners).
+//  - digidestined.txt + digidestined.json -> src/data/custom/digidestined.json (the DigiDestined and
+//    other Digimon Tamers as special trainers: own sprite, a Pokémon that always leads, fixed Multi
+//    Battle partners).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
 //  - Abilities, items, natures, EVs, moves and genders come from the export;
 //    IVs don't: like every Battle Tree trainer they use the trainer's IV
@@ -44,6 +45,8 @@ const REGION = {
 const regionOf = name => Object.keys(REGION).find(r => REGION[r].includes(name));
 /** Bianca was never a Gym Leader: she battles as a Pokémon Trainer, as in Black 2 and White 2. */
 const CLASS = { Bianca: 'Pokémon Trainer' };
+/** Gym Leaders' weight in the special-trainer pool is 7, like the game's special trainers; Giovanni 1 (on request, 2026-10-11). */
+const GYM_WEIGHT = { Giovanni: 1 };
 
 /**
  * Tate and Liza battle together in Multi Battles, leading with one of these
@@ -81,7 +84,9 @@ const eliteRegion = name => Object.keys(ELITE_FOUR).find(r => ELITE_FOUR[r].incl
  * (lines, pictures, partners), `person` keeps the two versions apart in Multi Battles. Team Aqua's
  * Matt has a key too (Tai's partner Matt is a Battle Legend). Giovanni (a Gym Leader here), Guzma,
  * Plumeria and Colress are already special trainers.
+ * Weight 1 each in the special-trainer pool (on request, 2026-10-11; they were 3.5), except Courtney: 7.
  */
+const EVIL_WEIGHT = 1;
 const EVIL_TEAMS = {
   'Archer': { class: 'Rocket Executive', region: 'Johto' },
   'Ariana': { class: 'Rocket Executive', region: 'Johto', female: true },
@@ -90,7 +95,7 @@ const EVIL_TEAMS = {
   'Maxie (RSE)': { name: 'Maxie', person: 'Maxie', class: 'Magma Leader', region: 'Hoenn' },
   'Maxie (ORAS)': { name: 'Maxie', person: 'Maxie', class: 'Team Magma Leader', region: 'Hoenn' },
   'Tabitha': { class: 'Team Magma Admin', region: 'Hoenn' },
-  'Courtney': { class: 'Team Magma Admin', region: 'Hoenn', female: true },
+  'Courtney': { class: 'Team Magma Admin', region: 'Hoenn', female: true, weight: 7 },
   'Archie (RSE)': { name: 'Archie', person: 'Archie', class: 'Aqua Leader', region: 'Hoenn' },
   'Archie (ORAS)': { name: 'Archie', person: 'Archie', class: 'Team Aqua Leader', region: 'Hoenn' },
   'Matt (Team Aqua)': { name: 'Matt', class: 'Team Aqua Admin', region: 'Hoenn' },
@@ -158,6 +163,7 @@ const gymLeaders = parseExports('gym-leaders.txt', name => ({
   class: CLASS[name] ?? 'Gym Leader',
   classGender: FEMALE.has(name) ? 'F' : 'M',
   region: regionOf(name),
+  ...(GYM_WEIGHT[name] ? { weight: GYM_WEIGHT[name] } : {}),
 }));
 for (const t of gymLeaders) if (!t.region) problems.push(`${t.name}: no region`);
 
@@ -177,7 +183,7 @@ const evilTeams = parseExports('evil-teams.txt', title => {
   const name = info.name ?? title;
   return {
     name, ...(name !== title ? { key: title } : {}), ...(info.person ? { person: info.person } : {}),
-    class: info.class, classGender: info.female ? 'F' : 'M', region: info.region,
+    class: info.class, classGender: info.female ? 'F' : 'M', region: info.region, weight: info.weight ?? EVIL_WEIGHT,
   };
 });
 const takenNames = new Set([...gymLeaders, ...eliteFour].map(t => t.name));
@@ -249,7 +255,7 @@ save('elite-four.json', {
 save('evil-teams.json', {
   source: 'Designed for the user (2026-10-11, on request): the evil teams\' leaders and admins of Generations 1-7 as Showdown exports in data-sources/custom/evil-teams.txt; built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'Each trainer is one special trainer with eight Pokémon, weight 3.5, in Super Singles, Super Doubles and Super Multi (and All Star Mode).',
+    'Each trainer is one special trainer with eight Pokémon, weight 1 (Courtney 7; changed on request 2026-10-11, they were 3.5), in Super Singles, Super Doubles and Super Multi (and All Star Mode).',
     'Archie and Maxie appear twice (Ruby / Sapphire / Emerald: no Megas; Omega Ruby / Alpha Sapphire: with their Megas); "key" tells them apart in the data, "person" keeps the two versions out of the same battle.',
     'Giovanni (a Gym Leader here), Guzma, Plumeria and Colress were already special trainers. IVs 31; Abilities and genders as exported. Every set passes the app\'s Gen 7 team validator.',
   ],
@@ -258,7 +264,7 @@ save('evil-teams.json', {
 save('digidestined.json', {
   source: 'Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy: 3.5).',
+    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy and Kaito: 7).',
     '"lead": the species that always leads their team. "partners": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).',
     'IV 31 like every special trainer; IV lines are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
   ],

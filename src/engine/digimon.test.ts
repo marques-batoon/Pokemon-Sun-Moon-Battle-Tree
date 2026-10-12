@@ -313,6 +313,10 @@ describe('Tentomon and HerculesKabuterimon', () => {
     expect(validate(team(tentomon(['Giga Blaster', 'Super Shocker', 'Hard Press', 'Pounce'])))).toEqual([]);
     expect(validate(team(tentomon(['Trailblaze', 'Skitter Smack', 'Body Press', 'Quiver Dance'], 'Magnet')))).toEqual([]);
     expect(validate(team(tentomon(['Flamethrower']))).join(' ')).toMatch(/can't learn Flamethrower/);
+    // Hidden Power of any type, but not Tera Blast (on request).
+    expect(validate(team(tentomon(['Hidden Power', 'Giga Blaster'])))).toEqual([]);
+    expect(validate(team(mon('Tentomon', 'Herculeskabuterite', 'Static', ['Hidden Power [Ice]'], 'EVs: 252 SpA\nIVs: 30 Atk / 30 Def\nModest Nature\n')))).toEqual([]);
+    expect(validate(team(tentomon(['Tera Blast']))).join(' ')).toMatch(/can't learn Tera Blast/);
     expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Giga Blaster'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Giga Blaster/);
     expect(validate(team(mon('Pikachu', 'Herculeskabuterite', 'Static', ['Thunderbolt'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Herculeskabuterite/);
   });
