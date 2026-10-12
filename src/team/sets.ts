@@ -1,4 +1,5 @@
 import type { Nature, StatsTable } from '@pkmn/data';
+import { isDarkWarp, isWarpForm } from '../data/custom/digimon';
 import { canHoldItem, paradoxFormForSet } from '../data/custom/paradox';
 import { gen7, speciesAbilities } from './dex';
 import { DEFAULT_LEVEL, MAX_EV_STAT, MAX_EV_TOTAL, MAX_IV, STAT_IDS, type PokemonSet, type StatID } from './types';
@@ -44,6 +45,20 @@ export function changeSpecies(set: PokemonSet, species: string): PokemonSet {
 export const battleSpecies = (set: Pick<PokemonSet, 'species' | 'item'>): string => paradoxFormForSet(set.species, set.item) ?? set.species;
 
 /**
+ * The forms whose stats the team builder can show for a set: its own species and, if its held item evolves
+ * it, that form (Mega Evolution, Warp Digivolution or Paradox form), with what to call the change.
+ * `battlesAs`: which of the two it is when the battle starts (the Paradox form; the base form otherwise).
+ */
+export function statForms(set: Pick<PokemonSet, 'species' | 'item'>): { base: string; evolved: string | null; change: string; battlesAs: 'base' | 'evolved' } {
+  const paradox = paradoxFormForSet(set.species, set.item);
+  if (paradox) return { base: set.species, evolved: paradox, change: 'Paradox form', battlesAs: 'evolved' };
+  const mega = megaFormForSet(set);
+  if (!mega) return { base: set.species, evolved: null, change: '', battlesAs: 'base' };
+  const change = isWarpForm(mega) ? (isDarkWarp(mega) ? 'Dark Warp Digivolution' : 'Warp Digivolution') : 'Mega Evolution';
+  return { base: set.species, evolved: mega, change, battlesAs: 'base' };
+}
+
+/**
  * The form a set changes into mid-battle with its held item: its Mega Evolution with a matching Mega
  * Stone, or its warp form with a Digimon's warp item (Wargreyite works like a Mega Stone). Null
  * otherwise. (Paradoxorbs aren't this: the Paradox form is what battles from the start; see battleSpecies.)
@@ -80,9 +95,12 @@ export function withIv(set: PokemonSet, stat: StatID, value: number): PokemonSet
 
 /** Final stats at the battle level (min(level, 50)), as the game computes them. */
 /** Stats at the battle level; for a Paradoxorb holder, its Paradox form's stats. */
-/** Final stats at the battle level, or at `level` (the team builder can also show Lv. 100). */
-export function calcStats(set: PokemonSet, level = battleLevel(set)): StatsTable {
-  const species = gen7.species.get(battleSpecies(set));
+/**
+ * Final stats at the battle level, or at `level` (the team builder can also show Lv. 100), as the species it
+ * battles as, or as `as` (the team builder can show the base form or the form it Mega Evolves / warps into).
+ */
+export function calcStats(set: PokemonSet, level = battleLevel(set), as = battleSpecies(set)): StatsTable {
+  const species = gen7.species.get(as);
   const nature = gen7.natures.get(set.nature) as Nature | undefined;
   const out = fill(0);
   if (!species) return out;

@@ -275,6 +275,11 @@ button.danger { color: var(--bad); }
 .stat-total { font-weight: 700; width: 56px; text-align: right !important; }
 .stat-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .lv100-toggle { cursor: pointer; white-space: nowrap; }
+/* Base form / evolved form switch (Mega Stone, warp item, Paradoxorb): which form's stats the table shows. */
+.form-toggle { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.form-toggle button { padding: 3px 10px; border-radius: 999px; font-size: 0.8rem; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.form-toggle button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.form-toggle .form-bst { opacity: 0.8; font-weight: 600; margin-left: 2px; }
 /* Lv. 100 stats (team builder option): for comparison, lighter than the battle-level totals. */
 .stat-lv100 { width: 56px; text-align: right !important; opacity: 0.75; font-weight: 600; white-space: nowrap; }
 .stat-plus { color: var(--bad); }

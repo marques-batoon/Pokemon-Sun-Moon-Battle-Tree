@@ -4,7 +4,7 @@ import { applyFlatRules, FORMAT_IDS, registerBattleTreeFormats } from '../engine
 import { seedFromString } from '../engine/seed';
 import { clauseConflicts } from './checks';
 import { eligibleSpecies, gen7, learnableMoves } from './dex';
-import { calcStats, changeSpecies, evTotal, hiddenPowerType, newSet, withEv, withIv } from './sets';
+import { calcStats, changeSpecies, evTotal, hiddenPowerType, newSet, statForms, withEv, withIv } from './sets';
 import { exportShowdownText, importShowdownText } from './showdown-text';
 import type { PokemonSet } from './types';
 
@@ -18,6 +18,9 @@ describe('Lv. 50 stat calculation', () => {
     expect(calcStats(chomp)).toEqual({ hp: 184, atk: 182, def: 115, spa: 90, spd: 105, spe: 169 });
     // The team builder's Lv. 100 option: the familiar 358 / 359 / 226 / 176 / 206 / 333 Jolly Garchomp.
     expect(calcStats(chomp, 100)).toEqual({ hp: 358, atk: 359, def: 226, spa: 176, spd: 206, spe: 333 });
+    // ...and as the form its item evolves it into (here Mega Garchomp, 108/170/115/120/95/92), shown on request.
+    expect(calcStats(set('Garchomp', { item: 'Garchompite', nature: 'Jolly', evs: spread({ hp: 4, atk: 252, spe: 252 }) }), 50, 'Garchomp-Mega'))
+      .toEqual({ hp: 184, atk: 222, def: 135, spa: 126, spd: 115, spe: 158 });
     // Shedinja always has 1 HP.
     expect(calcStats(set('Shedinja', { evs: spread({ hp: 252 }) })).hp).toBe(1);
     // 0 IV / Brave lowers Speed: Aegislash base 60 Spe -> floor((120+0+0)*50/100)+5 = 65, * 0.9 = 58.
@@ -224,5 +227,16 @@ describe('export / import all teams', () => {
     expect(back.teams.map(t => t.name)).toEqual(['Rain', 'Sun team']);
     expect(back.teams[0].sets).toEqual(rain);
     expect(back.teams[1].sets).toEqual(sun);
+  });
+});
+
+describe('statForms (the team builder\'s base form / evolved form switch)', () => {
+  it('offers the form the held item evolves it into, and says which one battles first', () => {
+    expect(statForms({ species: 'Garchomp', item: 'Choice Scarf' })).toMatchObject({ evolved: null });
+    expect(statForms({ species: 'Charizard', item: 'Charizardite X' })).toEqual({ base: 'Charizard', evolved: 'Charizard-Mega-X', change: 'Mega Evolution', battlesAs: 'base' });
+    expect(statForms({ species: 'Agumon', item: 'Wargreyite' })).toMatchObject({ evolved: 'WarGreymon', change: 'Warp Digivolution', battlesAs: 'base' });
+    expect(statForms({ species: 'Agumon', item: 'Blackwargreyite' })).toMatchObject({ evolved: 'BlackWarGreymon', change: 'Dark Warp Digivolution' });
+    // A Paradoxorb: the Paradox form is what battles from the start.
+    expect(statForms({ species: 'Donphan', item: 'Paradoxorb-A' })).toEqual({ base: 'Donphan', evolved: 'Great Tusk', change: 'Paradox form', battlesAs: 'evolved' });
   });
 });

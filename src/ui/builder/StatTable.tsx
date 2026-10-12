@@ -1,6 +1,7 @@
 import type { Nature } from '@pkmn/data';
+import { useState } from 'react';
 import { gen7 } from '../../team/dex';
-import { battleLevel, battleSpecies, calcStats, evTotal, withEv, withIv } from '../../team/sets';
+import { battleLevel, calcStats, evTotal, statForms, withEv, withIv } from '../../team/sets';
 import { MAX_EV_STAT, MAX_EV_TOTAL, MAX_IV, STAT_IDS, STAT_LABELS, type PokemonSet } from '../../team/types';
 import { getSettingsStore } from '../services';
 import { useAppSettings } from '../useAppSettings';
@@ -10,13 +11,24 @@ interface Props {
   onChange: (set: PokemonSet) => void;
 }
 
-/** EV / IV inputs with live final stats at the battle level (and, if chosen, at Lv. 100 for comparison). */
+const bst = (name: string) => Object.values(gen7.species.get(name)?.baseStats ?? {}).reduce((a, b) => a + b, 0);
+
+/**
+ * EV / IV inputs with live final stats at the battle level (and, if chosen, at Lv. 100 for comparison). When the
+ * held item evolves it (Mega Stone, warp item, Paradoxorb), a switch shows the stats as either form, each with
+ * its BST; it starts on the form the Pokémon battles as when the battle starts.
+ */
 export function StatTable({ set, onChange }: Props) {
-  const species = gen7.species.get(battleSpecies(set));
+  const forms = statForms(set);
+  const [chosen, setChosen] = useState<{ evolved: string; view: 'base' | 'evolved' } | null>(null);
+  // The choice lasts while the same evolution is available (a new item or species starts over).
+  const view = forms.evolved && chosen?.evolved === forms.evolved ? chosen.view : forms.battlesAs;
+  const as = view === 'evolved' && forms.evolved ? forms.evolved : forms.base;
+  const species = gen7.species.get(as);
   const nature = gen7.natures.get(set.nature) as Nature | undefined;
-  const stats = calcStats(set);
+  const stats = calcStats(set, battleLevel(set), as);
   const { showLevel100Stats: show100 } = useAppSettings();
-  const stats100 = show100 ? calcStats(set, 100) : null;
+  const stats100 = show100 ? calcStats(set, 100, as) : null;
   const remaining = MAX_EV_TOTAL - evTotal(set);
   const maxBase = 180;
 
@@ -30,6 +42,20 @@ export function StatTable({ set, onChange }: Props) {
             {' '}Show Lv. 100 stats
           </label>
         </div>
+        {forms.evolved && (
+          <div className="form-toggle" role="radiogroup" aria-label={`Show stats before or after its ${forms.change}`}>
+            <span>Stats as:</span>
+            {([['base', forms.base], ['evolved', forms.evolved]] as const).map(([key, name]) => (
+              <button
+                key={key} type="button" role="radio" aria-checked={view === key} className={view === key ? 'on' : ''}
+                title={key === 'evolved' ? `After its ${forms.change}` : forms.battlesAs === 'evolved' ? `Before its ${forms.change}` : 'Before it changes form'}
+                onClick={() => setChosen({ evolved: forms.evolved!, view: key })}
+              >
+                {name} <span className="form-bst">BST {bst(name)}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </caption>
       <thead>
         <tr>
