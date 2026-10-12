@@ -1,0 +1,184 @@
+{
+ "source": "Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.",
+ "notes": [
+  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy: 3.5).",
+  "\"lead\": the species that always leads their team. \"partners\": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).",
+  "IV 31 like every special trainer; IV lines are ignored. Sprites are the user's own pixel art in public/trainers/."
+ ],
+ "trainers": [
+  {
+   "name": "Izzy",
+   "class": "DigiDestined",
+   "classGender": "M",
+   "region": "Digital World",
+   "sprite": "/trainers/izzy.png",
+   "weight": 3.5,
+   "lead": "Tentomon",
+   "partners": [
+    "Tai"
+   ],
+   "sets": [
+    {
+     "species": "Tentomon",
+     "item": "Herculeskabuterite",
+     "ability": "Static",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Giga Blaster",
+      "Bug Buzz",
+      "Earth Power",
+      "Quiver Dance"
+     ]
+    },
+    {
+     "species": "Porygon-Z",
+     "item": "Choice Scarf",
+     "ability": "Adaptability",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Tri Attack",
+      "Thunderbolt",
+      "Ice Beam",
+      "Shadow Ball"
+     ]
+    },
+    {
+     "species": "Rotom-Wash",
+     "item": "Leftovers",
+     "ability": "Levitate",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 212,
+      "spa": 0,
+      "spd": 44,
+      "spe": 0
+     },
+     "moves": [
+      "Hydro Pump",
+      "Volt Switch",
+      "Will-O-Wisp",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Magnezone",
+     "item": "Assault Vest",
+     "ability": "Analytic",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Thunderbolt",
+      "Flash Cannon",
+      "Volt Switch",
+      "Tri Attack"
+     ]
+    },
+    {
+     "species": "Vikavolt",
+     "item": "Choice Specs",
+     "ability": "Levitate",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Thunderbolt",
+      "Bug Buzz",
+      "Energy Ball",
+      "Volt Switch"
+     ]
+    },
+    {
+     "species": "Alakazam",
+     "item": "Alakazite",
+     "ability": "Magic Guard",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Psychic",
+      "Shadow Ball",
+      "Focus Blast",
+      "Dazzling Gleam"
+     ]
+    },
+    {
+     "species": "Metagross",
+     "item": "Life Orb",
+     "ability": "Clear Body",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Meteor Mash",
+      "Zen Headbutt",
+      "Earthquake",
+      "Bullet Punch"
+     ]
+    },
+    {
+     "species": "Heracross",
+     "item": "Heracronite",
+     "ability": "Moxie",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Pin Missile",
+      "Rock Blast",
+      "Close Combat",
+      "Swords Dance"
+     ]
+    }
+   ]
+  }
+ ]
+}

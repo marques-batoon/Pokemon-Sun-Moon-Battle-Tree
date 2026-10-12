@@ -145,7 +145,9 @@ describe('Multi: planning opponents', () => {
       const plan = planOpponent(`anabel-${n}`, 'multi', 'super', 20, settings, SINA);
       for (const t of [plan, plan.second!]) {
         expect(TRAINERS[t.trainerId].name).not.toBe('Anabel');
-        expect(t.kind).toBe(t.replacedAnabel ? 'regular' : 'special');
+        // Izzy brings Tai (a Battle Legend) as his partner.
+        const izzysTai = t === plan && TRAINERS[plan.second!.trainerId].name === 'Izzy';
+        expect(t.kind).toBe(t.replacedAnabel ? 'regular' : izzysTai ? 'legend' : 'special');
       }
     }
   });

@@ -8,6 +8,8 @@
 //    Generations 1-7 as special trainers, weight 3.5);
 //  - battle-50-trainers.txt + battle-50-trainers.json -> src/data/custom/battle-50.json
 //    (trainers who can take the Battle Legends' battle-50 slot).
+//  - digidestined.txt + digidestined.json -> src/data/custom/digidestined.json (the DigiDestined
+//    as special trainers: own sprite, a Pokémon that always leads, fixed Multi Battle partners).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
 //  - Abilities, items, natures, EVs, moves and genders come from the export;
 //    IVs don't: like every Battle Tree trainer they use the trainer's IV
@@ -201,6 +203,25 @@ for (const b of battle50.battles) {
   if (b.trainers.length !== (b.format === 'multi' ? 2 : 1)) problems.push(`battle-50-trainers.json: a ${b.format} battle needs ${b.format === 'multi' ? 'two trainers' : 'one trainer'}`);
 }
 
+// --- The DigiDestined (special trainers) ---
+const digidestined = JSON.parse(readFileSync(new URL('digidestined.json', dir), 'utf8'));
+const digidestinedTrainers = parseExports('digidestined.txt', name => {
+  const info = digidestined.trainers[name];
+  if (!info) { problems.push(`digidestined.json: no entry for ${name}`); return {}; }
+  return {
+    class: info.class, classGender: info.gender, region: 'Digital World', sprite: info.sprite, weight: info.weight,
+    ...(info.lead ? { lead: info.lead } : {}), ...(info.partners?.length ? { partners: info.partners } : {}),
+  };
+});
+for (const t of digidestinedTrainers) {
+  if (t.lead && !t.sets.some(s => s.species === t.lead)) problems.push(`digidestined.json: ${t.name}'s lead ${t.lead} isn't on their team`);
+  if (!(t.weight > 0)) problems.push(`digidestined.json: ${t.name} needs a weight`);
+  for (const p of t.partners ?? []) {
+    if (!battle50Trainers.some(b => b.name === p) && !digidestinedTrainers.some(d => d.name === p)) problems.push(`digidestined.json: ${t.name}'s partner ${p} has no team`);
+  }
+  if ([...gymLeaders, ...eliteFour].some(o => o.name === t.name) || evilTeams.some(o => (o.key ?? o.name) === t.name)) problems.push(`${t.name}: already a special trainer`);
+}
+
 if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
@@ -233,6 +254,15 @@ save('evil-teams.json', {
     'Giovanni (a Gym Leader here), Guzma, Plumeria and Colress were already special trainers. IVs 31; Abilities and genders as exported. Every set passes the app\'s Gen 7 team validator.',
   ],
   trainers: evilTeams,
+});
+save('digidestined.json', {
+  source: 'Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.',
+  notes: [
+    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy: 3.5).',
+    '"lead": the species that always leads their team. "partners": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).',
+    'IV 31 like every special trainer; IV lines are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
+  ],
+  trainers: digidestinedTrainers,
 });
 save('battle-50.json', {
   source: 'Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.',

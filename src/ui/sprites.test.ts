@@ -39,7 +39,7 @@ describe('Digimon sprites', () => {
     expect(animatedSprite('Agumon', 'p2')).toMatchObject({ url: '/pokemon/agumon.png', w: 96, h: 96, pixelated: true, smooth: true });
     expect(animatedSprite('Agumon', 'p2').mirrored).toBeUndefined();
     // Back sprites (2026-10-11): your side shows them, not the front ones flipped.
-    for (const [name, file] of [['Agumon', 'agumon'], ['WarGreymon', 'wargreymon'], ['BlackWarGreymon', 'blackwargreymon'], ['Gabumon', 'gabumon'], ['MetalGarurumon', 'metalgarurumon']]) {
+    for (const [name, file] of [['Agumon', 'agumon'], ['WarGreymon', 'wargreymon'], ['BlackWarGreymon', 'blackwargreymon'], ['Gabumon', 'gabumon'], ['MetalGarurumon', 'metalgarurumon'], ['Tentomon', 'tentomon'], ['HerculesKabuterimon', 'herculeskabuterimon']]) {
       expect(staticSprite(name, 'p1'), name).toMatchObject({ url: `/pokemon/back/${file}.png`, pixelated: true });
       expect(staticSprite(name, 'p1').mirrored, name).toBeUndefined();
       expect(animatedSprite(name, 'p2'), name).toMatchObject({ url: `/pokemon/${file}.png` });

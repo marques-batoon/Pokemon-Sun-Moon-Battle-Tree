@@ -286,3 +286,62 @@ describe('BlackWarGreymon (Dark Warp Digivolution) and the Dramon moves', () => 
     expect(w.runEvent('BasePower', w.p1.active[0], w.p2.active[0], breaker, breaker.basePower, true)).toBe(117);
   });
 });
+
+describe('Tentomon and HerculesKabuterimon', () => {
+  const tentomon = (moves = ['Giga Blaster'], item = 'Herculeskabuterite') => mon('Tentomon', item, 'Static', moves, 'EVs: 252 SpA\nModest Nature\n');
+
+  it('has the custom species, item, moves and Electromorphosis', () => {
+    const t = dex.species.get('Tentomon');
+    expect([t.types, t.baseStats, t.abilities, t.weightkg, t.genderRatio]).toEqual([
+      ['Bug', 'Electric'], { hp: 55, atk: 35, def: 60, spa: 75, spd: 65, spe: 28 }, { 0: 'Static' }, 10.5, { M: 0.875, F: 0.125 },
+    ]);
+    const h = dex.species.get('HerculesKabuterimon');
+    expect([h.baseSpecies, h.battleOnly, h.requiredItem, h.types, h.abilities, h.weightkg]).toEqual(['Tentomon', 'Tentomon', 'Herculeskabuterite', ['Bug', 'Electric'], { 0: 'Electromorphosis' }, 230]);
+    expect(h.baseStats).toEqual({ hp: 90, atk: 75, def: 130, spa: 130, spd: 140, spe: 60 });
+    expect(Object.values(h.baseStats).reduce((x, y) => x + y, 0)).toBe(625);
+    expect(dex.items.get('Herculeskabuterite').megaStone).toEqual({ Tentomon: 'HerculesKabuterimon' });
+    const shocker = dex.moves.get('Super Shocker');
+    expect([shocker.type, shocker.category, shocker.basePower, shocker.accuracy, shocker.pp, shocker.flags.contact]).toEqual(['Electric', 'Special', 70, 100, 15, undefined]);
+    expect(shocker.secondary).toEqual({ chance: 30, status: 'par' });
+    const giga = dex.moves.get('Giga Blaster');
+    expect([giga.type, giga.category, giga.basePower, giga.accuracy, giga.pp, giga.flags.contact]).toEqual(['Electric', 'Special', 100, 100, 10, undefined]);
+    expect(giga.secondary).toEqual({ chance: 20, status: 'par' });
+    expect(dex.abilities.get('Electromorphosis').isNonstandard).toBeNull();
+  });
+
+  it('learns its own list (Gen 8-9 TMs included) and only it gets Super Shocker and Giga Blaster', () => {
+    expect(validate(team(tentomon(['Giga Blaster', 'Super Shocker', 'Hard Press', 'Pounce'])))).toEqual([]);
+    expect(validate(team(tentomon(['Trailblaze', 'Skitter Smack', 'Body Press', 'Quiver Dance'], 'Magnet')))).toEqual([]);
+    expect(validate(team(tentomon(['Flamethrower']))).join(' ')).toMatch(/can't learn Flamethrower/);
+    expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Giga Blaster'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Giga Blaster/);
+    expect(validate(team(mon('Pikachu', 'Herculeskabuterite', 'Static', ['Thunderbolt'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Herculeskabuterite/);
+  });
+
+  it('Warp Digivolves into HerculesKabuterimon', () => {
+    const b = singles([tentomon()], [target]);
+    expect(b.p1.active[0].canMegaEvo).toBe('HerculesKabuterimon');
+    b.makeChoices('move 1 mega', 'move 1');
+    expect(b.p1.active[0].species.name).toBe('HerculesKabuterimon');
+    expect(b.p1.active[0].ability).toBe('electromorphosis');
+    expect(b.log.join('\n')).toMatch(/\|message\|Tentomon warp-digivolve to\.\.\.\n[^]*?\|detailschange\|p1a: Tentomon\|HerculesKabuterimon[^]*?\|message\|HerculesKabuterimon!/);
+  });
+
+  it('Electromorphosis: hit by an attack, its next Electric move (Giga Blaster: 200 power) is doubled, then the charge is gone', () => {
+    const hitter = mon('Snorlax', 'Leftovers', 'Thick Fat', ['Tackle'], 'EVs: 252 HP / 252 Def\n');
+    const b = singles([tentomon(['Giga Blaster', 'Iron Defense'])], [hitter]);
+    b.makeChoices('move 2 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.volatiles.electromorphosis).toBeTruthy();
+    expect(b.log.join('\n')).toMatch(/\|-start\|p1a: Tentomon\|Charge\|\[from\] ability: Electromorphosis/);
+    const giga = b.dex.getActiveMove('Giga Blaster');
+    expect(b.runEvent('BasePower', p, b.p2.active[0], giga, giga.basePower, true)).toBe(200);
+    // It stays charged until it uses an Electric move (here: after a turn of Iron Defense), then it's used up.
+    b.makeChoices('move 2', 'move 1');
+    expect(p.volatiles.electromorphosis).toBeTruthy();
+    b.makeChoices('move 1', 'move 1');
+    const after = b.log.slice(-30).join('\n');
+    expect(after).toMatch(/\|move\|p1a: Tentomon\|Giga Blaster/);
+    // Hit again by Tackle after its move (Tentomon is slower), so it may be charged anew: only the one before was spent.
+    expect(after).toMatch(/\|-start\|p1a: Tentomon\|Charge/);
+  });
+});

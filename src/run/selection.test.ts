@@ -83,15 +83,15 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
   });
 
-  it('special trainers from both versions: shared trainers weight 7 (Anabel 1), each version exclusive 3.5; Gym Leaders 7, Elite Four and Champions and evil teams 3.5', () => {
+  it('special trainers from both versions: shared trainers weight 7 (Anabel 1), each version exclusive 3.5; Gym Leaders 7, Elite Four and Champions, evil teams and Izzy 3.5', () => {
     const pool = specialPool();
-    expect(pool).toHaveLength(11 + 47 + 33 + 26);
+    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 1);
     const weightOf = (name: string) => pool.find(p => p.trainer.name === name)!.weight;
     for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca']) expect(weightOf(name), name).toBe(7);
     expect(weightOf('Anabel')).toBe(1);
-    for (const name of ['Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui', 'Cyrus', 'Archie', 'Lusamine']) expect(weightOf(name), name).toBe(3.5);
+    for (const name of ['Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui', 'Cyrus', 'Archie', 'Lusamine', 'Izzy']) expect(weightOf(name), name).toBe(3.5);
     const total = pool.reduce((s, t) => s + t.weight, 0);
-    expect(total).toBe(50 + 47 * 7 + 33 * 3.5 + 26 * 3.5);
+    expect(total).toBe(50 + 47 * 7 + 33 * 3.5 + 26 * 3.5 + 3.5);
 
     const n = 100_000;
     const counts = drawTrainers('super', 30, SETTINGS, n, 'special');

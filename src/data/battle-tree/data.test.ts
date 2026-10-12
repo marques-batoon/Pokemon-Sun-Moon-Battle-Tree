@@ -31,8 +31,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets and 208 evil team sets, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets and 8 DigiDestined sets, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 8);
     // Labels name the trainer by key, so the two Archies' sets stay apart.
     expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
@@ -71,10 +71,14 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions and 26 evil team leaders and admins', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, and the DigiDestined (Izzy)', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26, 4 + 4]);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 1);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26 + 1, 4 + 4]);
+    // Izzy comes last (earlier ids don't move): a special trainer at 3.5 with his own sprite, leading with Tentomon.
+    const izzy = TRAINERS[315] as SpecialTrainer;
+    expect([izzy.name, izzy.class, izzy.kind, izzy.weight, izzy.iv, izzy.sprite, izzy.roster.length]).toEqual(['Izzy', 'DigiDestined', 'special', 3.5, 31, '/trainers/izzy.png', 8]);
+    expect([SETS[izzy.leadSetId!].species, SETS[izzy.leadSetId!].item]).toEqual(['Tentomon', 'Herculeskabuterite']);
     // Every special trainer has a unique key (lines, pictures, partners), even when names repeat.
     const specials = TRAINERS.filter(t => t.kind === 'special');
     expect(new Set(specials.map(trainerKey)).size).toBe(specials.length);

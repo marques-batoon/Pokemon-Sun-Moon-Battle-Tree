@@ -99,3 +99,19 @@ describe('Agumon\'s warp items change what it learns', () => {
     expect(gen7.species.get('BlackWarGreymon')?.types).toEqual(['Fire', 'Dark']);
   });
 });
+
+describe('Tentomon in the team builder', () => {
+  it('offers Tentomon, not HerculesKabuterimon, with its own list and Electromorphosis after warping', async () => {
+    const names = eligibleSpecies().map(s => s.name);
+    expect(names).toContain('Tentomon');
+    expect(names).not.toContain('HerculesKabuterimon');
+    expect(speciesAbilities('Tentomon')).toEqual(['Static']);
+    expect(megaFormForSet({ species: 'Tentomon', item: 'Herculeskabuterite' })).toBe('HerculesKabuterimon');
+    expect(gen7.abilities.get('Electromorphosis')?.exists).toBe(true);
+    const moves = (await learnableMoves('Tentomon')).map(m => m.name);
+    expect(moves).toHaveLength(new Set(DIGIMON_BASE_MOVES.Tentomon).size);
+    for (const m of ['Super Shocker', 'Giga Blaster', 'Hard Press', 'Pounce', 'Trailblaze', 'Skitter Smack', 'Quiver Dance', 'Signal Beam']) expect(moves).toContain(m);
+    expect((await learnableMoves('Tentomon', 'Herculeskabuterite')).map(m => m.name)).toEqual(moves);
+    expect(allMoves().map(m => m.name)).not.toContain('Giga Blaster');
+  });
+});

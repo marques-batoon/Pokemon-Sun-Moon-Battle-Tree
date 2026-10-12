@@ -1,0 +1,6 @@
+{
+  "about": "The DigiDestined as special trainers (designed by the user): who they are, their sprite, the Pokémon (species) that always leads their team, and in Multi Battles who partners them. Teams are in digidestined.txt. 'weight': their weight in the special-trainer pool (the Gym Leaders are 7). 'partners': in a Multi Battle they always battle alongside one of these (picked with equal chance), who goes first (shown on the left); a partner can be a Battle Legend (Tai) or another trainer listed here. After editing either file, run: npm run data:custom",
+  "trainers": {
+    "Izzy": { "class": "DigiDestined", "gender": "M", "sprite": "/trainers/izzy.png", "lead": "Tentomon", "weight": 3.5, "partners": ["Tai"] }
+  }
+}

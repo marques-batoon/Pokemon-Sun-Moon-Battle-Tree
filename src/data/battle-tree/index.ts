@@ -8,6 +8,7 @@ import gymLeadersJson from '../custom/gym-leaders.json';
 import battle50Json from '../custom/battle-50.json';
 import eliteFourJson from '../custom/elite-four.json';
 import evilTeamsJson from '../custom/evil-teams.json';
+import digidestinedJson from '../custom/digidestined.json';
 import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
 
 export * from './types';
@@ -18,7 +19,11 @@ const GAME_TRAINERS = trainersJson.trainers as Trainer[];
 const gameLegend = (name: string) => GAME_TRAINERS.find(t => t.kind === 'legend' && t.course === 'super' && t.name === name);
 
 interface CustomSet { species: string; item: string; ability: string; nature: string; evs: StatTable; moves: string[]; gender?: 'M' | 'F' }
-interface CustomTrainer { name: string; key?: string; person?: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[] }
+interface CustomTrainer {
+  name: string; key?: string; person?: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[];
+  /** The DigiDestined: own sprite, the species that always leads, own weight, fixed Multi Battle partners (by name). */
+  sprite?: string; lead?: string; weight?: number; partners?: string[];
+}
 
 /** A trainer's unique name for data lookups (lines, pictures, partners): `key` if two share a name. */
 export const trainerKey = (t: Pick<Trainer, 'name' | 'key'>) => t.key ?? t.name;
@@ -38,10 +43,12 @@ function customTrainers(list: CustomTrainer[], firstSet: number, firstTrainer: n
       sets.push({ id, label: `${s.species} (${trainerKey(t)}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
       return id;
     });
+    const lead = t.lead ? roster.find(id => sets[id - firstSet].species === t.lead) : undefined;
     return {
       id: firstTrainer + i, name: t.name, ...(t.key ? { key: t.key } : {}), ...(t.person ? { person: t.person } : {}),
       class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'special',
-      number: null, versions: ['sun', 'moon'], weight, custom: true, region: t.region,
+      number: null, versions: ['sun', 'moon'], weight: t.weight ?? weight, custom: true, region: t.region,
+      ...(t.sprite ? { sprite: t.sprite } : {}), ...(lead !== undefined ? { leadSetId: lead } : {}),
       source: { sets: `custom: data-sources/custom/${file}` },
     };
   });
@@ -102,8 +109,28 @@ const EVIL_TEAMS = customTrainers(
   3.5, 'evil-teams.txt (designed for the user)',
 );
 
-export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets];
-export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers];
+/** The DigiDestined (Izzy), after the evil teams (earlier ids don't move): weight as given (3.5), own sprite and lead. */
+const DIGIDESTINED_LIST = digidestinedJson.trainers as CustomTrainer[];
+const DIGIDESTINED = customTrainers(
+  DIGIDESTINED_LIST,
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length,
+  GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length,
+  3.5, 'digidestined.txt (designed by the user)',
+);
+
+export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets];
+export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers];
+
+/**
+ * Trainers who, as opponents in a Multi Battle, always battle alongside one of their partners (Izzy: Tai), who
+ * goes first (on the left). The partner is picked with equal chance; a partner can be a Battle Legend (Tai only
+ * appears as one otherwise). By trainer id: partner ids.
+ */
+const MULTI_PARTNERS = new Map(DIGIDESTINED_LIST.flatMap((t, i) => (t.partners?.length
+  ? [[DIGIDESTINED.trainers[i].id, t.partners.map(name => TRAINERS.find(o => o.custom && (o.kind === 'legend' || o.kind === 'special') && o.name === name)!.id)]] as [number, number[]][]
+  : [])));
+/** The partners a trainer always battles alongside as an opponent in a Multi Battle (empty: none). */
+export const multiPartners = (trainerId: number): readonly number[] => MULTI_PARTNERS.get(trainerId) ?? [];
 const GAME_BRACKETS = bracketsJson as unknown as BracketsFile;
 
 /**
@@ -144,7 +171,7 @@ export const BRACKETS: BracketsFile = {
     ...GAME_BRACKETS.specialTrainerPool,
     trainerIds: [
       ...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id),
-      ...EVIL_TEAMS.trainers.map(t => t.id),
+      ...EVIL_TEAMS.trainers.map(t => t.id), ...DIGIDESTINED.trainers.map(t => t.id),
     ],
   },
 };
@@ -182,8 +209,17 @@ export const TRAINER_MULTI_QUOTES = quotesJson.multi as Record<string, TrainerQu
  * (written for this app): each entry holds one greeting per trainer, by name.
  */
 export const TRAINER_PAIR_GREETINGS = quotesJson.pairs as Record<string, Record<string, string>>;
+/**
+ * Team-up lines for a trainer and their Multi Battle partner (Izzy with Tai), three sets each in matching order,
+ * by the two names: used whenever those two battle together (written for this app).
+ */
+export const TRAINER_DUO_QUOTES = quotesJson.duos as Record<string, Record<string, TrainerQuotes[]>>;
 const pairKey = (a: string, b: string) => [a, b].sort().join('|');
 const PAIR_GREETINGS = new Map(Object.values(TRAINER_PAIR_GREETINGS).map(entry => {
+  const [a, b] = Object.keys(entry);
+  return [pairKey(a, b), entry] as const;
+}));
+const DUO_QUOTES = new Map(Object.values(TRAINER_DUO_QUOTES).map(entry => {
   const [a, b] = Object.keys(entry);
   return [pairKey(a, b), entry] as const;
 }));
@@ -227,16 +263,20 @@ export function quotePick(battleKey: string): number {
  * opposing trainer in a Multi Battle; paired trainers fighting together use their
  * team-up lines (the same set for both, so they answer each other), and two
  * special trainers who share a region or a type greet you with lines about each
- * other (TRAINER_PAIR_GREETINGS; their closing remarks stay their usual ones).
+ * other (TRAINER_PAIR_GREETINGS; their closing remarks stay their usual ones). A trainer with
+ * their fixed Multi Battle partner (Izzy and Tai) uses their team-up lines (TRAINER_DUO_QUOTES).
  */
 export function trainerQuotes(trainer: Trainer, battleKey: string | number, alongside: readonly Trainer[] = []): TrainerQuotes | null {
   const partner = DUO_PARTNER.get(trainer.id);
   const together = partner !== undefined && alongside.some(t => t.id === partner);
-  const sets = (together ? TRAINER_MULTI_QUOTES[trainerKey(trainer)] : undefined) ?? TRAINER_QUOTES[trainerKey(trainer)];
+  // A trainer with their Multi Battle partner (Izzy and Tai): their own team-up lines.
+  const teammate = alongside.find(t => t.id !== trainer.id);
+  const duo = teammate ? DUO_QUOTES.get(pairKey(trainerKey(trainer), trainerKey(teammate)))?.[trainerKey(trainer)] : undefined;
+  const sets = duo ?? (together ? TRAINER_MULTI_QUOTES[trainerKey(trainer)] : undefined) ?? TRAINER_QUOTES[trainerKey(trainer)];
   if (!sets?.length) return null;
   const pick = typeof battleKey === 'number' ? battleKey : quotePick(battleKey);
   const lines = sets[pick % sets.length];
-  if (together || trainer.kind !== 'special') return lines;
+  if (duo || together || trainer.kind !== 'special') return lines;
   const other = alongside.find(t => t.id !== trainer.id && t.kind === 'special');
   const greeting = other ? pairGreeting(trainer, other) : null;
   return greeting ? { ...lines, greeting } : lines;

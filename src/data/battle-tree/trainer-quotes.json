@@ -5301,6 +5301,23 @@
     "trainerWins": "Now you know. Very important.",
     "trainerLoses": "Important people lose sometimes too... rarely."
    }
+  ],
+  "Izzy": [
+   {
+    "greeting": "One moment I was at my laptop, the next I was here. I've been researching this world ever since. Prodigious!",
+    "trainerWins": "Just as my calculations predicted! I'll add this battle to my research notes.",
+    "trainerLoses": "Fascinating... I clearly overlooked a few variables. Back to the data!"
+   },
+   {
+    "greeting": "My partner was reformatted the moment we crossed over. Same heart, all-new data. Let me show you what we learned!",
+    "trainerWins": "Knowledge is power, and today's data proves it!",
+    "trainerLoses": "Your strategy didn't fit any of my models. I'll have to revise my theory."
+   },
+   {
+    "greeting": "Tai and the others were pulled into this world too. They explore it; I study it. Care to be my next data point?",
+    "trainerWins": "Wait till I tell Tai! He never believes my theories until he sees them work.",
+    "trainerLoses": "Tai would say I overthought it. Please don't tell him he was right."
+   }
   ]
  },
  "multi": {
@@ -10205,5 +10222,44 @@
    "Plumeria": "Faba. Watch your mouth, nerd."
   }
  },
- "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both)."
+ "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both).",
+ "duosNote": "Team-up lines for a trainer and their Multi Battle partner (Izzy always battles alongside Tai as an opponent), three sets each in matching order: used whenever the two battle together. Add an entry for each new partner (Mimi, Joe...).",
+ "duos": {
+  "Tai & Izzy": {
+   "Tai": [
+    {
+     "greeting": "Izzy's got the brains, I've got the guts! Let's show this world what the DigiDestined can do!",
+     "trainerWins": "Told you charging in works, Izzy! ...Okay, your plan helped. A little.",
+     "trainerLoses": "Alright, Izzy, what went wrong? ...No, the short version!"
+    },
+    {
+     "greeting": "Izzy's been studying this world since we landed. Me? I've been battling in it. Ready?",
+     "trainerWins": "Brains and courage! Unbeatable combo, right, Izzy?",
+     "trainerLoses": "Guess courage wasn't enough today. Izzy, crunch the numbers."
+    },
+    {
+     "greeting": "Whatever pulled us into this world, Izzy will figure it out. Until then, we fight together!",
+     "trainerWins": "Another win for the DigiDestined! Write that one down, Izzy!",
+     "trainerLoses": "We'll be back. Izzy's already planning the rematch, I can tell."
+    }
+   ],
+   "Izzy": [
+    {
+     "greeting": "Tai charges in, I calculate the odds. Statistically, you're in trouble. Prodigious!",
+     "trainerWins": "The data doesn't lie, Tai. ...Okay, your courage helped too.",
+     "trainerLoses": "Tai, next time, please let me finish explaining the plan first."
+    },
+    {
+     "greeting": "I research this world, Tai battles in it. Together, we're a complete data set!",
+     "trainerWins": "Theory and practice in perfect harmony! Nice work, Tai.",
+     "trainerLoses": "An anomaly. I'll analyze it... once Tai stops sulking."
+    },
+    {
+     "greeting": "Our partners changed when we crossed over, but our teamwork didn't. Right, Tai?",
+     "trainerWins": "Courage and Knowledge, perfectly synchronized. Prodigious!",
+     "trainerLoses": "Tai, I think our variables need recalibrating."
+    }
+   ]
+  }
+ }
 }

@@ -862,6 +862,20 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'impact', color: '#c9f6ff', size: 220, delay: 850 },
     { kind: 'screen', color: '#e6fbff', mode: 'flash', delay: 900, dur: 350 },
   ] },
+  // Giga Blaster (Tentomon / HerculesKabuterimon): electricity gathers in its great golden horn, then a huge blast of
+  // it crackles across to the target and bursts in lightning.
+  gigablaster: { shake: 'strong', layers: [
+    { kind: 'screen', color: '#0d0a00', mode: 'dim', dur: 1500 },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe066', color2: '#fff6b0', count: 22, size: 14, spread: 160, dur: 700 },
+    { kind: 'aura', at: 'user', color: '#ffd43b', size: 260, delay: 100, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#fff6b0', count: 3, size: 220, delay: 200, dur: 650 },
+    { kind: 'beam', color: '#ffd43b', color2: '#ffffff', width: 70, delay: 850, dur: 600 },
+    { kind: 'beam', color: '#ffffff', color2: '#fff6b0', width: 26, wavy: true, delay: 880, dur: 560 },
+    { kind: 'bolt', color: '#ffe066', delay: 1250 },
+    { kind: 'impact', color: '#ffd43b', size: 320, star: true, delay: 1300 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe066', color2: '#ffffff', count: 22, size: 22, spread: 160, delay: 1300 },
+    { kind: 'screen', color: '#fff6b0', mode: 'flash', delay: 1300, dur: 400 },
+  ] },
   // Dark Gaia Force (BlackWarGreymon): Gaia Force's sequence exactly, in dark energy and blue flames (on request).
   darkgaiaforce: { shake: 'strong', layers: [
     { kind: 'screen', color: '#07000f', mode: 'dim', dur: 1500 },
@@ -1054,7 +1068,8 @@ export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
  * digital space of grid and streaming code, "WARP DIGIVOLVE" flashes across, the Digimon becomes a
  * light silhouette that surges bigger through its in-between forms (sprite class fx-warp-start)
  * inside a spinning wireframe of data, armour pieces fly in, and a white flash. Then the new form
- * bursts out with its name, in its own element (fire for WarGreymon, ice for MetalGarurumon). A Dark
+ * bursts out with its name, in its own element (fire for WarGreymon, ice for MetalGarurumon, yellow electricity
+ * for HerculesKabuterimon). A Dark
  * Warp Digivolution (BlackWarGreymon) is the same sequence, named so, bursting out in dark energy.
  */
 export const WARP_START: FxSpec = { layers: [
@@ -1075,10 +1090,11 @@ export function warpStart(form = ''): FxSpec {
   if (!isDarkWarp(form)) return WARP_START;
   return { layers: WARP_START.layers.map(l => (l.kind === 'banner' ? { ...l, text: 'Dark Warp Digivolve!', color: '#a05bff' } : l)) };
 }
-/** How a warp form bursts out, by its first type. */
+/** How a warp form bursts out, by its type (the first one that has a style: HerculesKabuterimon is Bug / Electric). */
 const WARP_BURST_STYLE: Record<string, { flash: string; ring: string; shape: Shape; color: string; color2: string }> = {
   Fire: { flash: '#fff1c2', ring: '#ff9a1f', shape: 'flame', color: '#ff6a00', color2: '#ffd23f' },
   Ice: { flash: '#e6fbff', ring: '#7fe3ff', shape: 'shard', color: '#bff3ff', color2: '#4d8cff' },
+  Electric: { flash: '#fffbd6', ring: '#ffd43b', shape: 'spark', color: '#ffe066', color2: '#fff6b0' },
 };
 const DEFAULT_BURST = WARP_BURST_STYLE.Fire;
 
@@ -1098,8 +1114,8 @@ function darkWarpBurst(form: string): FxSpec {
 
 export function warpBurst(form = ''): FxSpec {
   if (isDarkWarp(form)) return darkWarpBurst(form);
-  const type = WARP_DIGIMON.find(d => d.warp.name === form)?.warp.types[0] ?? '';
-  const st = WARP_BURST_STYLE[type] ?? DEFAULT_BURST;
+  const types = WARP_DIGIMON.find(d => d.warp.name === form)?.warp.types ?? [];
+  const st = types.map(t => WARP_BURST_STYLE[t]).find(Boolean) ?? DEFAULT_BURST;
   return { shake: 'strong', layers: [
     { kind: 'screen', color: st.flash, mode: 'flash', dur: 450 },
     { kind: 'rings', at: 'user', color: st.ring, count: 2, size: 260 },

@@ -113,7 +113,7 @@ export const WARP_START_MS = 2600;
 /** Damaging Z-Moves (catalog Z_MOVE_MS). */
 const Z_MOVE_MS = 2200;
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
-export const SIGNATURE_MS: Record<string, number> = { gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000 };
+export const SIGNATURE_MS: Record<string, number> = { gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500 };
 /** A damaging Z-Move's category (Physical or Special, from its base move), from the engine's silent hint line, until its move line. */
 const zCategories = new WeakMap<ClientBattle, 'Physical' | 'Special'>();
 export const WARP_MS = 1300;

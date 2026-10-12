@@ -62,8 +62,24 @@ const GABUMON_MOVES = [
   'U-turn', 'Water Pulse', 'Wild Charge', 'Zen Headbutt',
 ];
 
+// Tentomon (added 2026-10-11, designed by the user): the level-up and TM lists given for HerculesKabuterimon.
+const TENTOMON_MOVES = [...new Set([
+  // Level-up
+  'Tackle', 'Growl', 'Thunder Shock', 'String Shot', 'Harden', 'Struggle Bug', 'Charge', 'Spark', 'Super Shocker', 'Bug Bite',
+  'Thunder Wave', 'Electro Ball', 'Bug Buzz', 'Discharge', 'Iron Defense', 'Thunderbolt', 'Flash Cannon', 'Giga Blaster',
+  'Quiver Dance', 'Thunder', 'Energy Ball', 'Zap Cannon', 'Hyper Beam',
+  // TMs
+  'Acrobatics', 'Agility', 'Body Press', 'Body Slam', 'Bug Bite', 'Bug Buzz', 'Charge Beam', 'Dazzling Gleam', 'Discharge',
+  'Earth Power', 'Eerie Impulse', 'Electric Terrain', 'Electroweb', 'Endure', 'Energy Ball', 'Facade', 'Flash Cannon', 'Giga Drain',
+  'Giga Impact', 'Hard Press', 'Heavy Slam', 'Helping Hand', 'Hyper Beam', 'Infestation', 'Iron Defense', 'Iron Head', 'Leech Life',
+  'Light Screen', 'Lunge', 'Magnet Rise', 'Metal Sound', 'Mud-Slap', 'Pounce', 'Protect', 'Rain Dance', 'Reflect', 'Rest',
+  'Rock Slide', 'Rock Tomb', 'Screech', 'Signal Beam', 'Skitter Smack', 'Sleep Talk', 'Solar Beam', 'Struggle Bug', 'Substitute',
+  'Sunny Day', 'Swift', 'Swords Dance', 'Tera Blast', 'Thunder', 'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Trailblaze',
+  'U-turn', 'Venoshock', 'Volt Switch', 'Wild Charge', 'X-Scissor', 'Zap Cannon',
+])];
+
 /** What each Digimon can learn without a warp item (or holding someone else's). */
-export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES };
+export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES };
 
 export const WARP_DIGIMON: WarpDigimon[] = [{
   base: AGUMON,
@@ -115,6 +131,21 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
     'Substitute', 'Sucker Punch', 'Sunny Day', 'Swift', 'Taunt', 'Temper Flare', 'Tera Blast', 'Thief', 'Throat Chop',
     'Thunder Punch', 'Torment', 'U-turn', 'Will-O-Wisp', 'X-Scissor',
   ],
+}, {
+  // Tentomon -> HerculesKabuterimon (added 2026-10-11, designed by the user).
+  base: {
+    num: 10203, name: 'Tentomon', types: ['Bug', 'Electric'], color: 'Red',
+    baseStats: { hp: 55, atk: 35, def: 60, spa: 75, spd: 65, spe: 28 },
+    abilities: { 0: 'Static' }, weightkg: 10.5, genderRatio: { M: 0.875, F: 0.125 },
+  },
+  warp: {
+    name: 'HerculesKabuterimon', types: ['Bug', 'Electric'], color: 'Yellow',
+    baseStats: { hp: 90, atk: 75, def: 130, spa: 130, spd: 140, spe: 60 },
+    abilities: { 0: 'Electromorphosis' }, weightkg: 230,
+  },
+  item: 'Herculeskabuterite',
+  itemDesc: 'If held by a Tentomon, this item allows it to Warp Digivolve into HerculesKabuterimon in battle.',
+  moves: TENTOMON_MOVES,
 }];
 
 export interface DigimonMove {
@@ -129,8 +160,8 @@ export interface DigimonMove {
   pulse?: boolean;
   /** Critical-hit ratio as the simulator counts it: 2 = one stage higher than usual (like Slash). */
   critRatio?: number;
-  /** Chance (%) of a burn, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
-  secondary?: { chance: number; status?: 'brn'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
+  /** Chance (%) of a burn or paralysis, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
+  secondary?: { chance: number; status?: 'brn' | 'par'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
 }
 
@@ -166,6 +197,15 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     name: 'Dramon Destroyer', type: 'Dragon', category: 'Physical', basePower: 90, accuracy: 100, pp: 10, contact: true, critRatio: 2,
     desc: 'High critical hit ratio.',
   },
+  // Tentomon (2026-10-11, designed by the user):
+  {
+    name: 'Super Shocker', type: 'Electric', category: 'Special', basePower: 70, accuracy: 100, pp: 15, contact: false,
+    secondary: { chance: 30, status: 'par' }, desc: '30% chance to paralyze the target.',
+  },
+  {
+    name: 'Giga Blaster', type: 'Electric', category: 'Special', basePower: 100, accuracy: 100, pp: 10, contact: false,
+    secondary: { chance: 20, status: 'par' }, desc: '20% chance to paralyze the target.',
+  },
 ];
 
 /**
@@ -182,6 +222,8 @@ export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon
   Gabumon: { file: 'pokemon/gabumon.png', back: 'pokemon/back/gabumon.png', icon: 'pokemon/icons/gabumon.png', w: 96, h: 96 },
   MetalGarurumon: { file: 'pokemon/metalgarurumon.png', back: 'pokemon/back/metalgarurumon.png', icon: 'pokemon/icons/metalgarurumon.png', w: 96, h: 96, stageScale: 1.2954 },
   BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', back: 'pokemon/back/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
+  Tentomon: { file: 'pokemon/tentomon.png', back: 'pokemon/back/tentomon.png', icon: 'pokemon/icons/tentomon.png', w: 96, h: 96 },
+  HerculesKabuterimon: { file: 'pokemon/herculeskabuterimon.png', back: 'pokemon/back/herculeskabuterimon.png', icon: 'pokemon/icons/herculeskabuterimon.png', w: 96, h: 96, stageScale: 1.5 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);
@@ -279,5 +321,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
     };
   }
   const conditions = { warpdigivolution: { name: 'Warp Digivolution' } };
-  return { Species: species, FormatsData: formatsData, Items: items, Moves: moves, Learnsets: learnsets, Conditions: conditions };
+  // Gen 9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis): made usable in Gen 7; the
+  // engine gives Electromorphosis its Gen 9 Charge (src/engine/custom.ts).
+  const abilities = { electromorphosis: { inherit: true, gen: 7, isNonstandard: null } };
+  return { Species: species, FormatsData: formatsData, Items: items, Moves: moves, Learnsets: learnsets, Conditions: conditions, Abilities: abilities };
 }

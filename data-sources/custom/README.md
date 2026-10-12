@@ -42,6 +42,20 @@ team, ...).
   give Marques and Thomas the same number of entries in matching order. No Pokémon
   names. No `npm run data:custom` needed for lines; `npm test` checks them.
 
+## The DigiDestined (Izzy)
+
+- **Teams:** `digidestined.txt`, same format, one section per trainer (Izzy has eight Pokémon).
+- **Who, how often, partners:** `digidestined.json`. Each trainer has a class ("DigiDestined"),
+  gender, sprite (in `public/trainers/`), `lead` (the Pokémon that always leads: Izzy's Tentomon),
+  `weight` in the special-trainer pool (Izzy 3.5) and `partners`: as an opponent in a Multi Battle
+  they always battle alongside one of these, picked with equal chance, and the partner goes first
+  (on the left). A partner can be a Battle Legend (Tai) or another trainer in this file. To give
+  Izzy Mimi or Joe as partners too, add them here (with their own teams) and list them in his
+  `partners`.
+- **Lines:** `trainer-quotes.json`: their own lines under `"quotes"`, and team-up lines with each
+  partner under `"duos"`, e.g. `"Tai & Izzy": { "Tai": [...], "Izzy": [...] }`, three sets each in
+  matching order (used whenever those two battle together). `npm test` checks them.
+
 ## Elite Four and Champions
 
 - **Teams:** `elite-four.txt`, same format, one section per trainer (eight Pokémon each).

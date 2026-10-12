@@ -230,3 +230,13 @@ describe('Abilities that take in a move', () => {
     expect(abilitySpec('stormdrain').layers.some(l => l.kind === 'vortex')).toBe(true);
   });
 });
+
+describe('HerculesKabuterimon\'s animations', () => {
+  it('bursts out of its Warp Digivolution in yellow electricity, and Giga Blaster has its own', () => {
+    const burst = warpBurst('HerculesKabuterimon');
+    expect(burst.layers.some(l => l.kind === 'particles' && l.shape === 'spark')).toBe(true);
+    expect(burst.layers.find(l => l.kind === 'rings')).toMatchObject({ color: '#ffd43b' });
+    expect(key(burst)).not.toBe(key(warpBurst('WarGreymon')));
+    expect(moveSpec(classifyMove('Giga Blaster'))).toBe(SIGNATURE_MOVES.gigablaster);
+  });
+});

@@ -74,6 +74,7 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
   }
 
   addParadoxLogic(data);
+  addElectromorphosis(data);
   for (const [id, hook] of Object.entries(TIMED_MOVES)) {
     const condition = parent.Moves[id].condition as Entry;
     data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, [hook]: tagTurns(condition[hook] as Handler) } };
@@ -100,6 +101,39 @@ function thawCheck(this: Battle, pokemon: Pokemon, target: Pokemon, move: Active
   }
   this.add('cant', pokemon, 'frz');
   return false;
+}
+
+/**
+ * Electromorphosis (Gen 9; HerculesKabuterimon): hit by an attack, the Pokémon becomes charged, and its next
+ * Electric move has double power. As in Gen 9, the charge lasts until it uses an Electric move (Gen 7's own
+ * Charge move, which lasts one turn, is unchanged): a volatile of the Ability's own, shown as "Charge".
+ */
+function addElectromorphosis(data: Record<string, Record<string, Entry>>) {
+  const removeOnElectric = function (this: Battle, pokemon: Pokemon, _target: Pokemon, move: ActiveMove) {
+    if (move.type === 'Electric' && move.id !== 'charge') pokemon.removeVolatile('electromorphosis');
+  };
+  const announce = function (this: Battle, pokemon: Pokemon) {
+    this.add('-start', pokemon, 'Charge', '[from] ability: Electromorphosis');
+  };
+  Object.assign(data.Abilities.electromorphosis, {
+    onDamagingHitOrder: 1,
+    onDamagingHit(this: Battle, _damage: number, target: Pokemon) {
+      target.addVolatile('electromorphosis');
+    },
+    condition: {
+      onStart: announce,
+      onRestart: announce,
+      onBasePowerPriority: 9,
+      onBasePower(this: Battle, _basePower: number, _attacker: Pokemon, _defender: Pokemon, move: ActiveMove) {
+        if (move.type === 'Electric') return this.chainModify(2);
+      },
+      onMoveAborted: removeOnElectric,
+      onAfterMove: removeOnElectric,
+      onEnd(this: Battle, pokemon: Pokemon) {
+        this.add('-end', pokemon, 'Charge', '[silent]');
+      },
+    },
+  });
 }
 
 /**

@@ -1,4 +1,4 @@
-import { BOSSES, BRACKETS, pairedTrainer, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { BOSSES, BRACKETS, multiPartners, pairedTrainer, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
@@ -109,11 +109,14 @@ export function teamSizeFor(trainer: Trainer, format: Format = 'singles'): numbe
 
 /**
  * Trainers who only battle as a pair in Multi Battles, first (left) trainer first: Tate and Liza
- * (TRAINER_PAIRS, in the order given) and custom battle-50 duos (Marques and Thomas).
+ * (TRAINER_PAIRS, in the order given), custom battle-50 duos (Marques and Thomas), and a DigiDestined
+ * with their partner, who goes first (Tai and Izzy; with several partners, debug mode uses the first).
  */
 export function multiDuo(trainerId: number): [number, number] | null {
   const twins = pairedTrainer(trainerId);
   if (twins) return [trainerId, twins.partnerId];
+  const partners = multiPartners(trainerId);
+  if (partners.length) return [partners[0], trainerId];
   const boss = Object.values(BOSSES).find(b => b.format === 'multi' && b.partnerTrainerId !== undefined && TRAINERS[b.trainerId].custom
     && (b.trainerId === trainerId || b.partnerTrainerId === trainerId));
   return boss ? [boss.trainerId, boss.partnerTrainerId!] : null;
@@ -165,7 +168,15 @@ export function planOpponent(
     if (!multi) return { battle, ...first, seedText };
     return { battle, ...first, seedText, second: planTrainer({ trainer: TRAINERS[boss.partnerTrainerId!], replacedAnabel: false }, format, rng) };
   }
+  // A trainer whose every Multi Battle partner is out (your partner) can't be drawn either.
+  if (multi) for (const t of TRAINERS) if (multiPartners(t.id).length && multiPartners(t.id).every(id => exclude.has(id))) exclude.add(t.id);
   const firstChoice = chooseTrainer(format, course, battle, settings, rng, exclude);
+  const partners = multi ? multiPartners(firstChoice.trainer.id).filter(id => !exclude.has(id)) : [];
+  if (partners.length) {
+    // Izzy brings his partner (Tai), who goes first.
+    const partner = planTrainer({ trainer: TRAINERS[partners.length === 1 ? partners[0] : rng.pick(partners)], replacedAnabel: false }, format, rng);
+    return { battle, ...partner, seedText, second: planTrainer(firstChoice, format, rng) };
+  }
   const pair = multi ? pairedTrainer(firstChoice.trainer.id) : null;
   if (pair) {
     const leads = rng.pick(pair.pair.multiLeads);
@@ -178,8 +189,9 @@ export function planOpponent(
   if (!multi) return { battle, ...first, seedText };
 
   for (const id of samePersonIds(first.trainerId)) exclude.add(id);
-  // A paired trainer can't be the second opponent without their partner.
+  // A paired trainer can't be the second opponent without their partner (Tate and Liza; Izzy and Tai).
   for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
+  for (const t of TRAINERS) if (multiPartners(t.id).length) exclude.add(t.id);
   const second = chooseTrainer(format, course, battle, settings, rng, exclude);
   return { battle, ...first, seedText, second: planTrainer(second, format, rng) };
 }
@@ -187,8 +199,8 @@ export function planOpponent(
 /**
  * Debug: battle N against special trainers or Battle Legends you choose (one; two in a Multi
  * Battle) instead of the drawn opponent. Teams are drawn as usual. Pairs stay paired in Multi:
- * choosing Tate or Liza brings the other (leading with one of their pairs), and choosing Marques
- * or Thomas brings the other, Marques first.
+ * choosing Tate or Liza brings the other (leading with one of their pairs), choosing Marques
+ * or Thomas brings the other, Marques first, and choosing Izzy brings Tai, Tai first.
  */
 export function planChosenOpponent(runSeed: string, format: Format, battle: number, trainerIds: readonly number[]): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
