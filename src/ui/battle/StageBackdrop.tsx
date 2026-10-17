@@ -79,7 +79,7 @@ const stadiumSky: Part = id => (
         <circle cx="7" cy="9.5" r="2.1" fill="#f2c94c" /><circle cx="15" cy="9" r="2.1" fill="#56ccf2" />
       </pattern>
     </defs>
-    <rect width="1000" height="200" fill={`url(#${id}-roof)`} />
+    <rect className="day" width="1000" height="200" fill={`url(#${id}-roof)`} />
     {[150, 390, 610, 850].map(x => (
       <g key={x}>
         <circle cx={x} cy="66" r="50" fill={`url(#${id}-glow)`} />
@@ -148,8 +148,10 @@ const SNOW = snowCaps(FAR_RANGE, 100);
 const mountainSky: Part = id => (
   <svg {...SKY_BOX}>
     <defs><VGrad id={`${id}-sky`} stops={[[0, '#7fbbea'], [1, '#dcedf8']]} /></defs>
-    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
-    <Cloud x={300} y={80} /><Cloud x={720} y={66} s={1.2} />
+    <g className="day">
+      <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+      <Cloud x={300} y={80} /><Cloud x={720} y={66} s={1.2} />
+    </g>
     <polygon points={pts(FAR_RANGE)} fill="#a5b7cc" />
     {SNOW.map(p => <polygon key={p} points={p} fill="#f5f9fd" />)}
     <polygon points={MID_RANGE} fill="#6f8c7c" />
@@ -199,14 +201,16 @@ const oceanSky: Part = id => (
         <stop offset="1" stopColor="#fff6c8" stopOpacity="0" />
       </radialGradient>
     </defs>
-    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
-    <circle cx="700" cy="84" r="72" fill={`url(#${id}-sun)`} />
-    <circle cx="700" cy="84" r="20" fill="#fff9de" />
-    <Cloud x={300} y={96} /><Cloud x={530} y={70} s={0.8} /><Cloud x={870} y={104} s={1.1} />
-    <path d="M418 80 q6 -6 12 0 q6 -6 12 0 M452 70 q5 -5 10 0 q5 -5 10 0" fill="none" stroke="#2d4a66" strokeWidth="1.6" strokeLinecap="round" />
+    <g className="day">
+      <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+      <circle cx="700" cy="84" r="72" fill={`url(#${id}-sun)`} />
+      <circle cx="700" cy="84" r="20" fill="#fff9de" />
+      <Cloud x={300} y={96} /><Cloud x={530} y={70} s={0.8} /><Cloud x={870} y={104} s={1.1} />
+      <path d="M418 80 q6 -6 12 0 q6 -6 12 0 M452 70 q5 -5 10 0 q5 -5 10 0" fill="none" stroke="#2d4a66" strokeWidth="1.6" strokeLinecap="round" />
+    </g>
     <path d="M120 200 Q170 168 215 178 Q260 160 310 200 Z" fill="#4f8c86" />
     <path d="M790 200 Q820 186 850 190 Q875 184 905 200 Z" fill="#6aa39a" />
-    <rect y="176" width="1000" height="24" fill={`url(#${id}-haze)`} />
+    <rect className="day" y="176" width="1000" height="24" fill={`url(#${id}-haze)`} />
   </svg>
 );
 
@@ -240,11 +244,11 @@ const BUSHES = Array.from({ length: 30 }, (_, i) => ({ cx: i * 35 + wobble(i, 12
 const forestSky: Part = id => (
   <svg {...SKY_BOX}>
     <defs><VGrad id={`${id}-sky`} stops={[[0, '#99cfb8'], [1, '#e4f3d6']]} /></defs>
-    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+    <rect className="day" width="1000" height="200" fill={`url(#${id}-sky)`} />
     <g fill="#9cc596">{FAR_CANOPY.map(c => <circle key={c.cx} {...c} />)}</g>
     <path d={FAR_PINES} fill="#78a87f" />
     <path d={MID_PINES} fill="#4a8550" />
-    <g fill="#fffbe0" opacity="0.2">
+    <g className="day" fill="#fffbe0" opacity="0.2">
       <path d="M180 0 L262 0 L430 200 L300 200 Z" />
       <path d="M330 0 L372 0 L530 200 L458 200 Z" />
       <path d="M560 0 L590 0 L700 200 L650 200 Z" />
@@ -298,8 +302,10 @@ const treeSky: Part = id => (
       <VGrad id={`${id}-sky`} stops={[[0, '#59b4ee'], [1, '#c4e8fb']]} />
       <VGrad id={`${id}-sea`} stops={[[0, '#7ccbea'], [1, '#4aa6d6']]} />
     </defs>
-    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
-    <Cloud x={330} y={118} s={0.9} /><Cloud x={690} y={104} />
+    <g className="day">
+      <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+      <Cloud x={330} y={118} s={0.9} /><Cloud x={690} y={104} />
+    </g>
     <rect y="164" width="1000" height="22" fill={`url(#${id}-sea)`} />
     <path d="M280 168 Q310 156 340 160 Q365 154 390 168 Z M620 168 Q650 160 676 163 Q700 158 724 168 Z" fill="#78a996" />
     <g fill="#6b4528">
@@ -406,7 +412,7 @@ const spiralSky: Part = id => (
         <stop offset="1" stopColor="#7af2ff" stopOpacity="0" />
       </radialGradient>
     </defs>
-    <rect width="1000" height="200" fill={`url(#${id}-sky)`} />
+    <rect className="day" width="1000" height="200" fill={`url(#${id}-sky)`} />
     <path d={SKY_GRID} fill="none" stroke="#7af2ff" strokeWidth="1" opacity="0.16" />
     <g transform="translate(760 80)">
       <circle r="64" fill={`url(#${id}-sun)`} />
@@ -445,6 +451,55 @@ const spiralGround: Part = id => (
   </svg>
 );
 
+// ---- Night (the dark theme): each scene's sky becomes a night sky with stars and the moon behind its scenery; the
+// scenery and the ground are dimmed (index.css). The day sky, sun, clouds and sunbeams (class "day") are hidden. ----
+
+/** Night sky colours (top, horizon) and where the moon is (none at Spiral Mountain, whose data sphere stays). */
+const NIGHT: Record<BattleBackground, { top: string; low: string; moon?: Pt }> = {
+  battletree: { top: '#060c22', low: '#1f3a6c', moon: [612, 124] },
+  grass: { top: '#08112a', low: '#22385f', moon: [560, 116] },
+  stadium: { top: '#03050f', low: '#141a3c', moon: [520, 30] },
+  mountain: { top: '#070c22', low: '#2a3a66', moon: [590, 106] },
+  ocean: { top: '#050f26', low: '#1d3d6e', moon: [520, 114] },
+  forest: { top: '#06121c', low: '#1c3a46', moon: [430, 104] },
+  spiralmountain: { top: '#07041a', low: '#3a1d56' },
+};
+/** Stars: small ones everywhere, fewer and fainter toward the horizon; some twinkle. */
+const STARS = (() => {
+  let seed = 41;
+  const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+  return Array.from({ length: 110 }, (_, i) => {
+    const y = rnd() ** 1.25 * 176;
+    return { key: i, cx: +(rnd() * 1000).toFixed(1), cy: +y.toFixed(1), r: +(0.5 + rnd() * (y < 120 ? 1.3 : 0.8)).toFixed(2), o: +(0.95 - (y / 176) * 0.5 - rnd() * 0.2).toFixed(2), twinkle: i % 7 === 0 };
+  });
+})();
+
+function nightSky(scene: BattleBackground, id: string): ReactNode {
+  const n = NIGHT[scene];
+  return (
+    <svg {...SKY_BOX} className="night-sky">
+      <defs>
+        <VGrad id={`${id}-night`} stops={[[0, n.top], [1, n.low]]} />
+        <radialGradient id={`${id}-moonglow`}>
+          <stop offset="0" stopColor="#fdf6d8" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#fdf6d8" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="1000" height="200" fill={`url(#${id}-night)`} />
+      <g fill="#ffffff">
+        {STARS.map(st => <circle key={st.key} className={st.twinkle ? 'twinkle' : undefined} cx={st.cx} cy={st.cy} r={st.r} opacity={Math.max(0.2, st.o)} style={{ animationDelay: `${(st.key % 5) * 0.6}s` }} />)}
+      </g>
+      {n.moon && (
+        <g transform={`translate(${n.moon[0]} ${n.moon[1]})`}>
+          <circle r="46" fill={`url(#${id}-moonglow)`} />
+          <circle r="15" fill="#fbf3d2" />
+          <circle cx="-4" cy="-3" r="3" fill="#e6dcb4" opacity="0.7" /><circle cx="5" cy="4" r="2.2" fill="#e6dcb4" opacity="0.6" /><circle cx="3" cy="-7" r="1.5" fill="#e6dcb4" opacity="0.6" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
 const SKIES: Partial<Record<BattleBackground, Part>> = { battletree: treeSky, stadium: stadiumSky, mountain: mountainSky, ocean: oceanSky, forest: forestSky, spiralmountain: spiralSky };
 const GROUNDS: Partial<Record<BattleBackground, Part>> = { battletree: treeGround, stadium: stadiumGround, mountain: mountainGround, ocean: oceanGround, forest: forestGround, spiralmountain: spiralGround };
 
@@ -455,7 +510,7 @@ export function StageBackdrop({ kind }: { kind?: BattleBackground }) {
   const id = `bg${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   return (
     <div className={`stage-backdrop bg-${bg}`} aria-hidden="true">
-      <div className="backdrop-sky">{SKIES[bg]?.(id)}</div>
+      <div className="backdrop-sky">{nightSky(bg, id)}{SKIES[bg]?.(id)}</div>
       <div className="backdrop-ground">{GROUNDS[bg]?.(id)}</div>
     </div>
   );

@@ -122,6 +122,11 @@ export function spriteCandidates(name: string, side: SpriteSide, style: SpriteSt
 
 /** Whether the Pokémon has a real back sprite in this style (else its front sprite is shown flipped). */
 export const hasBackSprite = (name: string, style: SpriteStyle) => !spriteCandidates(name, 'p1', style)[0]?.mirrored;
+/**
+ * "Matching sprites on your side": whether any of these Pokémon (on the field on your side; null: an empty spot)
+ * has no back sprite in this style, so all of them show their front sprites, flipped.
+ */
+export const needsFrontSprites = (species: (string | null)[], style: SpriteStyle) => species.some(name => !!name && !hasBackSprite(name, style));
 
 /** Whether the image is one of Showdown's animated 3D sprites (front or back, shiny or not). */
 export const isAnimatedSprite = (info: SpriteInfo) => /\/sprites\/ani(-back)?(-shiny)?\//.test(info.url);

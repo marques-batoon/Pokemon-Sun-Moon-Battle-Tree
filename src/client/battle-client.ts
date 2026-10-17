@@ -9,7 +9,7 @@ import type { SimRequest } from '../engine/sim-types';
 import { gens } from '../team/dex';
 import { nextTimers, NO_TIMERS, type FieldTimers } from './field-timers';
 import { linkMultiAllies, TreeLogFormatter } from './log-formatter';
-import { absorbedByAbility, planLine, type BattleAnimation, type PlannedStep } from './playback';
+import { absorbedByAbility, displayOrder, planLine, type BattleAnimation, type PlannedStep } from './playback';
 import type { EngineTransport } from './transport';
 
 export type { BattleAnimation } from './playback';
@@ -198,15 +198,16 @@ export class BattleClient {
       case 'chunks': {
         // An online partner's view (relayed to them by whoever hosts the battle).
         if (msg.side) return;
-        const items: QueueItem[] = [];
+        const lines: string[] = [];
         let request: QueueItem | null = null;
         for (const chunk of msg.chunks) {
           for (const line of chunk.split('\n')) {
             if (!line) continue;
             if (line.startsWith('|request|')) request = { kind: 'request', line };
-            else items.push({ kind: 'line', line });
+            else lines.push(line);
           }
         }
+        const items: QueueItem[] = displayOrder(lines).map(line => ({ kind: 'line', line }));
         // The request describes the state after this batch's log, so it goes last.
         if (request) items.push(request);
         return this.enqueue(items);

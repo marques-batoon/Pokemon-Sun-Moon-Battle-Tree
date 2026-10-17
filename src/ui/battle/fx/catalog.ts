@@ -74,7 +74,11 @@ export type Layer =
   /**
    * An Air Balloon tied to the Pokémon: it rises up beside its head and bobs (`pop`: it swells, shakes and bursts).
    */
-  | { kind: 'balloon'; at: Anchor; color: string; pop?: boolean; delay?: number; dur?: number };
+  | { kind: 'balloon'; at: Anchor; color: string; pop?: boolean; delay?: number; dur?: number }
+  /** A Focus Sash (or Focus Band) wraps across the Pokémon, glows as it hangs on, then tears in two. */
+  | { kind: 'sash'; at: Anchor; color: string; color2: string; delay?: number; dur?: number }
+  /** Tailwind: streaks of wind (and leaves) sweep across the stage from behind the user toward the foe. */
+  | { kind: 'gust'; color: string; count: number; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -1030,7 +1034,28 @@ export const BALLOON_POP: FxSpec = { layers: [
   { kind: 'balloon', at: 'user', color: AIR_BALLOON, pop: true, dur: 850 },
 ] };
 
-/** A critical hit: small cyan "CRIT" text over the Pokémon hit, with the damage (after the move's animation). */
+/** The Pokémon floats on an Air Balloon: it came in holding one (the text shows meanwhile) or got one. */
+export const BALLOON_IN: FxSpec = { layers: [
+  { kind: 'balloon', at: 'user', color: AIR_BALLOON, dur: 1100 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'rise', color: '#ffffff', color2: '#ffd0d4', count: 6, size: 7, spread: 50, delay: 150, dur: 700 },
+] };
+
+/** Focus Sash (a pale sash) and Focus Band (a red headband): it wraps across the Pokémon, which hangs on with 1 HP. */
+const FOCUS_ITEMS: Record<string, { name: string; color: string; color2: string }> = {
+  focussash: { name: 'Focus Sash', color: '#f6eef8', color2: '#e0507e' },
+  focusband: { name: 'Focus Band', color: '#e5383f', color2: '#ffffff' },
+};
+export function sashSpec(item: string): FxSpec {
+  const f = FOCUS_ITEMS[item] ?? FOCUS_ITEMS.focussash;
+  return { layers: [
+    { kind: 'sash', at: 'user', color: f.color, color2: f.color2, dur: 900 },
+    { kind: 'impact', at: 'user', color: '#ffffff', size: 90, star: true, delay: 240 },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'burst', color: '#fff6c8', color2: f.color2, count: 8, size: 10, spread: 70, delay: 260, dur: 450 },
+    { kind: 'label', at: 'user', text: f.name, color: f.color2 === '#ffffff' ? f.color : f.color2, delay: 120, dur: 760 },
+  ] };
+}
+
+/** A critical hit: small "CRIT" text (cyan, white outline) over the Pokémon hit, with the damage (after the move's animation). */
 export const CRIT: FxSpec = { layers: [
   { kind: 'label', at: 'user', text: 'CRIT', color: '#3ee8ff', variant: 'crit', dur: 650 },
 ] };
@@ -1335,9 +1360,12 @@ export function moveSpec(fx: MoveFx): FxSpec {
           ] };
         }
         case 'tailwind':
+          // A great gust from behind the user's side toward the foe: wind streaks and leaves sweep across the stage,
+          // swirling around the user first. (While it blows, wind streaks keep crossing that side: TailwindCue.)
           return { layers: [
-            { kind: 'rings', at: 'path', color: '#e6f4ff', count: 5, size: 70, dur: 650 },
-            { kind: 'screen', color: '#d8f0ff', mode: 'tint', dur: 500 },
+            { kind: 'particles', at: 'user', shape: 'wisp', motion: 'swirl', color: '#e6f6ff', color2: '#ffffff', count: 10, size: 16, spread: 70, dur: 700 },
+            { kind: 'gust', color: '#f2fbff', count: 14, delay: 150, dur: 950 },
+            { kind: 'screen', color: '#d8f0ff', mode: 'tint', delay: 150, dur: 700 },
           ] };
         default:
           return { layers: [{ kind: 'aura', at: 'user', color: c, size: 140, dur: 600 }] };

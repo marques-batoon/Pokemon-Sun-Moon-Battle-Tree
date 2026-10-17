@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { PokemonSet } from '@pkmn/data';
 import type { StartOptions } from '../client/battle-client';
 import { battleSpriteUrls } from './sprite-preload';
-import { itemIconStyle, itemSheetUrl, spriteCandidates } from './sprites';
+import { itemIconStyle, itemSheetUrl, needsFrontSprites, spriteCandidates } from './sprites';
 
 const mon = (species: string, item: string, moves: string[] = ['Protect'], extra: Partial<PokemonSet> = {}): PokemonSet => ({
   name: species, species, item, ability: '', moves, nature: 'Hardy', gender: '', evs: {} as PokemonSet['evs'], ivs: {} as PokemonSet['ivs'], level: 50, ...extra,
@@ -47,5 +47,22 @@ describe('item icons', () => {
     expect(itemIconStyle('Sitrus Berry', 48)).toMatchObject({ width: 48, height: 48 });
     expect(String(itemIconStyle('Sitrus Berry', 48)!.background)).toContain('/ 768px auto');
     expect(itemIconStyle('Not An Item')).toBeNull();
+  });
+});
+
+describe('matching sprites on your side', () => {
+  it('flips your side only while a Pokémon on the field there has no back sprite', () => {
+    expect(needsFrontSprites(['Garchomp', 'Lucario-Mega-Z'], '2d')).toBe(true);
+    expect(needsFrontSprites(['Garchomp', null], '2d')).toBe(false);
+    expect(needsFrontSprites(['Garchomp', 'Snorlax'], '3d')).toBe(false);
+  });
+
+  it('preloads both pictures of your Pokémon when one of them may need its front sprite', () => {
+    const urls = battleSpriteUrls(start(
+      [mon('Garchomp', '', ['Protect'], { gender: 'M' }), mon('Lucario', 'Lucarionite Z', ['Protect'], { gender: 'M' })],
+      [mon('Snorlax', '', ['Protect'], { gender: 'M' })],
+    ), { ...SETTINGS, matchSideSprites: true }).map(l => l[0]);
+    expect(urls).toContain(spriteCandidates('Garchomp', 'p1', '2d', { gender: 'M', shiny: false })[0].url);
+    expect(urls).toContain(spriteCandidates('Garchomp', 'p1', '2d', { gender: 'M', shiny: false, flipFront: true })[0].url);
   });
 });

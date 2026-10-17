@@ -24,6 +24,7 @@ const formsOf = (set: PokemonSet): string[] => {
  * the same choices as the stage: sprite style, shiny, gender and "matching sprites on your side"), the
  * Substitute doll if anyone knows Substitute, and the item icons if anyone holds a Berry (its animation
  * shows it). The sim picks a gender when a set has none, so both are loaded (the same picture for most species).
+ * With "matching sprites on your side", your Pokémon's front pictures too when one of them has no back sprite.
  */
 export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): string[][] {
   if (!settings.sprites) return [];
@@ -32,8 +33,9 @@ export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): 
     ['p2', [opts.opponent, opts.opponent2].flatMap(o => (o?.kind === 'team' ? o.team : []))],
   ];
   const style = settings.spriteStyle;
-  // Your side shows front sprites (flipped) if any of your Pokémon has no back sprite (BattleStage useFlipFront).
-  const flipFront = settings.matchSideSprites && sides[0][1].flatMap(formsOf).some(name => !hasBackSprite(name, style));
+  // Your side shows front sprites (flipped) while one of your Pokémon on the field has no back sprite (BattleStage
+  // useFlipFront): then both pictures of your Pokémon may show during the battle.
+  const mayFlip = settings.matchSideSprites && sides[0][1].flatMap(formsOf).some(name => !hasBackSprite(name, style));
   const lists = new Map<string, string[]>();
   const add = (urls: string[]) => { if (urls.length) lists.set(urls[0], urls); };
   for (const [side, sets] of sides) {
@@ -41,7 +43,9 @@ export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): 
       const genders: ('M' | 'F' | 'N')[] = set.gender === 'M' || set.gender === 'F' || set.gender === 'N' ? [set.gender] : ['M', 'F'];
       for (const name of formsOf(set)) {
         for (const gender of genders) {
-          add(spriteCandidates(name, side, style, { shiny: !!set.shiny, gender, flipFront: side === 'p1' && flipFront }).map(c => c.url));
+          for (const flipFront of side === 'p1' && mayFlip ? [false, true] : [false]) {
+            add(spriteCandidates(name, side, style, { shiny: !!set.shiny, gender, flipFront }).map(c => c.url));
+          }
         }
       }
     }

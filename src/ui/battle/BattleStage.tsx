@@ -5,8 +5,7 @@ import type { Battle, Pokemon } from '@pkmn/client';
 import { ROOMS, SHIELD_CONDITIONS, type BattleAnimation } from '../../client/playback';
 
 import { useElementSize } from '../useElementSize';
-import { megaFormForSet } from '../../team/sets';
-import { hasBackSprite } from '../sprites';
+import { needsFrontSprites } from '../sprites';
 import { horizonVar, posKey, type Point } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
 import { actsAt, effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
@@ -17,6 +16,7 @@ import { SHIELDS } from './fx/catalog';
 import { PokemonPanel } from './PokemonPanel';
 import { ShieldWalls } from './ShieldWalls';
 import { StageSpot } from './StageSpot';
+import { TailwindCue } from './TailwindCue';
 
 type Side = 'p1' | 'p2';
 
@@ -43,24 +43,29 @@ interface SpotProps {
 }
 
 /**
- * Whether your side shows front sprites, flipped (Settings: matching sprites on your side): when any Pokémon
- * on it has no back sprite. Your whole team is known from the start (and what it Mega Evolves or warps into,
- * by its item), so this doesn't change mid-battle; your partner's Pokémon in Multi count once seen.
+ * Whether a Pokémon shows on its spot. The client marks a Pokémon fainted as soon as its HP hits 0 (the KO hit),
+ * but it should stay on screen until its own faint animation plays. Without animations it disappears at once.
  */
-function useFlipFront(battle: Battle): boolean {
+function isShown(pokemon: Pokemon | null, side: Side, slot: number, anim: BattleAnimation | null, playing: boolean, faintSeen: Set<string>): pokemon is Pokemon {
+  const fainting = anim?.kind === 'faint' && actsAt(anim, side, slot);
+  return !!pokemon && (!pokemon.fainted || fainting || (playing && !faintSeen.has(pokemon.originalIdent)));
+}
+
+/**
+ * Whether your side shows front sprites, flipped (Settings: matching sprites on your side): while any Pokémon on
+ * the field on your side (yours, and your partner's in Multi) has no back sprite, so the two side by side match.
+ * Once it has left the field, the others show their back sprites again. The opponents' sprites don't matter.
+ */
+function useFlipFront(shown: (Pokemon | null)[]): boolean {
   const { sprites, spriteStyle, matchSideSprites } = useAppSettings();
   if (!sprites || !matchSideSprites) return false;
-  const mons = battle.sides.filter(s => s.n % 2 === 0).flatMap(s => s.team); // p1 and p3 (n 0 and 2): your half
-  const species = mons.flatMap(p => [p.speciesForme, megaFormForSet({ species: p.speciesForme, item: p.item ?? '' })]).filter((n): n is string => !!n);
-  return species.some(name => !hasBackSprite(name, spriteStyle));
+  return needsFrontSprites(shown.map(p => p?.speciesForme ?? null), spriteStyle);
 }
 
 function Spot({ side, slot, pokemon, anim, playing, faintSeen, flipFront = false }: SpotProps) {
   const fainting = anim?.kind === 'faint' && actsAt(anim, side, slot);
   if (fainting && pokemon) faintSeen.add(pokemon.originalIdent);
-  // The client marks a Pokémon fainted as soon as its HP hits 0 (the KO hit), but it should stay
-  // on screen until its own faint animation plays. Without animations it disappears at once.
-  const visible = pokemon && (!pokemon.fainted || fainting || (playing && !faintSeen.has(pokemon.originalIdent)));
+  const visible = isShown(pokemon, side, slot, anim, playing, faintSeen);
   return (
     <StageSpot
       side={side}
@@ -139,7 +144,11 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
   const shields = (s: Side) => SHIELD_CONDITIONS.filter(id => id in battle[s].sideConditions);
   const stageStyle = { '--spd': speed > 0 ? speed : 1, ...horizonVar } as CSSProperties;
   const { sprites, spriteStyle } = useAppSettings();
-  const flipFront = useFlipFront(battle);
+  // Your side's Pokémon on the field (Multi: battle.p1.active holds your partner's too, linkMultiAllies).
+  const flipFront = useFlipFront(slots.map(slot => {
+    const p = battle.p1.active[slot] ?? null;
+    return isShown(p, 'p1', slot, animation, playing, faintSeen) ? p : null;
+  }));
   // 2D pixel sprites are drawn big and stand lower on the stage.
   const big = sprites && spriteStyle === '2d' ? 'pixel-sprites' : '';
   return (
@@ -155,6 +164,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
           rooms={ROOMS.filter(id => id in battle.field.pseudoWeather)}
           anim={animation}
         />
+        {(['p2', 'p1'] as const).filter(side => 'tailwind' in battle[side].sideConditions).map(side => <TailwindCue key={side} side={side} />)}
         {(['p2', 'p1'] as const).flatMap(side => slots.map(slot => (
           <Spot key={posKey(side, slot)} side={side} slot={slot} pokemon={battle[side].active[slot] ?? null} anim={animation} playing={playing} faintSeen={faintSeen} flipFront={flipFront} />
         )))}

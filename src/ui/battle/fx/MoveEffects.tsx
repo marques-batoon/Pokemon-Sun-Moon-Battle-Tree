@@ -363,6 +363,44 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </span>
       );
     }
+    case 'sash': {
+      // Across the Pokémon's body, sized from its sprite: it wraps around (drawn in from one end), glows, then tears.
+      const p = anchor(layer.at);
+      const w = (p.size ?? 110 * ctx.k) * 0.8;
+      return (
+        <span key={i} className="fxl fx-sash" style={css({ '--x': px(p.x), '--y': px(p.y), '--w': px(w), '--c': layer.color, '--c2': layer.color2, '--delay': delay, '--dur': ms(layer.dur ?? 900) })}>
+          <span className="sash-band"><span className="half left" /><span className="half right" /><span className="sash-shine" /></span>
+        </span>
+      );
+    }
+    case 'gust': {
+      // Streaks start behind the user and sweep past it toward the foe, spread around the line between them; every
+      // fourth is a leaf riding the wind.
+      const dx = target.x - user.x, dy = target.y - user.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      const ang = deg((Math.atan2(dy, dx) * 180) / Math.PI);
+      const dist = Math.max(ctx.w, len * 1.4);
+      return (
+        <Fragment key={i}>
+          {Array.from({ length: layer.count }, (_, c) => {
+            const r1 = rand(ctx.seed, c, 41), r2 = rand(ctx.seed, c, 42), r3 = rand(ctx.seed, c, 43);
+            const side = (r1 - 0.5) * ctx.h * 0.7;
+            const back = ctx.w * (0.18 + r2 * 0.2);
+            const x = user.x - ux * back - uy * side, y = user.y - uy * back + ux * side;
+            const leaf = c % 4 === 3;
+            return (
+              <span key={c} className={`fxl fx-gust ${leaf ? 'leaf' : 'streak'}`} style={css({
+                '--x': px(x), '--y': px(y), '--ang': ang, '--dist': px(dist), '--len': px(ctx.w * (0.1 + r3 * 0.12)), '--c': layer.color,
+                '--delay': ms((layer.delay ?? 0) + r2 * 260), '--dur': ms((layer.dur ?? 900) * (0.7 + r1 * 0.35)),
+              })}>
+                {leaf && <span className="shape sh-leaf" style={css({ '--s': px(12 * ctx.k), '--c': '#7ac74c' })} />}
+              </span>
+            );
+          })}
+        </Fragment>
+      );
+    }
     case 'pillar': {
       const p = anchor(layer.at);
       return (

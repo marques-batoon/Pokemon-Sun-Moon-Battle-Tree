@@ -40,6 +40,8 @@ export interface AppSettings {
   matchSideSprites: boolean;
   /** Team builder: also show each Pokémon's stats at Lv. 100 (battles are always at Lv. 50). */
   showLevel100Stats: boolean;
+  /** Battle screen: show the battle log (the text box beside the battle, below it on phones). */
+  showBattleLog: boolean;
   /** Battle playback: each event animates and the log advances when it finishes. */
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
@@ -56,6 +58,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   battleBackground: 'battletree',
   matchSideSprites: true,
   showLevel100Stats: false,
+  showBattleLog: true,
   animationSpeed: 'normal',
   trainerName: '',
 };

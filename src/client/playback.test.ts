@@ -4,7 +4,7 @@ import { Generations } from '@pkmn/data';
 import { Dex } from '@pkmn/dex';
 import { Protocol } from '@pkmn/protocol';
 import { Battle, Teams, type ID } from '@pkmn/sim';
-import { absorbedByAbility, planLine, type BattleAnimation } from './playback';
+import { absorbedByAbility, displayOrder, planLine, type BattleAnimation } from './playback';
 
 type Planned = Omit<BattleAnimation, 'id'>;
 
@@ -381,5 +381,39 @@ describe('planLine: critical hits', () => {
     plan('|-crit|p2a: Snorlax');
     plan('|move|p1a: Absol|Night Slash|p2a: Snorlax');
     expect(plan('|-damage|p2a: Snorlax|50/100')?.crit).toBeUndefined();
+  });
+});
+
+describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Band)', () => {
+  const plan = (line: string) => {
+    const client = new ClientBattle(new Generations(Dex));
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0]?.animation;
+  };
+
+  it('floats a Pokémon that comes in (or gets) an Air Balloon, but not when an Ability only reveals it', () => {
+    expect(plan('|-item|p2a: Heatran|Air Balloon')).toMatchObject({ kind: 'balloon-in', side: 'p2' });
+    expect(plan('|-item|p1a: Snorlax|Air Balloon|[from] move: Trick')).toMatchObject({ kind: 'balloon-in', side: 'p1' });
+    expect(plan('|-item|p2a: Heatran|Air Balloon|[from] ability: Frisk|[of] p1a: Gothitelle')?.kind).not.toBe('balloon-in');
+    expect(plan('|-item|p2a: Heatran|Leftovers|[from] move: Trick')?.kind).not.toBe('balloon-in');
+  });
+
+  it('shows the Focus Sash and Focus Band letting the Pokémon hang on', () => {
+    expect(plan('|-enditem|p2a: Alakazam|Focus Sash')).toMatchObject({ kind: 'sash', side: 'p2', condition: 'focussash' });
+    expect(plan('|-activate|p1a: Machamp|item: Focus Band')).toMatchObject({ kind: 'sash', side: 'p1', condition: 'focusband' });
+  });
+
+  it('shows the hit first, then the sash (the engine announces the sash just before the damage)', () => {
+    const lines = ['|move|p1a: Garchomp|Earthquake|p2a: Alakazam', '|-enditem|p2a: Alakazam|Focus Sash', '|-damage|p2a: Alakazam|1/130', '|-enditem|p1a: Garchomp|Air Balloon'];
+    expect(displayOrder(lines)).toEqual([lines[0], lines[2], lines[1], lines[3]]);
+    // Not another Pokémon's damage, nor other items.
+    expect(displayOrder(['|-enditem|p2a: Alakazam|Focus Sash', '|-damage|p1a: Garchomp|50/100'])).toEqual(['|-enditem|p2a: Alakazam|Focus Sash', '|-damage|p1a: Garchomp|50/100']);
+    expect(displayOrder(['|-enditem|p2a: Heatran|Air Balloon', '|-damage|p2a: Heatran|1/130'])).toEqual(['|-enditem|p2a: Heatran|Air Balloon', '|-damage|p2a: Heatran|1/130']);
+    const client = new ClientBattle(new Generations(Dex));
+    const kinds = displayOrder(lines.slice(1, 3)).flatMap(line => {
+      const { args, kwArgs } = Protocol.parseBattleLine(line);
+      return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true).map(s => s.animation?.kind);
+    });
+    expect(kinds).toEqual(['hit', 'sash']);
   });
 });

@@ -90,6 +90,8 @@ export function SettingsPage() {
           label="Move effectiveness hints" hint='Label moves "Super effective", "Not very effective" or "No effect" against the opposing Pokémon, as Sun & Moon do. Abilities are not taken into account.' />
         <Toggle checked={settings.keyboardShortcuts} onChange={v => store.update({ keyboardShortcuts: v })}
           label="Keyboard shortcuts" hint="Keys 1-4 use moves; M toggles Mega Evolution and Z toggles the Z-Move." />
+        <Toggle checked={settings.showBattleLog} onChange={v => store.update({ showBattleLog: v })}
+          label="Battle log" hint="The text box with everything that happened in the battle (beside the battle, below it on phones). It can also be hidden or shown from the battle screen; what's happening now always shows under the battle." />
       </section>
 
       <section className="panel">

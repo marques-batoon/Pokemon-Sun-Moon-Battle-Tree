@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_POP, berrySpec, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, sashSpec, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
 } from './catalog';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
@@ -61,6 +61,8 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'charged': return `fx-powerup-${v}`;
     case 'berry': return `fx-munch-${v}`;
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
+    case 'balloon-in': return 'fx-balloon-float';
+    case 'sash': return `fx-brace-${v}`;
     case 'ability': {
       // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
       const id = anim.condition ?? '';
@@ -120,6 +122,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'charged': return chargedSpec(anim.label);
     case 'berry': return anim.label ? berrySpec(anim.label, !!anim.target) : null;
     case 'balloon-pop': return BALLOON_POP;
+    case 'balloon-in': return BALLOON_IN;
+    case 'sash': return sashSpec(anim.condition ?? 'focussash');
     case 'hit': return anim.crit ? CRIT : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':

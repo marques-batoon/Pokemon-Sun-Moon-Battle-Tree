@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, BALLOON_POP_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -17,6 +17,7 @@ import { effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
 import { StageBackdrop } from './StageBackdrop';
+import { TailwindCue } from './TailwindCue';
 import { ShieldWalls } from './ShieldWalls';
 import { StageSpot } from './StageSpot';
 
@@ -65,6 +66,7 @@ interface FieldState {
   seeded: Record<Side, boolean>;
   /** Charge / Electromorphosis: lasts until its next move (Charge) or Electric move (Electromorphosis). */
   charged: Record<Side, boolean>;
+  tailwind: Record<Side, boolean>;
   shields: Record<Side, string[]>;
   status: Record<Side, string | undefined>;
   confused: Record<Side, boolean>;
@@ -75,7 +77,7 @@ interface FieldState {
 }
 const EMPTY: FieldState = {
   mega: { p1: false, p2: false }, digimon: { p1: null, p2: null }, sub: { p1: false, p2: false }, seeded: { p1: false, p2: false }, shields: { p1: [], p2: [] },
-  charged: { p1: false, p2: false }, status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
+  charged: { p1: false, p2: false }, tailwind: { p1: false, p2: false }, status: { p1: undefined, p2: undefined }, confused: { p1: false, p2: false }, infatuated: { p1: false, p2: false },
   protect: { p1: null, p2: null }, terrain: null, rooms: [],
 };
 const MAJOR_STATUS = ['par', 'brn', 'psn', 'tox', 'slp', 'frz'];
@@ -104,8 +106,10 @@ function applyStep(f: FieldState, step: Step): FieldState {
     case 'sub-start': return { ...f, sub: { ...f.sub, [s]: true } };
     case 'sub-end': return { ...f, sub: { ...f.sub, [s]: false } };
     case 'seeded': return { ...f, seeded: { ...f.seeded, [s]: true } };
-    case 'side-start': return step.condition && !f.shields[s].includes(step.condition) ? { ...f, shields: { ...f.shields, [s]: [...f.shields[s], step.condition] } } : f;
-    case 'side-end': return { ...f, shields: { ...f.shields, [s]: f.shields[s].filter(c => c !== step.condition) } };
+    case 'side-start': if (step.condition === 'tailwind') return { ...f, tailwind: { ...f.tailwind, [s]: true } };
+      return step.condition && !f.shields[s].includes(step.condition) ? { ...f, shields: { ...f.shields, [s]: [...f.shields[s], step.condition] } } : f;
+    case 'side-end': if (step.condition === 'tailwind') return { ...f, tailwind: { ...f.tailwind, [s]: false } };
+      return { ...f, shields: { ...f.shields, [s]: f.shields[s].filter(c => c !== step.condition) } };
     default: return f;
   }
 }
@@ -136,6 +140,7 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
     // Rooms toggle: using one while it's up ends it.
     steps.push({ kind: f.rooms.includes(fx.moveId) ? 'field-end' : 'field-start', side, target: null, condition: fx.moveId, durationMs: FIELD_MS });
   }
+  if (fx.field === 'tailwind' && !f.tailwind[side]) steps.push({ kind: 'side-start', side, target: null, condition: 'tailwind', durationMs: SIDE_MS });
   if (fx.field === 'screen' && !f.shields[side].includes(fx.moveId)) {
     steps.push({ kind: 'side-start', side, target: null, condition: fx.moveId, durationMs: SIDE_MS });
   }
@@ -222,7 +227,7 @@ export function AnimationPreview() {
   const shake = shakeProps(spec, anim);
   const points = useSpritePoints(stageRef, `${anim?.id}:${size.w}x${size.h}`);
   const subSide: Side | null = field.sub[side] ? side : field.sub[other(side)] ? other(side) : null;
-  const anyShields = field.shields.p1.length + field.shields.p2.length > 0;
+  const anyShields = field.shields.p1.length + field.shields.p2.length > 0 || field.tailwind.p1 || field.tailwind.p2;
   const held = cantSteps(field, side);
   const endTurn = () => {
     setField(f => ({ ...f, protect: { p1: null, p2: null } }));
@@ -277,6 +282,20 @@ export function AnimationPreview() {
         <button onClick={() => play([
           { kind: 'balloon-pop', side: other(side), target: null, durationMs: BALLOON_POP_MS },
         ])}>{side === 'p1' ? "Opponent's" : 'Your'} Air Balloon pops</button>
+        <label>
+          {side === 'p1' ? 'You' : 'Opponent'}:{' '}
+          <select aria-label="Item activates" value="" onChange={e => {
+            const v = e.target.value;
+            e.target.value = '';
+            if (v === 'airballoon') play([{ kind: 'balloon-in', side, target: null, durationMs: BALLOON_IN_MS }]);
+            else if (v) play([{ kind: 'hit', side, target: null, hpDelta: -99, durationMs: 600 }, { kind: 'sash', side, target: null, condition: v, durationMs: SASH_MS }]);
+          }}>
+            <option value="">item…</option>
+            <option value="airballoon">Comes in with an Air Balloon</option>
+            <option value="focussash">Focus Sash</option>
+            <option value="focusband">Focus Band</option>
+          </select>
+        </label>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>
         <label>
           {side === 'p1' ? 'Opponent' : 'You'}{' '}takes it in{' '}
@@ -328,15 +347,16 @@ export function AnimationPreview() {
         </label>
         <button disabled={!held.length} onClick={() => play(held)}>Held back</button>
         <button onClick={endTurn}>End turn</button>
-        <button disabled={!anyShields} onClick={() => play((['p1', 'p2'] as const).flatMap(s => field.shields[s].map(c => (
+        <button disabled={!anyShields} onClick={() => play((['p1', 'p2'] as const).flatMap(s => [...field.shields[s], ...(field.tailwind[s] ? ['tailwind'] : [])].map(c => (
           { kind: 'side-end', side: s, target: null, condition: c, durationMs: SIDE_MS } as Step
-        ))))}>Screens wear off</button>
+        ))))}>Screens / Tailwind wear off</button>
         <button onClick={() => { setRun(null); setField(EMPTY); setHidden({ p1: null, p2: null }); }}>Reset</button>
       </div>
       <div ref={stageRef} className={`stage${settings.sprites && settings.spriteStyle === '2d' ? ' pixel-sprites' : ''}`} style={{ '--spd': speed, ...horizonVar } as CSSProperties}>
         <StageBackdrop />
         <div className={`stage-field ${shake.className}`} style={shake.style}>
           <FieldLayers terrain={field.terrain} rooms={field.rooms} anim={anim} />
+          {(['p2', 'p1'] as const).filter(s => field.tailwind[s]).map(s => <TailwindCue key={s} side={s} />)}
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
               key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : s === side && POLIWRATH_Z_MOVES.has(move) && !field.mega[s] ? POLIWRATHIUM_Z.user : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}

@@ -6,6 +6,7 @@ import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { useAppSettings } from '../useAppSettings';
 import { useBattleFocusWhile } from '../battleFocus';
 import { useBattleSnapshot } from '../useBattleClient';
+import { getSettingsStore } from '../services';
 import { BattleLog } from './BattleLog';
 import { Controls } from './Controls';
 import { FieldStatus } from './FieldStatus';
@@ -50,7 +51,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
   const foe = battle.p2.active[0];
 
   return (
-    <div className="battle-layout">
+    <div className={`battle-layout${settings.showBattleLog ? '' : ' no-log'}`}>
       <div className="battle-main">
         {inPreview ? (
           <TeamPreview
@@ -98,8 +99,9 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
             )}
           </>
         )}
+        {!settings.showBattleLog && <button className="link-button small log-toggle" onClick={() => getSettingsStore().update({ showBattleLog: true })}>Show battle log</button>}
       </div>
-      <BattleLog entries={s.log} />
+      {settings.showBattleLog && <BattleLog entries={s.log} onHide={() => getSettingsStore().update({ showBattleLog: false })} />}
     </div>
   );
 }

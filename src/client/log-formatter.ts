@@ -1,6 +1,7 @@
 import type { Battle } from '@pkmn/client';
 import type { ArgType, KWArgType, PokemonIdent } from '@pkmn/protocol';
 import { LogFormatter } from '@pkmn/view';
+import { isWarpForm, WARP_DIGIMON } from '../data/custom/digimon';
 
 /**
  * LogFormatter that counts the player's Multi Battle partner as their own side.
@@ -10,6 +11,25 @@ import { LogFormatter } from '@pkmn/view';
  */
 export class TreeLogFormatter extends LogFormatter {
   private multi = false;
+  private readonly battle: Battle;
+
+  constructor(perspective: 'p1' | 'p2' | 'p3' | 'p4', battle: Battle) {
+    super(perspective, battle);
+    this.battle = battle;
+  }
+
+  /**
+   * After Warp Digivolution, the Pokémon goes by its new form's name ("BlackWarGreymon used Dramon Destroyer!",
+   * on request), unless it has a nickname of its own. (Mega Evolved Pokémon keep their name, as in the games.)
+   */
+  override pokemonName(pokemon: PokemonIdent): string {
+    const name = super.pokemonName(pokemon);
+    if (!pokemon) return name;
+    let mon: ReturnType<Battle['getPokemon']> = null;
+    try { mon = this.battle.getPokemon(pokemon); } catch { return name; }
+    const form = mon?.speciesForme;
+    return form && isWarpForm(form) && mon!.name === WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ? form : name;
+  }
 
   /** Multi: "Battle started between Player & Sina and Darla & Alwyn!" (the base names only p1 and p2). */
   override formatText(args: ArgType, kwArgs?: KWArgType, noSectionBreak?: boolean): string {

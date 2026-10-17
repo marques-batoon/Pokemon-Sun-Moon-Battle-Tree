@@ -170,6 +170,12 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; }
 
 .battle-log { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; height: 560px; overflow-y: auto; font-size: 0.85rem; }
 @media (max-width: 860px) { .battle-log { height: 320px; } }
+.battle-log-panel { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.battle-log-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+.battle-layout.no-log { grid-template-columns: minmax(0, 1fr); }
+.link-button { background: none; border: none; padding: 2px 4px; color: var(--accent); cursor: pointer; text-decoration: underline; font: inherit; }
+.link-button.small { font-size: 0.8rem; }
+.log-toggle { align-self: flex-start; order: 3; }
 .log-turn { font-weight: 700; margin-top: 8px; border-top: 1px solid var(--border); padding-top: 4px; }
 .log-error { color: var(--bad); }
 .log-info { color: var(--muted); font-style: italic; }
@@ -553,9 +559,21 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .bg-spiralmountain .data-flow { animation: data-flow 3s linear infinite; }
 @keyframes data-flow { to { stroke-dashoffset: -72; } }
 @keyframes waves-drift { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
-/* Dark theme: the drawn scenes are dimmed (the grass field has its own dark colours). */
-@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .stage-backdrop:not(.bg-grass) { filter: brightness(0.62) saturate(0.85); } }
-:root[data-theme='dark'] .stage-backdrop:not(.bg-grass) { filter: brightness(0.62) saturate(0.85); }
+/* Dark theme: night. Each scene's sky is a night sky with stars and the moon (StageBackdrop nightSky), the day sky,
+   sun and clouds (.day) are hidden, and the scenery and ground are dimmed (the grass field has its own dark colours). */
+.stage-backdrop .night-sky { display: none; }
+.night-sky .twinkle { animation: star-twinkle 2.6s ease-in-out infinite alternate; }
+@keyframes star-twinkle { from { opacity: 0.25; } to { opacity: 1; } }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .stage-backdrop .night-sky { display: block; }
+  :root:not([data-theme='light']) .stage-backdrop .day { display: none; }
+  :root:not([data-theme='light']) .stage-backdrop:not(.bg-grass) .backdrop-sky > svg:not(.night-sky),
+  :root:not([data-theme='light']) .stage-backdrop:not(.bg-grass) .backdrop-ground { filter: brightness(0.62) saturate(0.85); }
+}
+:root[data-theme='dark'] .stage-backdrop .night-sky { display: block; }
+:root[data-theme='dark'] .stage-backdrop .day { display: none; }
+:root[data-theme='dark'] .stage-backdrop:not(.bg-grass) .backdrop-sky > svg:not(.night-sky),
+:root[data-theme='dark'] .stage-backdrop:not(.bg-grass) .backdrop-ground { filter: brightness(0.62) saturate(0.85); }
 .stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 5; }
 .spot { position: absolute; width: 42%; height: 58%; display: flex; align-items: flex-end; justify-content: center; }
 .spot-p2 { right: 5%; top: 4%; }
@@ -582,7 +600,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .hud-p1 { right: 3%; bottom: 7%; }
 .hud .pip { width: 10px; height: 10px; border-width: 2px; font-size: 0.5rem; }
 .hpbar-fill { transition: width 520ms ease-out, background-color 300ms; }
-.controls.playing { flex-direction: row; align-items: center; }
+.controls.playing { flex-direction: row; align-items: center; min-height: 72px; }
 .switch-name { display: flex; align-items: center; gap: 2px; }
 .poke-icon { flex-shrink: 0; margin: -6px 2px -4px -4px; }
 /* The Digimon have no icon sheet entry: their sprite, shrunk to the icon box. */
@@ -931,9 +949,54 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes wire-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
 /* An Ability's name popping up over the Pokémon as it takes in a move (Water Absorb...). */
-/* A critical hit: small bold text over the Pokémon hit, no pill. */
-.fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(12px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.05em;
-  text-shadow: 1px 1px 0 #003a4a, -1px -1px 0 #003a4a, 1px -1px 0 #003a4a, -1px 1px 0 #003a4a, 0 0 6px rgb(0 200 255 / 0.8); animation-name: fx-crit; }
+/* Focus Sash / Focus Band: wraps across the Pokémon (drawn in from one end), glows as it hangs on, then tears in two. */
+.fx-sash { z-index: 4; }
+.fx-sash .sash-band { position: absolute; left: 0; top: 0; width: var(--w); height: calc(var(--w) * 0.15); transform: translate(-50%, -50%) rotate(-22deg); animation: sash-wrap var(--dur) ease-out both; animation-delay: inherit; animation-duration: inherit; }
+.fx-sash .half { position: absolute; top: 0; width: 50%; height: 100%; background: linear-gradient(180deg, var(--c2) 0 16%, var(--c) 16% 84%, var(--c2) 84%); box-shadow: 0 1px 3px rgb(0 0 0 / 0.3); animation: sash-tear-left var(--dur) ease-in both; animation-delay: inherit; animation-duration: inherit; }
+.fx-sash .half.left { left: 0; border-radius: 4px 0 0 4px; }
+.fx-sash .half.right { right: 0; border-radius: 0 4px 4px 0; animation-name: sash-tear-right; }
+.fx-sash .sash-shine { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 40%, rgb(255 255 255 / 0.95) 50%, transparent 60%); background-size: 260% 100%; animation: sash-shine var(--dur) linear both; animation-delay: inherit; animation-duration: inherit; }
+@keyframes sash-wrap { 0% { clip-path: inset(0 100% 0 0); filter: none; } 26% { clip-path: inset(0 0 0 0); } 36% { filter: brightness(1.35) drop-shadow(0 0 6px #ffffff); } 52% { filter: drop-shadow(0 0 10px var(--c2)); } 60%, 100% { clip-path: inset(0 0 0 0); filter: none; } }
+@keyframes sash-tear-left { 0%, 58% { transform: none; opacity: 1; } 100% { transform: translate(-30%, 70%) rotate(-28deg); opacity: 0; } }
+@keyframes sash-tear-right { 0%, 58% { transform: none; opacity: 1; } 100% { transform: translate(30%, 70%) rotate(28deg); opacity: 0; } }
+@keyframes sash-shine { 0%, 26% { opacity: 0; background-position: 100% 0; } 30% { opacity: 1; } 54% { opacity: 1; background-position: -60% 0; } 58%, 100% { opacity: 0; background-position: -60% 0; } }
+/* The Pokémon braces, shaking, as it hangs on. */
+.fx-brace-a { animation: brace-a calc(900ms * var(--spd, 1)) ease-in-out; }
+.fx-brace-b { animation: brace-b calc(900ms * var(--spd, 1)) ease-in-out; }
+@keyframes brace-a { 0%, 20%, 58%, 100% { transform: none; filter: none; } 26% { transform: translateX(-3%); filter: brightness(1.6); } 33% { transform: translateX(3%); } 40% { transform: translateX(-2%); } 48% { transform: translateX(2%); filter: brightness(1.3); } }
+@keyframes brace-b { 0%, 20%, 58%, 100% { transform: none; filter: none; } 26% { transform: translateX(-3%); filter: brightness(1.6); } 33% { transform: translateX(3%); } 40% { transform: translateX(-2%); } 48% { transform: translateX(2%); filter: brightness(1.3); } }
+
+/* Tailwind (the move): streaks of wind and leaves sweep across the stage toward the foe. */
+.fx-gust { z-index: 4; transform-origin: 0 50%; animation-name: gust-sweep; animation-timing-function: ease-in; }
+.fx-gust.streak { width: var(--len); height: calc(3px * var(--k, 1)); border-radius: 2px; background: linear-gradient(90deg, transparent, var(--c) 45%, #ffffff 65%, transparent); box-shadow: 0 0 4px rgb(110 170 230 / 0.6); }
+.fx-gust.leaf .shape { animation: gust-leaf-spin 0.5s linear infinite; }
+@keyframes gust-sweep { 0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--ang)) translateX(0); } 12% { opacity: 0.95; } 80% { opacity: 0.85; } 100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--ang)) translateX(var(--dist)); } }
+@keyframes gust-leaf-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* Tailwind blowing on a side (TailwindCue): wind streaks and a few leaves keep crossing that side toward the foe. */
+.tailwind-cue { position: absolute; pointer-events: none; overflow: hidden; z-index: 0; }
+.tailwind-cue.tw-p1 { left: 0; width: 64%; top: 48%; bottom: 0; transform: rotate(-7deg); transform-origin: 0 100%; }
+.tailwind-cue.tw-p2 { right: 0; width: 64%; top: 6%; height: 42%; transform: rotate(-7deg); transform-origin: 100% 0; }
+.tailwind-cue .wind { position: absolute; left: 0; width: 26%; height: 3px; border-radius: 2px; opacity: 0; background: linear-gradient(90deg, transparent, rgb(255 255 255) 50%, transparent); box-shadow: 0 0 5px rgb(80 150 225 / 0.75); animation: tw-blow-right 2.1s linear infinite; }
+.tailwind-cue .wind.leafy { width: 12px; height: 9px; border-radius: 0 70% 0 70%; background: #7ac74c; box-shadow: none; animation-duration: 2.6s; }
+.tailwind-cue.tw-p2 .wind { animation-name: tw-blow-left; }
+.tailwind-cue .wind:nth-child(1) { top: 12%; animation-delay: 0s; }
+.tailwind-cue .wind:nth-child(2) { top: 30%; animation-delay: -0.7s; width: 34%; }
+.tailwind-cue .wind:nth-child(3) { top: 47%; animation-delay: -1.4s; }
+.tailwind-cue .wind:nth-child(4) { top: 64%; animation-delay: -0.35s; width: 20%; }
+.tailwind-cue .wind:nth-child(5) { top: 80%; animation-delay: -1.05s; width: 30%; }
+.tailwind-cue .wind:nth-child(6) { top: 38%; animation-delay: -1.7s; }
+.tailwind-cue .wind:nth-child(7) { top: 72%; animation-delay: -0.9s; }
+@keyframes tw-blow-right { 0% { transform: translateX(-120%); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(420%); opacity: 0; } }
+@keyframes tw-blow-left { 0% { transform: translateX(420%) scaleX(-1); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(-120%) scaleX(-1); opacity: 0; } }
+.tailwind-cue .wind.leafy { animation-name: tw-leaf-right; }
+.tailwind-cue.tw-p2 .wind.leafy { animation-name: tw-leaf-left; }
+@keyframes tw-leaf-right { 0% { transform: translateX(-120%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(5200%) rotate(900deg); opacity: 0; } }
+@keyframes tw-leaf-left { 0% { transform: translateX(5200%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(-120%) rotate(-900deg); opacity: 0; } }
+
+/* A critical hit: small bold "CRIT" over the Pokémon hit, cyan with a white outline (and a faint shadow outside it, for light backgrounds). */
+.fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(14px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.06em;
+  text-shadow: 1.5px 0 0 #fff, -1.5px 0 0 #fff, 0 1.5px 0 #fff, 0 -1.5px 0 #fff, 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 4px rgb(0 40 60 / 0.55); animation-name: fx-crit; }
 @keyframes fx-crit { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); } 14% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 75% { opacity: 1; transform: translate(-50%, -80%); } 100% { opacity: 0; transform: translate(-50%, -105%); } }
 
 /* Air Balloon: a red balloon on a string beside the Pokémon's head; it rises and bobs, or (.pop) swells and bursts. */
@@ -1324,7 +1387,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   .sprite-wrap, .stage-field, .sprite-sub, .sub-doll-inner { animation-duration: 1ms !important; animation-delay: 0ms !important; }
   .move-fx { display: none; }
   .stage::after, .shield-wall, .seed, .sprite-wrap.seeded .poke-sprite, .cond-marks .mark, .mark-confusion .orbit, .ice-block::after,
-  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor, .bg-ocean .waves, .bg-spiralmountain .data-flow, .charge-aura { animation: none; }
+  .protect-bubble, .terrain-layer, .terrain-layer::before, .room-layer, .room-wall, .room-floor, .bg-ocean .waves, .bg-spiralmountain .data-flow, .charge-aura, .night-sky .twinkle, .tailwind-cue .wind { animation: none; }
+  .tailwind-cue .wind { opacity: 0.6; transform: translateX(var(--rm-x, 80%)); }
   .charge-aura .spark { animation: none; opacity: 0.8; }
   .sprite-wrap.charged .poke-sprite { animation: none; filter: drop-shadow(0 0 6px rgb(255 214 50 / 0.9)); }
 }

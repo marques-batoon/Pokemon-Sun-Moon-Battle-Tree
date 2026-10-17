@@ -49,7 +49,11 @@ export type AnimationKind =
    */
   | 'berry'
   /** The Pokémon's Air Balloon pops (hit by an attack). */
-  | 'balloon-pop';
+  | 'balloon-pop'
+  /** The Pokémon floats on an Air Balloon (it came in holding one, or got one). */
+  | 'balloon-in'
+  /** A Focus Sash (or Focus Band: `condition`) lets the Pokémon hang on with 1 HP. */
+  | 'sash';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -86,6 +90,19 @@ export interface BattleAnimation {
   crit?: boolean;
   /** Duration at normal speed, in ms. */
   durationMs: number;
+}
+
+/**
+ * Protocol lines in the order they're shown. The engine announces a Focus Sash ("-enditem") just before the damage
+ * it lets the Pokémon survive; as in the games, the hit shows first, then "X hung on using its Focus Sash!".
+ */
+export function displayOrder(lines: readonly string[]): string[] {
+  const out = [...lines];
+  for (let i = 0; i + 1 < out.length; i++) {
+    const sash = /^\|-enditem\|([^|]+)\|Focus Sash(\||$)/.exec(out[i]);
+    if (sash && out[i + 1].startsWith(`|-damage|${sash[1]}|`)) [out[i], out[i + 1]] = [out[i + 1], out[i]];
+  }
+  return out;
 }
 
 /** Base durations (normal speed) by protocol command. Lines that print nothing take 0. */
@@ -143,6 +160,8 @@ export const ABILITY_MS = 1100;
 export const CHARGED_MS = 750;
 export const BERRY_MS = 1000;
 export const BALLOON_POP_MS = 850;
+export const BALLOON_IN_MS = 1100;
+export const SASH_MS = 900;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -381,6 +400,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (effect === 'leechseed' && cmd === '-start') return [step({ kind: 'seeded', ...who, target: null, durationMs: SEEDED_MS })];
       if (effect === 'confusion' && cmd !== '-end') return [step({ kind: 'confused', ...who, target: null, durationMs: CONFUSED_MS })];
       if (effect === 'attract' && cmd !== '-end') return [step({ kind: 'infatuated', ...who, target: null, durationMs: CONFUSED_MS })];
+      // A Focus Band lets its holder hang on ("-activate|X|item: Focus Band").
+      if (cmd === '-activate' && effect === 'itemfocusband') return [step({ kind: 'sash', ...who, target: null, condition: 'focusband', durationMs: SASH_MS })];
       if (cmd === '-activate' && PROTECTIONS.has(effect)) return [step({ kind: 'blocked', ...who, target: null, condition: effect, durationMs: BLOCKED_MS })];
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
@@ -430,6 +451,14 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       }
       // An Air Balloon pops when an attack hits its holder.
       if (toId(args[2]) === 'airballoon') return [step({ kind: 'balloon-pop', ...at(args[1]), target: null, durationMs: BALLOON_POP_MS })];
+      // A Focus Sash is used up as its holder hangs on.
+      if (toId(args[2]) === 'focussash') return [step({ kind: 'sash', ...at(args[1]), target: null, condition: 'focussash', durationMs: SASH_MS })];
+      return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
+    }
+    case '-item': {
+      // Floating on an Air Balloon: it came in holding one ("X floats in the air with its Air Balloon!"), or got
+      // one (Trick...). Not when an Ability only reveals it (Frisk).
+      if (toId(args[2]) === 'airballoon' && !abilityName(kwArgs.from)) return [step({ kind: 'balloon-in', ...at(args[1]), target: null, durationMs: BALLOON_IN_MS })];
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
     case '-miss':

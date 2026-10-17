@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  abilitySpec, ATTACKS, BALLOON_POP, berrySpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, sashSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -267,5 +267,16 @@ describe('Air Balloon and critical hits', () => {
     expect(key(abilitySpec('airballoon'))).not.toBe(key(abilitySpec('levitate')));
     expect(BALLOON_POP.layers.find(l => l.kind === 'balloon')).toMatchObject({ pop: true, at: 'user' });
     expect(CRIT.layers).toEqual([expect.objectContaining({ kind: 'label', text: 'CRIT', color: '#3ee8ff', variant: 'crit', at: 'user' })]);
+  });
+});
+
+describe('Focus Sash, Air Balloon coming in, Tailwind', () => {
+  it('has their animations', () => {
+    expect(sashSpec('focussash').layers.find(l => l.kind === 'sash')).toMatchObject({ at: 'user' });
+    expect(sashSpec('focussash').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Focus Sash' });
+    expect(sashSpec('focusband').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Focus Band' });
+    expect(BALLOON_IN.layers.find(l => l.kind === 'balloon')).toMatchObject({ at: 'user' });
+    expect(BALLOON_IN.layers.find(l => l.kind === 'balloon')).not.toHaveProperty('pop');
+    expect(moveSpec(classifyMove('Tailwind')).layers.some(l => l.kind === 'gust')).toBe(true);
   });
 });
