@@ -27,6 +27,11 @@ export interface LobbyView {
   inBattle: boolean;
   /** Something to tell the guest (e.g. their team was rejected). */
   notice: string | null;
+  /**
+   * The next battle earns each player BP and partner progress in their own app if won (All Star Mode, in a streak
+   * started at battle 1 or again after a loss, opponents not chosen with debug tools).
+   */
+  rewards: boolean;
 }
 
 export type OnlineCourse = 'super' | 'allstar';
@@ -128,6 +133,7 @@ function parseLobby(v: unknown): LobbyView | null {
     guestReady: v.guestReady === true,
     inBattle: v.inBattle === true,
     notice: str(v.notice, 500),
+    rewards: v.rewards === true,
   };
 }
 

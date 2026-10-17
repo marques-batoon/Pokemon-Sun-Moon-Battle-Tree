@@ -6,7 +6,10 @@ import { createInProcessTransport } from '../engine/in-process-transport';
 import { importShowdownText } from '../team/showdown-text';
 import type { PokemonSet } from '../team/types';
 import { cleanSet, parseToGuest, parseToHost } from './link-protocol';
-import { OnlineRoom } from './link-room';
+import { OnlineRoom, type OnlineReward } from './link-room';
+import { RunController } from '../run/controller';
+import { RunStore } from '../run/run-store';
+import { memoryStore } from '../storage/kv';
 import type { EngineTransport } from '../client/transport';
 import type { FromEngine } from '../engine/protocol';
 import type { ConnectRelay, RelayHandlers } from './relay-client';
@@ -338,5 +341,108 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     await waitFor(() => guest.getSnapshot().status === 'closed');
     expect(guest.getSnapshot().error).toMatch(/host left/);
     guest.dispose();
+  });
+});
+
+describe('online All Star Multi: BP and partner progress for each player', () => {
+  /** Host and guest rooms on a stand-in engine (the test decides each battle's result), recording each player's rewards. */
+  async function setup(seedText = 'rewards') {
+    const handlers = new Set<(msg: FromEngine) => void>();
+    const engine: EngineTransport = { send: () => {}, listen: h => { handlers.add(h); return () => { handlers.delete(h); }; }, dispose: () => {} };
+    const relay = memoryRelay();
+    const makeClient = (t: EngineTransport, perspective: 'p1' | 'p3') => new BattleClient(t, { perspective });
+    const rewards: { host: OnlineReward[]; guest: OnlineReward[] } = { host: [], guest: [] };
+    const host = new OnlineRoom({ role: 'host', code: 'ABCDEFGH', name: 'Hau', connect: relay.connect(0, 'Hau'), engine, makeClient, seedText, onReward: r => rewards.host.push(r) });
+    const guest = new OnlineRoom({ role: 'guest', code: 'ABCDEFGH', name: 'Lillie', connect: relay.connect(1, 'Lillie'), makeClient, onReward: r => rewards.guest.push(r) });
+    await waitFor(() => host.getSnapshot().partnerName === 'Lillie');
+    host.setTeam(pair(0, 1));
+    guest.setTeam(pair(3, 5));
+    await waitFor(() => host.getSnapshot().lobby.guestReady);
+    /** Plays the next battle to this result; the guest follows it (it opens with "started"). */
+    const play = async (winner: 'p1' | 'p2') => {
+      const before = guest.getSnapshot().lobby;
+      host.startBattle();
+      const battleId = host.getSnapshot().battleId!;
+      handlers.forEach(h => h({ type: 'started', battleId, seed: 's', opponentName: 'Foes', playerTeam: [] }));
+      handlers.forEach(h => h({ type: 'end', battleId, result: { winner, turns: 3, seed: [0, 0, 0, 0] as never, inputLog: [] } }));
+      await waitFor(() => guest.getSnapshot().battleId === battleId && guest.getSnapshot().lobby.battle !== before.battle || guest.getSnapshot().lobby.notice);
+      host.leaveBattleScreen();
+      guest.leaveBattleScreen();
+    };
+    return { host, guest, rewards, play, close: () => { host.dispose(); guest.dispose(); } };
+  }
+
+  it('gives both players the battle\'s BP and its trainers when they win in All Star Mode', async () => {
+    const { host, guest, rewards, play, close } = await setup();
+    host.setCourse('allstar');
+    await waitFor(() => guest.getSnapshot().lobby.course === 'allstar' && guest.getSnapshot().lobby.rewards);
+    const foes = [...host.getSnapshot().lobby.next];
+    await play('p1');
+    expect(rewards.host).toEqual([{ course: 'allstar', battle: 1, bp: 2, trainerIds: foes }]);
+    await waitFor(() => rewards.guest.length);
+    expect(rewards.guest).toEqual(rewards.host);
+    expect(guest.getSnapshot().lastReward).toEqual(rewards.host[0]);
+    // A loss gives nothing; a new streak from battle 1 counts again.
+    await play('p2');
+    expect(rewards.host).toHaveLength(1);
+    expect(guest.getSnapshot().lobby.rewards).toBe(true);
+    close();
+  });
+
+  it('gives nothing in Super Multi, for opponents chosen with debug tools, or in a streak started at battle 20', async () => {
+    const { host, rewards, play, close } = await setup('no-rewards');
+    expect(host.getSnapshot().lobby.rewards).toBe(false);
+    await play('p1');
+    expect(rewards.host).toEqual([]);
+    close();
+
+    const b = await setup('no-rewards-2');
+    b.host.setCourse('allstar');
+    const brock = TRAINERS.find(t => t.kind === 'special' && t.name === 'Brock')!.id;
+    const misty = TRAINERS.find(t => t.kind === 'special' && t.name === 'Misty')!.id;
+    b.host.debugChooseOpponents([brock, misty]);
+    await waitFor(() => b.guest.getSnapshot().lobby.next.join() === `${brock},${misty}` && !b.guest.getSnapshot().lobby.rewards);
+    await b.play('p1');
+    expect(b.rewards.host).toEqual([]);
+    // The next battle is drawn as usual again, and counts.
+    expect(b.host.getSnapshot().lobby.rewards).toBe(true);
+    b.close();
+
+    const c = await setup('no-rewards-3');
+    c.host.setCourse('allstar');
+    c.host.setStartBattle(20);
+    expect(c.host.getSnapshot().lobby.rewards).toBe(false);
+    await c.play('p1');
+    expect(c.rewards.host).toEqual([]);
+    c.close();
+  });
+
+  it('counts a streak started again from the last multiple of 10 after a loss, as a local challenge does', async () => {
+    const { host, rewards, play, close } = await setup('retry-rewards');
+    host.setCourse('allstar');
+    for (let i = 0; i < 12; i++) await play('p1');
+    expect(rewards.host.map(r => r.battle)).toEqual(Array.from({ length: 12 }, (_, i) => i + 1));
+    // Battle 10 is the Battle Legends' draw: 50 BP.
+    expect(rewards.host[9].bp).toBe(50);
+    await play('p2');
+    expect(host.getSnapshot().retryFrom).toBe(10);
+    host.setStartBattle(10);
+    expect(host.getSnapshot().lobby.rewards).toBe(true);
+    await play('p1');
+    expect(rewards.host.at(-1)).toMatchObject({ battle: 10, bp: 50 });
+    close();
+  });
+
+  it('records the reward in each player\'s own app: BP, and the trainers beaten in the Partners shop at All Star prices', () => {
+    const store = new RunStore(memoryStore());
+    const controller = new RunController(store, new BattleClient(createInProcessTransport()));
+    const red = TRAINERS.find(t => t.kind === 'legend' && t.name === 'Red')!.id;
+    const [brock, misty] = ['Brock', 'Misty'].map(name => TRAINERS.find(t => t.kind === 'special' && t.name === name)!.id);
+    expect(controller.recordOnlineWin({ battle: 10, trainerIds: [red, brock] })).toBe(50);
+    controller.recordOnlineWin({ battle: 11, trainerIds: [brock, misty] });
+    const { profile } = store.getState();
+    expect(profile.bpTotal).toBe(53);
+    expect(profile.partners.prices).toMatchObject({ Red: 10000, Brock: 9990, Misty: 10000 });
+    expect(profile.records['multi-allstar']).toEqual({ best: 0, last: 0 });
   });
 });

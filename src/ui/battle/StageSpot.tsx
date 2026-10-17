@@ -147,7 +147,7 @@ export interface StageSpotProps {
 }
 
 /** What the badge over a hidden Pokémon says. */
-const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished' };
+const HIDDEN_LABEL: Record<SemiInvulnerable, string> = { underground: 'Underground', sky: 'In the sky', underwater: 'Underwater', phantom: 'Vanished', carried: 'Carried into the sky' };
 
 /** One side of the field: Pokémon sprite, Substitute doll and status marks (no shadow under it, on request). */
 export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, seeded = false, charged = false, status, confused = false, infatuated = false, protect = null, hidden = null, flipFront = false }: StageSpotProps) {
@@ -177,7 +177,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
       {pokemon && hidden && (
         <>
           <span className={`semi-cue semi-cue-${hidden}`} aria-hidden />
-          <span className="semi-badge" title="Most attacks will miss it this turn">{HIDDEN_LABEL[hidden]}</span>
+          <span className="semi-badge" title={hidden === 'carried' ? "Taken up by Sky Drop: it can't move, and most attacks will miss it, until it's dropped" : 'Most attacks will miss it this turn'}>{HIDDEN_LABEL[hidden]}</span>
         </>
       )}
       {pokemon && charged && !hidden && <span className="semi-badge charge-badge" title="Its next Electric move has double power">Charged</span>}

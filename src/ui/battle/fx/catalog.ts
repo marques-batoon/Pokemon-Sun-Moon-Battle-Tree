@@ -14,7 +14,9 @@ export type Motion = 'burst' | 'rise' | 'fall' | 'swirl' | 'converge' | 'spray';
 
 export type Layer =
   /** Projectile(s) travelling from user to target. */
-  | { kind: 'orb'; color: string; color2?: string; size: number; shape?: Shape; arc?: boolean; count?: number; gap?: number; delay?: number; dur?: number }
+  | { kind: 'orb'; color: string; color2?: string; size: number; shape?: Shape; arc?: boolean; count?: number; gap?: number; delay?: number; dur?: number;
+    /** It goes straight through the target and out the other side (a Normal or Fighting move on a Ghost). */
+    through?: boolean }
   /** Beam stretching from user to target. */
   | { kind: 'beam'; color: string; color2?: string; width: number; wavy?: boolean; delay?: number; dur?: number }
   /** Lightning from the sky onto the target. */
@@ -1054,6 +1056,76 @@ export function sashSpec(item: string): FxSpec {
     { kind: 'label', at: 'user', text: f.name, color: f.color2 === '#ffffff' ? f.color : f.color2, delay: 120, dur: 760 },
   ] };
 }
+
+/**
+ * A move with no effect because of the type chart: each pair has its own animation (here "user" is the move's user
+ * and "target" the immune Pokémon; the move itself doesn't animate, as with Levitate). The sprite classes (stage-fx
+ * immuneClass) show the immune Pokémon's side of it.
+ */
+export const IMMUNE_FX: Record<string, FxSpec> = {
+  // A Normal attack goes straight through the Ghost, which turns wispy and see-through (fx-intangible).
+  'normal-ghost': { layers: [
+    { kind: 'orb', color: '#e8e4d8', color2: '#ffffff', size: 28, through: true, dur: 700 },
+    { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#9b7fe0', color2: '#d9ccff', count: 9, size: 18, spread: 55, delay: 250, dur: 700 },
+  ] },
+  // A flurry of punches passes through the Ghost, which flickers out of reach (fx-intangible).
+  'fighting-ghost': { layers: [
+    { kind: 'orb', color: '#e0662f', color2: '#ffd2b0', size: 22, shape: 'blob', through: true, count: 3, gap: 120, dur: 560 },
+    { kind: 'particles', at: 'target', shape: 'wisp', motion: 'swirl', color: '#7a5cc8', color2: '#c9b6ff', count: 8, size: 16, spread: 60, delay: 300, dur: 700 },
+  ] },
+  // Shadowy energy reaches the Normal type and just fizzles out, grey smoke, while it shrugs it off (fx-unfazed).
+  'ghost-normal': { layers: [
+    { kind: 'orb', color: '#6a4ab8', color2: '#c9b6ff', size: 26, shape: 'wisp', dur: 480 },
+    { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#8a7aa8', color2: '#c8c8c8', count: 10, size: 16, spread: 45, delay: 450, dur: 650 },
+    { kind: 'aura', at: 'target', color: '#bdbdbd', size: 140, delay: 450, dur: 400 },
+  ] },
+  // Lightning strikes the Ground type and runs harmlessly into the earth: the ground flashes yellow and ripples (fx-grounded).
+  'electric-ground': { layers: [
+    { kind: 'bolt', color: '#ffe14a' },
+    { kind: 'ground', color: '#e8c840', delay: 250, dur: 600 },
+    { kind: 'rings', at: 'target', color: '#ffe14a', count: 3, size: 150, delay: 300, dur: 600 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'fall', color: '#ffe14a', color2: '#fff6b0', count: 10, size: 12, spread: 55, delay: 220, dur: 500 },
+  ] },
+  // The ground heaves and rocks fly up, but the Flying type rises clear of it on its wings, a few feathers drifting (fx-hover).
+  'ground-flying': { layers: [
+    { kind: 'ground', color: '#a07a4a', dur: 650 },
+    { kind: 'particles', at: 'target', shape: 'rock', motion: 'spray', color: '#a07a4a', color2: '#d8b98a', count: 9, size: 11, spread: 60, delay: 100, dur: 600 },
+    { kind: 'particles', at: 'target', shape: 'feather', motion: 'fall', color: '#ffffff', color2: '#cfd8ff', count: 6, size: 14, spread: 50, delay: 350, dur: 750 },
+  ] },
+  // Psychic waves close in on the Dark type and shatter against its dark aura (fx-dark-guard).
+  'psychic-dark': { layers: [
+    { kind: 'rings', at: 'path', color: '#f85888', count: 3, size: 60, dur: 450 },
+    { kind: 'aura', at: 'target', color: '#2a1838', size: 210, delay: 350, dur: 650 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#ff7aa8', color2: '#ffd0e0', count: 14, size: 12, spread: 85, delay: 420, dur: 500 },
+  ] },
+  // Poison splashes on the Steel type and drips off its gleaming metal (fx-metal-glint).
+  'poison-steel': { layers: [
+    { kind: 'orb', color: '#a040a0', color2: '#e0a0e0', size: 18, shape: 'drop', arc: true, count: 3, gap: 70, dur: 460 },
+    { kind: 'particles', at: 'target', shape: 'drop', motion: 'fall', color: '#a040a0', color2: '#d080d0', count: 8, size: 11, spread: 45, delay: 480, dur: 600 },
+    { kind: 'rays', at: 'target', color: '#e8eef8', size: 150, delay: 520, dur: 450 },
+  ] },
+  // Draconic energy reaches the Fairy type and melts into pink sparkles and hearts (fx-fairy-glow).
+  'dragon-fairy': { layers: [
+    { kind: 'orb', color: '#6a3cf0', color2: '#c6b0ff', size: 24, shape: 'scale', count: 2, gap: 90, dur: 480 },
+    { kind: 'particles', at: 'target', shape: 'heart', motion: 'burst', color: '#ff8ac0', color2: '#ffd0e4', count: 8, size: 14, spread: 70, delay: 470, dur: 600 },
+    { kind: 'particles', at: 'target', shape: 'star', motion: 'rise', color: '#ffffff', color2: '#ffc0dc', count: 8, size: 10, spread: 55, delay: 500, dur: 650 },
+    { kind: 'aura', at: 'target', color: '#ff9ccc', size: 170, delay: 480, dur: 500 },
+  ] },
+};
+/** The animation for a type-chart immunity ("psychic-dark"...); any other pair: the attack fading away at the target. */
+export function immuneSpec(pair: string): FxSpec {
+  return IMMUNE_FX[pair] ?? { layers: [
+    { kind: 'orb', color: '#d0d0d0', size: 22, dur: 450 },
+    { kind: 'aura', at: 'target', color: '#ffffff', size: 140, delay: 420, dur: 450 },
+  ] };
+}
+
+/** Sky Drop takes its target up: a rush of wind and feathers lifts it off the field (both end up in the sky). */
+export const SKY_DROP: FxSpec = { layers: [
+  { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: '#ffffff', color2: '#dcefff', count: 12, size: 18, spread: 60, dur: 750 },
+  { kind: 'particles', at: 'target', shape: 'feather', motion: 'spray', color: '#a890f0', color2: '#ffffff', count: 7, size: 13, spread: 60, delay: 120, dur: 700 },
+  { kind: 'rings', at: 'target', color: '#e6f4ff', count: 2, size: 140, delay: 80, dur: 600 },
+] };
 
 /** A critical hit: small "CRIT" text (cyan, white outline) over the Pokémon hit, with the damage (after the move's animation). */
 export const CRIT: FxSpec = { layers: [

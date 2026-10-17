@@ -1,6 +1,6 @@
 import { OnlineRoom, type Role } from '../../online/link-room';
 import { RELAY_URL, relayConnector } from '../../online/relay-client';
-import { engine, newBattleClient } from '../services';
+import { engine, getRunController, newBattleClient } from '../services';
 
 // The online room you're in, kept outside the page so visiting another page
 // (the Team Builder, Settings) doesn't drop you from the room.
@@ -22,6 +22,8 @@ export const roomStore = {
       connect: relayConnector(RELAY_URL, code, role === 'host', name),
       engine: role === 'host' ? engine() : undefined,
       makeClient: newBattleClient,
+      // All Star Mode wins: BP and partner progress in this player's own app.
+      onReward: reward => { getRunController().recordOnlineWin(reward); },
     });
     listeners.forEach(l => l());
   },

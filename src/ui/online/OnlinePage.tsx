@@ -1,10 +1,11 @@
 import { useState, useSyncExternalStore } from 'react';
 import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
-import type { OnlineRoom } from '../../online/link-room';
+import type { OnlineReward, OnlineRoom } from '../../online/link-room';
 import { RELAY_URL } from '../../online/relay-client';
 import { newRoomCode, ROOM_CODE } from '../../online/relay-protocol';
 import { checkTrainerName } from '../../online/trainer-name';
 import { BRING, isSuperUnlocked } from '../../run/types';
+import { bpForWin } from '../../run/selection';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
 import { useTeams } from '../builder/hooks';
@@ -66,6 +67,7 @@ function OnlineHome({ name }: { name: string }) {
       <div className="panel">
         <h2>Online Multi Battles</h2>
         <p>Team up with a friend: you each bring {BRING.multi} Pokémon against two Battle Tree trainers, and keep a streak going while you win.</p>
+        <p className="muted small">In All Star Multi, every win also gives you each BP and partner progress in your own app: the special trainers and Battle Legends you beat come into your Partners shop.</p>
         <p className="muted small">You're playing as <strong>{name}</strong> (change it in <a href="#/settings">Settings</a>).</p>
       </div>
       <div className="online-choices">
@@ -90,6 +92,16 @@ function OnlineHome({ name }: { name: string }) {
       </div>
       <SafetyNote />
     </section>
+  );
+}
+
+/** What your last online win gave you (All Star Mode), in your own app. */
+function RewardNote({ reward }: { reward: OnlineReward }) {
+  const names = reward.trainerIds.map(id => TRAINERS[id]).filter(t => t && t.kind !== 'regular').map(t => t.name);
+  return (
+    <p className="notice win small">
+      Battle {reward.battle} won: +{reward.bp} BP{names.length ? `, and partner progress for ${names.join(' and ')} (Partners shop)` : ''}.
+    </p>
   );
 }
 
@@ -145,6 +157,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
           debugTools={hostDebug}
         />
         {snap.aiPartner && <p className="muted small">The AI is playing {host ? `${partnerName ?? 'your partner'}'s` : 'your'} Pokémon.</p>}
+        {snap.lastReward && battle.phase === 'ended' && <RewardNote reward={snap.lastReward} />}
         {failed && <button onClick={() => room.leaveBattleScreen()}>Back to the room</button>}
       </>
     );
@@ -183,7 +196,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
       {lobby.next.length > 0 && (
         <OpponentCard
           trainers={nextFoes} greetings={greetings} battleKey={nextKey}
-          detail={`${lobby.course === 'allstar' ? 'All Star Mode · ' : ''}Battle ${lobby.battle} · streak ${lobby.streak}`}
+          detail={`${lobby.course === 'allstar' ? 'All Star Mode · ' : ''}Battle ${lobby.battle} · streak ${lobby.streak}${lobby.rewards ? ` · win for ${bpForWin('allstar', lobby.battle)} BP each` : ''}`}
         />
       )}
 
@@ -204,13 +217,19 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
           <span>Mode</span>
           <select value={lobby.course} onChange={e => room.setCourse(e.target.value as 'super' | 'allstar')}>
             <option value="super">Super Multi</option>
-            <option value="allstar">All Star Multi · special trainers every battle, Battle Legends every 10th</option>
+            <option value="allstar">All Star Multi · special trainers every battle, Battle Legends every 10th, earns BP</option>
           </select>
         </label>
       )}
       {!host && lobby.course === 'allstar' && (
         <p className="small"><span className="tag">All Star Mode</span> Special trainers every battle, Battle Legends every 10th.</p>
       )}
+      {lobby.course === 'allstar' && (lobby.rewards ? (
+        <p className="small">Each win gives you both BP and partner progress, in your own app: the trainers you beat come into your Partners shop (10000 BP when first met in All Star Mode, 10 BP less for each further win there).</p>
+      ) : (
+        <p className="muted small">This battle doesn't earn BP or partner progress: the streak started at a later battle, or the opponents were chosen with debug tools. Start a streak from battle 1 for rewards.</p>
+      ))}
+      {snap.lastReward && <RewardNote reward={snap.lastReward} />}
 
       {host && !lobby.inBattle && snap.fresh && (
         <label className="fld online-start">

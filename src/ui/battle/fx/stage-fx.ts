@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, sashSpec, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
 } from './catalog';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
@@ -11,6 +11,15 @@ import { typeColor } from '../../types';
 
 /** Is the animation's acting Pokémon at this position? */
 export const actsAt = (anim: BattleAnimation | null, side: Side, slot = 0) => !!anim && anim.side === side && (anim.slot ?? 0) === slot;
+
+/**
+ * The immune Pokémon's part in a type-chart immunity, by the type that blocks the move (immuneSpec): a Ghost turns
+ * see-through, a Normal type shrugs, a Ground type grounds the charge, a Flying type rises clear, a Dark type's aura
+ * flares, Steel gleams, a Fairy glows pink.
+ */
+const IMMUNE_CLASS: Record<string, string> = {
+  ghost: 'fx-intangible', normal: 'fx-unfazed', ground: 'fx-grounded', flying: 'fx-hover', dark: 'fx-dark-guard', steel: 'fx-metal-glint', fairy: 'fx-fairy-glow',
+};
 
 /** Animation class for the sprite at one position. a/b variants restart CSS animations on consecutive events. */
 export function spriteClass(side: Side, slot: number, anim: BattleAnimation | null): string {
@@ -63,6 +72,7 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'balloon-in': return 'fx-balloon-float';
     case 'sash': return `fx-brace-${v}`;
+    case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
     case 'ability': {
       // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
       const id = anim.condition ?? '';
@@ -124,6 +134,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'balloon-pop': return BALLOON_POP;
     case 'balloon-in': return BALLOON_IN;
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
+    case 'immune': return immuneSpec(anim.condition ?? '');
+    case 'sky-drop': return SKY_DROP;
     case 'hit': return anim.crit ? CRIT : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':
@@ -140,7 +152,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
 export function effectAnchors(anim: BattleAnimation): { user: Pos; targets: Pos[] } | null {
   if (anim.kind === 'absorb') return anim.target && anim.side ? { user: posKey(anim.target, anim.targetSlot), targets: [posKey(anim.side, anim.slot)] } : null;
   // An Ability taking in a move: the attack comes from the move's user (else the opposing side) into the Pokémon with it.
-  if (anim.kind === 'ability') return anim.side ? { user: anim.target ? posKey(anim.target, anim.targetSlot) : posKey(foeSide(anim.side)), targets: [posKey(anim.side, anim.slot)] } : null;
+  if (anim.kind === 'ability' || anim.kind === 'immune') return anim.side ? { user: anim.target ? posKey(anim.target, anim.targetSlot) : posKey(foeSide(anim.side)), targets: [posKey(anim.side, anim.slot)] } : null;
   // Terrains and rooms can start or end without anyone causing it (they run out).
   if (anim.kind === 'field-start' || anim.kind === 'field-end') return { user: posKey(anim.side ?? 'p1', anim.slot), targets: [] };
   if (!anim.side) return null;

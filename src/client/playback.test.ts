@@ -259,10 +259,11 @@ describe('planLine: moves taken in by an Ability (Water Absorb, Volt Absorb...)'
     expect(abilityAnims(quake)).toEqual([expect.objectContaining({ condition: 'levitate', label: 'Levitate' })]);
   });
 
-  it('keeps the miss animation for type immunities, and the move\'s own animation when it lands', () => {
+  it('gives a type immunity its own animation, not an Ability\'s', () => {
     const ghost = planWithLookahead(set('Snorlax', 'Thick Fat', ['Body Slam']), set('Gengar', 'Levitate', ['Splash']), [['move 1', 'move 1']]);
-    expect(moveOf(ghost, 'Body Slam').still).toBe(false);
-    expect(ghost.some(a => a.kind === 'miss')).toBe(true);
+    expect(moveOf(ghost, 'Body Slam').still).toBe(true);
+    expect(ghost.filter(a => a.kind === 'immune')).toEqual([expect.objectContaining({ side: 'p2', target: 'p1', condition: 'normal-ghost' })]);
+    expect(ghost.some(a => a.kind === 'miss')).toBe(false);
     expect(abilityAnims(ghost)).toEqual([]);
   });
 
@@ -352,11 +353,10 @@ describe('planLine: Air Balloon', () => {
     expect(kinds.lastIndexOf('hit')).toBeLessThan(kinds.indexOf('balloon-pop'));
   });
 
-  it('keeps the miss animation for a type immunity of a Pokémon that happens to hold one', () => {
+  it('shows the type immunity, not the balloon, for a Pokémon that happens to hold one', () => {
     const steps = planWithLookahead(held('Snorlax', 'Leftovers', 'Thick Fat', ['Return']), held('Gengar', 'Air Balloon', 'Levitate', ['Splash']), [['move 1', 'move 1']]);
     expect(steps.some(s => s.kind === 'ability')).toBe(false);
-    expect(steps.find(s => s.kind === 'move' && s.moveName === 'Return')).toMatchObject({ still: false });
-    expect(steps.some(s => s.kind === 'miss')).toBe(true);
+    expect(steps.find(s => s.kind === 'immune')).toMatchObject({ condition: 'normal-ghost' });
   });
 });
 
@@ -415,5 +415,42 @@ describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Ba
       return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true).map(s => s.animation?.kind);
     });
     expect(kinds).toEqual(['hit', 'sash']);
+  });
+});
+
+describe('planLine: type-chart immunities', () => {
+  const immune = (attacker: string, move: string, defender: string, ability = 'Pressure') =>
+    planWithLookahead(set(attacker, 'Pressure', [move]), set(defender, ability, ['Splash']), [['move 1', 'move 1']]);
+  const pairOf = (steps: Planned[]) => steps.find(s => s.kind === 'immune')?.condition;
+
+  it('names the pair: the move\'s type and the type that blocks it', () => {
+    expect(pairOf(immune('Alakazam', 'Psychic', 'Tyranitar', 'Sand Stream'))).toBe('psychic-dark');
+    expect(pairOf(immune('Machamp', 'Close Combat', 'Gengar', 'Cursed Body'))).toBe('fighting-ghost');
+    expect(pairOf(immune('Gengar', 'Shadow Ball', 'Snorlax', 'Thick Fat'))).toBe('ghost-normal');
+    expect(pairOf(immune('Pikachu', 'Thunderbolt', 'Garchomp', 'Rough Skin'))).toBe('electric-ground');
+    expect(pairOf(immune('Garchomp', 'Earthquake', 'Skarmory', 'Sturdy'))).toBe('ground-flying');
+    expect(pairOf(immune('Nidoking', 'Sludge Bomb', 'Scizor', 'Technician'))).toBe('poison-steel');
+    expect(pairOf(immune('Garchomp', 'Dragon Claw', 'Sylveon', 'Pixilate'))).toBe('dragon-fairy');
+    // A status move blocked by the type chart too (Thunder Wave on a Ground type).
+    expect(pairOf(immune('Jolteon', 'Thunder Wave', 'Garchomp', 'Rough Skin'))).toBe('electric-ground');
+  });
+
+  it('skips the move\'s own animation (the immunity\'s shows the attack), but not when nothing blocks it by type', () => {
+    const dark = immune('Alakazam', 'Psychic', 'Tyranitar', 'Sand Stream');
+    expect(dark.find(s => s.kind === 'move' && s.moveName === 'Psychic')).toMatchObject({ still: true });
+    // Will-O-Wisp on a Fire type fails, but not because of the type chart: no immunity animation.
+    const fire = immune('Gengar', 'Will-O-Wisp', 'Arcanine', 'Intimidate');
+    expect(fire.some(s => s.kind === 'immune')).toBe(false);
+  });
+});
+
+describe('planLine: Sky Drop', () => {
+  it('shows the user taking its target up into the sky', () => {
+    const client = new ClientBattle(new Generations(Dex));
+    const { args, kwArgs } = Protocol.parseBattleLine('|-prepare|p1a: Aerodactyl|Sky Drop|p2a: Garchomp');
+    expect(planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0].animation)
+      .toMatchObject({ kind: 'sky-drop', side: 'p1', target: 'p2' });
+    const fly = Protocol.parseBattleLine('|-prepare|p1a: Aerodactyl|Fly');
+    expect(planLine(fly.args as readonly string[], fly.kwArgs as Record<string, unknown>, client, true)[0].animation?.kind).not.toBe('sky-drop');
   });
 });

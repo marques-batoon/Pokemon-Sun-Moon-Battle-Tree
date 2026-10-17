@@ -994,6 +994,23 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes tw-leaf-right { 0% { transform: translateX(-120%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(5200%) rotate(900deg); opacity: 0; } }
 @keyframes tw-leaf-left { 0% { transform: translateX(5200%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(-120%) rotate(-900deg); opacity: 0; } }
 
+/* Type-chart immunities (stage-fx IMMUNE_CLASS): the immune Pokémon's reaction, over the attack's own effect (catalog IMMUNE_FX). */
+.fx-orb2.through { animation-timing-function: linear; }
+.fx-intangible { animation: intangible calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes intangible { 0%, 100% { opacity: 1; filter: none; transform: none; } 20%, 70% { opacity: 0.28; filter: blur(1.5px) drop-shadow(0 0 8px #9b7fe0); } 35% { transform: translateX(-3%) skewX(-4deg); } 55% { transform: translateX(3%) skewX(4deg); } }
+.fx-unfazed { animation: unfazed calc(1100ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }
+@keyframes unfazed { 0%, 40%, 100% { transform: none; filter: none; } 50% { transform: rotate(-4deg); filter: brightness(1.1); } 62% { transform: rotate(4deg); } 74% { transform: rotate(-2deg); } 86% { transform: none; } }
+.fx-grounded { animation: grounded calc(1100ms * var(--spd, 1)) ease-out; }
+@keyframes grounded { 0%, 15%, 100% { filter: none; } 25% { filter: brightness(1.5) drop-shadow(0 0 8px #ffe14a); } 45% { filter: drop-shadow(0 6px 6px #ffe14a); } 65% { filter: drop-shadow(0 10px 3px rgb(255 225 74 / 0.4)); } }
+.fx-hover { animation: hover-up calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes hover-up { 0%, 100% { transform: none; } 20% { transform: translateY(-16%) scaleY(0.96); } 35% { transform: translateY(-13%) scaleY(1.03); } 50% { transform: translateY(-16%) scaleY(0.96); } 65% { transform: translateY(-13%) scaleY(1.03); } 80% { transform: translateY(-8%); } }
+.fx-dark-guard { animation: dark-guard calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes dark-guard { 0%, 25%, 100% { filter: none; } 40% { filter: brightness(0.7) drop-shadow(0 0 10px #1a0f24) drop-shadow(0 0 4px #8a3cff); } 70% { filter: brightness(0.85) drop-shadow(0 0 6px #1a0f24); } }
+.fx-metal-glint { animation: metal-glint calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes metal-glint { 0%, 40%, 100% { filter: none; } 55% { filter: brightness(1.6) contrast(1.15) drop-shadow(0 0 6px #e8eef8); } 70% { filter: brightness(1.15) drop-shadow(0 0 3px #e8eef8); } }
+.fx-fairy-glow { animation: fairy-glow calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes fairy-glow { 0%, 38%, 100% { filter: none; } 55% { filter: brightness(1.2) drop-shadow(0 0 10px #ff9ccc); } 75% { filter: drop-shadow(0 0 5px #ffc0dc); } }
+
 /* A critical hit: small bold "CRIT" over the Pokémon hit, cyan with a white outline (and a faint shadow outside it, for light backgrounds). */
 .fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(14px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.06em;
   text-shadow: 1.5px 0 0 #fff, -1.5px 0 0 #fff, 0 1.5px 0 #fff, 0 -1.5px 0 #fff, 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 4px rgb(0 40 60 / 0.55); animation-name: fx-crit; }
@@ -1162,6 +1179,11 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .spot.semi-sky .sprite-sub { transform: translateY(-75%) scale(0.55); opacity: 0.9; }
 .spot-p2.semi-sky .sprite-sub { transform: translateY(-35%) scale(0.55); }
 .spot.semi-phantom .sprite-sub { opacity: 0.15; filter: blur(1.5px) drop-shadow(0 0 10px #8a5cc8); }
+/* Carried off by Sky Drop: high up in the sky, small, struggling, out of the battle until it's dropped. */
+.spot.semi-carried .sprite-sub { transform: translateY(-78%) scale(0.5); opacity: 0.9; }
+.spot-p2.semi-carried .sprite-sub { transform: translateY(-40%) scale(0.5); }
+.spot.semi-carried .sprite-wrap:not([class*="fx-"]) { animation: carried-struggle 0.8s ease-in-out infinite; transform-origin: 50% 0; }
+@keyframes carried-struggle { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg) translateY(-3%); } }
 .semi-cue { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); pointer-events: none; z-index: 2; }
 .spot-p1 .semi-cue { bottom: 3%; }
 .semi-cue-underground { width: 44%; height: 16%; border-radius: 50% 50% 45% 45% / 70% 70% 30% 30%; background: radial-gradient(ellipse at 50% 70%, #2b1a0c 0 22%, #6b4a2b 26%, #8a6236 55%, transparent 72%); }
@@ -1191,8 +1213,9 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes charge-spark { 0%, 58% { opacity: 0; transform: scale(0.6); } 64% { opacity: 1; transform: scale(1.15); } 74% { opacity: 0.9; transform: scale(1) rotate(12deg); } 86%, 100% { opacity: 0; transform: scale(0.8); } }
 .semi-badge.charge-badge { background: rgb(176 128 0 / 0.88); }
 .semi-badge { position: absolute; left: 50%; top: 4%; transform: translateX(-50%); z-index: 3; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; color: #fff; background: rgb(20 20 30 / 0.75); pointer-events: auto; }
-.spot.semi-sky .semi-badge { top: auto; bottom: 12%; }
-@media (prefers-reduced-motion: reduce) { .semi-cue, .semi-cue::before, .semi-cue::after { animation: none; } }
+.spot.semi-sky .semi-badge, .spot.semi-carried .semi-badge { top: auto; bottom: 12%; }
+.semi-cue-carried { width: 22%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgb(0 0 0 / 0.35), transparent); animation: semi-shadow 800ms ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .semi-cue, .semi-cue::before, .semi-cue::after, .spot.semi-carried .sprite-wrap:not([class*="fx-"]) { animation: none; } }
 
 /* Substitute: the doll stands in for the Pokémon, which only steps out to use its own moves */
 .sprite-sub.subbed { opacity: 0; }

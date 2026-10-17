@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
 import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import {
-  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, sashSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, sashSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -278,5 +278,17 @@ describe('Focus Sash, Air Balloon coming in, Tailwind', () => {
     expect(BALLOON_IN.layers.find(l => l.kind === 'balloon')).toMatchObject({ at: 'user' });
     expect(BALLOON_IN.layers.find(l => l.kind === 'balloon')).not.toHaveProperty('pop');
     expect(moveSpec(classifyMove('Tailwind')).layers.some(l => l.kind === 'gust')).toBe(true);
+  });
+});
+
+describe('type-chart immunities', () => {
+  it('has a different animation for each pair, with the attack in it', () => {
+    const pairs = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy'];
+    expect(Object.keys(IMMUNE_FX).sort()).toEqual([...pairs].sort());
+    expect(new Set(pairs.map(p => key(immuneSpec(p)))).size).toBe(pairs.length);
+    // Normal and Fighting attacks go straight through a Ghost.
+    expect(immuneSpec('normal-ghost').layers.find(l => l.kind === 'orb')).toMatchObject({ through: true });
+    expect(immuneSpec('fighting-ghost').layers.find(l => l.kind === 'orb')).toMatchObject({ through: true, count: 3 });
+    expect(immuneSpec('unknown-pair').layers.length).toBeGreaterThan(0);
   });
 });

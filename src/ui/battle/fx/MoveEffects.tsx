@@ -89,7 +89,9 @@ function CodeStreams({ layer, ctx }: { layer: Extract<Layer, { kind: 'code' }>; 
 
 function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx }) {
   const count = layer.count ?? 1;
-  const dx = ctx.target.x - ctx.user.x, dy = ctx.target.y - ctx.user.y;
+  // Through the target: on past it by two-thirds of the way again.
+  const far = layer.through ? 1.65 : 1;
+  const dx = (ctx.target.x - ctx.user.x) * far, dy = (ctx.target.y - ctx.user.y) * far;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const shape: Shape = layer.shape ?? 'dot';
   return (
@@ -99,7 +101,7 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
         return (
           <span
             key={i}
-            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${shape === 'dot' ? 'glow' : ''}`}
+            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${shape === 'dot' ? 'glow' : ''}`}
             style={css({
               '--x': px(ctx.user.x), '--y': px(ctx.user.y + jitter), '--dx': px(dx), '--dy': px(dy), '--lift': px(-Math.min(90, Math.abs(dx) * 0.25)),
               '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--ang': deg(angle),

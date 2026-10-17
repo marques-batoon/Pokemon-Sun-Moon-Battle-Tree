@@ -42,3 +42,29 @@ describe('semi-invulnerable turns', () => {
     expect(hiddenAfterEachTurn(user('Dig', 'Power Herb'), FOE, [['move 1', 'move 2']])).toEqual([null]);
   });
 });
+
+describe('Sky Drop', () => {
+  it('takes its target up into the sky too, out of the battle until it is dropped', () => {
+    const sim = new Battle({ formatid: 'gen7customgame' as ID, seed: '1,2,3,4' });
+    sim.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import('Aerodactyl\nAbility: Pressure\nLevel: 50\n- Sky Drop')) });
+    sim.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import('Garchomp\nAbility: Rough Skin\nLevel: 50\n- Splash')) });
+    sim.makeChoices('team 1', 'team 1');
+    const client = new ClientBattle(new Generations(Dex));
+    const seen: [string | null, string | null][] = [];
+    let read = 0;
+    const feed = () => {
+      for (; read < sim.log.length; read++) {
+        if (sim.log[read].startsWith('|split|')) { read++; continue; }
+        const { args, kwArgs } = Protocol.parseBattleLine(sim.log[read]);
+        client.add(args, kwArgs);
+        trackSemiInvulnerable(client, args as readonly string[]);
+      }
+      seen.push([semiInvulnerableOf(client.p1.active[0]!), semiInvulnerableOf(client.p2.active[0]!)]);
+    };
+    sim.makeChoices('default', 'default'); // Sky Drop: both go up.
+    feed();
+    sim.makeChoices('default', 'default'); // Dropped.
+    feed();
+    expect(seen).toEqual([['sky', 'carried'], [null, null]]);
+  });
+});

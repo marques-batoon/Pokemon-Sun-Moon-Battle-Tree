@@ -104,6 +104,8 @@ function Pops({ anim, at }: { anim: BattleAnimation; at?: Point }) {
       return <div className={`fx-pop at-${side} ${anim.kind === 'boost' ? 'up' : 'down'}`} style={style}>{anim.kind === 'boost' ? '▲▲' : '▼▼'}</div>;
     case 'miss':
       return <div className={`fx-pop at-${side} muted-pop`} style={style}>miss</div>;
+    case 'immune':
+      return <div className={`fx-pop at-${side} muted-pop late`} style={style}>no effect</div>;
     case 'ability':
       // The HP an Ability gave for the move it took in (stat rises show on their own line).
       if (anim.hpDelta !== undefined && anim.hpDelta >= 0.5) return <div className={`fx-pop at-${side} good late`} style={style}>+{Math.round(anim.hpDelta)}%</div>;

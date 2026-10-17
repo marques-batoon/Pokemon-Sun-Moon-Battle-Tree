@@ -5,6 +5,7 @@ import type { Battle as ClientBattle } from '@pkmn/client';
 import { isWarpForm } from '../data/custom/digimon';
 import { paradoxKindOfForm } from '../data/custom/paradox';
 import { classifyMove, type MoveFx } from './move-class';
+import { gen7 } from '../team/dex';
 
 export type AnimationKind =
   | 'move' | 'zpower' | 'hit' | 'residual' | 'heal' | 'switch-out' | 'switch-in' | 'faint'
@@ -53,7 +54,14 @@ export type AnimationKind =
   /** The Pokémon floats on an Air Balloon (it came in holding one, or got one). */
   | 'balloon-in'
   /** A Focus Sash (or Focus Band: `condition`) lets the Pokémon hang on with 1 HP. */
-  | 'sash';
+  | 'sash'
+  /**
+   * A move has no effect because of the type chart (Psychic on Dark, Normal on Ghost...). `side`/`slot`: the immune
+   * Pokémon; `target`/`targetSlot`: the move's user, when known; `condition`: the pair, e.g. "psychic-dark".
+   */
+  | 'immune'
+  /** Sky Drop's first turn: its user (`side`/`slot`) takes the target (`target`/`targetSlot`) up into the sky. */
+  | 'sky-drop';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -162,6 +170,8 @@ export const BERRY_MS = 1000;
 export const BALLOON_POP_MS = 850;
 export const BALLOON_IN_MS = 1100;
 export const SASH_MS = 900;
+export const IMMUNE_MS = 1100;
+export const SKY_DROP_MS = 900;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -180,6 +190,19 @@ const critKey = (ident: string | undefined) => { const { side, slot } = at(ident
 /** Takes (and clears) a critical hit announced for this Pokémon. */
 function takeCrit(battle: ClientBattle, ident: string | undefined): boolean {
   return pendingCrits.get(battle)?.delete(critKey(ident)) ?? false;
+}
+
+/**
+ * The type-chart immunity a move of this type runs into on this Pokémon ("psychic-dark", "normal-ghost"...), from its
+ * current types, or null (no such immunity: the move failed for another reason, like Will-O-Wisp on a Fire type).
+ */
+export function typeImmunity(battle: ClientBattle, ident: string | undefined, moveType: string | undefined): string | null {
+  const { side, slot } = at(ident);
+  const mon = side ? battle[side].active[slot] : null;
+  const type = moveType ? gen7.types.get(moveType) : undefined;
+  if (!mon || !type) return null;
+  const immune = mon.types.find(t => type.effectiveness[t] === 0);
+  return immune ? `${toId(type.name)}-${toId(immune)}` : null;
 }
 
 /**
@@ -204,8 +227,12 @@ export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<st
     if (line === '|' || /^\|(move|turn|upkeep|switch|drag|cant|faint)\|/.test(line)) return false;
     const m = /^\|(-heal|-immune|-boost|-start|-ability)\|(p[1-4][ab]?)[^|]*\|?([^|]*)/.exec(line);
     if (!m || !m[2].startsWith(pos)) continue;
-    // A Ground move into an Air Balloon: the balloon's animation instead (like Levitate's).
-    if (m[1] === '-immune' && !/\[from\]/.test(line) && battle && balloonImmune(battle, target, classifyMove(moveArgs[2]).type)) return true;
+    // A Ground move into an Air Balloon: the balloon's animation instead (like Levitate's). A type-chart immunity
+    // (Psychic on Dark...): its own animation, with the attack in it.
+    if (m[1] === '-immune' && !/\[from\]/.test(line) && battle) {
+      const type = classifyMove(moveArgs[2]).type;
+      if (balloonImmune(battle, target, type) || typeImmunity(battle, target, type)) return true;
+    }
     // "-ability|p2a: Raichu|Lightning Rod|boost" names it plainly; the others say "ability: Water Absorb".
     const name = m[1] === '-ability' ? m[3] : /ability: ([^|]+)/.exec(line)?.[1];
     if (!name) continue;
@@ -441,6 +468,14 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (absorbing && isAbsorb(toId(absorbing))) return [abilityStep(step, battle, args[1], absorbing)];
       return [step({ kind: cmd === '-boost' ? 'boost' : 'unboost', ...at(args[1]), target: null, durationMs: base })];
     }
+    case '-prepare': {
+      // Sky Drop: the user grabs its target and both go up into the sky (StageSpot shows where they went).
+      if (toId(args[2]) === 'skydrop' && args[3]) {
+        const carried = at(args[3]);
+        return [step({ kind: 'sky-drop', ...at(args[1]), target: carried.side, targetSlot: carried.slot, durationMs: SKY_DROP_MS })];
+      }
+      return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
+    }
     case '-enditem': {
       // A Berry eaten by its holder ("[eat]"), or stolen and eaten by Bug Bite / Pluck ("[from] stealeat", "[of]" the eater).
       const stolen = toId(kwArgs.from as string | undefined) === 'stealeat' && typeof kwArgs.of === 'string';
@@ -469,6 +504,14 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (blocking) return [abilityStep(step, battle, args[1], blocking)];
       // A Ground move doesn't affect a Pokémon floating on its Air Balloon: shown like Levitate.
       if (cmd === '-immune' && !('from' in kwArgs) && balloonImmune(battle, args[1], lastMoveUser.get(battle)?.type)) return [abilityStep(step, battle, args[1], 'Air Balloon')];
+      // The type chart: each pair has its own animation (a Psychic attack breaking on Dark, a Normal one passing through a Ghost...).
+      const pair = cmd === '-immune' && !('from' in kwArgs) ? typeImmunity(battle, args[1], lastMoveUser.get(battle)?.type) : null;
+      if (pair) {
+        const holder = at(args[1]);
+        const user = lastMoveUser.get(battle);
+        const from = user && user.side && !(user.side === holder.side && user.slot === holder.slot) ? user : null;
+        return [step({ kind: 'immune', ...holder, target: from?.side ?? null, targetSlot: from?.slot, condition: pair, durationMs: IMMUNE_MS })];
+      }
       const id = cmd === '-miss' && args[2] ? args[2] : args[1];
       return [step({ kind: 'miss', ...at(id), target: null, durationMs: base })];
     }

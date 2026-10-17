@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -55,6 +55,9 @@ const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Air Balloon', 'Soundproof'];
 const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 /** Berries for the preview (what each does next: HP, a cure, a stat rise, weakening a hit). */
+/** Type-chart immunities for the preview (the move's type, then the immune Pokémon's). */
+const PREVIEW_IMMUNITIES = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy'];
+const typeName = (id: string) => id.charAt(0).toUpperCase() + id.slice(1);
 const PREVIEW_BERRIES = ['Sitrus Berry', 'Lum Berry', 'Chesto Berry', 'Liechi Berry', 'Salac Berry', 'Occa Berry', 'Figy Berry', 'Custap Berry', 'Enigma Berry'];
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
@@ -309,6 +312,20 @@ export function AnimationPreview() {
           </select>
         </label>
         <label>
+          No effect on {side === 'p1' ? 'opponent' : 'you'}{' '}
+          <select aria-label="Type immunity" value="" onChange={e => {
+            const pair = e.target.value;
+            e.target.value = '';
+            if (pair) play([
+              { kind: 'move', side, target: other(side), moveName: 'Attack', still: true, durationMs: 450 },
+              { kind: 'immune', side: other(side), target: side, condition: pair, durationMs: IMMUNE_MS },
+            ]);
+          }}>
+            <option value="">types…</option>
+            {PREVIEW_IMMUNITIES.map(p => <option key={p} value={p}>{p.split('-').map(typeName).join(' → ')}</option>)}
+          </select>
+        </label>
+        <label>
           {side === 'p1' ? 'You' : 'Opponent'}{' '}eat{side === 'p1' ? '' : 's'}{' '}
           <select aria-label="Eat a Berry" value="" onChange={e => {
             const v = e.target.value;
@@ -343,6 +360,7 @@ export function AnimationPreview() {
             <option value="sky">Fly</option>
             <option value="underwater">Dive</option>
             <option value="phantom">Phantom Force</option>
+            <option value="carried">Carried off by Sky Drop</option>
           </select>
         </label>
         <button disabled={!held.length} onClick={() => play(held)}>Held back</button>

@@ -292,6 +292,17 @@ export class RunController {
     }));
   }
 
+  /**
+   * An online All Star Multi win with a friend (OnlineRoom onReward): this player's BP and partner progress, as for a
+   * local All Star win (the special trainers and Battle Legends beaten come into the shop, or get cheaper). Online
+   * streaks have no records. Returns the BP earned.
+   */
+  recordOnlineWin({ battle, trainerIds }: { battle: number; trainerIds: readonly number[] }): number {
+    const bp = bpForWin('allstar', battle);
+    this.store.updateProfile(p => ({ ...p, bpTotal: p.bpTotal + bp, partners: withBeaten(p, trainerIds, true) }));
+    return bp;
+  }
+
   private onBattle(s: BattleSnapshot) {
     const active = this.active;
     if (!active || s.battleId !== active.battleId) return;
@@ -326,7 +337,7 @@ export class RunController {
         // Beating the Normal course's Battle Legend unlocks that format's Super course.
         superUnlocked: run.format === 'multi' || !records ? p.superUnlocked : { ...p.superUnlocked, [run.format]: p.superUnlocked[run.format] || (run.course === 'normal' && cleared) },
         records: records ? { ...p.records, [key]: { ...p.records[key], best: Math.max(p.records[key].best, wins) } } : p.records,
-        partners: withBeaten(p, run.next, run.course === 'allstar'),
+        partners: withBeaten(p, opponentIds(run.next), run.course === 'allstar'),
       }));
     }
 
@@ -390,17 +401,21 @@ const LOCKED: Record<Format, string> = {
  * Counts a win over each special trainer and Battle Legend just beaten, and sets their partner price
  * (priceAfterWin: first beaten in All Star Mode, they come into the shop at 10000 BP).
  */
-function withBeaten(p: TreeProfile, next: PlannedOpponent, allStar: boolean): TreeProfile['partners'] {
+function withBeaten(p: TreeProfile, trainerIds: readonly number[], allStar: boolean): TreeProfile['partners'] {
   const beaten = { ...p.partners.beaten };
   const prices = { ...p.partners.prices };
-  for (const t of [next, ...(next.second ? [next.second] : [])]) {
-    if (!isPartnerKind(t.kind)) continue;
-    const name = trainerKey(TRAINERS[t.trainerId]);
+  for (const id of trainerIds) {
+    const trainer = TRAINERS[id];
+    if (!trainer || !isPartnerKind(trainer.kind)) continue;
+    const name = trainerKey(trainer);
     prices[name] = priceAfterWin(priceOf(p.partners, name), allStar);
     beaten[name] = (beaten[name] ?? 0) + 1;
   }
   return { ...p.partners, beaten, prices };
 }
+
+/** The opposing trainers of a battle (two in Multi). */
+const opponentIds = (next: PlannedOpponent) => [next.trainerId, ...(next.second ? [next.second.trainerId] : [])];
 
 export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';
 

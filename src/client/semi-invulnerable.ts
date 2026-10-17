@@ -3,7 +3,11 @@
 import type { Battle as ClientBattle, Pokemon } from '@pkmn/client';
 import type { ID } from '@pkmn/data';
 
-export type SemiInvulnerable = 'underground' | 'sky' | 'underwater' | 'phantom';
+/** `carried`: the target of Sky Drop, taken up into the sky by its user and out of the battle until dropped. */
+export type SemiInvulnerable = 'underground' | 'sky' | 'underwater' | 'phantom' | 'carried';
+
+/** The battle screen's own volatile for a Pokémon carried off by Sky Drop (the client doesn't track it). */
+const CARRIED = 'skydropped';
 
 /** Moves whose charging turn hides the user, and where (Bounce and Sky Drop go up like Fly). */
 export const SEMI_INVULNERABLE_MOVES: Record<string, SemiInvulnerable> = {
@@ -20,12 +24,20 @@ const toID = (s: string | undefined) => (s ?? '').toLowerCase().replace(/[^a-z0-
  */
 export function trackSemiInvulnerable(battle: ClientBattle, args: readonly string[]): void {
   const kind = args[0];
-  if (kind !== '-prepare' && kind !== 'cant' && kind !== '-enditem') return;
+  if (kind !== '-prepare' && kind !== 'cant' && kind !== '-enditem' && kind !== '-end') return;
   const poke = args[1] ? battle.getPokemon(args[1] as never) : null;
   if (!poke) return;
   if (kind === '-prepare') {
     const id = toID(args[2]);
     if (SEMI_INVULNERABLE_MOVES[id]) poke.addVolatile(id as ID, { duration: 'move' } as never);
+    // Sky Drop takes its target up too ("-prepare|user|Sky Drop|target"), until "-end|target|Sky Drop" (dropped, or
+    // freed when its user can't go on).
+    const carried = id === 'skydrop' && args[3] ? battle.getPokemon(args[3] as never) : null;
+    if (carried) carried.addVolatile(CARRIED as ID);
+    return;
+  }
+  if (kind === '-end') {
+    if (toID(args[2]) === 'skydrop' && CARRIED in poke.volatiles) poke.removeVolatile(CARRIED as ID);
     return;
   }
   if (kind === '-enditem' && toID(args[2]) !== 'powerherb') return;
@@ -34,6 +46,7 @@ export function trackSemiInvulnerable(battle: ClientBattle, args: readonly strin
 
 /** Where a Pokémon is hiding this turn, if it is. */
 export function semiInvulnerableOf(pokemon: Pokemon): SemiInvulnerable | null {
+  if (CARRIED in pokemon.volatiles) return 'carried';
   for (const [id, where] of Object.entries(SEMI_INVULNERABLE_MOVES)) if (id in pokemon.volatiles) return where;
   return null;
 }
