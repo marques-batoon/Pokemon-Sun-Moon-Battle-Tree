@@ -376,6 +376,13 @@ describe('Matrix Evolution (Gallantmon)', () => {
     expect(warpBurst('Sakuyamon').layers.some(l => l.kind === 'particles' && l.shape === 'talisman')).toBe(true);
   });
 
+  it('shows Elevate stopping a Ground attack like Levitate: the ground quakes and MegaGargomon hovers, named Elevate', () => {
+    const spec = abilitySpec('elevate', 'Elevate');
+    expect(spec.layers.map(l => l.kind)).toEqual(expect.arrayContaining(['ground', 'label']));
+    expect(spec.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Elevate' });
+    expect(key(spec)).not.toBe(key(abilitySpec('levitate', 'Elevate')));
+  });
+
   it('gives Guilmon\'s, Gallantmon\'s, Terriermon\'s and MegaGargomon\'s signature moves their own animations', () => {
     for (const m of ['Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile', 'Diamond Shuriken', 'Amethyst Mandala']) expect(moveSpec(classifyMove(m)), m).toBe(SIGNATURE_MOVES[m.toLowerCase().replace(/[^a-z]/g, '')]);
     expect(SIGNATURE_MOVES.pyrofang.layers.map(l => l.kind)).toContain('jaws');

@@ -134,9 +134,9 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'solar-charge': return 'fx-solar-charge';
     case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
     case 'ability': {
-      // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
+      // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate, Elevate).
       const id = anim.condition ?? '';
-      if (id === 'levitate') return 'fx-levitate';
+      if (id === 'levitate' || id === 'elevate') return 'fx-levitate';
       if (id === 'airballoon') return 'fx-balloon-float';
       if (['waterabsorb', 'voltabsorb', 'dryskin'].includes(id)) return `fx-absorb-${v}`;
       if ((ABSORB_ABILITIES as readonly string[]).includes(id)) return `fx-powerup-${v}`;

@@ -276,6 +276,19 @@ describe('calc bridge', () => {
     expect(calcErrors.count).toBe(before);
   });
 
+  it('knows Elevate floats MegaGargomon like Levitate: no damage from Ground attacks, now or as it Matrix Evolves', async () => {
+    const { calcErrors, estimateDamage } = await import('./calc');
+    const before = calcErrors.count;
+    const b = scenario(`Terriermon @ Megagargoite\nAbility: Technician\nEVs: 252 HP\n- Iron Defense`, `Garchomp @ Life Orb\nAbility: Rough Skin\nEVs: 252 Atk\nAdamant Nature\n- Earthquake\n- Fire Fang`);
+    const [garg, chomp] = [b.p1.active[0], b.p2.active[0]];
+    expect(estimateDamage(b, chomp, garg, 'earthquake', { defenderForme: { species: 'MegaGargomon', ability: 'Elevate' } }).max).toBe(0);
+    expect(estimateDamage(b, chomp, garg, 'firefang', { defenderForme: { species: 'MegaGargomon', ability: 'Elevate' } }).max).toBeGreaterThan(0);
+    b.makeChoices('move 1 mega', 'move 2');
+    expect(garg.species.name).toBe('MegaGargomon');
+    expect(estimateDamage(b, chomp, garg, 'earthquake').max).toBe(0);
+    expect(calcErrors.count).toBe(before);
+  });
+
   it('estimates damage for Pokémon Champions Megas and Gen 9 moves from the simulator\'s data', async () => {
     const { calcErrors, estimateDamage } = await import('./calc');
     const before = calcErrors.count;

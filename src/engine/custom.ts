@@ -2,7 +2,7 @@
 // turn counts the battle screen shows). Runs where the simulator runs.
 import type { ActiveMove, Battle, Effect, Move, Pokemon, Side } from '@pkmn/sim';
 import { CUSTOM_MEGAS, HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../data/custom';
-import { DIGIMON_MOVES, isWarpForm, isWarpItem, WARP_DIGIMON, warpNames } from '../data/custom/digimon';
+import { DIGIMON_ABILITIES, DIGIMON_MOVES, isWarpForm, isWarpItem, WARP_DIGIMON, warpNames } from '../data/custom/digimon';
 import { PARADOX_ABILITIES, PARADOX_ITEMS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -80,7 +80,7 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
 
   addParadoxLogic(data);
   addElectromorphosis(data);
-  addDigimonLogic(data);
+  addDigimonLogic(data, parent);
   for (const [id, hook] of Object.entries(TIMED_MOVES)) {
     const condition = parent.Moves[id].condition as Entry;
     data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, [hook]: tagTurns(condition[hook] as Handler) } };
@@ -188,14 +188,28 @@ function addElectromorphosis(data: Record<string, Record<string, Entry>>) {
   });
 }
 
+/** Abilities that float the Pokémon over the ground as Levitate does (MegaGargomon's Elevate). */
+const FLOATING_ABILITIES = DIGIMON_ABILITIES.filter(a => a.levitate).map(a => toId(a.name));
+
 /**
  * The Digimon's moves and Abilities that need more than data: a move with a second type (Lightning Joust: Steel that
  * also counts as Electric against the target's types, like Flying Press; only its own type gives STAB and immunities),
  * a multi-hit move whose remaining hits go on to the fainted target's partner (Burst Shot, in Doubles), Dauntless
  * Shield (Gallantmon) as in Gen 9: +1 Defense the first time it takes effect in a battle (Matrix Evolving counts), not
- * on every switch-in as in Gen 8, and Elevate (MegaGargomon, the user's own Ability).
+ * on every switch-in as in Gen 8, and Elevate (MegaGargomon, the user's own Ability), which also floats it as Levitate
+ * does (CUSTOM_POKEMON; Smack Down here).
  */
-function addDigimonLogic(data: Record<string, Record<string, Entry>>) {
+function addDigimonLogic(data: Record<string, Record<string, Entry>>, parent: { Moves: Record<string, Entry> }) {
+  // Smack Down (and Thousand Arrows) knock a floating Pokémon down: the simulator only checks Levitate by name.
+  const smackDown = parent.Moves.smackdown.condition as Entry;
+  const smackStart = smackDown.onStart as Handler;
+  data.Moves.smackdown = { ...data.Moves.smackdown, inherit: true, condition: { ...smackDown, onStart(this: Battle, pokemon: Pokemon) {
+    const result = smackStart.call(this, pokemon);
+    if (result !== false) return result;
+    const floats = pokemon.hasAbility(FLOATING_ABILITIES) && !pokemon.hasItem('ironball') && !pokemon.volatiles.ingrain && !this.field.getPseudoWeather('gravity');
+    if (!floats) return false;
+    this.add('-start', pokemon, 'Smack Down');
+  } } };
   for (const m of DIGIMON_MOVES.filter(m => m.retarget && m.multihit)) {
     const hits = m.multihit!;
     Object.assign(data.Moves[toId(m.name)], {
@@ -447,6 +461,36 @@ export const CUSTOM_ACTIONS = {
     // a silent line tells the battle screen, for the animation (the sim asks twice per use; same answer).
     if (pokemon && zMove.category !== 'Status') this.battle.add('-activate', pokemon, `Z-Move: ${zMove.category}`, '[silent]');
     return zMove;
+  },
+};
+
+type PokemonProto = Pick<Pokemon, 'isGrounded' | 'runImmunity'>;
+const pokemonProto = (self: Pokemon) => Object.getPrototypeOf(self) as PokemonProto;
+
+/**
+ * Pokémon hooks: the simulator names Levitate itself wherever it decides whether a Pokémon is on the ground (Ground
+ * attacks, Spikes, Toxic Spikes, Sticky Web, terrains, Arena Trap...), so an Ability that floats like it (Elevate)
+ * is added there: the same rules (Gravity, Ingrain, Smack Down and an Iron Ball still ground it; Mold Breaker
+ * ignores it), and "It doesn't affect..." names the Pokémon's own Ability.
+ */
+export const CUSTOM_POKEMON = {
+  isGrounded(this: Pokemon, negateImmunity = false): boolean | null {
+    const grounded = pokemonProto(this).isGrounded.call(this, negateImmunity);
+    if (grounded !== true || !this.hasAbility(FLOATING_ABILITIES) || this.battle.suppressingAbility(this)) return grounded;
+    const item = this.ignoringItem() ? '' : this.item;
+    const pulledDown = 'gravity' in this.battle.field.pseudoWeather || 'ingrain' in this.volatiles || 'smackdown' in this.volatiles || item === 'ironball';
+    // null, as for Levitate: floating because of an Ability.
+    return pulledDown ? true : null;
+  },
+  runImmunity(this: Pokemon, source: Parameters<Pokemon['runImmunity']>[0], message?: string | boolean): boolean {
+    const original = pokemonProto(this).runImmunity;
+    const type = typeof source === 'string' ? source : source?.type;
+    if (type !== 'Ground' || !message || !this.hasAbility(FLOATING_ABILITIES)) return original.call(this, source, message);
+    if (original.call(this, source, false)) return true;
+    const negateImmunity = !this.battle.runEvent('NegateImmunity', this, type);
+    if (this.isGrounded(negateImmunity) === null) this.battle.add('-immune', this, `[from] ability: ${this.getAbility().name}`);
+    else this.battle.add('-immune', this);
+    return false;
   },
 };
 

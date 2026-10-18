@@ -1264,10 +1264,17 @@ export const ABILITY_FX: Record<string, FxSpec> = {
     { kind: 'rings', at: 'target', color: '#c9a7ff', count: 2, size: 120, delay: 150, dur: 700 },
     { kind: 'particles', at: 'target', shape: 'dot', motion: 'rise', color: '#d9c6ff', color2: '#ffffff', count: 8, size: 8, spread: 50, delay: 250, dur: 700 },
   ] },
+  // Elevate (MegaGargomon) floats it over the ground as Levitate does: the ground quakes, and it hovers above it,
+  // crackling with electricity in green rings (sprite class fx-levitate).
+  elevate: { layers: [
+    { kind: 'ground', color: '#a07a4a', dur: 600 },
+    { kind: 'rings', at: 'target', color: '#9ad86a', count: 2, size: 130, delay: 150, dur: 700 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'rise', color: '#ffe14a', color2: '#ffffff', count: 8, size: 9, spread: 50, delay: 250, dur: 700 },
+  ] },
 };
 const ABILITY_COLORS: Record<string, string> = {
   waterabsorb: '#2f7fe0', dryskin: '#2a93c8', voltabsorb: '#c99400', motordrive: '#c99400', lightningrod: '#c99400',
-  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8', airballoon: '#d0343c',
+  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8', airballoon: '#d0343c', elevate: '#3f8a2a',
 };
 /** Any other Ability that stops a move. */
 const ABILITY_BLOCK: FxSpec = { layers: [

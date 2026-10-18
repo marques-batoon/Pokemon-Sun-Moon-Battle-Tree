@@ -416,11 +416,12 @@ export const DIGIMON_MOVES: DigimonMove[] = [
  * Abilities of the user's own design (made for this app), with what the team builder shows; the engine gives them
  * their effect (src/engine/custom.ts).
  */
-export const DIGIMON_ABILITIES = [
+export const DIGIMON_ABILITIES: { name: string; shortDesc: string; desc: string; levitate?: boolean }[] = [
   {
-    name: 'Elevate',
-    shortDesc: 'This Pokemon\'s highest base stat (not HP) is raised by 1 stage if it attacks and KOes another Pokemon.',
-    desc: 'This Pokemon\'s highest base stat, excluding HP, is raised by 1 stage if it attacks and knocks out another Pokemon. The stat is chosen from its species\' base stats, not its current stats or stat stages. Indirect damage (poison, burn, weather, hazards) doesn\'t count.',
+    // Elevate also floats MegaGargomon over the ground, exactly as Levitate does (on request, 2026-10-18).
+    name: 'Elevate', levitate: true,
+    shortDesc: 'Levitate: immune to Ground. Also, if it attacks and KOes a Pokemon, its highest base stat (not HP) +1.',
+    desc: 'This Pokemon floats as with Levitate: it is immune to Ground-type attacks and the effects of Spikes, Toxic Spikes, Sticky Web, terrains and Arena Trap (unless grounded by Gravity, Ingrain, Smack Down or an Iron Ball). Also, its highest base stat, excluding HP, is raised by 1 stage if it attacks and knocks out another Pokemon; the stat comes from its current species\' base stats, not its stats or stat stages. Indirect damage (poison, burn, weather, hazards) doesn\'t count.',
   },
 ];
 
@@ -572,7 +573,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   // The user's own Abilities (MegaGargomon's Elevate).
   let abilityNum = 10130;
   for (const a of DIGIMON_ABILITIES) {
-    abilities[toId(a.name)] = { name: a.name, num: abilityNum++, gen: 7, isNonstandard: null, rating: 3, flags: {}, shortDesc: a.shortDesc, desc: a.desc };
+    // A Levitate-like Ability can be ignored by Mold Breaker, as Levitate can.
+    abilities[toId(a.name)] = { name: a.name, num: abilityNum++, gen: 7, isNonstandard: null, rating: 3, flags: a.levitate ? { breakable: 1 } : {}, shortDesc: a.shortDesc, desc: a.desc };
   }
   return { Species: species, FormatsData: formatsData, Items: items, Moves: moves, Learnsets: learnsets, Conditions: conditions, Abilities: abilities };
 }

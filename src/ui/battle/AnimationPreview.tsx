@@ -58,7 +58,7 @@ const zUser = (move: string) => (POLIWRATH_Z_MOVES.has(move) ? POLIWRATHIUM_Z.us
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 /** Abilities that take in or stop a move, for the preview (the healing ones show +25%). */
-const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Air Balloon', 'Soundproof'];
+const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Elevate', 'Air Balloon', 'Soundproof'];
 const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 /** Berries for the preview (what each does next: HP, a cure, a stat rise, weakening a hit). */
 /** Type-chart immunities for the preview (the move's type, then the immune Pokémon's). */

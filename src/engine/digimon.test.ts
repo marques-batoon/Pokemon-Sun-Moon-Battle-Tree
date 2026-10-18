@@ -610,3 +610,38 @@ describe('Renamon and Sakuyamon (Matrix Evolution)', () => {
     expect(log).toMatch(/\|move\|p1a: Renamon\|Amethyst Mandala\|[^]*?\|-sideend\|p2: B\|Reflect[^]*?\|-damage\|p2a: Snorlax[^]*?\|-damage\|p2b: Chansey/);
   });
 });
+
+describe('Elevate floats MegaGargomon like Levitate', () => {
+  const garg = mon('Terriermon', 'Megagargoite', 'Technician', ['Iron Defense'], 'EVs: 252 HP / 252 Def\nBold Nature\n');
+  const quaker = (ability: string, species = 'Garchomp') => mon(species, 'Leftovers', ability, ['Earthquake', 'Splash'], 'EVs: 252 Atk / 252 Spe\nJolly Nature\n');
+
+  it('makes Ground attacks miss it, naming Elevate ("It doesn\'t affect...")', () => {
+    const b = singles([garg], [quaker('Rough Skin')]);
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.species.name).toBe('MegaGargomon');
+    expect(p.hp).toBe(p.maxhp);
+    expect(b.log.join('\n')).toMatch(/\|-immune\|p1a: Terriermon\|\[from\] ability: Elevate/);
+    expect(p.isGrounded()).toBeNull();
+  });
+
+  it('as with Levitate, Mold Breaker, Gravity, Smack Down and an Iron Ball still let the ground reach it', () => {
+    const b = singles([garg], [quaker('Mold Breaker', 'Excadrill')]);
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.hp).toBeLessThan(p.maxhp);
+    expect(b.log.join('\n')).not.toMatch(/\|-immune\|/);
+    const c = singles([garg], [quaker('Rough Skin')]);
+    c.makeChoices('move 1 mega', 'move 2');
+    const g = c.p1.active[0];
+    expect(g.isGrounded()).toBeNull();
+    c.field.addPseudoWeather('gravity', c.p2.active[0]);
+    expect(g.isGrounded()).toBe(true);
+    c.field.removePseudoWeather('gravity');
+    g.addVolatile('smackdown');
+    expect(g.isGrounded()).toBe(true);
+    g.removeVolatile('smackdown');
+    g.setItem('Iron Ball');
+    expect(g.isGrounded()).toBe(true);
+  });
+});

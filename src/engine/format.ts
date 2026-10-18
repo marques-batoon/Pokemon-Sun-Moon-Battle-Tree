@@ -4,7 +4,7 @@ import { AURA_GUARD, CHAMPIONS_MOD, championsOverrides, NEW_LEARNSET_IDS, NEW_MO
 import { canHoldCustomItem, customOverrides, HITMONCHANIUM_Z, isCustomLearn, mergeModData } from '../data/custom';
 import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem, warpNames } from '../data/custom/digimon';
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
-import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_SIDE } from './custom';
+import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_POKEMON, CUSTOM_SIDE } from './custom';
 import { USUM_ONLY_SPECIES } from './format-constants';
 
 export { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, NO_PREVIEW_FORMAT_IDS, simFormatId, USUM_ONLY_SPECIES, type BattleTreeFormat } from './format-constants';
@@ -48,7 +48,7 @@ function registerChampionsMod(): void {
       }
     },
   });
-  Dex.mod(CHAMPIONS_MOD, { Scripts: { inherit: 'gen7', gen: 7, actions: CUSTOM_ACTIONS, side: CUSTOM_SIDE }, ...data } as never);
+  Dex.mod(CHAMPIONS_MOD, { Scripts: { inherit: 'gen7', gen: 7, actions: CUSTOM_ACTIONS, side: CUSTOM_SIDE, pokemon: CUSTOM_POKEMON }, ...data } as never);
 }
 
 /**

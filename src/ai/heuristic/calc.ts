@@ -62,7 +62,8 @@ export function calcPokemon(p: Pokemon, forme: Forme = {}): CalcPokemon {
     ...(paradox?.bestStat && !forme.species ? { boostedStat: paradox.bestStat as never } : {}),
     overrides: speciesOverrides(species, name) as never,
     level: p.level,
-    ability: forme.ability ?? p.getAbility().name,
+    // Elevate (MegaGargomon) floats it like Levitate, which the calc knows (the boost on a knockout isn't counted).
+    ability: (a => (a === 'Elevate' ? 'Levitate' : a))(forme.ability ?? p.getAbility().name),
     item: p.getItem().name || undefined,
     nature: set.nature || 'Serious',
     evs: set.evs,

@@ -146,6 +146,8 @@ describe('planLine: single lines', () => {
     ['|-fieldstart|move: Psychic Terrain|[from] ability: Psychic Surge|[of] p2a: Tapu Lele', { kind: 'field-start', side: 'p2', condition: 'psychicterrain' }],
     ['|-activate|p1a: Mew|move: Attract|[of] p2a: Gengar', { kind: 'infatuated', side: 'p1' }],
     ['|-damage|p1a: Mew|100/175|[from] confusion', { kind: 'residual', side: 'p1', condition: 'confusion' }],
+    // Elevate floats MegaGargomon like Levitate: its Ability's animation (Levitate's float), named Elevate.
+    ['|-immune|p2a: Terriermon|[from] ability: Elevate', { kind: 'ability', side: 'p2', condition: 'elevate', label: 'Elevate' }],
   ] as const)('%s', (line, expected) => {
     expect(plan(line)).toMatchObject(expected);
   });
