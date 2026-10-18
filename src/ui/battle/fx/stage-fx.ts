@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
   abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
-  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, type FxSpec, type Layer,
+  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
@@ -53,10 +53,15 @@ const sendsOff = (l: Layer) =>
 const firstDelay = (layers: Layer[]) => (layers.length ? Math.min(...layers.map(l => l.delay ?? 0)) : null);
 
 /**
- * CSS variables for the user's sprite in a move over 100 power: --hit, when its motion peaks (the moment it reaches
- * the target, sends the move off, or blows up), from the move's layers.
+ * CSS variables for a sprite's animation: in a move over 100 power, --hit, when the user's motion peaks (the moment
+ * it reaches the target, sends the move off, or blows up), from the move's layers; in a Matrix Evolution, its colours.
  */
 export function spriteVars(side: Side, slot: number, anim: BattleAnimation | null): CSSProperties | undefined {
+  // Matrix Evolution: the Digimon glows in its Tamer's D-Arc colour, and the new form in its own light.
+  if ((anim?.kind === 'warp-start' || anim?.kind === 'warp') && isMatrix(anim.condition) && actsAt(anim, side, slot)) {
+    const t = matrixTheme(anim.condition);
+    return { '--matrix': t.tamer, '--matrix-light': t.light } as CSSProperties;
+  }
   if (anim?.kind !== 'move' || !anim.fx || anim.still || anim.fx.kind !== 'attack' || !actsAt(anim, side, slot)) return undefined;
   const motion = BIG_MOVE_MOTION[anim.fx.moveId];
   if (!motion || motion === 'rampage') return undefined;

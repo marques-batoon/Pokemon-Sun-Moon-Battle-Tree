@@ -441,3 +441,89 @@ describe('Guilmon and Gallantmon (Matrix Evolution)', () => {
     expect(damage()).toBeGreaterThan(base * 1.7);
   });
 });
+
+describe('Terriermon and MegaGargomon (Matrix Evolution)', () => {
+  const terriermon = (moves = ['Petit Twister'], item = 'Megagargoite') => mon('Terriermon', item, 'Technician', moves, 'EVs: 252 Atk\nAdamant Nature\n');
+  const weak = (species = 'Magikarp') => `${species}\nAbility: Swift Swim\nLevel: 1\n- Splash`;
+
+  it('has the custom species, item, moves and Elevate', () => {
+    const t = dex.species.get('Terriermon');
+    expect([t.types, t.baseStats, t.abilities, t.weightkg, t.genderRatio]).toEqual([
+      ['Normal', 'Flying'], { hp: 40, atk: 30, def: 35, spa: 85, spd: 39, spe: 80 }, { 0: 'Technician' }, 5, { M: 0.875, F: 0.125 },
+    ]);
+    expect(Object.values(t.baseStats).reduce((x, y) => x + y, 0)).toBe(309);
+    const g = dex.species.get('MegaGargomon');
+    expect([g.baseSpecies, g.battleOnly, g.requiredItem, g.types, g.abilities, g.weightkg]).toEqual(['Terriermon', 'Terriermon', 'Megagargoite', ['Electric', 'Steel'], { 0: 'Elevate' }, 550]);
+    expect(g.baseStats).toEqual({ hp: 100, atk: 150, def: 140, spa: 65, spd: 120, spe: 59 });
+    expect(Object.values(g.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
+    expect(dex.items.get('Megagargoite').megaStone).toEqual({ Terriermon: 'MegaGargomon' });
+    const elevate = dex.abilities.get('Elevate');
+    expect([elevate.exists, elevate.isNonstandard]).toEqual([true, null]);
+    const twister = dex.moves.get('Petit Twister');
+    expect([twister.type, twister.category, twister.basePower, twister.accuracy, twister.pp, twister.target, twister.flags.contact, twister.flags.wind]).toEqual(['Flying', 'Special', 60, 100, 15, 'normal', undefined, 1]);
+    expect(twister.secondary).toEqual({ chance: 20, boosts: { spe: -1 } });
+    const burst = dex.moves.get('Burst Shot');
+    expect([burst.type, burst.category, burst.basePower, burst.accuracy, burst.pp, burst.multihit, burst.flags.contact, burst.secondary ?? null]).toEqual(['Steel', 'Physical', 25, 100, 10, 4, undefined, null]);
+    const missile = dex.moves.get('Giant Missile');
+    expect([missile.type, missile.category, missile.basePower, missile.accuracy, missile.pp, missile.flags.contact]).toEqual(['Electric', 'Physical', 100, 95, 5, undefined]);
+    expect(missile.secondary).toEqual({ chance: 20, status: 'par' });
+  });
+
+  it('learns its own list, and MegaGargomon\'s instead while holding Megagargoite', () => {
+    expect(validate(team(terriermon(['Petit Twister', 'Boomburst', 'Tera Blast', 'Vacuum Wave'], 'Silk Scarf')))).toEqual([]);
+    expect(validate(team(terriermon(['Burst Shot'], 'Silk Scarf'))).join(' ')).toMatch(/can't learn Burst Shot/);
+    expect(validate(team(terriermon(['Burst Shot', 'Giant Missile', 'Supercell Slam', 'Hard Press'])))).toEqual([]);
+    expect(validate(team(terriermon(['Petit Twister', 'Zing Zap', 'Steel Roller', 'Meteor Mash'])))).toEqual([]);
+    expect(validate(team(terriermon(['Boomburst']))).join(' ')).toMatch(/can't learn Boomburst/);
+    expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Burst Shot'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Burst Shot/);
+    expect(validate(team(mon('Pikachu', 'Megagargoite', 'Static', ['Thunderbolt'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Megagargoite: only Terriermon can Matrix Evolve with it/);
+  });
+
+  it('boosts Petit Twister with Technician (60 -> 90)', () => {
+    const b = singles([terriermon(['Petit Twister'], 'Leftovers')], [target]);
+    b.makeChoices('move 1', 'move 1');
+    const twister = b.dex.getActiveMove('Petit Twister');
+    expect(b.runEvent('BasePower', b.p1.active[0], b.p2.active[0], twister, twister.basePower, true)).toBe(90);
+  });
+
+  it('Matrix Evolves into MegaGargomon, which hits four times with Burst Shot', () => {
+    const b = singles([terriermon(['Burst Shot'])], [target]);
+    expect(b.p1.active[0].canMegaEvo).toBe('MegaGargomon');
+    b.makeChoices('move 1 mega', 'move 1');
+    expect(b.p1.active[0].species.name).toBe('MegaGargomon');
+    expect(b.p1.active[0].ability).toBe('elevate');
+    const log = b.log.join('\n');
+    expect(log).toMatch(/\|message\|Terriermon matrix-evolve to\.\.\.\n[^]*?\|detailschange\|p1a: Terriermon\|MegaGargomon[^]*?\|message\|MegaGargomon!/);
+    expect(log).toMatch(/\|-hitcount\|p2a: Snorlax\|4/);
+  });
+
+  it('Elevate: a knockout with an attack raises its highest base stat (Attack), indirect ones don\'t', () => {
+    const b = singles([terriermon(['Giant Missile'])], [weak(), weak('Feebas')]);
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(b.p2.pokemon[0].fainted).toBe(true);
+    expect(p.boosts.atk).toBe(1);
+    expect(b.log.join('\n')).toMatch(/\|faint\|p2a: Magikarp\n\|-ability\|p1a: Terriermon\|Elevate\|boost\n\|-boost\|p1a: Terriermon\|atk\|1/);
+    // Fainting from something other than a move (poison, weather, hazards...) doesn't count.
+    const elevate = b.dex.abilities.get('Elevate') as unknown as { onSourceAfterFaint: (this: Battle, n: number, t: unknown, s: unknown, e: unknown) => void };
+    elevate.onSourceAfterFaint.call(b, 1, b.p2.pokemon[0], p, b.dex.conditions.get('psn'));
+    expect(p.boosts.atk).toBe(1);
+  });
+
+  it('sends Burst Shot\'s remaining hits to the partner when its target faints first (Doubles)', () => {
+    const b = new Battle({ formatid: 'gen7battletreedoublesnopreview' as never, seed: '1,2,3,4' });
+    const p1 = [terriermon(['Burst Shot']), BENCH[0], ...BENCH].join('\n\n');
+    const p2 = [weak(), target, ...BENCH].join('\n\n');
+    b.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(p1)) });
+    b.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(p2)) });
+    b.makeChoices('move 1 1 mega, move 1', 'move 1, move 1');
+    const log = b.log.join('\n');
+    expect(b.p2.pokemon[0].fainted).toBe(true);
+    expect(log).toMatch(/\|-damage\|p2a: Magikarp\|0 fnt[^]*?\|-anim\|p1a: Terriermon\|Burst Shot\|p2b: Snorlax[^]*?\|-hitcount\|p2b: Snorlax\|3/);
+    // Without a partner left to hit, the rest are lost (as for any multi-hit move).
+    const c = singles([terriermon(['Burst Shot'])], [weak()]);
+    c.makeChoices('move 1 mega', 'move 1');
+    expect(c.log.join('\n')).toMatch(/\|-hitcount\|p2a?: Magikarp\|1/);
+    expect(c.log.join('\n')).not.toMatch(/\|-anim\|/);
+  });
+});

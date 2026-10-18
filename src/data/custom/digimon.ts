@@ -113,8 +113,40 @@ const GALLANTMON_MOVES = [...new Set([
   'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Trailblaze', 'Volt Switch', 'Wild Charge', 'Zen Headbutt',
 ])];
 
+// Terriermon -> MegaGargomon (added 2026-10-18, designed by the user): Terriermon's own list, and the one it learns
+// instead while holding Megagargoite (MegaGargomon's).
+const TERRIERMON_MOVES = [...new Set([
+  // Level-up
+  'Pound', 'Tail Whip', 'Gust', 'Quick Attack', 'Swift', 'Air Cutter', 'Petit Twister', 'Double Team', 'Echoed Voice', 'Air Slash',
+  'Tailwind', 'Hyper Voice', 'Hurricane', 'Boomburst',
+  // TMs
+  'Acrobatics', 'Aerial Ace', 'Agility', 'Air Cutter', 'Air Slash', 'Calm Mind', 'Charge Beam', 'Charm', 'Double Team', 'Echoed Voice',
+  'Electroweb', 'Endure', 'Energy Ball', 'Facade', 'Fake Tears', 'Giga Drain', 'Grass Knot', 'Helping Hand', 'Hurricane', 'Hyper Voice',
+  'Icy Wind', 'Light Screen', 'Mud Shot', 'Nasty Plot', 'Protect', 'Psychic', 'Rain Dance', 'Reflect', 'Rest', 'Round', 'Shadow Ball',
+  'Sleep Talk', 'Snore', 'Solar Beam', 'Substitute', 'Sunny Day', 'Swift', 'Tailwind', 'Taunt', 'Tera Blast', 'Thunder Wave', 'U-turn',
+  'Vacuum Wave', 'Volt Switch', 'Water Pulse', 'Work Up',
+])];
+const MEGAGARGOMON_MOVES = [...new Set([
+  // Level-up
+  'Pound', 'Tail Whip', 'Gust', 'Swift', 'Quick Attack', 'Charge Beam', 'Air Cutter', 'Petit Twister', 'Metal Claw', 'Spark',
+  'Bullet Seed', 'Lock-On', 'Iron Head', 'Zing Zap', 'Heavy Slam', 'Burst Shot', 'Electric Terrain', 'Wild Charge', 'Iron Defense',
+  'Giant Missile', 'Zap Cannon', 'Giga Impact',
+  // TMs
+  'Acrobatics', 'Aerial Ace', 'Agility', 'Air Slash', 'Body Press', 'Body Slam', 'Brick Break', 'Bulk Up', 'Bulldoze', 'Bullet Seed',
+  'Charge Beam', 'Close Combat', 'Dark Pulse', 'Dig', 'Discharge', 'Drain Punch', 'Earthquake', 'Electric Terrain', 'Electro Ball',
+  'Electroweb', 'Endure', 'Energy Ball', 'Facade', 'Fire Blast', 'Fire Punch', 'Flame Charge', 'Flamethrower', 'Flash Cannon', 'Fling',
+  'Focus Blast', 'Giga Impact', 'Grass Knot', 'Hammer Arm', 'Hard Press', 'Heavy Slam', 'Helping Hand', 'High Horsepower', 'Hyper Beam',
+  'Hyper Voice', 'Ice Punch', 'Iron Defense', 'Iron Head', 'Light Screen', 'Low Kick', 'Magnet Rise', 'Metal Claw', 'Meteor Mash',
+  'Mud Shot', 'Nasty Plot', 'Overheat', 'Pin Missile', 'Protect', 'Rain Dance', 'Reflect', 'Rest', 'Rock Blast', 'Rock Slide',
+  'Rock Tomb', 'Sandstorm', 'Shadow Ball', 'Sleep Talk', 'Smart Strike', 'Snarl', 'Solar Beam', 'Steel Beam', 'Steel Roller',
+  'Stomping Tantrum', 'Substitute', 'Sunny Day', 'Supercell Slam', 'Swift', 'Tailwind', 'Taunt', 'Tera Blast', 'Thunder',
+  'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Tri Attack', 'U-turn', 'Vacuum Wave', 'Volt Switch', 'Wild Charge', 'Zen Headbutt',
+])];
+
 /** What each Digimon can learn without a warp item (or holding someone else's). */
-export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES, Guilmon: GUILMON_MOVES };
+export const DIGIMON_BASE_MOVES: Record<string, string[]> = {
+  Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES, Guilmon: GUILMON_MOVES, Terriermon: TERRIERMON_MOVES,
+};
 
 export const WARP_DIGIMON: WarpDigimon[] = [{
   base: AGUMON,
@@ -198,6 +230,23 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   itemDesc: 'If held by a Guilmon, this item allows it to Matrix Evolve into Gallantmon in battle.',
   matrix: true,
   moves: GALLANTMON_MOVES,
+}, {
+  // Terriermon -> MegaGargomon (added 2026-10-18, designed by the user): Matrix Evolution. Holding Megagargoite,
+  // Terriermon learns MegaGargomon's list instead of its own.
+  base: {
+    num: 10205, name: 'Terriermon', types: ['Normal', 'Flying'], color: 'White',
+    baseStats: { hp: 40, atk: 30, def: 35, spa: 85, spd: 39, spe: 80 },
+    abilities: { 0: 'Technician' }, weightkg: 5, genderRatio: { M: 0.875, F: 0.125 },
+  },
+  warp: {
+    name: 'MegaGargomon', types: ['Electric', 'Steel'], color: 'Green',
+    baseStats: { hp: 100, atk: 150, def: 140, spa: 65, spd: 120, spe: 59 },
+    abilities: { 0: 'Elevate' }, weightkg: 550,
+  },
+  item: 'Megagargoite',
+  itemDesc: 'If held by a Terriermon, this item allows it to Matrix Evolve into MegaGargomon in battle.',
+  matrix: true,
+  moves: MEGAGARGOMON_MOVES,
 }];
 
 export interface DigimonMove {
@@ -218,6 +267,15 @@ export interface DigimonMove {
   alsoType?: string;
   /** The user's stat it attacks with instead of Attack / Sp. Atk, as Body Press does (Shield of Just: Sp. Def). */
   attackStat?: 'def' | 'spd';
+  /** A wind move (Petit Twister). */
+  wind?: boolean;
+  /** Hits this many times (Burst Shot: 4). */
+  multihit?: number;
+  /**
+   * In Doubles, if its target faints before all the hits are done, the rest go to the target's partner (Burst Shot).
+   * The engine does this (src/engine/custom.ts).
+   */
+  retarget?: boolean;
   /** Chance (%) of a burn or paralysis, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
   secondary?: { chance: number; status?: 'brn' | 'par'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
@@ -277,6 +335,31 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     name: 'Shield of Just', type: 'Fairy', category: 'Special', basePower: 85, accuracy: 100, pp: 10, contact: false, attackStat: 'spd',
     secondary: { chance: 20, boosts: { atk: -1 } }, desc: 'Uses user\'s Sp. Def stat as Sp. Atk in damage calculation. 20% chance to lower the target\'s Attack by 1.',
   },
+  // Terriermon and MegaGargomon (2026-10-18, designed by the user):
+  {
+    name: 'Petit Twister', type: 'Flying', category: 'Special', basePower: 60, accuracy: 100, pp: 15, contact: false, wind: true,
+    secondary: { chance: 20, boosts: { spe: -1 } }, desc: '20% chance to lower the target\'s Speed by 1. Boosted by Technician.',
+  },
+  {
+    name: 'Burst Shot', type: 'Steel', category: 'Physical', basePower: 25, accuracy: 100, pp: 10, contact: false, multihit: 4, retarget: true,
+    desc: 'Hits 4 times. If the target faints first, the remaining hits go to its partner.',
+  },
+  {
+    name: 'Giant Missile', type: 'Electric', category: 'Physical', basePower: 100, accuracy: 95, pp: 5, contact: false,
+    secondary: { chance: 20, status: 'par' }, desc: '20% chance to paralyze the target.',
+  },
+];
+
+/**
+ * Abilities of the user's own design (made for this app), with what the team builder shows; the engine gives them
+ * their effect (src/engine/custom.ts).
+ */
+export const DIGIMON_ABILITIES = [
+  {
+    name: 'Elevate',
+    shortDesc: 'This Pokemon\'s highest base stat (not HP) is raised by 1 stage if it attacks and KOes another Pokemon.',
+    desc: 'This Pokemon\'s highest base stat, excluding HP, is raised by 1 stage if it attacks and knocks out another Pokemon. The stat is chosen from its species\' base stats, not its current stats or stat stages. Indirect damage (poison, burn, weather, hazards) doesn\'t count.',
+  },
 ];
 
 /**
@@ -295,6 +378,8 @@ export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon
   BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', back: 'pokemon/back/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
   Tentomon: { file: 'pokemon/tentomon.png', back: 'pokemon/back/tentomon.png', icon: 'pokemon/icons/tentomon.png', w: 96, h: 96 },
   HerculesKabuterimon: { file: 'pokemon/herculeskabuterimon.png', back: 'pokemon/back/herculeskabuterimon.png', icon: 'pokemon/icons/herculeskabuterimon.png', w: 96, h: 96, stageScale: 1.5 },
+  Terriermon: { file: 'pokemon/terriermon.png', back: 'pokemon/back/terriermon.png', icon: 'pokemon/icons/terriermon.png', w: 96, h: 96 },
+  MegaGargomon: { file: 'pokemon/megagargomon.png', back: 'pokemon/back/megagargomon.png', icon: 'pokemon/icons/megagargomon.png', w: 96, h: 96, stageScale: 1.5 },
   Guilmon: { file: 'pokemon/guilmon.png', back: 'pokemon/back/guilmon.png', icon: 'pokemon/icons/guilmon.png', w: 96, h: 96 },
   Gallantmon: { file: 'pokemon/gallantmon.png', back: 'pokemon/back/gallantmon.png', icon: 'pokemon/icons/gallantmon.png', w: 96, h: 96, stageScale: 1.5 },
 };
@@ -404,7 +489,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   for (const m of DIGIMON_MOVES) {
     moves[toId(m.name)] = {
       num: moveNum++, name: m.name, type: m.type, category: m.category, basePower: m.basePower, accuracy: m.accuracy, pp: m.pp,
-      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}), ...(m.bite ? { bite: 1 } : {}) },
+      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}), ...(m.bite ? { bite: 1 } : {}), ...(m.wind ? { wind: 1 } : {}) },
+      ...(m.multihit ? { multihit: m.multihit } : {}),
       ...(m.critRatio ? { critRatio: m.critRatio } : {}),
       ...(m.attackStat ? { overrideOffensiveStat: m.attackStat } : {}),
       secondary: m.secondary ? { ...m.secondary } : null, target: 'normal', gen: 7, isNonstandard: null,
@@ -414,9 +500,14 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   const conditions = { warpdigivolution: { name: 'Warp Digivolution' } };
   // Gen 8-9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis, Gallantmon's Dauntless Shield): made
   // usable in Gen 7; the engine gives them their Gen 9 behaviour (src/engine/custom.ts).
-  const abilities = {
+  const abilities: Record<string, object> = {
     electromorphosis: { inherit: true, gen: 7, isNonstandard: null },
     dauntlessshield: { inherit: true, gen: 7, isNonstandard: null },
   };
+  // The user's own Abilities (MegaGargomon's Elevate).
+  let abilityNum = 10130;
+  for (const a of DIGIMON_ABILITIES) {
+    abilities[toId(a.name)] = { name: a.name, num: abilityNum++, gen: 7, isNonstandard: null, rating: 3, flags: {}, shortDesc: a.shortDesc, desc: a.desc };
+  }
   return { Species: species, FormatsData: formatsData, Items: items, Moves: moves, Learnsets: learnsets, Conditions: conditions, Abilities: abilities };
 }

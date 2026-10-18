@@ -191,10 +191,39 @@ function addElectromorphosis(data: Record<string, Record<string, Entry>>) {
 /**
  * The Digimon's moves and Abilities that need more than data: a move with a second type (Lightning Joust: Steel that
  * also counts as Electric against the target's types, like Flying Press; only its own type gives STAB and immunities),
- * and Dauntless Shield (Gallantmon) as in Gen 9: +1 Defense the first time it takes effect in a battle (Matrix
- * Evolving counts), not on every switch-in as in Gen 8.
+ * a multi-hit move whose remaining hits go on to the fainted target's partner (Burst Shot, in Doubles), Dauntless
+ * Shield (Gallantmon) as in Gen 9: +1 Defense the first time it takes effect in a battle (Matrix Evolving counts), not
+ * on every switch-in as in Gen 8, and Elevate (MegaGargomon, the user's own Ability).
  */
 function addDigimonLogic(data: Record<string, Record<string, Entry>>) {
+  for (const m of DIGIMON_MOVES.filter(m => m.retarget && m.multihit)) {
+    const hits = m.multihit!;
+    Object.assign(data.Moves[toId(m.name)], {
+      onAfterMove(this: Battle, source: Pokemon, target: Pokemon | null, move: ActiveMove) {
+        // move.hit: the last hit made. The loop stops early when the target is down to 0 HP.
+        const done = move.hit ?? 0;
+        if (!target || target.hp > 0 || !source.hp || done < 1 || done >= hits) return;
+        const next = source.adjacentFoes().find(p => p !== target && p.hp > 0 && !p.fainted);
+        if (!next) return;
+        const rest = this.dex.getActiveMove(move.id);
+        // (Only the move's own use ends with AfterMove, so these hits don't pass them on again.)
+        rest.multihit = hits - done;
+        this.add('-anim', source, move.name, next);
+        this.actions.trySpreadMoveHit([next], source, rest);
+      },
+    });
+  }
+  // Elevate: knocking a Pokémon out with an attack raises the user's highest base stat (not HP; by its species' base
+  // stats, not its current stats as Beast Boost does) by 1. Not for indirect damage (poison, weather, hazards...).
+  Object.assign(data.Abilities.elevate, {
+    onSourceAfterFaint(this: Battle, length: number, _target: Pokemon, source: Pokemon, effect: { effectType?: string } | null) {
+      if (effect?.effectType !== 'Move') return;
+      const base = source.species.baseStats;
+      const stats = ['atk', 'def', 'spa', 'spd', 'spe'] as const;
+      const best = stats.reduce((a, b) => (base[b] > base[a] ? b : a));
+      this.boost({ [best]: length }, source);
+    },
+  });
   for (const m of DIGIMON_MOVES.filter(m => m.alsoType)) {
     const also = m.alsoType!;
     Object.assign(data.Moves[toId(m.name)], {

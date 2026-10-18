@@ -148,3 +148,23 @@ describe('Guilmon in the team builder', () => {
     expect(statForms({ species: 'Agumon', item: 'Blackwargreyite' }).change).toBe('Dark Warp Digivolution');
   });
 });
+
+describe('Terriermon in the team builder', () => {
+  it('offers Terriermon, not MegaGargomon, and learns MegaGargomon\'s list while holding Megagargoite', async () => {
+    const names = eligibleSpecies().map(s => s.name);
+    expect(names).toContain('Terriermon');
+    expect(names).not.toContain('MegaGargomon');
+    expect(speciesAbilities('Terriermon')).toEqual(['Technician']);
+    expect(gen7.abilities.get('Elevate')?.shortDesc).toMatch(/highest base stat/);
+    const own = (await learnableMoves('Terriermon')).map(m => m.name);
+    for (const m of ['Petit Twister', 'Boomburst', 'Vacuum Wave', 'Tera Blast', 'Work Up']) expect(own).toContain(m);
+    expect(own).toHaveLength(new Set(DIGIMON_BASE_MOVES.Terriermon).size);
+    const garg = (await learnableMoves('Terriermon', 'Megagargoite')).map(m => m.name);
+    for (const m of ['Burst Shot', 'Giant Missile', 'Petit Twister', 'Zing Zap', 'Steel Roller', 'Supercell Slam']) expect(garg).toContain(m);
+    expect(garg).not.toContain('Boomburst');
+    expect(garg).toHaveLength(new Set(WARP_DIGIMON.find(d => d.item === 'Megagargoite')!.moves).size);
+    expect(megaFormForSet({ species: 'Terriermon', item: 'Megagargoite' })).toBe('MegaGargomon');
+    expect(statForms({ species: 'Terriermon', item: 'Megagargoite' }).change).toBe('Matrix Evolution');
+    expect(canHoldItem('Guilmon', 'Megagargoite')).toBe(false);
+  });
+});
