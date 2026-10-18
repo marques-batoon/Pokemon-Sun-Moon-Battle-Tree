@@ -213,17 +213,34 @@ function addDigimonLogic(data: Record<string, Record<string, Entry>>) {
       },
     });
   }
-  // Elevate: knocking a Pokémon out with an attack raises the user's highest base stat (not HP; by its species' base
-  // stats, not its current stats as Beast Boost does) by 1. Not for indirect damage (poison, weather, hazards...).
+  // Elevate: knocking a Pokémon out with an attack raises the user's highest base stat (not HP; by base stats, not its
+  // current stats as Beast Boost does) by 1. Not for indirect damage (poison, weather, hazards...). It's MegaGargomon's
+  // Ability, so for Terriermon's line it's always MegaGargomon's base stats (Attack), never Terriermon's (Sp. Atk),
+  // even on a Terriermon that got it some other way (Skill Swap...); anyone else uses its own current species'.
+  const elevateForms = new Map(WARP_DIGIMON.filter(d => d.warp.abilities[0] === 'Elevate').map(d => [d.base.name, d.warp.name]));
   Object.assign(data.Abilities.elevate, {
     onSourceAfterFaint(this: Battle, length: number, _target: Pokemon, source: Pokemon, effect: { effectType?: string } | null) {
       if (effect?.effectType !== 'Move') return;
-      const base = source.species.baseStats;
+      const form = elevateForms.get(source.species.baseSpecies);
+      const base = (form ? this.dex.species.get(form) : source.species).baseStats;
       const stats = ['atk', 'def', 'spa', 'spd', 'spe'] as const;
       const best = stats.reduce((a, b) => (base[b] > base[a] ? b : a));
       this.boost({ [best]: length }, source);
     },
   });
+  // Amethyst Mandala breaks the target side's screens before it hits, as Brick Break does (and only when the target
+  // can be hit by its type: none is immune to Fairy).
+  for (const m of DIGIMON_MOVES.filter(m => m.breaksScreens)) {
+    const type = m.type;
+    Object.assign(data.Moves[toId(m.name)], {
+      onTryHit(this: Battle, target: Pokemon) {
+        if (!target.runImmunity(type)) return;
+        target.side.removeSideCondition('reflect');
+        target.side.removeSideCondition('lightscreen');
+        target.side.removeSideCondition('auroraveil');
+      },
+    });
+  }
   for (const m of DIGIMON_MOVES.filter(m => m.alsoType)) {
     const also = m.alsoType!;
     Object.assign(data.Moves[toId(m.name)], {

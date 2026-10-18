@@ -168,3 +168,23 @@ describe('Terriermon in the team builder', () => {
     expect(canHoldItem('Guilmon', 'Megagargoite')).toBe(false);
   });
 });
+
+describe('Renamon in the team builder', () => {
+  it('offers Renamon (female only), not Sakuyamon, and learns Sakuyamon\'s list while holding Sakuyaite', async () => {
+    const names = eligibleSpecies().map(s => s.name);
+    expect(names).toContain('Renamon');
+    expect(names).not.toContain('Sakuyamon');
+    expect(speciesAbilities('Renamon')).toEqual(['Inner Focus', 'Infiltrator', 'Technician']);
+    expect(gen7.species.get('Renamon')?.gender).toBe('F');
+    const own = (await learnableMoves('Renamon')).map(m => m.name);
+    for (const m of ['Diamond Shuriken', 'Fake Out', 'Focus Punch', 'Trailblaze', 'Tera Blast']) expect(own).toContain(m);
+    expect(own).toHaveLength(new Set(DIGIMON_BASE_MOVES.Renamon).size);
+    const saku = (await learnableMoves('Renamon', 'Sakuyaite')).map(m => m.name);
+    for (const m of ['Amethyst Mandala', 'Diamond Shuriken', 'Expanding Force', 'Psychic Noise', 'Healing Wish', 'Trick Room']) expect(saku).toContain(m);
+    expect(saku).not.toContain('Fake Out');
+    expect(saku).toHaveLength(new Set(WARP_DIGIMON.find(d => d.item === 'Sakuyaite')!.moves).size);
+    expect(megaFormForSet({ species: 'Renamon', item: 'Sakuyaite' })).toBe('Sakuyamon');
+    expect(statForms({ species: 'Renamon', item: 'Sakuyaite' }).change).toBe('Matrix Evolution');
+    expect(canHoldItem('Terriermon', 'Sakuyaite')).toBe(false);
+  });
+});

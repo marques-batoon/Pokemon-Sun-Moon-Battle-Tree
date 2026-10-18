@@ -182,12 +182,15 @@ export function estimateDamage(
       att.stats[stat] = att.stats[custom.attackStat];
       att.boosts[stat] = att.boosts[custom.attackStat];
     }
+    const field = calcField(battle, attacker.side, defender.side);
+    // A Digimon move that breaks screens before it hits (Amethyst Mandala), as Brick Break does: none count.
+    if (custom?.breaksScreens) Object.assign(field.defenderSide, { isReflect: false, isLightScreen: false, isAuroraVeil: false });
     const result = calculate(
       gen,
       att,
       calcPokemon(defender, opts.defenderForme),
       calcMoveFor(battle, attacker, move, !!opts.useZ),
-      calcField(battle, attacker.side, defender.side),
+      field,
     );
     let [min, max] = rangeOf(result.damage);
     // A Digimon move with a second type (Lightning Joust: Electric too, like Flying Press): its effectiveness counts too.

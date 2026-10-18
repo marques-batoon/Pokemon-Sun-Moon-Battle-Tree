@@ -45,7 +45,7 @@ const GROUPS: { label: string; moves: string[] }[] = [
       'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
   },
   { label: 'Hitmonchanium Z (custom)', moves: Object.values(HITMONCHANIUM_Z.moves).map(z => z.name) },
-  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster', 'Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile'] },
+  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster', 'Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile', 'Diamond Shuriken', 'Amethyst Mandala'] },
 ];
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
 const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;

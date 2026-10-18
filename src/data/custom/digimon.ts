@@ -18,7 +18,7 @@ export interface DigimonForm {
 
 export interface WarpDigimon {
   /** The team member, e.g. "Agumon". */
-  base: DigimonForm & { genderRatio: { M: number; F: number }; num: number };
+  base: DigimonForm & { num: number } & ({ genderRatio: { M: number; F: number }; gender?: never } | { gender: 'M' | 'F'; genderRatio?: never });
   /** What it Warp Digivolves into, e.g. "WarGreymon" (battle-only, like a Mega). */
   warp: DigimonForm;
   /** The held item that lets it Warp Digivolve (works like a Mega Stone). */
@@ -143,9 +143,40 @@ const MEGAGARGOMON_MOVES = [...new Set([
   'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Tri Attack', 'U-turn', 'Vacuum Wave', 'Volt Switch', 'Wild Charge', 'Zen Headbutt',
 ])];
 
+// Renamon -> Sakuyamon (added 2026-10-18, designed by the user): Renamon's own list, and the one it learns instead
+// while holding Sakuyaite (Sakuyamon's).
+const RENAMON_MOVES = [...new Set([
+  // Level-up
+  'Scratch', 'Leer', 'Quick Attack', 'Confusion', 'Double Team', 'Fake Out', 'Diamond Shuriken', 'Vacuum Wave', 'Detect', 'Psybeam',
+  'Aerial Ace', 'Calm Mind', 'Psycho Cut', 'Psychic', 'Aura Sphere', 'Nasty Plot', 'Focus Blast',
+  // TMs
+  'Acrobatics', 'Aerial Ace', 'Agility', 'Aura Sphere', 'Baton Pass', 'Brick Break', 'Bulk Up', 'Calm Mind', 'Charm', 'Confuse Ray',
+  'Dark Pulse', 'Detect', 'Double Team', 'Drain Punch', 'Endure', 'Energy Ball', 'Facade', 'Fake Tears', 'Fling', 'Focus Blast',
+  'Focus Punch', 'Grass Knot', 'Helping Hand', 'Hone Claws', 'Hyper Voice', 'Low Kick', 'Low Sweep', 'Magical Leaf', 'Metronome',
+  'Nasty Plot', 'Night Slash', 'Protect', 'Psybeam', 'Psychic', 'Psychic Terrain', 'Psycho Cut', 'Psyshock', 'Reflect', 'Rest',
+  'Reversal', 'Shadow Ball', 'Shadow Claw', 'Shadow Sneak', 'Sleep Talk', 'Snarl', 'Stored Power', 'Substitute', 'Sunny Day', 'Swift',
+  'Swords Dance', 'Taunt', 'Tera Blast', 'Thief', 'Trailblaze', 'Trick', 'U-turn', 'Vacuum Wave', 'Work Up', 'Zen Headbutt',
+])];
+const SAKUYAMON_MOVES = [...new Set([
+  // Level-up
+  'Scratch', 'Leer', 'Quick Attack', 'Confusion', 'Fairy Wind', 'Double Team', 'Swift', 'Psybeam', 'Diamond Shuriken', 'Vacuum Wave',
+  'Detect', 'Draining Kiss', 'Calm Mind', 'Psychic', 'Mystical Fire', 'Dazzling Gleam', 'Light Screen', 'Amethyst Mandala', 'Moonblast',
+  'Aura Sphere', 'Moonlight', 'Future Sight', 'Healing Wish',
+  // TMs
+  'Acrobatics', 'Aerial Ace', 'Agility', 'Ally Switch', 'Aura Sphere', 'Baton Pass', 'Brick Break', 'Calm Mind', 'Charm', 'Confuse Ray',
+  'Dazzling Gleam', 'Detect', 'Draining Kiss', 'Drain Punch', 'Encore', 'Endure', 'Energy Ball', 'Expanding Force', 'Facade',
+  'Fake Tears', 'Fire Spin', 'Fling', 'Focus Blast', 'Focus Punch', 'Future Sight', 'Grass Knot', 'Heal Pulse', 'Helping Hand',
+  'Hyper Beam', 'Hyper Voice', 'Imprison', 'Light Screen', 'Low Kick', 'Magical Leaf', 'Magic Room', 'Misty Terrain', 'Moonblast',
+  'Mystical Fire', 'Nasty Plot', 'Night Shade', 'Protect', 'Psybeam', 'Psychic', 'Psychic Noise', 'Psychic Terrain', 'Psycho Cut',
+  'Psyshock', 'Reflect', 'Rest', 'Shadow Ball', 'Shadow Claw', 'Skill Swap', 'Sleep Talk', 'Solar Beam', 'Stored Power', 'Substitute',
+  'Sunny Day', 'Swift', 'Taunt', 'Tera Blast', 'Thunder Wave', 'Trick', 'Trick Room', 'U-turn', 'Vacuum Wave', 'Wonder Room',
+  'Zen Headbutt',
+])];
+
 /** What each Digimon can learn without a warp item (or holding someone else's). */
 export const DIGIMON_BASE_MOVES: Record<string, string[]> = {
   Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES, Guilmon: GUILMON_MOVES, Terriermon: TERRIERMON_MOVES,
+  Renamon: RENAMON_MOVES,
 };
 
 export const WARP_DIGIMON: WarpDigimon[] = [{
@@ -247,6 +278,23 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   itemDesc: 'If held by a Terriermon, this item allows it to Matrix Evolve into MegaGargomon in battle.',
   matrix: true,
   moves: MEGAGARGOMON_MOVES,
+}, {
+  // Renamon -> Sakuyamon (added 2026-10-18, designed by the user): Matrix Evolution. Holding Sakuyaite, Renamon learns
+  // Sakuyamon's list instead of its own. Both are female only.
+  base: {
+    num: 10206, name: 'Renamon', types: ['Psychic', 'Fighting'], color: 'Yellow',
+    baseStats: { hp: 40, atk: 55, def: 35, spa: 70, spd: 38, spe: 80 },
+    abilities: { 0: 'Inner Focus', 1: 'Infiltrator', H: 'Technician' }, weightkg: 16, gender: 'F',
+  },
+  warp: {
+    name: 'Sakuyamon', types: ['Psychic', 'Fairy'], color: 'Yellow',
+    baseStats: { hp: 85, atk: 65, def: 90, spa: 150, spd: 135, spe: 109 },
+    abilities: { 0: 'Magic Bounce' }, weightkg: 55,
+  },
+  item: 'Sakuyaite',
+  itemDesc: 'If held by a Renamon, this item allows it to Matrix Evolve into Sakuyamon in battle.',
+  matrix: true,
+  moves: SAKUYAMON_MOVES,
 }];
 
 export interface DigimonMove {
@@ -254,7 +302,8 @@ export interface DigimonMove {
   type: string;
   category: 'Physical' | 'Special';
   basePower: number;
-  accuracy: number;
+  /** true: it never misses (Diamond Shuriken). */
+  accuracy: number | true;
   pp: number;
   contact: boolean;
   /** A pulse move (boosted by Mega Launcher). */
@@ -276,6 +325,10 @@ export interface DigimonMove {
    * The engine does this (src/engine/custom.ts).
    */
   retarget?: boolean;
+  /** Hits all adjacent opponents (Amethyst Mandala); else one adjacent Pokémon. */
+  spread?: boolean;
+  /** Removes Reflect, Light Screen and Aurora Veil from the target's side before it hits, as Brick Break does (Amethyst Mandala). */
+  breaksScreens?: boolean;
   /** Chance (%) of a burn or paralysis, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
   secondary?: { chance: number; status?: 'brn' | 'par'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
@@ -348,6 +401,15 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     name: 'Giant Missile', type: 'Electric', category: 'Physical', basePower: 100, accuracy: 95, pp: 5, contact: false,
     secondary: { chance: 20, status: 'par' }, desc: '20% chance to paralyze the target.',
   },
+  // Renamon and Sakuyamon (2026-10-18, designed by the user):
+  {
+    name: 'Diamond Shuriken', type: 'Psychic', category: 'Special', basePower: 60, accuracy: true, pp: 15, contact: false,
+    secondary: { chance: 20, boosts: { spd: -1 } }, desc: 'Does not check accuracy. 20% chance to lower the target\'s Sp. Def by 1. Boosted by Technician.',
+  },
+  {
+    name: 'Amethyst Mandala', type: 'Fairy', category: 'Special', basePower: 95, accuracy: 100, pp: 10, contact: false, spread: true, breaksScreens: true,
+    desc: 'Hits adjacent foes. Destroys screens (Reflect, Light Screen, Aurora Veil) before it hits.',
+  },
 ];
 
 /**
@@ -380,6 +442,8 @@ export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon
   HerculesKabuterimon: { file: 'pokemon/herculeskabuterimon.png', back: 'pokemon/back/herculeskabuterimon.png', icon: 'pokemon/icons/herculeskabuterimon.png', w: 96, h: 96, stageScale: 1.5 },
   Terriermon: { file: 'pokemon/terriermon.png', back: 'pokemon/back/terriermon.png', icon: 'pokemon/icons/terriermon.png', w: 96, h: 96 },
   MegaGargomon: { file: 'pokemon/megagargomon.png', back: 'pokemon/back/megagargomon.png', icon: 'pokemon/icons/megagargomon.png', w: 96, h: 96, stageScale: 1.5 },
+  Renamon: { file: 'pokemon/renamon.png', back: 'pokemon/back/renamon.png', icon: 'pokemon/icons/renamon.png', w: 96, h: 96 },
+  Sakuyamon: { file: 'pokemon/sakuyamon.png', back: 'pokemon/back/sakuyamon.png', icon: 'pokemon/icons/sakuyamon.png', w: 96, h: 96, stageScale: 1.5 },
   Guilmon: { file: 'pokemon/guilmon.png', back: 'pokemon/back/guilmon.png', icon: 'pokemon/icons/guilmon.png', w: 96, h: 96 },
   Gallantmon: { file: 'pokemon/gallantmon.png', back: 'pokemon/back/gallantmon.png', icon: 'pokemon/icons/gallantmon.png', w: 96, h: 96, stageScale: 1.5 },
 };
@@ -461,7 +525,8 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   const learnsets: Record<string, object> = {};
   let itemNum = 10130;
   for (const d of WARP_DIGIMON) {
-    const shared = { num: d.base.num, genderRatio: d.base.genderRatio, eggGroups: ['Monster', 'Dragon'], gen: 7 };
+    // One gender only (Renamon, Sakuyamon: female) or a ratio.
+    const shared = { num: d.base.num, ...(d.base.gender ? { gender: d.base.gender } : { genderRatio: d.base.genderRatio }), eggGroups: ['Monster', 'Dragon'], gen: 7 };
     // Agumon has two warp forms (WarGreymon, BlackWarGreymon): list them all.
     const forms = WARP_DIGIMON.filter(o => o.base.name === d.base.name).map(o => o.warp.name);
     species[toId(d.base.name)] = {
@@ -493,7 +558,7 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
       ...(m.multihit ? { multihit: m.multihit } : {}),
       ...(m.critRatio ? { critRatio: m.critRatio } : {}),
       ...(m.attackStat ? { overrideOffensiveStat: m.attackStat } : {}),
-      secondary: m.secondary ? { ...m.secondary } : null, target: 'normal', gen: 7, isNonstandard: null,
+      secondary: m.secondary ? { ...m.secondary } : null, target: m.spread ? 'allAdjacentFoes' : 'normal', gen: 7, isNonstandard: null,
       shortDesc: m.desc, desc: m.desc,
     };
   }

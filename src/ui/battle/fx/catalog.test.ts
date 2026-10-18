@@ -372,14 +372,18 @@ describe('Matrix Evolution (Gallantmon)', () => {
     expect(warpStart('MegaGargomon').layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'Matrix Evolution!', color: MATRIX_THEMES.MegaGargomon.tamer });
     expect(warpBurst('MegaGargomon').layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'MegaGargomon!' });
     expect(key(warpBurst('MegaGargomon'))).not.toBe(key(warpBurst('Gallantmon')));
+    expect(MATRIX_THEMES.Sakuyamon.tamer).not.toBe(MATRIX_THEMES.MegaGargomon.tamer);
+    expect(warpBurst('Sakuyamon').layers.some(l => l.kind === 'particles' && l.shape === 'talisman')).toBe(true);
   });
 
   it('gives Guilmon\'s, Gallantmon\'s, Terriermon\'s and MegaGargomon\'s signature moves their own animations', () => {
-    for (const m of ['Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile']) expect(moveSpec(classifyMove(m)), m).toBe(SIGNATURE_MOVES[m.toLowerCase().replace(/[^a-z]/g, '')]);
+    for (const m of ['Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile', 'Diamond Shuriken', 'Amethyst Mandala']) expect(moveSpec(classifyMove(m)), m).toBe(SIGNATURE_MOVES[m.toLowerCase().replace(/[^a-z]/g, '')]);
     expect(SIGNATURE_MOVES.pyrofang.layers.map(l => l.kind)).toContain('jaws');
     expect(SIGNATURE_MOVES.lightningjoust.layers.map(l => l.kind)).toContain('bolt');
     expect(SIGNATURE_MOVES.shieldofjust.layers.map(l => l.kind)).toContain('wall');
     expect(SIGNATURE_MOVES.burstshot.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'missile', count: 4 });
     expect(SIGNATURE_MOVES.giantmissile.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'missile' });
+    expect(SIGNATURE_MOVES.diamondshuriken.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'gem', count: 6 });
+    expect(SIGNATURE_MOVES.amethystmandala.layers.some(l => l.kind === 'particles' && l.shape === 'talisman' && l.at === 'target')).toBe(true);
   });
 });

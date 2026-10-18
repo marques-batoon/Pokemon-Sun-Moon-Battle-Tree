@@ -895,6 +895,8 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /* A missile: green body, coloured nose, fins and an exhaust flame behind it, pointing the way it flies. */
 .sh-missile { height: calc(var(--s) * 0.32); border-radius: 30% 70% 70% 30% / 50%; background: linear-gradient(90deg, #3a3a3a 0 14%, var(--c) 14% 74%, var(--c2) 74%); box-shadow: inset 0 calc(var(--s) * -0.06) 0 rgb(0 0 0 / 0.25), calc(var(--s) * -0.22) 0 calc(var(--s) * 0.14) rgb(255 170 60 / 0.9), calc(var(--s) * -0.4) 0 calc(var(--s) * 0.2) rgb(220 210 200 / 0.6); }
 .fx-orb2 .sh-missile { transform: translate(-50%, -50%) rotate(var(--ang)); }
+/* A paper talisman (ofuda): a strip of cream paper with a border and a swirl mark in ink (--c). */
+.sh-talisman { width: calc(var(--s) * 0.62); border-radius: 2px; border: calc(var(--s) * 0.06) solid var(--c); background: radial-gradient(circle at 50% 45%, var(--c) 0 13%, transparent 14% 22%, var(--c) 23% 29%, transparent 30%), #fffaf0; box-shadow: 0 0 calc(var(--s) * 0.18) rgb(255 220 120 / 0.8); }
 @keyframes orb-fly { 0% { transform: translate(0, 0) scale(0.5); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
 @keyframes orb-arc { 0% { transform: translate(0, 0) scale(0.6); opacity: 0; } 10% { opacity: 1; } 50% { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5 + var(--lift))) scale(1); } 90% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
 

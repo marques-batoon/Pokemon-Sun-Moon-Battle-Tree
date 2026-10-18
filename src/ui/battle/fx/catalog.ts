@@ -12,7 +12,9 @@ export type Shape =
   | 'dot' | 'flame' | 'drop' | 'bubble' | 'spark' | 'leaf' | 'shard' | 'star' | 'rock' | 'gem'
   | 'feather' | 'wisp' | 'scale' | 'heart' | 'blob' | 'crescent'
   /** A missile (`color` its body, `color2` its nose), pointed the way it flies when thrown as an orb. */
-  | 'missile';
+  | 'missile'
+  /** A paper talisman (ofuda) of cream paper, `color` its ink (Sakuyamon). */
+  | 'talisman';
 export type Motion = 'burst' | 'rise' | 'fall' | 'swirl' | 'converge' | 'spray';
 
 export type Layer =
@@ -1137,6 +1139,31 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14a', color2: '#ffffff', count: 24, size: 14, spread: 190, delay: 830 },
     { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff8c3a', color2: '#ffd23f', count: 14, size: 20, spread: 150, delay: 840 },
   ] },
+  // Diamond Shuriken (Renamon, 2026-10-18; its Diamond Storm): shards of spiritual energy, diamond-shaped, gather
+  // around it and fly at the target in a fast volley, bursting into glittering fragments.
+  diamondshuriken: { layers: [
+    { kind: 'particles', at: 'user', shape: 'gem', motion: 'converge', color: '#bfe8ff', color2: '#ffffff', count: 16, size: 14, spread: 120, dur: 380 },
+    { kind: 'aura', at: 'user', color: '#9ad8ff', size: 180, dur: 420 },
+    { kind: 'orb', color: '#bfe8ff', color2: '#ffffff', size: 28, shape: 'gem', count: 6, gap: 45, delay: 320, dur: 280 },
+    { kind: 'impact', color: '#e8f8ff', size: 140, delay: 600 },
+    { kind: 'impact', color: '#ffffff', size: 200, star: true, delay: 760 },
+    { kind: 'particles', at: 'target', shape: 'gem', motion: 'burst', color: '#bfe8ff', color2: '#ffffff', count: 18, size: 12, spread: 140, delay: 620, dur: 450 },
+  ] },
+  // Amethyst Mandala (Sakuyamon): talismans are summoned, close in around the target in a great circle, and a mandala
+  // of light spreads under it; then a burst of purifying light comes down on it (any screens break first, on their own lines).
+  amethystmandala: { shake: 'strong', layers: [
+    { kind: 'screen', color: '#b48cff', mode: 'tint', dur: 1400 },
+    { kind: 'particles', at: 'user', shape: 'talisman', motion: 'rise', color: '#e8352a', color2: '#9a4dff', count: 8, size: 24, spread: 90, dur: 500 },
+    { kind: 'aura', at: 'user', color: '#c9a0ff', size: 220, dur: 500 },
+    { kind: 'particles', at: 'target', shape: 'talisman', motion: 'converge', color: '#e8352a', color2: '#9a4dff', count: 12, size: 30, spread: 170, delay: 300, dur: 650 },
+    { kind: 'vortex', at: 'target', color: '#9a4dff', color2: '#ffd54a', size: 300, delay: 380, dur: 900 },
+    { kind: 'rings', at: 'target', color: '#c9a0ff', count: 3, size: 300, delay: 420, dur: 600 },
+    { kind: 'pillar', at: 'target', color: '#e6d0ff', color2: '#ffffff', width: 150, delay: 800, dur: 550 },
+    { kind: 'screen', color: '#fff6ff', mode: 'flash', delay: 880, dur: 240 },
+    { kind: 'impact', color: '#ffffff', size: 420, star: true, delay: 900 },
+    { kind: 'rays', at: 'target', color: '#ffd54a', size: 440, delay: 910, dur: 500 },
+    { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffb3da', color2: '#ffd54a', count: 18, size: 13, spread: 180, delay: 920, dur: 500 },
+  ] },
   // Lightning Joust (Gallantmon): the sacred lance crackles with electricity, then is thrust through the target, a
   // bolt and a burst of steel and sparks where it strikes.
   lightningjoust: { shake: 'strong', layers: [
@@ -1548,6 +1575,11 @@ export const MATRIX_THEMES: Record<string, MatrixTheme> = {
   MegaGargomon: {
     tamer: '#3fbf4a', skin: ['#f3eedb', '#7ac74c'], light: '#ffe14a', rings: ['#5fb83a', '#c8d0e8'], sparks: { shape: 'spark', color: '#ffe14a', color2: '#ffffff' },
     debris: { shape: 'shard', color: '#c8d0e8', color2: '#5a8a3a' },
+  },
+  // Rika's blue D-Arc; Sakuyamon, the shrine maiden, appears in golden light, talismans and blue foxfire swirling out.
+  Sakuyamon: {
+    tamer: '#3b7cff', skin: ['#f5c842', '#f3eedb'], light: '#ffd54a', rings: ['#e8352a', '#ffd54a'], sparks: { shape: 'talisman', color: '#e8352a', color2: '#d4a017' },
+    debris: { shape: 'flame', color: '#7ab0ff', color2: '#e6f6ff' },
   },
 };
 const DEFAULT_MATRIX = MATRIX_THEMES.Gallantmon;

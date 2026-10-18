@@ -510,6 +510,16 @@ describe('Terriermon and MegaGargomon (Matrix Evolution)', () => {
     expect(p.boosts.atk).toBe(1);
   });
 
+  it('Elevate always goes by MegaGargomon\'s base stats (Attack), even on a Terriermon, never Terriermon\'s (Sp. Atk)', () => {
+    const b = singles([terriermon(['Burst Shot'])], [weak(), weak('Feebas')]);
+    b.makeChoices('move 1', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.species.name).toBe('Terriermon');
+    const elevate = b.dex.abilities.get('Elevate') as unknown as { onSourceAfterFaint: (this: Battle, n: number, t: unknown, s: unknown, e: unknown) => void };
+    elevate.onSourceAfterFaint.call(b, 1, b.p2.pokemon[0], p, b.dex.getActiveMove('Burst Shot'));
+    expect([p.boosts.atk, p.boosts.spa]).toEqual([1, 0]);
+  });
+
   it('sends Burst Shot\'s remaining hits to the partner when its target faints first (Doubles)', () => {
     const b = new Battle({ formatid: 'gen7battletreedoublesnopreview' as never, seed: '1,2,3,4' });
     const p1 = [terriermon(['Burst Shot']), BENCH[0], ...BENCH].join('\n\n');
@@ -525,5 +535,69 @@ describe('Terriermon and MegaGargomon (Matrix Evolution)', () => {
     c.makeChoices('move 1 mega', 'move 1');
     expect(c.log.join('\n')).toMatch(/\|-hitcount\|p2a?: Magikarp\|1/);
     expect(c.log.join('\n')).not.toMatch(/\|-anim\|/);
+  });
+});
+
+describe('Renamon and Sakuyamon (Matrix Evolution)', () => {
+  const renamon = (moves = ['Diamond Shuriken'], item = 'Sakuyaite', ability = 'Technician') => mon('Renamon', item, ability, moves, 'EVs: 252 SpA\nModest Nature\n');
+
+  it('has the custom species (female only), item and moves', () => {
+    const r = dex.species.get('Renamon');
+    expect([r.types, r.baseStats, r.abilities, r.weightkg, r.gender]).toEqual([
+      ['Psychic', 'Fighting'], { hp: 40, atk: 55, def: 35, spa: 70, spd: 38, spe: 80 }, { 0: 'Inner Focus', 1: 'Infiltrator', H: 'Technician' }, 16, 'F',
+    ]);
+    expect(Object.values(r.baseStats).reduce((x, y) => x + y, 0)).toBe(318);
+    const s = dex.species.get('Sakuyamon');
+    expect([s.baseSpecies, s.battleOnly, s.requiredItem, s.types, s.abilities, s.weightkg, s.gender]).toEqual(['Renamon', 'Renamon', 'Sakuyaite', ['Psychic', 'Fairy'], { 0: 'Magic Bounce' }, 55, 'F']);
+    expect(s.baseStats).toEqual({ hp: 85, atk: 65, def: 90, spa: 150, spd: 135, spe: 109 });
+    expect(Object.values(s.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
+    expect(dex.items.get('Sakuyaite').megaStone).toEqual({ Renamon: 'Sakuyamon' });
+    const shuriken = dex.moves.get('Diamond Shuriken');
+    expect([shuriken.type, shuriken.category, shuriken.basePower, shuriken.accuracy, shuriken.pp, shuriken.target, shuriken.flags.contact]).toEqual(['Psychic', 'Special', 60, true, 15, 'normal', undefined]);
+    expect(shuriken.secondary).toEqual({ chance: 20, boosts: { spd: -1 } });
+    const mandala = dex.moves.get('Amethyst Mandala');
+    expect([mandala.type, mandala.category, mandala.basePower, mandala.accuracy, mandala.pp, mandala.target, mandala.flags.contact, mandala.secondary ?? null]).toEqual(['Fairy', 'Special', 95, 100, 10, 'allAdjacentFoes', undefined, null]);
+  });
+
+  it('learns its own list, and Sakuyamon\'s instead while holding Sakuyaite', () => {
+    expect(validate(team(renamon(['Diamond Shuriken', 'Fake Out', 'Tera Blast', 'Trailblaze'], 'Twisted Spoon')))).toEqual([]);
+    expect(validate(team(renamon(['Amethyst Mandala'], 'Twisted Spoon'))).join(' ')).toMatch(/can't learn Amethyst Mandala/);
+    expect(validate(team(renamon(['Amethyst Mandala', 'Diamond Shuriken', 'Expanding Force', 'Psychic Noise'])))).toEqual([]);
+    expect(validate(team(renamon(['Healing Wish', 'Trick Room', 'Moonblast', 'Mystical Fire'])))).toEqual([]);
+    expect(validate(team(renamon(['Fake Out']))).join(' ')).toMatch(/can't learn Fake Out/);
+    expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Diamond Shuriken'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Diamond Shuriken/);
+    expect(validate(team(mon('Alakazam', 'Sakuyaite', 'Magic Guard', ['Psychic'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Sakuyaite: only Renamon can Matrix Evolve with it/);
+  });
+
+  it('boosts Diamond Shuriken with Technician (60 -> 90), and it never misses', () => {
+    const b = singles([renamon(['Diamond Shuriken', 'Double Team'], 'Leftovers')], [target]);
+    b.makeChoices('move 1', 'move 1');
+    const shuriken = b.dex.getActiveMove('Diamond Shuriken');
+    expect(b.runEvent('BasePower', b.p1.active[0], b.p2.active[0], shuriken, shuriken.basePower, true)).toBe(90);
+    b.p2.active[0].boosts.evasion = 6;
+    b.makeChoices('move 1', 'move 1');
+    expect(b.log.slice(-12).join('\n')).not.toMatch(/\|-miss\|/);
+  });
+
+  it('Matrix Evolves into Sakuyamon, with Magic Bounce', () => {
+    const b = singles([renamon()], [target]);
+    expect(b.p1.active[0].canMegaEvo).toBe('Sakuyamon');
+    b.makeChoices('move 1 mega', 'move 1');
+    expect(b.p1.active[0].species.name).toBe('Sakuyamon');
+    expect(b.p1.active[0].ability).toBe('magicbounce');
+    expect(b.log.join('\n')).toMatch(/\|message\|Renamon matrix-evolve to\.\.\.\n[^]*?\|detailschange\|p1a: Renamon\|Sakuyamon[^]*?\|message\|Sakuyamon!/);
+  });
+
+  it('breaks Reflect, Light Screen and Aurora Veil before Amethyst Mandala hits (Doubles: both foes)', () => {
+    const b = new Battle({ formatid: 'gen7battletreedoublesnopreview' as never, seed: '1,2,3,4' });
+    const p1 = [renamon(['Amethyst Mandala']), BENCH[0], ...BENCH].join('\n\n');
+    const p2 = [target, mon('Chansey', 'Eviolite', 'Natural Cure', ['Splash']), ...BENCH].join('\n\n');
+    b.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(p1)) });
+    b.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(p2)) });
+    for (const id of ['reflect', 'lightscreen', 'auroraveil']) b.p2.addSideCondition(id, b.p2.active[0]);
+    b.makeChoices('move 1 mega, move 1', 'move 1, move 1');
+    const log = b.log.join('\n');
+    expect(Object.keys(b.p2.sideConditions)).toEqual([]);
+    expect(log).toMatch(/\|move\|p1a: Renamon\|Amethyst Mandala\|[^]*?\|-sideend\|p2: B\|Reflect[^]*?\|-damage\|p2a: Snorlax[^]*?\|-damage\|p2b: Chansey/);
   });
 });
