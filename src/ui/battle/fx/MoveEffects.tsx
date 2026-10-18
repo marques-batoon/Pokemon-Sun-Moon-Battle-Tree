@@ -301,19 +301,17 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       return <span key={i} className="fxl fx-rays" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 800) })} />;
     }
     case 'gauntlets': {
-      // Fists sized from the measured sprite when there is one. Pair: ice forms around both arms (at the sides of
-      // the sprite, a little above its centre), winds up, then both fists fly into the target from either side and
-      // shatter. One-two: the second fist just after the first. Single: one huge fist, from the arm nearer the foe.
-      // Barrage: fist after fist from alternating sides, or (around) from every side of the target at once.
+      // Sized from the measured sprite when there is one. Pair: ice forms around both arms (at the sides of the
+      // sprite, a little above its centre), winds up, then both fly into the target from either side and shatter.
+      // One-two: the second just after the first. Barrage: one after another from alternating sides, or (around)
+      // from every side of the target at once.
       const h = user.size ?? layer.size * ctx.k * 1.9;
       const style = layer.style ?? 'pair';
-      const s = h * { pair: 0.3, 'one-two': 0.42, single: 0.62, barrage: 0.3 }[style];
-      const toward: 1 | -1 = target.x >= user.x ? 1 : -1;
+      const s = h * { pair: 0.3, 'one-two': 0.42, barrage: 0.3 }[style];
       const around = style === 'barrage' && !!layer.around;
       const fists: { dir: 1 | -1; stagger: number; n: number }[] =
         style === 'pair' ? [{ dir: -1, stagger: 0, n: 0 }, { dir: 1, stagger: 0, n: 1 }]
         : style === 'one-two' ? [{ dir: -1, stagger: 0, n: 0 }, { dir: 1, stagger: 260, n: 1 }]
-        : style === 'single' ? [{ dir: toward, stagger: 0, n: 0 }]
         : Array.from({ length: layer.count ?? 6 }, (_, n) => ({ dir: (n % 2 ? 1 : -1) as 1 | -1, stagger: n * (layer.gap ?? 70), n }));
       const fist = ({ dir, stagger, n }: { dir: 1 | -1; stagger: number; n: number }) => {
         // Where each barrage fist lands: a little around the target's middle.
@@ -332,7 +330,7 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       };
       const origin = around ? target : user;
       return (
-        <span key={i} className={`fxl fx-gauntlets ${style}${style === 'pair' ? '' : ' fists'} mat-${layer.material ?? 'ice'}`} style={css({
+        <span key={i} className={`fxl fx-gauntlets ${style}${style === 'pair' ? '' : layer.shape === 'rugged' ? ' rugged' : ' fists'} mat-${layer.material ?? 'ice'}`} style={css({
           '--x': px(origin.x), '--y': px(origin.y), '--tx': px(around ? 0 : target.x - user.x), '--ty': px(around ? 0 : target.y - user.y), '--s': px(s),
           '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 2000),
         })}>

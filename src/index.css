@@ -1011,18 +1011,12 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .fx-fairy-glow { animation: fairy-glow calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes fairy-glow { 0%, 38%, 100% { filter: none; } 55% { filter: brightness(1.2) drop-shadow(0 0 10px #ff9ccc); } 75% { filter: drop-shadow(0 0 5px #ffc0dc); } }
 
-/* Fist materials (fx-gauntlets.mat-*): ice is the default look above. */
-.fx-gauntlets.mat-fire .gauntlet { filter: drop-shadow(0 0 10px #ff7a1a) drop-shadow(0 0 24px #ff3a00) drop-shadow(0 0 2px #7a1a00); }
-.fx-gauntlets.mat-fire .ice { background: radial-gradient(circle at 42% 48%, #fffbe0 0 12%, #ffe066 24%, #ff9a2a 46%, #e0400a 72%, #8a1a00 100%);
-  box-shadow: inset 0 0 0 3px rgb(255 230 120 / 0.7), inset -6px -8px 0 rgb(120 20 0 / 0.45); animation: fist-flicker 0.16s steps(2) infinite; }
-.fx-gauntlets.mat-fire .ice::after { background: radial-gradient(ellipse 30% 45% at 25% 0%, rgb(255 230 90 / 0.95), transparent 70%), radial-gradient(ellipse 25% 40% at 60% 0%, rgb(255 160 40 / 0.9), transparent 70%), radial-gradient(ellipse 22% 35% at 85% 6%, rgb(255 230 90 / 0.85), transparent 70%); }
+/* Rugged balls (Glacial Guardbreaker's ice): roughly round, with a jagged outline. */
+.fx-gauntlets.rugged .ice { clip-path: polygon(50% 0, 63% 4%, 72% 2%, 83% 12%, 90% 22%, 98% 34%, 95% 47%, 100% 60%, 93% 72%, 88% 84%, 76% 92%, 64% 100%, 50% 95%, 37% 100%, 24% 93%, 13% 84%, 6% 72%, 0 58%, 4% 45%, 0 32%, 9% 20%, 17% 10%, 30% 4%, 40% 7%); }
+/* Materials (fx-gauntlets.mat-*): ice is the default look above; electric for Thunderbolt Blitzkrieg's jabs. */
 .fx-gauntlets.mat-electric .gauntlet { filter: drop-shadow(0 0 8px #ffe14a) drop-shadow(0 0 18px #fff3a0) drop-shadow(0 0 2px #7a5a00); }
 .fx-gauntlets.mat-electric .ice { background: radial-gradient(circle at 45% 45%, #ffffff 0 18%, #fff3a0 35%, #ffd23f 60%, #e0a800 100%); box-shadow: inset 0 0 0 3px rgb(255 255 255 / 0.8); animation: fist-flicker 0.1s steps(2) infinite; }
 .fx-gauntlets.mat-electric .ice::after { background: repeating-linear-gradient(62deg, transparent 0 9px, rgb(255 255 255 / 0.95) 9px 11px, transparent 11px 17px), repeating-linear-gradient(-48deg, transparent 0 12px, rgb(255 250 200 / 0.8) 12px 13px); }
-.fx-gauntlets.mat-power .gauntlet { filter: drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 20px var(--c2)) drop-shadow(0 0 2px #5a1a00); }
-.fx-gauntlets.mat-power .ice { background: radial-gradient(circle at 40% 40%, #ffffff 0 10%, var(--c2) 28%, var(--c) 62%, color-mix(in srgb, var(--c) 60%, #000) 100%); box-shadow: inset 0 0 0 3px rgb(255 240 200 / 0.6), inset -6px -8px 0 rgb(90 20 0 / 0.4); }
-.fx-gauntlets.mat-life .gauntlet { filter: drop-shadow(0 0 10px #9cf5ac) drop-shadow(0 0 20px #3fae5a) drop-shadow(0 0 2px #1a4a20); }
-.fx-gauntlets.mat-life .ice { background: radial-gradient(circle at 40% 42%, #ffffff 0 10%, #ffd27f 26%, #ff8a3d 50%, #3fae5a 88%); box-shadow: inset 0 0 0 3px rgb(200 255 210 / 0.75), inset -6px -8px 0 rgb(20 80 30 / 0.35); }
 @keyframes fist-flicker { from { filter: brightness(1); } to { filter: brightness(1.3) saturate(1.2); } }
 /* Barrage: each fist jabs straight into the target (a little off the middle each time) and bursts. */
 .fx-gauntlets.barrage .gauntlet { animation-name: fist-jab; animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6); }
@@ -1293,7 +1287,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
     linear-gradient(25deg, transparent 55%, rgb(255 255 255 / 0.45) 56% 58%, transparent 59%); }
 .fx-gauntlets .ice::before { content: ''; position: absolute; top: -20%; bottom: -20%; left: 0; width: 30%; z-index: 1; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.95), transparent);
   animation: gauntlet-glint calc(var(--dur) * var(--spd, 1)) linear calc((var(--delay, 0ms) + var(--stagger, 0ms)) * var(--spd, 1)) both; }
-/* Hitmonchan's fists: rounded (knuckles along the top), not a spiky gauntlet; made of ice, fire, electricity, fighting power or life energy. */
+/* Rounded fists (knuckles along the top), not a spiky gauntlet: Thunderbolt Blitzkrieg's electric jabs. */
 .fx-gauntlets.fists .ice { clip-path: polygon(6% 34%, 12% 16%, 24% 8%, 34% 16%, 42% 6%, 54% 4%, 62% 14%, 72% 6%, 84% 10%, 92% 24%, 97% 42%, 99% 64%, 92% 84%, 74% 97%, 46% 100%, 22% 94%, 6% 78%, 0 56%);
   border-radius: 18%; }
 @keyframes gauntlet {

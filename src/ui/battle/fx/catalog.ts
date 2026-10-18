@@ -64,13 +64,15 @@ export type Layer =
   /** Heavy fists (blocks of ice) forming around both of the user's arms, which then smash into the target together. */
   | { kind: 'gauntlets'; color: string; color2?: string; size: number; delay?: number; dur?: number;
     /**
-     * 'pair' (default): two spiky ice gauntlets form on both arms and strike at once (Poliwrath). The rest are rounded
-     * fists (Hitmonchan): 'one-two', two massive fists, one just after the other; 'single', one huge fist from the arm
-     * nearer the foe; 'barrage', `count` fists thrown in quick succession from alternating sides (`dur`: each one's).
+     * 'pair' (default): two spiky ice gauntlets form on both arms and strike at once (Poliwrath). 'one-two': two of
+     * them, the second just after the first (Glacial Guardbreaker); 'barrage': `count` of them thrown in quick
+     * succession from alternating sides (`dur`: each one's; Thunderbolt Blitzkrieg).
      */
-    style?: 'pair' | 'one-two' | 'single' | 'barrage';
-    /** What the fists are made of: ice (default), fire, electric, power (fighting energy) or life (draining). */
-    material?: 'ice' | 'fire' | 'electric' | 'power' | 'life';
+    style?: 'pair' | 'one-two' | 'barrage';
+    /** The shape when not a pair: rounded fists (default), or rugged balls (Glacial Guardbreaker's ice). */
+    shape?: 'fist' | 'rugged';
+    /** What they're made of: ice (default) or electricity. */
+    material?: 'ice' | 'electric';
     /** Barrage: how many fists, ms between them (default 70), and whether they come from all around the target (super speed). */
     count?: number; gap?: number; around?: boolean }
   /** Anime speed lines converging on a Pokémon from all around the stage (super speed, a huge hit). */
@@ -665,6 +667,20 @@ const Z_MOVES: Record<TypeName, ZPair> = {
 };
 
 /** Signature Z-Moves (one Pokémon's own, with a fixed category), and the custom Poliwrathium Z-Moves. */
+/**
+ * A Z-Move's huge layered impact at `delay` ms (Hitmonchan's): a big white burst and a coloured one just after, a
+ * white flash, shockwave rings, rays, a crack in the ground and debris (`debris` shape) flying out.
+ */
+const zImpact = (delay: number, color: string, color2: string, debris: Shape): Layer[] => [
+  { kind: 'impact', at: 'target', color: '#ffffff', size: 540, star: true, delay },
+  { kind: 'impact', at: 'target', color, size: 420, star: true, delay: delay + 50 },
+  { kind: 'screen', color: '#ffffff', mode: 'flash', delay, dur: 180 },
+  { kind: 'rings', at: 'target', color, count: 4, size: 470, delay: delay + 10, dur: 650 },
+  { kind: 'rays', at: 'target', color: color2, size: 540, delay: delay + 10, dur: 750 },
+  { kind: 'crack', color, delay: delay + 20 },
+  pt('target', debris, 'burst', color, color2, 36, 22, 280, delay + 20),
+];
+
 const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
   // Pikachu leaps high, wreathed in electricity, and comes crashing down.
   catastropika: { type: 'Electric', layers: [
@@ -826,75 +842,71 @@ const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
     { kind: 'impact', color: '#5aa2ff', size: 340, star: true, delay: 1300 },
     pt('target', 'drop', 'spray', '#5aa2ff', '#ffffff', 28, 18, 190, 1300),
   ] },
-  // Hitmonchanium Z (custom; made more epic on request, 2026-10-17). Each one shows Hitmonchan's fists themselves
-  // (gauntlets: rounded fists), anime speed lines at the moment of impact, and the target reeling (stage-fx
-  // SIGNATURE_SPRITES). Omega Punch is Omega Wrath's animation (on request).
+  // Hitmonchanium Z (custom; on request, 2026-10-17, all at the same epic level, shown by their impacts, no fists;
+  // Thunderbolt Blitzkrieg kept as it is). Each builds up, rushes in (streaks and speed lines), then lands a huge
+  // layered impact (zImpact), with the target reeling (stage-fx SIGNATURE_SPRITES). Omega Punch is Omega Wrath's
+  // animation (on request).
   //
-  // Super Drain Punch: power floods into one huge glowing fist, which smashes into the target; then its life energy
-  // streams back into Hitmonchan in green orbs, and he glows with it.
+  // Super Drain Punch: power floods into Hitmonchan, he rushes in and the punch lands in a huge burst; then the
+  // target's life energy streams back into him in green orbs, and he glows with it.
   superdrainpunch: { type: 'Fighting', layers: [
     pt('user', 'dot', 'converge', '#ff9a4a', '#8af0a0', 26, 12, 190, 0, 800),
     { kind: 'aura', at: 'user', color: '#e0662f', size: 300, delay: 150, dur: 850 },
     { kind: 'rings', at: 'user', color: '#8af0a0', count: 3, size: 240, delay: 300, dur: 700 },
-    { kind: 'gauntlets', color: '#ff8a3d', color2: '#9cf5ac', size: 160, style: 'single', material: 'life', dur: 1900 },
-    { kind: 'speedlines', at: 'target', color: '#ffffff', delay: 1120, dur: 420 },
-    { kind: 'impact', color: '#ffffff', size: 440, star: true, delay: 1235 },
-    { kind: 'rings', at: 'target', color: '#e0662f', count: 3, size: 360, delay: 1250, dur: 600 },
-    { kind: 'crack', color: '#7a5a2a', delay: 1250 },
-    { kind: 'orb', color: '#7ce38a', color2: '#eaffea', size: 30, reverse: true, count: 7, gap: 60, delay: 1380, dur: 420 },
-    pt('user', 'dot', 'converge', '#8af0a0', '#ffffff', 24, 12, 200, 1450, 500),
-    { kind: 'aura', at: 'user', color: '#7ce38a', size: 300, delay: 1700, dur: 480 },
-    pt('user', 'star', 'rise', '#b8ffc4', '#ffffff', 14, 10, 90, 1750, 420),
+    { kind: 'gust', color: '#ffb07a', count: 14, delay: 900, dur: 320, leaves: false },
+    { kind: 'speedlines', at: 'target', color: '#ffffff', delay: 1080, dur: 460 },
+    ...zImpact(1235, '#e0662f', '#ffd2b0', 'star'),
+    { kind: 'orb', color: '#7ce38a', color2: '#eaffea', size: 30, reverse: true, count: 8, gap: 55, delay: 1400, dur: 420 },
+    pt('user', 'dot', 'converge', '#8af0a0', '#ffffff', 24, 12, 200, 1460, 500),
+    { kind: 'aura', at: 'user', color: '#7ce38a', size: 320, delay: 1720, dur: 460 },
+    pt('user', 'star', 'rise', '#b8ffc4', '#ffffff', 14, 10, 90, 1760, 420),
   ] },
-  // Sky Rocket Punch: fire roars out of Hitmonchan's fist like a rocket engine, the huge fist blasts across leaving a
-  // flaming trail, and the uppercut launches the target skyward in a column of light and fire.
+  // Sky Rocket Punch: fire roars around Hitmonchan like a rocket engine igniting, he blasts across in a trail of flame,
+  // and the uppercut lands in a huge burst that launches the target skyward in a column of light and fire.
   skyrocketpunch: { type: 'Fighting', layers: [
     { kind: 'ground', color: '#ff8c3a', delay: 100, dur: 900 },
-    pt('user', 'flame', 'converge', '#ffb347', '#fff0c0', 26, 18, 170, 0, 800),
+    pt('user', 'flame', 'converge', '#ffb347', '#fff0c0', 28, 18, 170, 0, 800),
     { kind: 'rings', at: 'user', color: '#ff8c3a', count: 3, size: 250, delay: 250, dur: 650 },
-    { kind: 'gauntlets', color: '#ff7a2a', color2: '#ffe0a0', size: 160, style: 'single', material: 'power', dur: 1900 },
-    { kind: 'gust', color: '#ffb347', count: 12, delay: 1000, dur: 300, leaves: false },
-    { kind: 'speedlines', at: 'target', color: '#fff0c0', delay: 1150, dur: 500 },
-    { kind: 'impact', color: '#fff0c0', size: 420, star: true, delay: 1235 },
-    { kind: 'pillar', at: 'target', color: '#ff8c3a', color2: '#fff6dc', width: 150, delay: 1245, dur: 800 },
-    pt('target', 'flame', 'rise', '#ff8c3a', '#ffd27f', 30, 20, 130, 1250, 800),
+    { kind: 'aura', at: 'user', color: '#ff8c3a', size: 280, delay: 400, dur: 600 },
+    { kind: 'gust', color: '#ffb347', count: 18, delay: 920, dur: 320, leaves: false },
+    { kind: 'speedlines', at: 'target', color: '#fff0c0', delay: 1100, dur: 550 },
+    ...zImpact(1235, '#ff8c3a', '#fff0c0', 'flame'),
+    { kind: 'pillar', at: 'target', color: '#ff8c3a', color2: '#fff6dc', width: 160, delay: 1250, dur: 800 },
+    pt('target', 'flame', 'rise', '#ff8c3a', '#ffd27f', 30, 20, 130, 1260, 800),
     pt('target', 'star', 'rise', '#ffffff', '#ffe9b0', 18, 12, 100, 1300, 750),
-    { kind: 'rings', at: 'target', color: '#ffb347', count: 2, size: 340, delay: 1260, dur: 550 },
   ] },
-  // Punching Barrage: a storm of fists hammers the target from both sides, faster and faster, while one more fist
-  // charges up; then that huge last punch lands.
+  // Punching Barrage: blow after blow lands on the target in bursts that grow bigger and faster, then the last punch
+  // lands in one enormous impact that sends it flying back.
   punchingbarrage: { type: 'Fighting', layers: [
-    { kind: 'aura', at: 'user', color: '#e0503a', size: 280, dur: 900 },
-    { kind: 'speedlines', at: 'target', color: '#ffffff', delay: 400, dur: 1200 },
-    { kind: 'gauntlets', color: '#e0503a', color2: '#ffd2b0', size: 110, style: 'barrage', material: 'power', count: 12, gap: 70, delay: 380, dur: 300 },
-    ...[640, 720, 800, 880, 960, 1040, 1120, 1200].map((delay, n): Layer => ({ kind: 'impact', color: n % 2 ? '#ffffff' : '#ffd2b0', size: 140 + n * 12, star: true, delay })),
-    { kind: 'gauntlets', color: '#e0503a', color2: '#fff0c0', size: 170, style: 'single', material: 'power', delay: 300, dur: 1900 },
-    { kind: 'impact', color: '#ffffff', size: 480, star: true, delay: 1540 },
-    { kind: 'rings', at: 'target', color: '#e0503a', count: 3, size: 400, delay: 1550, dur: 600 },
-    { kind: 'rays', at: 'target', color: '#ffb08a', size: 420, delay: 1550, dur: 550 },
-    { kind: 'crack', color: '#7a5a2a', delay: 1560 },
+    { kind: 'aura', at: 'user', color: '#e0503a', size: 300, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#ffd2b0', count: 2, size: 240, delay: 200, dur: 500 },
+    { kind: 'gust', color: '#ff9a7a', count: 14, delay: 380, dur: 300, leaves: false },
+    { kind: 'speedlines', at: 'target', color: '#ffffff', delay: 450, dur: 1250 },
+    ...[640, 730, 810, 880, 940, 995, 1045, 1090, 1130, 1165].map((delay, n): Layer => ({ kind: 'impact', at: 'target', color: n % 2 ? '#ffffff' : '#ffb08a', size: 120 + n * 18, star: true, delay })),
+    ...[700, 880, 1045].map((delay): Layer => ({ kind: 'rings', at: 'target', color: '#ffd2b0', count: 1, size: 220, delay, dur: 300 })),
+    pt('target', 'star', 'burst', '#ffd2b0', '#ffffff', 22, 12, 160, 700, 600),
+    ...zImpact(1540, '#e0503a', '#fff0c0', 'star'),
   ] },
-  // Glacial Guardbreaker: ice coats both of Hitmonchan's fists into two massive ice punches, a one-two into the target
-  // (the second an uppercut that throws up ice), then the ice hardens over him as frozen armor (on request: punches,
-  // not a thrown shard of ice).
+  // Glacial Guardbreaker: ice gathers into two huge, rugged balls of ice on Hitmonchan's arms, hurled one after the
+  // other into the target (the second sends ice flying up); then the ice hardens over him as frozen armor. (On request:
+  // first a sharp shard of ice, then ice fists; now rugged balls of ice.)
   glacialguardbreaker: { type: 'Ice', layers: [
     { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 2000 },
     pt('user', 'gem', 'converge', '#cdf6ff', '#ffffff', 22, 12, 140, 0, 700),
     { kind: 'aura', at: 'user', color: '#9fe8ff', size: 240, delay: 100, dur: 800 },
-    { kind: 'gauntlets', color: '#8fdcf6', color2: '#eafcff', size: 160, style: 'one-two', dur: 1900 },
+    { kind: 'gauntlets', color: '#8fdcf6', color2: '#eafcff', size: 160, style: 'one-two', shape: 'rugged', dur: 1900 },
     { kind: 'speedlines', at: 'target', color: '#e8fbff', delay: 1150, dur: 600 },
-    { kind: 'impact', color: '#c9f6ff', size: 340, star: true, delay: 1230 },
+    { kind: 'impact', color: '#c9f6ff', size: 360, star: true, delay: 1230 },
     { kind: 'crack', color: '#9fe8ff', delay: 1240 },
-    { kind: 'impact', color: '#ffffff', size: 440, star: true, delay: 1490 },
+    ...zImpact(1490, '#9fe8ff', '#ffffff', 'shard'),
     { kind: 'pillar', at: 'target', color: '#9fe8ff', color2: '#ffffff', width: 110, delay: 1500, dur: 550 },
-    { kind: 'rings', at: 'target', color: '#bff3ff', count: 2, size: 340, delay: 1500, dur: 550 },
-    pt('target', 'shard', 'burst', '#cdf6ff', '#ffffff', 28, 18, 210, 1510),
     { kind: 'shield', color: '#bff3ff', delay: 1750 },
     { kind: 'rays', at: 'user', color: '#e8fbff', size: 240, delay: 1800, dur: 380 },
   ] },
   // Infernal Fury Fist (power): Hitmonchan powers up for a long moment inside a roaring column of flame, the ground
-  // glowing and rocks lifting around him, shockwave after shockwave; then one gigantic flaming fist smashes into the
-  // target and explodes in a pillar of fire. Afterwards the flames turn on Hitmonchan (he's burned).
+  // glowing, rocks lifting and shockwave after shockwave; he rushes in trailing fire, and the blow lands in a colossal
+  // fiery explosion that blasts the target back, the ground burning and smoke rising. Afterwards the flames turn on him
+  // (he's burned).
   infernalfuryfist: { type: 'Fire', layers: [
     { kind: 'ground', color: '#ff5a1a', delay: 100, dur: 1100 },
     { kind: 'pillar', at: 'user', color: '#ff5a1a', color2: '#ffd23f', width: 170, delay: 80, dur: 1000 },
@@ -903,17 +915,15 @@ const Z_SIGNATURE: Record<string, { type: TypeName; layers: Layer[] }> = {
     { kind: 'rings', at: 'user', color: '#ffb347', count: 2, size: 300, delay: 250, dur: 500 },
     { kind: 'rings', at: 'user', color: '#ff5a1a', count: 2, size: 380, delay: 650, dur: 500 },
     { kind: 'aura', at: 'user', color: '#ff3a00', size: 420, delay: 300, dur: 850 },
-    { kind: 'gauntlets', color: '#ff5a1a', color2: '#ffd23f', size: 190, style: 'single', material: 'fire', dur: 1900 },
-    { kind: 'speedlines', at: 'target', color: '#ffd27f', delay: 1120, dur: 520 },
-    { kind: 'impact', color: '#fff6c0', size: 560, star: true, delay: 1235 },
-    { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 1235, dur: 200 },
+    { kind: 'gust', color: '#ff7a2a', count: 20, delay: 960, dur: 300, leaves: false },
+    { kind: 'speedlines', at: 'target', color: '#ffd27f', delay: 1100, dur: 560 },
+    ...zImpact(1235, '#ff5a1a', '#ffd23f', 'flame'),
+    { kind: 'impact', at: 'target', color: '#ff3a00', size: 380, star: true, delay: 1330 },
     { kind: 'column', color: '#ff5a1a', color2: '#ffd23f', delay: 1250 },
-    { kind: 'rays', at: 'target', color: '#ff8c3a', size: 520, delay: 1250, dur: 800 },
-    { kind: 'rings', at: 'target', color: '#ffb347', count: 4, size: 460, delay: 1260, dur: 650 },
-    pt('target', 'flame', 'burst', '#ff5a1a', '#ffd23f', 40, 26, 280, 1260),
-    { kind: 'crack', color: '#5a2a10', delay: 1270 },
-    pt('user', 'flame', 'rise', '#d8401a', '#ff8c3a', 16, 14, 70, 1700, 480),
-    { kind: 'aura', at: 'user', color: '#a02010', size: 220, delay: 1720, dur: 430 },
+    { kind: 'ground', color: '#ff5a1a', delay: 1260, dur: 700 },
+    pt('target', 'wisp', 'rise', '#5a4a46', '#8a7a74', 14, 26, 150, 1400, 650),
+    pt('user', 'flame', 'rise', '#d8401a', '#ff8c3a', 16, 14, 70, 1720, 420),
+    { kind: 'aura', at: 'user', color: '#a02010', size: 220, delay: 1740, dur: 400 },
   ] },
   // Thunderbolt Blitzkrieg (speed): sparks crackle, and Hitmonchan is simply gone, a streak of lightning leaving
   // electric after-images; speed lines, then a blur of electric jabs from every side lands in under half a second,
