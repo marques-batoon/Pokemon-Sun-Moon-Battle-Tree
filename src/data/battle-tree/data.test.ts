@@ -314,6 +314,14 @@ describe('trainer-quotes.json', () => {
     expect(new Set(lines).size).toBe(lines.length);
   });
 
+  it('has the younger female Gym Leaders greet each other as friends, whatever their region or type (Misty and Elesa...)', async () => {
+    const { pairGreeting } = await import('./index');
+    const girls = ['Misty', 'Erika', 'Sabrina', 'Janine', 'Whitney', 'Jasmine', 'Clair', 'Roxanne', 'Flannery', 'Winona', 'Gardenia', 'Maylene', 'Candice', 'Elesa', 'Skyla', 'Roxie'].map(byName);
+    for (const a of girls) for (const b of girls) if (a !== b) expect(pairGreeting(a, b), `${a.name} with ${b.name}`).not.toBeNull();
+    expect(pairGreeting(byName('Misty'), byName('Elesa'))).toMatch(/Elesa/);
+    expect(pairGreeting(byName('Elesa'), byName('Misty'))).toMatch(/Misty/);
+  });
+
   it('greets you with pair lines when two such special trainers battle together, keeping their usual closing remarks', async () => {
     const { trainerQuotes, TRAINER_PAIR_GREETINGS } = await import('./index');
     const [brock, misty, surge, cynthia, florian] = ['Brock', 'Misty', 'Lt. Surge', 'Cynthia', 'Florian'].map(byName);

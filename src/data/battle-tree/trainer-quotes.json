@@ -5459,7 +5459,7 @@
   ]
  },
  "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
- "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one greeting per trainer; their closing remarks are their usual ones. To add a pair, add an entry with both trainers' names and a greeting for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type.",
  "pairs": {
   "Brock & Misty": {
    "Brock": "Misty and I go way back. Pewter and Cerulean, rock and water. We know each other's moves by heart.",
@@ -10288,6 +10288,402 @@
   "Faba & Plumeria": {
    "Faba": "Plumeria. Team Skull's admin. How common.",
    "Plumeria": "Faba. Watch your mouth, nerd."
+  },
+  "Misty & Whitney": {
+   "Misty": "Whitney, if you start crying mid-battle again, I'm not sharing my ice cream with you after!",
+   "Whitney": "Misty and me shopping in Goldenrod, then battling together? Best day ever! Don't make me cry, okay?"
+  },
+  "Misty & Jasmine": {
+   "Misty": "Jasmine's so quiet, but she's tough as nails. I'll do the yelling for both of us!",
+   "Jasmine": "Um... Misty said she'd be loud enough for both of us. I'll... try to keep up."
+  },
+  "Misty & Clair": {
+   "Misty": "Clair thinks dragons beat everything. Let's prove her right today... just today.",
+   "Clair": "Misty has the spirit of a dragon tamer. Don't tell her I said that."
+  },
+  "Misty & Roxanne": {
+   "Misty": "Roxanne took notes on my whole battle style. Kind of creepy, kind of flattering!",
+   "Roxanne": "I studied Misty's battles for a school report. Now I get to see her up close. For research!"
+  },
+  "Misty & Flannery": {
+   "Misty": "Flannery's all fire and I'm all water. If we argue, there'll be steam everywhere!",
+   "Flannery": "Misty and I? Steam power! Wait, is that good? Whatever, let's go!"
+  },
+  "Misty & Winona": {
+   "Misty": "Winona's so graceful she makes me look like a tomboy. ...Okay, I am one. Let's battle!",
+   "Winona": "Misty swims, I soar. Between the sea and the sky, there's nowhere left for you to hide."
+  },
+  "Misty & Gardenia": {
+   "Misty": "Gardenia, if you see a ghost and run off, I'm not chasing you!",
+   "Gardenia": "Misty promised to protect me from ghosts. In return, I'll protect her from losing!"
+  },
+  "Misty & Maylene": {
+   "Misty": "Maylene trains barefoot in the snow? Okay, that's tougher than any swim practice I've done.",
+   "Maylene": "Misty's fighting spirit is amazing! I want to be that fierce! Even fiercer!"
+  },
+  "Misty & Candice": {
+   "Misty": "Candice keeps yelling about focus. I keep yelling at my sisters. We're both loud. Let's go!",
+   "Candice": "Misty's got so much spirit! Focus! Kiai! Let's give them a cold splash!"
+  },
+  "Misty & Elesa": {
+   "Misty": "Elesa, you light up the runway, I light up the pool. Let's make this battle a show!",
+   "Elesa": "Misty! Cerulean's water shows and Nimbasa's runway, together at last. Let's dazzle them."
+  },
+  "Misty & Skyla": {
+   "Misty": "Skyla flew me here in her cargo plane. I'm never letting her do loops with me on board again!",
+   "Skyla": "Misty screamed the whole flight! Don't worry, she's way braver on the battlefield!"
+  },
+  "Misty & Roxie": {
+   "Misty": "Roxie's band played so loud my ears are still ringing. Good thing I can still battle!",
+   "Roxie": "Misty's got attitude! I like her! We'll rock your world and wash it away!"
+  },
+  "Erika & Whitney": {
+   "Erika": "Whitney and I went shopping in Goldenrod. She bought everything. I took a lovely nap.",
+   "Whitney": "Erika fell asleep in the department store! So cute! Okay, wake up, it's battle time!"
+  },
+  "Erika & Jasmine": {
+   "Erika": "Jasmine and I share tea and quiet moments. Our battle will be just as graceful.",
+   "Jasmine": "Erika makes the nicest tea... Um, let's do our best, Erika."
+  },
+  "Erika & Clair": {
+   "Erika": "Clair is very fierce. I'll be fierce too... after a little rest.",
+   "Clair": "Erika, if you fall asleep during this battle, I'm finishing it myself."
+  },
+  "Erika & Roxanne": {
+   "Erika": "Roxanne asked me about flower arranging. Such a studious girl. Let's battle with care.",
+   "Roxanne": "Erika's flower arranging follows strict rules. Just like a good battle strategy!"
+  },
+  "Erika & Flannery": {
+   "Erika": "Flannery, dear, please keep your flames away from my flowers.",
+   "Flannery": "Erika's so calm, it's driving me crazy! Let's heat things up!"
+  },
+  "Erika & Winona": {
+   "Erika": "Winona and I both enjoy a peaceful view. Let's make this battle a lovely one.",
+   "Winona": "Erika's garden is breathtaking from the sky. Let's show you something just as beautiful."
+  },
+  "Erika & Maylene": {
+   "Erika": "Maylene trains so hard. Perhaps a nap afterward? For both of us?",
+   "Maylene": "Erika taught me how to relax. Now I'll show her how to fight!"
+  },
+  "Erika & Candice": {
+   "Erika": "Candice's energy is... quite something. I may need a nap after this.",
+   "Candice": "Erika, focus! No napping! We're winning this one together!"
+  },
+  "Erika & Elesa": {
+   "Erika": "Elesa wears my perfume on the runway. What an honor. Let's battle beautifully.",
+   "Elesa": "Erika's perfume is my secret on the runway. Now let's show them her secret in battle."
+  },
+  "Erika & Skyla": {
+   "Erika": "Skyla brings me flower seeds from all over the world. Let's repay her with a win.",
+   "Skyla": "I fly Erika's perfume all over the world! Today, we're delivering a win!"
+  },
+  "Erika & Roxie": {
+   "Erika": "Roxie's music is very... loud. I'll try my best to stay awake.",
+   "Roxie": "Erika fell asleep at my concert! In the front row! Okay, let's rock!"
+  },
+  "Sabrina & Whitney": {
+   "Sabrina": "I foresaw Whitney crying. I also foresaw her winning. Shall we?",
+   "Whitney": "Sabrina can see the future! She says we win, right? Right?!"
+  },
+  "Sabrina & Jasmine": {
+   "Sabrina": "Jasmine's mind is calm and kind. A good partner. I sense no hesitation today.",
+   "Jasmine": "Sabrina knows what I'm thinking... so I don't have to say it. That's nice."
+  },
+  "Sabrina & Clair": {
+   "Sabrina": "Clair's pride is loud, even in her thoughts. Fine. Let her lead.",
+   "Clair": "Sabrina, stay out of my head. And stay out of my way. Let's win."
+  },
+  "Sabrina & Roxanne": {
+   "Sabrina": "Roxanne plans every move. I already know how it ends. Nothing is left to chance.",
+   "Roxanne": "Sabrina says she sees the outcome. I'll double-check her math anyway!"
+  },
+  "Sabrina & Flannery": {
+   "Sabrina": "Flannery's thoughts burn hot and fast. Keep up, Flannery.",
+   "Flannery": "Sabrina keeps reading my mind! Stop it! ...Okay, what am I thinking now?"
+  },
+  "Sabrina & Winona": {
+   "Sabrina": "Winona's mind is as clear as an open sky. I approve.",
+   "Winona": "Sabrina sees the future, and I see the horizon. Neither looks good for you."
+  },
+  "Sabrina & Gardenia": {
+   "Sabrina": "Gardenia fears ghosts. I sense none here. Battle, Gardenia.",
+   "Gardenia": "Sabrina says there are no ghosts around. Promise? Okay! Let's do this!"
+  },
+  "Sabrina & Maylene": {
+   "Sabrina": "Maylene's spirit is strong, and her mind is honest. A worthy partner.",
+   "Maylene": "Sabrina's mind is so strong! I'll match it with my fists!"
+  },
+  "Sabrina & Candice": {
+   "Sabrina": "Candice thinks very loudly. \"Focus,\" she thinks. I agree.",
+   "Candice": "Sabrina knows all about focus! Mind and body, together! Kiai!"
+  },
+  "Sabrina & Elesa": {
+   "Sabrina": "Elesa shines on stage. I foresaw her shining here, too.",
+   "Elesa": "Sabrina says she's already seen this battle. I hope I looked fabulous."
+  },
+  "Sabrina & Skyla": {
+   "Sabrina": "Skyla's thoughts never touch the ground. Interesting.",
+   "Skyla": "Sabrina can lift things with her mind! Can you lift my plane? No? Let's battle, then!"
+  },
+  "Sabrina & Roxie": {
+   "Sabrina": "Roxie's thoughts are all noise. Somehow, they're in tune with mine.",
+   "Roxie": "Sabrina read my mind and found my next song! Let's battle to the beat!"
+  },
+  "Janine & Whitney": {
+   "Janine": "Whitney cries when she loses. I don't cry. I just train harder. Let's go!",
+   "Whitney": "Janine is so serious! Smile, Janine! Okay, okay, I'll focus too!"
+  },
+  "Janine & Jasmine": {
+   "Janine": "Jasmine is as quiet as a ninja. I approve. Let's strike from the shadows!",
+   "Jasmine": "Janine says I'd make a good ninja. I'm not sure... but I'll try."
+  },
+  "Janine & Clair": {
+   "Janine": "Clair is as proud as my father. We'll show you the strength of the Gym Leaders!",
+   "Clair": "Janine has the discipline of a dragon tamer. Show them, Janine."
+  },
+  "Janine & Roxanne": {
+   "Janine": "Roxanne studies battles. I study ninja arts. We're both students, and we're both ready!",
+   "Roxanne": "Janine's ninja techniques are fascinating. I'll take notes while we win."
+  },
+  "Janine & Flannery": {
+   "Janine": "Flannery and I both took over from family. We'll make them proud today!",
+   "Flannery": "Janine gets it! Living up to your family is tough! Let's show them what we've got!"
+  },
+  "Janine & Winona": {
+   "Janine": "Winona moves like the wind. A true ninja would be jealous. ...I'm a little jealous.",
+   "Winona": "Janine strikes before you see her, and I strike from above. Watch carefully."
+  },
+  "Janine & Gardenia": {
+   "Janine": "Gardenia, I'll protect you from any ghosts. Ninjas aren't afraid of anything!",
+   "Gardenia": "Janine's a ninja! Ghosts don't stand a chance! Neither do you!"
+  },
+  "Janine & Maylene": {
+   "Janine": "Maylene trains as hard as I do. We'll strike together, fast and silent!",
+   "Maylene": "Janine and I trained together all morning! We're ready for anything!"
+  },
+  "Janine & Candice": {
+   "Janine": "Candice wants to focus. Ninjas always focus. Let's stop them in their tracks!",
+   "Candice": "Janine, you're so focused! I love it! Kiai! Let's go!"
+  },
+  "Janine & Elesa": {
+   "Janine": "Elesa says ninjas should dress better. Hmph. Let's just win.",
+   "Elesa": "Janine moves so fast, even the cameras can't catch her. Shall we?"
+  },
+  "Janine & Skyla": {
+   "Janine": "Skyla took me skydiving. A ninja should never scream. I screamed. Let's battle.",
+   "Skyla": "Janine jumped out of my plane like a real ninja! Okay, she yelled a little!"
+  },
+  "Whitney & Roxanne": {
+   "Whitney": "Roxanne's so smart! She says I need a strategy. My strategy is being super cute!",
+   "Roxanne": "Whitney's strategy is... unconventional. I'll handle the plan, Whitney!"
+  },
+  "Whitney & Flannery": {
+   "Whitney": "Flannery cries when she's mad too! We're the same! Let's go!",
+   "Flannery": "I do NOT cry, Whitney! ...Okay, sometimes. Let's just win this!"
+  },
+  "Whitney & Winona": {
+   "Whitney": "Winona's so pretty and calm! I wanna be like her! After we win, of course!",
+   "Winona": "Whitney's cheer could lift anyone into the sky. Let's fly high together."
+  },
+  "Whitney & Gardenia": {
+   "Whitney": "Gardenia and I both love cute things! Cute and strong, that's us!",
+   "Gardenia": "Whitney's always so cheerful! Let's grow this battle into a win!"
+  },
+  "Whitney & Maylene": {
+   "Whitney": "Maylene can eat even more than me! After this, all-you-can-eat buffet!",
+   "Maylene": "Whitney promised me a buffet if we win! I'm not losing!"
+  },
+  "Whitney & Candice": {
+   "Whitney": "Candice says I should focus. I'm focusing on how cute her outfit is!",
+   "Candice": "Whitney, focus! Okay, my outfit IS cute. Now focus!"
+  },
+  "Whitney & Elesa": {
+   "Whitney": "Elesa's a real supermodel! Can I get an autograph after? Pleeease?",
+   "Elesa": "Whitney asked for my autograph mid-battle. Let's give her something better to remember."
+  },
+  "Whitney & Skyla": {
+   "Whitney": "Skyla said she'd fly me anywhere! I want to go to the moon! After we win!",
+   "Skyla": "Whitney wants to fly to the moon! Let's win first, then talk about it!"
+  },
+  "Whitney & Roxie": {
+   "Whitney": "Roxie's band is so cool! Can I sing backup? We're winning, then singing!",
+   "Roxie": "Whitney wants to join my band! She's got lungs! Let's rock this battle!"
+  },
+  "Jasmine & Roxanne": {
+   "Jasmine": "Roxanne helps me study. Um... I'll do my best to pass this test.",
+   "Roxanne": "Jasmine is my study partner! Rock and steel make a solid foundation!"
+  },
+  "Jasmine & Flannery": {
+   "Jasmine": "Flannery is so brave... I'll try to be brave too.",
+   "Flannery": "Jasmine, stay behind me! Oh wait, you're tougher than me. Okay, side by side!"
+  },
+  "Jasmine & Winona": {
+   "Jasmine": "Winona is so elegant. I'll try not to trip... Let's begin.",
+   "Winona": "Jasmine is gentle, but her resolve is steel. Let's glide to victory."
+  },
+  "Jasmine & Gardenia": {
+   "Jasmine": "Gardenia brought flowers for my lighthouse. Thank you... Let's do this.",
+   "Gardenia": "Jasmine's lighthouse needed some green! Now let's battle!"
+  },
+  "Jasmine & Maylene": {
+   "Jasmine": "Maylene is so strong... I'm a little shy, but we'll be strong together.",
+   "Maylene": "Jasmine's quiet, but she never gives up! Just like me!"
+  },
+  "Jasmine & Candice": {
+   "Jasmine": "Candice says to focus... I'm focusing. I'm really trying.",
+   "Candice": "Jasmine's focus is so calm and cool! Teach me! After we win!"
+  },
+  "Jasmine & Elesa": {
+   "Jasmine": "Elesa said I'd look good on a runway... I'd faint. Battling is easier.",
+   "Elesa": "Jasmine is shy, but she shines brighter than any spotlight. Let's show them."
+  },
+  "Jasmine & Skyla": {
+   "Jasmine": "Skyla flew me all the way to Unova... I didn't look down once. Let's battle.",
+   "Skyla": "Jasmine kept her eyes closed the whole flight! But she's fearless in battle!"
+  },
+  "Jasmine & Roxie": {
+   "Jasmine": "Roxie's music is very loud... but she's very kind. Let's do our best.",
+   "Roxie": "Jasmine came to my concert with earplugs! Cute! Now let's make some noise!"
+  },
+  "Clair & Roxanne": {
+   "Clair": "Roxanne wants to learn from me. Pay attention, Roxanne. This is how it's done.",
+   "Roxanne": "Clair's battle style is a textbook of power! I'm ready, Clair!"
+  },
+  "Clair & Flannery": {
+   "Clair": "Flannery's fire matches her temper. Good. Burn them down.",
+   "Flannery": "Clair's so cool and intense! I'm gonna be just as intense! Watch me!"
+  },
+  "Clair & Winona": {
+   "Clair": "Winona, you rule the sky. I rule dragons. Together, nothing can stand against us.",
+   "Winona": "Clair's dragons and my wings. Let's give them a storm to remember."
+  },
+  "Clair & Gardenia": {
+   "Clair": "Gardenia, stop hiding behind me. There are no ghosts. Battle.",
+   "Gardenia": "Clair is so tough! Nothing scares her! Not even ghosts!"
+  },
+  "Clair & Maylene": {
+   "Clair": "Maylene has a warrior's spirit. I respect that. Don't hold back.",
+   "Maylene": "Clair is the strongest woman I know! I'll fight as hard as she does!"
+  },
+  "Clair & Candice": {
+   "Clair": "Candice, stop yelling about focus and actually focus. ...Fine. Kiai.",
+   "Candice": "Clair said kiai with me! Best day ever! Let's go!"
+  },
+  "Clair & Elesa": {
+   "Clair": "Elesa wants me to model my cape. Not happening. Let's win.",
+   "Elesa": "Clair's cape is so dramatic. I adore it. Let's make a dramatic entrance."
+  },
+  "Clair & Skyla": {
+   "Clair": "Skyla says her plane is faster than my dragons. We'll settle that later. First, you.",
+   "Skyla": "Clair thinks dragons are faster than planes! We'll race later! Now, battle!"
+  },
+  "Clair & Roxie": {
+   "Clair": "Roxie is loud. I'm proud. That's enough to beat you.",
+   "Roxie": "Clair's attitude is so punk! Let's crank it up!"
+  },
+  "Roxanne & Gardenia": {
+   "Roxanne": "Gardenia's plants grew right through my rock garden. Impressive. Let's battle!",
+   "Gardenia": "Roxanne teaches me facts about plants! I teach her to love them! Let's go!"
+  },
+  "Roxanne & Maylene": {
+   "Roxanne": "Maylene's training schedule is perfect. I made it for her!",
+   "Maylene": "Roxanne made my training plan, and I followed every step! Let's win!"
+  },
+  "Roxanne & Candice": {
+   "Roxanne": "Candice and I are both students. Today's lesson: teamwork!",
+   "Candice": "Roxanne's so smart, and I'm so energetic! That's a perfect team! Focus!"
+  },
+  "Roxanne & Elesa": {
+   "Roxanne": "Elesa says studying is the new fashion. Then I've always been fashionable!",
+   "Elesa": "Roxanne's notes are the most stylish I've ever seen. Let's battle."
+  },
+  "Roxanne & Skyla": {
+   "Roxanne": "Skyla calculates flight paths. I calculate battle odds. Ours are good!",
+   "Skyla": "Roxanne worked out the perfect flight plan! Now let's work out the win!"
+  },
+  "Roxanne & Roxie": {
+   "Roxanne": "Roxie and I got a nickname at the Gym Leader meeting: the Rock and the Rocker!",
+   "Roxie": "Roxanne the rock, and Roxie the rocker! We rock either way!"
+  },
+  "Flannery & Gardenia": {
+   "Flannery": "Gardenia, I promise I won't burn your plants! Probably!",
+   "Gardenia": "Flannery said \"probably\"! I'm staying far away from her flames!"
+  },
+  "Flannery & Maylene": {
+   "Flannery": "Maylene and I both became Gym Leaders young. We're fired up!",
+   "Maylene": "Flannery and I are new leaders! We'll prove ourselves together!"
+  },
+  "Flannery & Candice": {
+   "Flannery": "Candice, if I melt your snow, don't be mad! Let's go!",
+   "Candice": "Flannery's heat and my focus! A perfect balance! Kiai!"
+  },
+  "Flannery & Elesa": {
+   "Flannery": "Elesa's so glamorous! I tried posing like her and fell over. Let's battle instead!",
+   "Elesa": "Flannery's passion burns brighter than any spotlight. Let's light up this stage."
+  },
+  "Flannery & Skyla": {
+   "Flannery": "Skyla landed by my hot springs and dropped in for a soak! Let's make it a hot battle!",
+   "Skyla": "Flannery's hot springs are the best stop on my flight route! Now, let's battle!"
+  },
+  "Flannery & Roxie": {
+   "Flannery": "Roxie's music is so fiery! I'm totally fired up!",
+   "Roxie": "Flannery's got fire in her soul! Let's burn up this stage!"
+  },
+  "Winona & Gardenia": {
+   "Winona": "Gardenia's forest looks lovely from the sky. Let's make this battle lovely too.",
+   "Gardenia": "Winona's city is built in the treetops! I love her already!"
+  },
+  "Winona & Maylene": {
+   "Winona": "Maylene's discipline is as strong as the wind. A fine partner.",
+   "Maylene": "Winona's graceful AND strong! I want to learn her balance!"
+  },
+  "Winona & Candice": {
+   "Winona": "Candice's snowy cheer is a fresh breeze. Let's take to the skies.",
+   "Candice": "Winona, let's soar and focus! Cold winds and blue skies! Kiai!"
+  },
+  "Winona & Elesa": {
+   "Winona": "Elesa and I share a love of elegance. Let's make this battle graceful.",
+   "Elesa": "Winona's grace on the battlefield is a runway of its own. Let's dazzle them."
+  },
+  "Winona & Roxie": {
+   "Winona": "Roxie's music shakes the trees in Fortree. Let's shake this battle too.",
+   "Roxie": "Winona's so elegant! I'll be the loud one! Let's rock and soar!"
+  },
+  "Gardenia & Elesa": {
+   "Gardenia": "Elesa wore a flower crown on the runway! I made it! Let's battle!",
+   "Elesa": "Gardenia made my flower crown. The cameras loved it. Let's give them more."
+  },
+  "Gardenia & Skyla": {
+   "Gardenia": "Skyla flew me over a huge forest! I didn't want to land! Okay, let's battle!",
+   "Skyla": "Gardenia waved at every tree from my plane! Let's grow a win!"
+  },
+  "Gardenia & Roxie": {
+   "Gardenia": "Roxie's band is so loud, the flowers dance! Let's dance to victory!",
+   "Roxie": "Gardenia danced at my show! She's got rhythm! Let's rock!"
+  },
+  "Maylene & Elesa": {
+   "Maylene": "Elesa said I should wear shoes on the runway. No way! Barefoot battles forever!",
+   "Elesa": "Maylene refuses shoes, even on the runway. I respect the look. Let's battle."
+  },
+  "Maylene & Skyla": {
+   "Maylene": "Skyla let me train on her plane's wing! It was super windy! Let's go!",
+   "Skyla": "Maylene did push-ups on my wing mid-flight! I still can't believe it!"
+  },
+  "Maylene & Roxie": {
+   "Maylene": "Roxie's drums give me a great training rhythm! Let's fight to the beat!",
+   "Roxie": "Maylene punches to my beats! Best fan ever! Let's go!"
+  },
+  "Candice & Elesa": {
+   "Candice": "Elesa's winter fashion line is so cute! Focus on the battle, though! Kiai!",
+   "Elesa": "Candice inspired my winter line. Now let's inspire a victory."
+  },
+  "Candice & Skyla": {
+   "Candice": "Skyla flew me over Snowpoint! I yelled \"Focus!\" the whole way! Let's battle!",
+   "Skyla": "Candice yelled \"Focus!\" at my plane! It worked, I think! Let's go!"
+  },
+  "Candice & Roxie": {
+   "Candice": "Roxie wrote a song about focus! For me! Kiai! Let's rock!",
+   "Roxie": "Candice keeps yelling \"Focus!\" at my concerts, so I wrote her a song. Let's go!"
   }
  },
  "customNote": "Marques and Thomas (custom battle-50 trainers, written by the user) always appear together: give them the same number of sets, in matching order, so each pair of lines goes together (the same set index is picked for both).",
