@@ -30,7 +30,8 @@ team, ...).
   Gabumon). `battles` lists who can appear at battle 50 of which format and course and
   their weight (Red / Blue are 7); a trainer can be in several entries, and an entry
   can name the game's Battle Legends ("Red", "Blue") to put them in another format's
-  slot with their Super teams. The battle-50 draw also happens at 100, 150, ... In a
+  slot with their Super teams. It can also name a trainer from `digidestined.json` (Tai & Takato), who brings
+  their own team. The battle-50 draw also happens at 100, 150, ... In a
   Multi entry the first name is the first opponent (shown on the left).
 - **Sprites:** PNGs with a transparent background in `public/trainers/` (square works
   best), named in `battle-50-trainers.json`.
@@ -42,12 +43,14 @@ team, ...).
   give Marques and Thomas the same number of entries in matching order. No Pokémon
   names. No `npm run data:custom` needed for lines; `npm test` checks them.
 
-## The DigiDestined and Digimon Tamers (Izzy, Kaito)
+## The DigiDestined and Digimon Tamers (Izzy, Kaito, Takato, Henry, Rika)
 
 - **Teams:** `digidestined.txt`, same format, one section per trainer (eight Pokémon each).
-- **Who, how often, partners:** `digidestined.json`. Each trainer has a class ("DigiDestined"),
+- **Who, how often, partners:** `digidestined.json`, by section title. If a trainer's name is taken (the game
+  has a Gentleman Henry), use another section title ("Henry (Tamer)") and give `"name": "Henry"`: the title is
+  then their key for lines. Each trainer has a class ("DigiDestined", "Digimon Tamer"),
   gender, sprite (in `public/trainers/`), `lead` (the Pokémon that always leads: Izzy's Tentomon),
-  `weight` in the special-trainer pool (Izzy and Kaito 7) and `partners`: as an opponent in a Multi Battle
+  `weight` in the special-trainer pool (all 7) and `partners`: as an opponent in a Multi Battle
   they always battle alongside one of these, picked with equal chance, and the partner goes first
   (on the left). A partner can be a Battle Legend (Tai) or another trainer in this file. To give
   Izzy Mimi or Joe as partners too, add them here (with their own teams) and list them in his

@@ -510,14 +510,23 @@ describe('Terriermon and MegaGargomon (Matrix Evolution)', () => {
     expect(p.boosts.atk).toBe(1);
   });
 
-  it('Elevate always goes by MegaGargomon\'s base stats (Attack), even on a Terriermon, never Terriermon\'s (Sp. Atk)', () => {
+  it('Elevate goes by the base stats of what the Pokémon is now: MegaGargomon\'s Attack, or a Terriermon\'s own Sp. Atk', () => {
+    const elevate = (b: Battle) => b.dex.abilities.get('Elevate') as unknown as { onSourceAfterFaint: (this: Battle, n: number, t: unknown, s: unknown, e: unknown) => void };
+    // A Terriermon that got Elevate some other way (Skill Swap...): its own highest base stat, Sp. Atk (85).
     const b = singles([terriermon(['Burst Shot'])], [weak(), weak('Feebas')]);
     b.makeChoices('move 1', 'move 1');
     const p = b.p1.active[0];
     expect(p.species.name).toBe('Terriermon');
-    const elevate = b.dex.abilities.get('Elevate') as unknown as { onSourceAfterFaint: (this: Battle, n: number, t: unknown, s: unknown, e: unknown) => void };
-    elevate.onSourceAfterFaint.call(b, 1, b.p2.pokemon[0], p, b.dex.getActiveMove('Burst Shot'));
-    expect([p.boosts.atk, p.boosts.spa]).toEqual([1, 0]);
+    elevate(b).onSourceAfterFaint.call(b, 1, b.p2.pokemon[0], p, b.dex.getActiveMove('Burst Shot'));
+    expect([p.boosts.atk, p.boosts.spa]).toEqual([0, 1]);
+    // Matrix Evolved into MegaGargomon: MegaGargomon's (Attack, 150), not Terriermon's.
+    const c = singles([terriermon(['Burst Shot'])], [target]);
+    c.makeChoices('move 1 mega', 'move 1');
+    const g = c.p1.active[0];
+    expect(g.species.name).toBe('MegaGargomon');
+    g.boosts.atk = 0;
+    elevate(c).onSourceAfterFaint.call(c, 1, c.p2.pokemon[0], g, c.dex.getActiveMove('Burst Shot'));
+    expect([g.boosts.atk, g.boosts.spa]).toEqual([1, 0]);
   });
 
   it('sends Burst Shot\'s remaining hits to the partner when its target faints first (Doubles)', () => {

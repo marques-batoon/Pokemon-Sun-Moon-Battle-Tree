@@ -202,20 +202,24 @@ for (const t of battle50Trainers) {
 /** The game's Battle Legends (their Super teams), which battle-50 entries can also name. */
 const GAME_LEGENDS = new Set(JSON.parse(readFileSync(new URL('../src/data/battle-tree/trainers.json', import.meta.url), 'utf8')).trainers
   .filter(t => t.kind === 'legend' && t.course === 'super').map(t => t.name));
+/** Digimon Tamers (digidestined.json), whom a battle-50 entry can also name (Tai & Takato), with their own teams. */
+const TAMER_NAMES = new Set(Object.entries(JSON.parse(readFileSync(new URL('digidestined.json', dir), 'utf8')).trainers).map(([title, t]) => t.name ?? title));
 for (const b of battle50.battles) {
   for (const n of b.trainers) {
-    if (!battle50Trainers.some(t => t.name === n) && !GAME_LEGENDS.has(n)) problems.push(`battle-50-trainers.json: ${n} has no team in battle-50-trainers.txt (and isn't one of the game's Battle Legends)`);
+    if (!battle50Trainers.some(t => t.name === n) && !GAME_LEGENDS.has(n) && !TAMER_NAMES.has(n)) problems.push(`battle-50-trainers.json: ${n} has no team in battle-50-trainers.txt (and isn't one of the game's Battle Legends or a trainer in digidestined.json)`);
   }
   if (b.trainers.length !== (b.format === 'multi' ? 2 : 1)) problems.push(`battle-50-trainers.json: a ${b.format} battle needs ${b.format === 'multi' ? 'two trainers' : 'one trainer'}`);
 }
 
 // --- The DigiDestined (special trainers) ---
 const digidestined = JSON.parse(readFileSync(new URL('digidestined.json', dir), 'utf8'));
-const digidestinedTrainers = parseExports('digidestined.txt', name => {
-  const info = digidestined.trainers[name];
-  if (!info) { problems.push(`digidestined.json: no entry for ${name}`); return {}; }
+const digidestinedTrainers = parseExports('digidestined.txt', title => {
+  const info = digidestined.trainers[title];
+  if (!info) { problems.push(`digidestined.json: no entry for ${title}`); return {}; }
+  // A section title other than the name ("Henry (Tamer)": the game has a Gentleman Henry) is their key (lines).
+  const name = info.name ?? title;
   return {
-    class: info.class, classGender: info.gender, region: 'Digital World', sprite: info.sprite, weight: info.weight,
+    name, ...(name !== title ? { key: title } : {}), class: info.class, classGender: info.gender, region: 'Digital World', sprite: info.sprite, weight: info.weight,
     ...(info.lead ? { lead: info.lead } : {}), ...(info.partners?.length ? { partners: info.partners } : {}),
   };
 });
@@ -264,7 +268,7 @@ save('evil-teams.json', {
 save('digidestined.json', {
   source: 'Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy and Kaito: 7).',
+    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Takato, Henry, Rika).',
     '"lead": the species that always leads their team. "partners": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).',
     'IV 31 like every special trainer; IV lines are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
   ],
@@ -273,7 +277,7 @@ save('digidestined.json', {
 save('battle-50.json', {
   source: 'Designed by the user (2026-10-08): data-sources/custom/battle-50-trainers.txt (teams) and battle-50-trainers.json (who, where, weight); built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'They share the Battle Legends\' battle-50 slot by weight (Red / Blue are weight 7 in bosses.json); a Multi entry lists the first (left) trainer first.',
+    'They share the Battle Legends\' battle-50 slot by weight (Red / Blue are weight 7 in bosses.json); a Multi entry lists the first (left) trainer first. An entry can name a Digimon Tamer from digidestined.json (Takato), who brings his special-trainer team.',
     'IV 31 like the Battle Legends; IV lines in the exports are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
     'A trainer can appear in several entries (Tai and Matt: Super Singles, Super Doubles and, together, Super Multi). "lead": the species that always leads their team.',
   ],

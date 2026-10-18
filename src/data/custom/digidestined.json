@@ -1,7 +1,7 @@
 {
  "source": "Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
-  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (Izzy and Kaito: 7).",
+  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Takato, Henry, Rika).",
   "\"lead\": the species that always leads their team. \"partners\": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).",
   "IV 31 like every special trainer; IV lines are ignored. Sprites are the user's own pixel art in public/trainers/."
  ],
@@ -350,6 +350,532 @@
       "Shadow Claw",
       "Play Rough",
       "Shadow Sneak"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Takato",
+   "class": "Digimon Tamer",
+   "classGender": "M",
+   "region": "Digital World",
+   "sprite": "/trainers/takato.png",
+   "weight": 7,
+   "lead": "Guilmon",
+   "partners": [
+    "Henry",
+    "Rika"
+   ],
+   "sets": [
+    {
+     "species": "Guilmon",
+     "item": "Gallantite",
+     "ability": "Strong Jaw",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Lightning Joust",
+      "Play Rough",
+      "Sacred Sword",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Gallade",
+     "item": "Galladite",
+     "ability": "Justified",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Close Combat",
+      "Zen Headbutt",
+      "Knock Off",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Charizard",
+     "item": "Charizardite X",
+     "ability": "Blaze",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Flare Blitz",
+      "Dragon Claw",
+      "Earthquake"
+     ]
+    },
+    {
+     "species": "Tyrantrum",
+     "item": "Choice Band",
+     "ability": "Rock Head",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Head Smash",
+      "Outrage",
+      "Earthquake",
+      "Crunch"
+     ]
+    },
+    {
+     "species": "Latias",
+     "item": "Life Orb",
+     "ability": "Levitate",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Draco Meteor",
+      "Psychic",
+      "Thunderbolt",
+      "Recover"
+     ]
+    },
+    {
+     "species": "Togekiss",
+     "item": "Leftovers",
+     "ability": "Serene Grace",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Air Slash",
+      "Dazzling Gleam",
+      "Roost",
+      "Nasty Plot"
+     ]
+    },
+    {
+     "species": "Aegislash",
+     "item": "Weakness Policy",
+     "ability": "Stance Change",
+     "nature": "Quiet",
+     "evs": {
+      "hp": 252,
+      "atk": 4,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Shadow Ball",
+      "Flash Cannon",
+      "Sacred Sword",
+      "King's Shield"
+     ]
+    },
+    {
+     "species": "Smeargle",
+     "item": "Focus Sash",
+     "ability": "Own Tempo",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 4,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Spore",
+      "Fake Out",
+      "Follow Me",
+      "Sticky Web"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Henry",
+   "key": "Henry (Tamer)",
+   "class": "Digimon Tamer",
+   "classGender": "M",
+   "region": "Digital World",
+   "sprite": "/trainers/henry.png",
+   "weight": 7,
+   "lead": "Terriermon",
+   "partners": [
+    "Takato",
+    "Rika"
+   ],
+   "sets": [
+    {
+     "species": "Terriermon",
+     "item": "Megagargoite",
+     "ability": "Technician",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 4,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Giant Missile",
+      "Burst Shot",
+      "Earthquake",
+      "Close Combat"
+     ]
+    },
+    {
+     "species": "Lopunny",
+     "item": "Lopunnite",
+     "ability": "Limber",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Fake Out",
+      "Return",
+      "High Jump Kick",
+      "Ice Punch"
+     ]
+    },
+    {
+     "species": "Blastoise",
+     "item": "Blastoisinite",
+     "ability": "Torrent",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Water Pulse",
+      "Dark Pulse",
+      "Aura Sphere",
+      "Ice Beam"
+     ]
+    },
+    {
+     "species": "Lucario",
+     "item": "Life Orb",
+     "ability": "Justified",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Close Combat",
+      "Meteor Mash",
+      "Extreme Speed",
+      "Swords Dance"
+     ]
+    },
+    {
+     "species": "Mienshao",
+     "item": "Choice Scarf",
+     "ability": "Regenerator",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "High Jump Kick",
+      "U-turn",
+      "Knock Off",
+      "Stone Edge"
+     ]
+    },
+    {
+     "species": "Porygon2",
+     "item": "Eviolite",
+     "ability": "Download",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Tri Attack",
+      "Ice Beam",
+      "Recover",
+      "Thunder Wave"
+     ]
+    },
+    {
+     "species": "Snorlax",
+     "item": "Leftovers",
+     "ability": "Thick Fat",
+     "nature": "Careful",
+     "evs": {
+      "hp": 252,
+      "atk": 4,
+      "def": 0,
+      "spa": 0,
+      "spd": 252,
+      "spe": 0
+     },
+     "moves": [
+      "Curse",
+      "Return",
+      "Earthquake",
+      "Rest"
+     ]
+    },
+    {
+     "species": "Rotom-Heat",
+     "item": "Sitrus Berry",
+     "ability": "Levitate",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Overheat",
+      "Volt Switch",
+      "Will-O-Wisp",
+      "Protect"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Rika",
+   "class": "Digimon Tamer",
+   "classGender": "F",
+   "region": "Digital World",
+   "sprite": "/trainers/rika.png",
+   "weight": 7,
+   "lead": "Renamon",
+   "partners": [
+    "Takato",
+    "Henry"
+   ],
+   "sets": [
+    {
+     "species": "Renamon",
+     "item": "Sakuyaite",
+     "ability": "Technician",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Amethyst Mandala",
+      "Psychic",
+      "Shadow Ball",
+      "Calm Mind"
+     ]
+    },
+    {
+     "species": "Ninetales-Alola",
+     "item": "Light Clay",
+     "ability": "Snow Warning",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Aurora Veil",
+      "Blizzard",
+      "Moonblast",
+      "Freeze-Dry"
+     ]
+    },
+    {
+     "species": "Delphox",
+     "item": "Delphoxite",
+     "ability": "Blaze",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Flamethrower",
+      "Psyshock",
+      "Grass Knot",
+      "Calm Mind"
+     ]
+    },
+    {
+     "species": "Zoroark",
+     "item": "Life Orb",
+     "ability": "Illusion",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Night Daze",
+      "Focus Blast",
+      "Flamethrower",
+      "Nasty Plot"
+     ]
+    },
+    {
+     "species": "Greninja",
+     "item": "Choice Specs",
+     "ability": "Protean",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Hydro Pump",
+      "Dark Pulse",
+      "Ice Beam",
+      "Grass Knot"
+     ]
+    },
+    {
+     "species": "Weavile",
+     "item": "Focus Sash",
+     "ability": "Pressure",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Icicle Crash",
+      "Knock Off",
+      "Ice Shard",
+      "Low Kick"
+     ]
+    },
+    {
+     "species": "Gardevoir",
+     "item": "Choice Scarf",
+     "ability": "Trace",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Moonblast",
+      "Psychic",
+      "Shadow Ball",
+      "Trick"
+     ]
+    },
+    {
+     "species": "Milotic",
+     "item": "Leftovers",
+     "ability": "Competitive",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Scald",
+      "Ice Beam",
+      "Recover",
+      "Toxic"
      ]
     }
    ]

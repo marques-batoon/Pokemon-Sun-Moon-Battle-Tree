@@ -39,7 +39,7 @@ export const samePerson = (a: Trainer, b: Trainer) => a.id === b.id || (a.person
  * Custom special trainers (see DATA_NOTES.md "Custom additions"), appended after the sets and
  * trainers before them so ids stay array indices: the Gym Leaders (weight 7, like the game's
  * special trainers), the Elite Four and Champions (3.5), the evil teams (1, Courtney 7) and the
- * DigiDestined (Izzy 7). A trainer's own `weight` wins over the group's. Both versions, IV 31.
+ * DigiDestined and Digimon Tamers (7). A trainer's own `weight` wins over the group's. Both versions, IV 31.
  */
 function customTrainers(list: CustomTrainer[], firstSet: number, firstTrainer: number, weight: number, file: string) {
   const sets: TreeSet[] = [];
@@ -69,7 +69,9 @@ interface Battle50Entry { format: Format; course: Course; battle: number; traine
  * (src/data/custom/battle-50.json). Each entry becomes a boss that shares the slot with
  * the Battle Legends by weight; in Multi the first trainer is p2 (shown on the left).
  * A trainer can be in several entries (Tai: Super Singles, Super Doubles, and Super Multi
- * with Matt), and can have a Pokémon that always leads (`lead`).
+ * with Matt or Takato), and can have a Pokémon that always leads (`lead`). The bosses are
+ * made once every trainer exists (battle50Bosses): an entry can also name a Digimon Tamer
+ * (Takato), a special trainer who comes later.
  */
 function battle50Trainers(firstSet: number, firstTrainer: number) {
   const sets: TreeSet[] = [];
@@ -91,13 +93,18 @@ function battle50Trainers(firstSet: number, firstTrainer: number) {
       source: { sets: 'custom: data-sources/custom/battle-50-trainers.txt (designed by the user)' },
     };
   });
-  // Custom trainers, or the game's Battle Legends in another slot (Red at battle 50 of Super Doubles...).
-  const idOf = (name: string) => (trainers.find(t => t.name === name) ?? gameLegend(name))!.id;
-  const bosses: Record<string, Boss> = Object.fromEntries(entries.map(e => [bossKey(e), {
+  return { sets, trainers, entries, bossKey };
+}
+/**
+ * The battle-50 bosses: custom trainers, the game's Battle Legends in another slot (Red at battle 50 of Super
+ * Doubles...), or a Digimon Tamer (Takato, alongside Tai), by name.
+ */
+function battle50Bosses(tamers: Trainer[]): Record<string, Boss> {
+  const idOf = (name: string) => (BATTLE_50.trainers.find(t => t.name === name) ?? gameLegend(name) ?? tamers.find(t => t.name === name))!.id;
+  return Object.fromEntries(BATTLE_50.entries.map(e => [BATTLE_50.bossKey(e), {
     trainerId: idOf(e.trainers[0]), ...(e.trainers[1] ? { partnerTrainerId: idOf(e.trainers[1]) } : {}),
     format: e.format, course: e.course, battle: e.battle, bp: 50, teamSize: e.format === 'multi' ? 2 : e.format === 'doubles' ? 4 : 3, iv: 31, weight: e.weight,
   } satisfies Boss]));
-  return { sets, trainers, bosses };
 }
 const BATTLE_50 = battle50Trainers(GAME_SETS.length + CUSTOM.sets.length, GAME_TRAINERS.length + CUSTOM.trainers.length);
 /** The Elite Four and Champions of Generations 1-7, after everything else (earlier ids, kept in saved runs, don't move). */
@@ -115,7 +122,7 @@ const EVIL_TEAMS = customTrainers(
   1, 'evil-teams.txt (designed for the user)',
 );
 
-/** The DigiDestined (Izzy), after the evil teams (earlier ids don't move): weight as given (Izzy 7), own sprite and lead. */
+/** The DigiDestined and Digimon Tamers (Izzy, Kaito, Takato...), after the evil teams (earlier ids don't move): weight as given (7), own sprite and lead. */
 const DIGIDESTINED_LIST = digidestinedJson.trainers as CustomTrainer[];
 const DIGIDESTINED = customTrainers(
   DIGIDESTINED_LIST,
@@ -205,7 +212,8 @@ export function pairedTrainer(trainerId: number): { partnerId: number; pair: (ty
   return null;
 }
 /** The Battle Legends (bosses.json) and the custom trainers who share their battle-50 slot. */
-export const BOSSES: Record<string, Boss> = { ...(bossesJson.bosses as Record<string, Boss>), ...BATTLE_50.bosses };
+const BATTLE_50_BOSSES = battle50Bosses(DIGIDESTINED.trainers);
+export const BOSSES: Record<string, Boss> = { ...(bossesJson.bosses as Record<string, Boss>), ...BATTLE_50_BOSSES };
 export const RULES = rulesJson as unknown as RulesFile;
 
 /** Greetings and closing remarks, three sets per trainer name (written for this app; see trainer-quotes.json). */
@@ -233,14 +241,16 @@ const DUO_QUOTES = new Map(Object.values(TRAINER_DUO_QUOTES).map(entry => {
 }));
 /**
  * Trainers who always battle together as opponents in Multi Battles: Tate and Liza, and the custom
- * battle-50 duos (Marques and Thomas, Tai and Matt). Their team-up lines (TRAINER_MULTI_QUOTES)
- * are used when they battle together.
+ * battle-50 duos (Marques and Thomas, Tai and Matt, Tai and Takato). Their team-up lines (TRAINER_MULTI_QUOTES)
+ * are used when they battle together. By trainer id: the partners they have such lines with (Tai: Matt and Takato).
  */
-const DUO_PARTNER = new Map<number, number>([
-  ...TRAINER_PAIRS.flatMap(p => [[p.trainerIds[0], p.trainerIds[1]], [p.trainerIds[1], p.trainerIds[0]]] as [number, number][]),
-  ...Object.values(BATTLE_50.bosses).filter(b => b.partnerTrainerId !== undefined)
-    .flatMap(b => [[b.trainerId, b.partnerTrainerId!], [b.partnerTrainerId!, b.trainerId]] as [number, number][]),
-]);
+const DUO_PARTNERS = new Map<number, Set<number>>();
+for (const [a, b] of [
+  ...TRAINER_PAIRS.map(p => p.trainerIds as [number, number]),
+  ...Object.values(BATTLE_50_BOSSES).filter(b => b.partnerTrainerId !== undefined).map(b => [b.trainerId, b.partnerTrainerId!] as [number, number]),
+]) {
+  for (const [x, y] of [[a, b], [b, a]]) DUO_PARTNERS.set(x, (DUO_PARTNERS.get(x) ?? new Set()).add(y));
+}
 
 /** Special trainers who have pair greetings with this one (TRAINER_PAIR_GREETINGS), by id. */
 export function pairGreetingPartners(trainerId: number): number[] {
@@ -285,8 +295,8 @@ export function quotePick(battleKey: string): number {
  * their fixed Multi Battle partner (Izzy and Tai) uses their team-up lines (TRAINER_DUO_QUOTES).
  */
 export function trainerQuotes(trainer: Trainer, battleKey: string | number, alongside: readonly Trainer[] = []): TrainerQuotes | null {
-  const partner = DUO_PARTNER.get(trainer.id);
-  const together = partner !== undefined && alongside.some(t => t.id === partner);
+  const partners = DUO_PARTNERS.get(trainer.id);
+  const together = !!partners && alongside.some(t => partners.has(t.id));
   // A trainer with their Multi Battle partner (Izzy and Tai): their own team-up lines.
   const teammate = alongside.find(t => t.id !== trainer.id);
   const duo = teammate ? DUO_QUOTES.get(pairKey(trainerKey(trainer), trainerKey(teammate)))?.[trainerKey(trainer)] : undefined;

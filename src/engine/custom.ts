@@ -214,15 +214,13 @@ function addDigimonLogic(data: Record<string, Record<string, Entry>>) {
     });
   }
   // Elevate: knocking a Pokémon out with an attack raises the user's highest base stat (not HP; by base stats, not its
-  // current stats as Beast Boost does) by 1. Not for indirect damage (poison, weather, hazards...). It's MegaGargomon's
-  // Ability, so for Terriermon's line it's always MegaGargomon's base stats (Attack), never Terriermon's (Sp. Atk),
-  // even on a Terriermon that got it some other way (Skill Swap...); anyone else uses its own current species'.
-  const elevateForms = new Map(WARP_DIGIMON.filter(d => d.warp.abilities[0] === 'Elevate').map(d => [d.base.name, d.warp.name]));
+  // current stats as Beast Boost does) by 1. Not for indirect damage (poison, weather, hazards...). The base stats of
+  // what the Pokémon is now: MegaGargomon's once Terriermon has Matrix Evolved (Attack), a Terriermon's own if it got
+  // Elevate some other way (Skill Swap: Sp. Atk).
   Object.assign(data.Abilities.elevate, {
     onSourceAfterFaint(this: Battle, length: number, _target: Pokemon, source: Pokemon, effect: { effectType?: string } | null) {
       if (effect?.effectType !== 'Move') return;
-      const form = elevateForms.get(source.species.baseSpecies);
-      const base = (form ? this.dex.species.get(form) : source.species).baseStats;
+      const base = source.species.baseStats;
       const stats = ['atk', 'def', 'spa', 'spd', 'spe'] as const;
       const best = stats.reduce((a, b) => (base[b] > base[a] ? b : a));
       this.boost({ [best]: length }, source);

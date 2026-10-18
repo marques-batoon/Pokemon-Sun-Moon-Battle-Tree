@@ -146,3 +146,102 @@ describe('Kaito (Digimon Tamer)', () => {
     }
   });
 });
+
+describe('Takato, Henry and Rika (Digimon Tamers)', () => {
+  const takato = TRAINERS.find(t => t.name === 'Takato')!;
+  const henry = TRAINERS.find(t => t.name === 'Henry' && t.custom)!;
+  const rika = TRAINERS.find(t => t.name === 'Rika')!;
+  const tamers = [takato, henry, rika];
+  const leads: Record<string, [string, string]> = { Takato: ['Guilmon', 'Gallantite'], Henry: ['Terriermon', 'Megagargoite'], Rika: ['Renamon', 'Sakuyaite'] };
+
+  it('are special trainers at weight 7 with eight sets each, every one legal for a player in Sun & Moon', () => {
+    const problems: string[] = [];
+    for (const t of tamers) {
+      expect([t.kind, t.class, t.custom, t.iv, t.roster.length, t.kind === 'special' && t.weight, t.sprite]).toEqual(['special', 'Digimon Tamer', true, 31, 8, 7, `/trainers/${t.name.toLowerCase()}.png`]);
+      expect(new Set(t.roster.map(id => SETS[id].item)).size, t.name).toBe(8);
+      for (const id of t.roster) {
+        const set = treeSetToPokemonSet(SETS[id], 31, new Rng('x')) as unknown as SimSet;
+        const bench = BENCH.filter(b => b.species !== set.species && b.item !== set.item).slice(0, 2);
+        const found = (validator.validateTeam([set, ...bench]) ?? []).filter(p => !IGNORED_VALIDATOR_PROBLEMS.some(r => r.test(p)));
+        if (found.length) problems.push(`${SETS[id].label}: ${found.join(' | ')}`);
+      }
+    }
+    expect(problems).toEqual([]);
+    // The game has a Gentleman Henry: the Tamer's lines go by his own key.
+    expect([henry.name, henry.key, TRAINERS.some(t => t.name === 'Henry' && !t.custom)]).toEqual(['Henry', 'Henry (Tamer)', true]);
+  });
+
+  it('always lead with their own Digimon holding its Matrix Evolution item', () => {
+    for (const t of tamers) {
+      for (const format of ['singles', 'doubles'] as const) {
+        const o = planChosenOpponent(`${t.name}-${format}`, format, 7, [t.id]);
+        expect([SETS[o.setIds[0]].species, SETS[o.setIds[0]].item], t.name).toEqual(leads[t.name]);
+      }
+    }
+  });
+
+  it('in a Multi Battle always battle alongside one of the other two (who goes first), never with anyone else', () => {
+    for (const t of tamers) expect([...multiPartners(t.id)].sort()).toEqual(tamers.filter(o => o !== t).map(o => o.id).sort());
+    const pairs = new Set<string>();
+    for (let i = 0; i < 6000; i++) {
+      const o = planOpponent(`tamers-multi-${i}`, 'multi', 'super', multiSpecial);
+      const ids = [o.trainerId, o.second!.trainerId];
+      const inIt = tamers.filter(t => ids.includes(t.id));
+      if (!inIt.length) continue;
+      expect(inIt, `run ${i}`).toHaveLength(2);
+      pairs.add(ids.join('-'));
+      expect([SETS[o.setIds[0]].species, SETS[o.second!.setIds[0]].species]).toEqual(ids.map(id => leads[TRAINERS[id].name][0]));
+    }
+    expect(pairs.size).toBe(6);
+    // With one of them as your partner, the other two battle together.
+    for (let i = 0; i < 1500; i++) {
+      const o = planOpponent(`tamers-partner-${i}`, 'multi', 'super', multiSpecial, takato.id);
+      const ids = [o.trainerId, o.second!.trainerId];
+      expect(ids).not.toContain(takato.id);
+      if (ids.includes(henry.id) || ids.includes(rika.id)) expect(ids.sort()).toEqual([henry.id, rika.id].sort());
+    }
+  });
+
+  it('have their own lines (Rika\'s card slash among them) and team-up lines for each pair, three each, matching', () => {
+    const key = (t: typeof takato) => t.key ?? t.name;
+    for (const t of tamers) expect(TRAINER_QUOTES[key(t)], t.name).toHaveLength(3);
+    expect(TRAINER_QUOTES.Rika.some(q => q.greeting.includes('Digi-Modify! Poké Matrix Activate!'))).toBe(true);
+    // Two greetings each about being suddenly brought into this world.
+    for (const t of tamers) expect(TRAINER_QUOTES[key(t)].filter(q => /world|here/.test(q.greeting)).length, t.name).toBeGreaterThanOrEqual(2);
+    const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
+    const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')}|Guilmon|Gallantmon|Terriermon|Gargomon|Renamon|Sakuyamon)(?!\\w)`);
+    const lines: string[] = [];
+    for (const [label, a, b] of [['Takato & Henry', takato, henry], ['Takato & Rika', takato, rika], ['Henry & Rika', henry, rika]] as const) {
+      const duo = TRAINER_DUO_QUOTES[label];
+      expect([duo[key(a)].length, duo[key(b)].length], label).toEqual([3, 3]);
+      for (let k = 0; k < 3; k++) {
+        expect(trainerQuotes(a, k, [a, b])).toEqual(duo[key(a)][k]);
+        expect(trainerQuotes(b, k, [b, a])).toEqual(duo[key(b)][k]);
+      }
+      lines.push(...[...duo[key(a)], ...duo[key(b)]].flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]));
+    }
+    for (const t of tamers) lines.push(...TRAINER_QUOTES[key(t)].flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]));
+    for (const text of lines) {
+      expect(text.length).toBeLessThanOrEqual(120);
+      expect(text).not.toMatch(pokemon);
+    }
+    expect(new Set(lines).size).toBe(lines.length);
+  });
+
+  it('Takato also battles at battle 50 of Super Multi beside Tai (Tai first), with their own team-up lines', () => {
+    for (let k = 0; k < 3; k++) {
+      expect(trainerQuotes(takato, k, [tai, takato])).toEqual(TRAINER_DUO_QUOTES['Tai & Takato'].Takato[k]);
+      expect(trainerQuotes(tai, k, [tai, takato])).toEqual(TRAINER_DUO_QUOTES['Tai & Takato'].Tai[k]);
+    }
+    // Two of Takato's greetings are about teaming up with the legendary Tai, his hero.
+    expect(TRAINER_DUO_QUOTES['Tai & Takato'].Takato.filter(q => /legendary|THE Tai/.test(q.greeting))).toHaveLength(2);
+    let seen = 0;
+    for (let i = 0; i < 400; i++) {
+      const o = planOpponent(`tai-takato-${i}`, 'multi', 'super', 50);
+      if (o.second!.trainerId !== takato.id) continue;
+      seen++;
+      expect([o.trainerId, SETS[o.setIds[0]].species, SETS[o.second!.setIds[0]].species]).toEqual([tai.id, 'Agumon', 'Guilmon']);
+    }
+    expect(seen).toBeGreaterThan(0);
+  });
+});

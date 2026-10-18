@@ -4272,21 +4272,21 @@
     "trainerLoses": "Okay, okay, you got me! Goggles off to you... just this once."
    },
    {
-    "greeting": "Some say I'm reckless. I say a leader charges in first so nobody else has to. Let's go!",
-    "trainerWins": "Charging in first paid off again! My partner and I never back down.",
-    "trainerLoses": "Charging in first... maybe I should've made a plan. Don't tell Matt."
+    "greeting": "One minute I'm home, the next my friends and I land in a brand-new world. Again! Time to explore it, battle by battle!",
+    "trainerWins": "New world, same result! Courage never lets me down.",
+    "trainerLoses": "Okay, this world's tougher than the last one. I like it!"
    },
    {
-    "greeting": "I came to Alola for the soccer fields and found this tree instead. Bet my team kicks harder than any striker!",
-    "trainerWins": "Goal! And the crowd goes wild! Good game, though. Seriously.",
-    "trainerLoses": "Missed the net on that one. Next time I'm scoring the winner!"
+    "greeting": "Izzy's studying this place, Matt's brooding about it, and I'm battling in it. We all got dropped here together!",
+    "trainerWins": "Can't wait to tell the others about this one!",
+    "trainerLoses": "Izzy's going to want a full report on how I lost. Great."
    }
   ],
   "Matt": [
    {
-    "greeting": "Let's keep this quick. I've got band practice tonight, and I hate being late.",
-    "trainerWins": "Cool and steady, start to finish. That's how it's done.",
-    "trainerLoses": "...Not bad. You've got real friends on your team. I can tell."
+    "greeting": "We got pulled into another world without warning. Again. At least my friends came too. Let's get this over with.",
+    "trainerWins": "New world, same team. Cool and steady.",
+    "trainerLoses": "...Not bad. You'd fit right in with my friends."
    },
    {
     "greeting": "I'm not one for speeches. My harmonica says it better, and my team says it best. Ready?",
@@ -4294,9 +4294,9 @@
     "trainerLoses": "Fine. You earned that one. I might even write a song about it."
    },
    {
-    "greeting": "Friendship isn't about being nice. It's trusting someone with everything. My team and I do. Show me yours.",
-    "trainerWins": "Trust beats talent. Remember that.",
-    "trainerLoses": "You trusted your team more than I trusted mine today. That won't happen twice."
+    "greeting": "Tai, Izzy and the others landed somewhere in this world too. I'll go find them after I deal with you.",
+    "trainerWins": "Done. Now, where did Tai run off to this time?",
+    "trainerLoses": "You held your ground. Tai would like you. I guess I do too."
    }
   ],
   "Lorelei": [
@@ -5334,6 +5334,57 @@
     "greeting": "Nobody owns my partner. We fight beside each other because we chose to. Don't mistake that for weakness.",
     "trainerWins": "We chose this fight, and we chose to win it.",
     "trainerLoses": "We'll be back. Not because anyone told us to. Because we want to."
+   }
+  ],
+  "Takato": [
+   {
+    "greeting": "One second I was drawing dinosaurs in class, the next I was here! At least my partner came too. Let's battle!",
+    "trainerWins": "We did it! I'm drawing this battle in my notebook tonight!",
+    "trainerLoses": "Aw, man... You were awesome, though. Can I draw your team?"
+   },
+   {
+    "greeting": "I don't know how we ended up in this world, but if there's a battle, my partner and I won't run from it!",
+    "trainerWins": "Yes! My partner's going to want bread to celebrate. Lots of bread.",
+    "trainerLoses": "We'll get stronger. That's what Tamers do. Good battle!"
+   },
+   {
+    "greeting": "I'm not the bravest guy around, but my partner believes in me. That's enough to make me try!",
+    "trainerWins": "We actually won! I mean, of course we did. ...We did, right?",
+    "trainerLoses": "I froze up a little. Next time I'll be braver. Promise!"
+   }
+  ],
+  "Rika": [
+   {
+    "greeting": "Digi-Modify! Poké Matrix Activate! ...What? A card slash works in any world. Let's go.",
+    "trainerWins": "Too easy. Next time, bring a real challenge.",
+    "trainerLoses": "Fine. You won. Don't let it go to your head."
+   },
+   {
+    "greeting": "I was winning a card tournament when this world dragged me in. Lucky you. Now you get to lose to the Queen.",
+    "trainerWins": "Queen of this world too, apparently. Shocker.",
+    "trainerLoses": "Hmph. I'll find my way home. Right after I beat you in a rematch."
+   },
+   {
+    "greeting": "No idea how I got here, and I don't care. My partner's with me. That's all I need to win.",
+    "trainerWins": "My partner and I don't need anyone else. ...Okay, that was a good battle.",
+    "trainerLoses": "...Not bad. My partner thinks so too. Don't expect me to say it twice."
+   }
+  ],
+  "Henry (Tamer)": [
+   {
+    "greeting": "I was fixing my dad's code when the screen flashed, and now I'm here. I'd rather talk, but I'll battle if I must.",
+    "trainerWins": "I'm glad nobody got hurt. You fought with honor.",
+    "trainerLoses": "Well played. My partner would just say \"Momentai.\" Take it easy."
+   },
+   {
+    "greeting": "One minute I was home with my little sister, the next I was in this world. Let's keep this a fair fight.",
+    "trainerWins": "A clean win. That's how my martial arts teacher taught me.",
+    "trainerLoses": "You read my moves well. I'll train harder and come back calmer."
+   },
+   {
+    "greeting": "Fighting should never be just for fun. But a fair battle, with rules and respect? That I can do.",
+    "trainerWins": "Balance and patience. That's all it takes.",
+    "trainerLoses": "Patience lost to passion today. I'll think about that."
    }
   ]
  },
@@ -10311,6 +10362,150 @@
      "greeting": "I've only known Tai since we were both pulled into this world, and I already know who I want to learn from.",
      "trainerWins": "So that's how you lead from the front. ...Thanks for showing me, Tai.",
      "trainerLoses": "Getting back up. Right. I'll remember that one, Tai."
+    }
+   ]
+  },
+  "Takato & Henry": {
+   "Takato": [
+    {
+     "greeting": "Henry and I got pulled into this world together. With him thinking and me charging in, we've got this!",
+     "trainerWins": "Teamwork! Henry, that plan was perfect!",
+     "trainerLoses": "Sorry, Henry... I charged in too fast again."
+    },
+    {
+     "greeting": "Henry's the smartest guy I know. If he says we can win, then we can win!",
+     "trainerWins": "Told you we could win! Well... you told me. Same thing!",
+     "trainerLoses": "Henry's already making a new plan. I can tell."
+    },
+    {
+     "greeting": "Our partners are best friends, so we're a team too. Let's go, Henry!",
+     "trainerWins": "High five, Henry! ...Henry?",
+     "trainerLoses": "We'll get them next time. Right, Henry?"
+    }
+   ],
+   "Henry (Tamer)": [
+    {
+     "greeting": "Takato charges in, I think it through. Somehow it works. Shall we, Takato?",
+     "trainerWins": "Your instinct and my plan. A good balance, Takato.",
+     "trainerLoses": "It's okay, Takato. We'll rethink it and come back."
+    },
+    {
+     "greeting": "Even in a strange world, I'm glad Takato's beside me. Let's keep it fair and focused.",
+     "trainerWins": "I only made the plan. You were the brave one, Takato.",
+     "trainerLoses": "Every loss teaches something. I'm already rewriting our approach."
+    },
+    {
+     "greeting": "Takato's heart and my head. Our partners know the rest. Ready.",
+     "trainerWins": "...I don't really do high fives, Takato. Fine. Just this once.",
+     "trainerLoses": "We will, Takato. Momentai, as my partner would say."
+    }
+   ]
+  },
+  "Takato & Rika": {
+   "Takato": [
+    {
+     "greeting": "Rika's the toughest Tamer I know. Don't tell her I said that... She heard, didn't she?",
+     "trainerWins": "Rika, that was amazing! ...Sorry, sorry, I'll stop cheering.",
+     "trainerLoses": "Sorry, Rika! I'll do better, I swear!"
+    },
+    {
+     "greeting": "Rika and I are stuck in another world together. At least I know she won't let us lose!",
+     "trainerWins": "We make a great team, Rika! ...Right?",
+     "trainerLoses": "Rika's mad. Really mad. I'm hiding behind my partner."
+    },
+    {
+     "greeting": "Rika calls me Gogglehead, but she's battling with me anyway. She must like me a little!",
+     "trainerWins": "See, Rika? Goggleheads can win too!",
+     "trainerLoses": "Okay, okay, I'll listen to you next time, Rika."
+    }
+   ],
+   "Rika": [
+    {
+     "greeting": "Ugh, I'm stuck with Gogglehead. Fine. Try to keep up, Takato.",
+     "trainerWins": "You actually helped. Don't make a big deal out of it, Takato.",
+     "trainerLoses": "That was YOUR fault, Gogglehead. ...Mostly."
+    },
+    {
+     "greeting": "A whole new world, and I still end up next to Takato. Whatever. Let's win this fast.",
+     "trainerWins": "Fast enough. Good job. ...Don't look at me like that.",
+     "trainerLoses": "Stop apologizing, Takato. Just win next time."
+    },
+    {
+     "greeting": "If Gogglehead gets in my way, I'm leaving him behind. Let's go.",
+     "trainerWins": "Not bad, Gogglehead. Not bad at all.",
+     "trainerLoses": "Next time we do it my way, Gogglehead. No arguments."
+    }
+   ]
+  },
+  "Henry & Rika": {
+   "Henry (Tamer)": [
+    {
+     "greeting": "Rika and I both landed in this world with our partners. Let's battle with honor, Rika.",
+     "trainerWins": "Well fought, Rika. Your partner moves beautifully.",
+     "trainerLoses": "Our timing was off. Let's study what went wrong, Rika."
+    },
+    {
+     "greeting": "Rika plays to win. I play to keep things fair. Somehow we balance out.",
+     "trainerWins": "Balanced and decisive. Thank you, Rika.",
+     "trainerLoses": "Even the Queen loses sometimes. So do I."
+    },
+    {
+     "greeting": "Rika's partner and mine have trained together. Let's see how far teamwork goes.",
+     "trainerWins": "Teamwork goes far, it seems. Nicely done, Rika.",
+     "trainerLoses": "I'll ask my partner for a new plan. He'll just tell me to relax."
+    }
+   ],
+   "Rika": [
+    {
+     "greeting": "Honor? Sure, Henry. I just want to win. Keep up.",
+     "trainerWins": "...Fine. Your partner's not bad either, Henry.",
+     "trainerLoses": "Study it yourself, Henry. I'm busy being annoyed."
+    },
+    {
+     "greeting": "Henry overthinks everything, but at least he doesn't panic. Let's go.",
+     "trainerWins": "Decisive. That's the only way I battle.",
+     "trainerLoses": "Don't you dare say \"even the Queen,\" Henry."
+    },
+    {
+     "greeting": "Our partners train together. We don't. Let's see if that matters.",
+     "trainerWins": "Guess it mattered. Whatever. Good job, Henry.",
+     "trainerLoses": "If your partner tells you to relax one more time, Henry..."
+    }
+   ]
+  },
+  "Tai & Takato": {
+   "Tai": [
+    {
+     "greeting": "Takato got pulled here from his own world, just like me. And the kid's got goggles too. I like him already!",
+     "trainerWins": "Nice work, Takato! Those goggles are working for you!",
+     "trainerLoses": "Chin up, Takato. Even legends lose. We'll get them next time!"
+    },
+    {
+     "greeting": "Two worlds, two Tamers, one tree! Takato and I didn't ask to be brought here, but we're making the most of it!",
+     "trainerWins": "That's how you make the most of it! High five, Takato!",
+     "trainerLoses": "Okay, that one stung. Takato, you were great, though!"
+    },
+    {
+     "greeting": "Takato keeps calling me \"the legendary Tai.\" I'm just a guy with goggles! ...But let's give you a legendary battle.",
+     "trainerWins": "Legendary enough for you, Takato?",
+     "trainerLoses": "So much for legendary. Let's keep that between us, Takato."
+    }
+   ],
+   "Takato": [
+    {
+     "greeting": "I'm actually teaming up with THE Tai! I've worn goggles because of you for as long as I can remember!",
+     "trainerWins": "We won together! Tai, can I get your autograph?!",
+     "trainerLoses": "I let you down, Tai... I'll be braver next time, I promise!"
+    },
+    {
+     "greeting": "Tai and I both got pulled here from our own worlds. I never thought I'd meet my hero like this!",
+     "trainerWins": "A high five from Tai! I'm never washing this hand!",
+     "trainerLoses": "Tai said I was great?! ...Wait, we lost. Still counts!"
+    },
+    {
+     "greeting": "The legendary Tai is my partner! I've dreamed about this! Don't hold back, okay? Because we won't!",
+     "trainerWins": "Legendary! Totally legendary! Did you see us?!",
+     "trainerLoses": "Even losing next to Tai is kind of amazing. ...Kind of."
     }
    ]
   }
