@@ -2,7 +2,7 @@ import { Dex, type ActiveMove, type Battle, type Move, type Pokemon, type Pokemo
 import { RULES } from '../data/battle-tree';
 import { AURA_GUARD, CHAMPIONS_MOD, championsOverrides, NEW_LEARNSET_IDS, NEW_MOVE_IDS } from '../data/champions';
 import { canHoldCustomItem, customOverrides, HITMONCHANIUM_Z, isCustomLearn, mergeModData } from '../data/custom';
-import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem } from '../data/custom/digimon';
+import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem, warpNames } from '../data/custom/digimon';
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_SIDE } from './custom';
 import { USUM_ONLY_SPECIES } from './format-constants';
@@ -86,7 +86,7 @@ function onValidateSet(this: TeamValidator, set: PokemonSet): string[] | undefin
   if (!canHoldCustomItem(species.name, set.item)) return [`${species.name} can't hold ${this.dex.items.get(set.item).name}: only ${HITMONCHANIUM_Z.user} can.`];
   if ((!kind && !isWarpItem(set.item)) || canHoldItem(species.name, set.item)) return undefined;
   const item = this.dex.items.get(set.item);
-  if (!kind) return [`${species.name} can't hold ${item.name}: only ${item.itemUser?.join(' or ')} can Warp Digivolve with it.`];
+  if (!kind) return [`${species.name} can't hold ${item.name}: only ${item.itemUser?.join(' or ')} can ${warpNames(item.name).verb} with it.`];
   return [`${species.name} can't hold ${item.name}: it has no ${PARADOX_LABELS[kind]} Paradox form.`];
 }
 

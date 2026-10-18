@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Battle } from '@pkmn/client';
 import { gen7 } from '../../team/dex';
-import { isDarkWarp, isWarpItem } from '../../data/custom/digimon';
-import { effectivenessLabel } from '../../team/effectiveness';
+import { isWarpItem, warpNames } from '../../data/custom/digimon';
+import { effectivenessLabel, secondMoveType } from '../../team/effectiveness';
 import { doublesTargets, needsReplacement } from '../../engine/choices';
 import {
   isFainted, isForceSwitch, isMoveRequest, type SimRequest, type SimRequestActive, type SimRequestPokemon,
@@ -38,11 +38,11 @@ const HINT_CLASS = { 'Super effective': 'hint-super', 'Not very effective': 'hin
  * The four move buttons plus the Mega / Z toggles for one active Pokémon. A Digimon holding its
  * warp item gets Warp Digivolve in place of Mega Evolve (same choice for the engine).
  */
-function MoveGrid({ active, warp = false, dark = false, mega, setMega, megaAllowed, zMove, setZMove, zAllowed, hintTypes, showHints, shortcuts, onPick }: {
+function MoveGrid({ active, warp = false, warpVerb = 'Warp Digivolve', mega, setMega, megaAllowed, zMove, setZMove, zAllowed, hintTypes, showHints, shortcuts, onPick }: {
   active: SimRequestActive;
   warp?: boolean;
-  /** Its warp item is Blackwargreyite: the button says Dark Warp Digivolve. */
-  dark?: boolean;
+  /** What its warp item's button says: Warp Digivolve, Dark Warp Digivolve (Blackwargreyite), Matrix Evolve (Gallantite). */
+  warpVerb?: string;
   mega: boolean; setMega: (v: boolean) => void; megaAllowed: boolean;
   zMove: boolean; setZMove: (v: boolean) => void; zAllowed: boolean;
   hintTypes?: readonly string[]; showHints: boolean; shortcuts: boolean;
@@ -67,12 +67,12 @@ function MoveGrid({ active, warp = false, dark = false, mega, setMega, megaAllow
           const { bg, fg } = typeColor(type);
           const damaging = !!data && data.category !== 'Status';
           const power = zInfo ? zInfo.power : !damaging ? '—' : data.basePower ? String(data.basePower) : 'var.';
-          const hint = showHints && damaging && hintTypes ? effectivenessLabel(type, hintTypes) : null;
+          const hint = showHints && damaging && hintTypes ? effectivenessLabel(type, hintTypes, zInfo ? undefined : secondMoveType(data.id)) : null;
           // Z-Moves never miss.
           const accuracy = zInfo ? '—' : data ? (data.accuracy === true ? '—' : `${data.accuracy}%`) : '';
           const title = !data ? m.move
             : zInfo ? `${zInfo.name} (Z-Move from ${data.name}) · ${type} ${category} · ${zInfo.effect ? `Z-Power: ${zInfo.effect}` : `Power ${power}`} · Accuracy ${accuracy}${zInfo.desc ? `\n${zInfo.desc}` : ''}`
-            : `${data.name} · ${type} ${category} · Power ${power} · Accuracy ${accuracy}\n${data.shortDesc ?? ''}`;
+            : `${data.name} · ${type}${secondMoveType(data.id) ? ` + ${secondMoveType(data.id)}` : ''} ${category} · Power ${power} · Accuracy ${accuracy}\n${data.shortDesc ?? ''}`;
           return (
             <button
               key={m.id + i}
@@ -95,7 +95,7 @@ function MoveGrid({ active, warp = false, dark = false, mega, setMega, megaAllow
       {(canMega || canZ) && (
         <div className="gimmicks">
           {canMega && (
-            <label className={`${mega ? 'on' : ''}${warp ? ' warp' : ''}`}><input type="checkbox" checked={mega} onChange={e => setMega(e.target.checked)} /> {warp ? `${dark ? 'Dark ' : ''}Warp Digivolve` : 'Mega Evolve'}{shortcuts && <kbd>M</kbd>}</label>
+            <label className={`${mega ? 'on' : ''}${warp ? ' warp' : ''}`}><input type="checkbox" checked={mega} onChange={e => setMega(e.target.checked)} /> {warp ? warpVerb : 'Mega Evolve'}{shortcuts && <kbd>M</kbd>}</label>
           )}
           {canZ && (
             <label className={zMove ? 'on' : ''}><input type="checkbox" checked={zMove} onChange={e => setZMove(e.target.checked)} /> Z-Move{shortcuts && <kbd>Z</kbd>}</label>
@@ -176,7 +176,7 @@ function SinglesControls({ request, awaiting, onChoose, foeTypes, showHints, sho
     <div className="controls">
       {active && (
         <MoveGrid
-          active={active} warp={isWarpItem(request.side.pokemon[0]?.item)} dark={isDarkWarp(request.side.pokemon[0]?.item)} mega={mega} setMega={setMega} megaAllowed zMove={zMove} setZMove={setZMove} zAllowed
+          active={active} warp={isWarpItem(request.side.pokemon[0]?.item)} warpVerb={warpNames(request.side.pokemon[0]?.item).verb} mega={mega} setMega={setMega} megaAllowed zMove={zMove} setZMove={setZMove} zAllowed
           hintTypes={foeTypes} showHints={showHints} shortcuts={shortcuts} onPick={pickMove}
         />
       )}
@@ -273,7 +273,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
     const allowed = pending ? doublesTargets(pending.targetType, position)?.includes(loc) : false;
     const gone = !mon || mon.fainted;
     const moveData = pending && active ? gen7.moves.get(active.moves[pending.moveIndex].id) : null;
-    const hint = showHints && loc > 0 && mon && moveData && moveData.category !== 'Status' ? effectivenessLabel(moveData.type, mon.types) : null;
+    const hint = showHints && loc > 0 && mon && moveData && moveData.category !== 'Status' ? effectivenessLabel(moveData.type, mon.types, secondMoveType(moveData.id)) : null;
     return (
       <button key={loc} type="button" className={`target-btn ${loc > 0 ? 'foe' : 'ally'}`} disabled={!allowed || gone} onClick={() => pending && finishMove(pending, loc)}>
         {mon ? <><PokemonIcon species={mon.speciesForme} />{mon.speciesForme}</> : <span className="muted">Empty</span>}
@@ -304,7 +304,7 @@ function DoublesControls({ request, onChoose, battle, showHints, shortcuts }: Pr
         <>
           {active && (
             <MoveGrid
-              active={active} warp={warp} dark={isDarkWarp(request.side.pokemon[slot]?.item)} mega={mega} setMega={setMega} megaAllowed={warp || !megaUsed} zMove={zMove} setZMove={setZMove} zAllowed={!zUsed}
+              active={active} warp={warp} warpVerb={warpNames(request.side.pokemon[slot]?.item).verb} mega={mega} setMega={setMega} megaAllowed={warp || !megaUsed} zMove={zMove} setZMove={setZMove} zAllowed={!zUsed}
               showHints={false} shortcuts={shortcuts} onPick={pickMove}
             />
           )}

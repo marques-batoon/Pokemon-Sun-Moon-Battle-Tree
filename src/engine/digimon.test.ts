@@ -349,3 +349,95 @@ describe('Tentomon and HerculesKabuterimon', () => {
     expect(after).toMatch(/\|-start\|p1a: Tentomon\|Charge/);
   });
 });
+
+describe('Guilmon and Gallantmon (Matrix Evolution)', () => {
+  const guilmon = (moves = ['Pyro Fang'], item = 'Gallantite', ability = 'Strong Jaw') => mon('Guilmon', item, ability, moves, 'EVs: 252 Atk\nAdamant Nature\n');
+
+  it('has the custom species, item and moves', () => {
+    const g = dex.species.get('Guilmon');
+    expect([g.types, g.baseStats, g.abilities, g.weightkg, g.genderRatio]).toEqual([
+      ['Fire', 'Dragon'], { hp: 55, atk: 70, def: 60, spa: 35, spd: 54, spe: 35 }, { 0: 'Strong Jaw' }, 22, { M: 0.875, F: 0.125 },
+    ]);
+    expect(Object.values(g.baseStats).reduce((x, y) => x + y, 0)).toBe(309);
+    const m = dex.species.get('Gallantmon');
+    expect([m.baseSpecies, m.battleOnly, m.requiredItem, m.types, m.abilities, m.weightkg]).toEqual(['Guilmon', 'Guilmon', 'Gallantite', ['Steel', 'Fairy'], { 0: 'Dauntless Shield' }, 110]);
+    expect(m.baseStats).toEqual({ hp: 95, atk: 145, def: 130, spa: 65, spd: 125, spe: 74 });
+    expect(Object.values(m.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
+    expect(dex.items.get('Gallantite').megaStone).toEqual({ Guilmon: 'Gallantmon' });
+    expect(dex.abilities.get('Dauntless Shield').isNonstandard).toBeNull();
+    const pyro = dex.moves.get('Pyro Fang');
+    expect([pyro.type, pyro.category, pyro.basePower, pyro.accuracy, pyro.pp, pyro.priority, pyro.target, pyro.flags.contact, pyro.flags.bite]).toEqual(['Fire', 'Physical', 70, 100, 15, 0, 'normal', 1, 1]);
+    expect(pyro.secondary).toEqual({ chance: 20, status: 'brn' });
+    const joust = dex.moves.get('Lightning Joust');
+    expect([joust.type, joust.category, joust.basePower, joust.accuracy, joust.pp, joust.flags.contact]).toEqual(['Steel', 'Physical', 95, 100, 10, 1]);
+    expect(joust.secondary).toEqual({ chance: 20, status: 'par' });
+    const shield = dex.moves.get('Shield of Just');
+    expect([shield.type, shield.category, shield.basePower, shield.accuracy, shield.pp, shield.flags.contact, shield.overrideOffensiveStat]).toEqual(['Fairy', 'Special', 85, 100, 10, undefined, 'spd']);
+    expect(shield.secondary).toEqual({ chance: 20, boosts: { atk: -1 } });
+  });
+
+  it('learns its own list, and Gallantmon\'s instead while holding Gallantite', () => {
+    expect(validate(team(guilmon(['Pyro Fang', 'Breaking Swipe', 'Temper Flare', 'Tera Blast'], 'Charcoal')))).toEqual([]);
+    expect(validate(team(guilmon(['Trailblaze', 'Stomping Tantrum', 'Mud-Slap', 'Outrage'], 'Charcoal')))).toEqual([]);
+    expect(validate(team(guilmon(['Lightning Joust'], 'Charcoal'))).join(' ')).toMatch(/can't learn Lightning Joust/);
+    expect(validate(team(guilmon(['Lightning Joust', 'Shield of Just', 'Supercell Slam', 'Body Press'])))).toEqual([]);
+    expect(validate(team(guilmon(['Pyro Fang', "King's Shield", 'Sacred Sword', 'Play Rough'])))).toEqual([]);
+    expect(validate(team(guilmon(['Flamethrower']))).join(' ')).toMatch(/can't learn Flamethrower/);
+    expect(validate(team(mon('Smeargle', 'Focus Sash', 'Own Tempo', ['Lightning Joust'], 'EVs: 252 Spe\n'))).join(' ')).toMatch(/Lightning Joust/);
+    expect(validate(team(mon('Charizard', 'Gallantite', 'Blaze', ['Flamethrower'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Gallantite: only Guilmon can Matrix Evolve with it/);
+  });
+
+  it('Matrix Evolves into Gallantmon like a Warp Digivolution, with its own messages, and Dauntless Shield raises its Defense once', () => {
+    const b = singles([guilmon()], [target]);
+    expect(b.p1.active[0].canMegaEvo).toBe('Gallantmon');
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0];
+    expect(p.species.name).toBe('Gallantmon');
+    expect(p.ability).toBe('dauntlessshield');
+    expect(p.boosts.def).toBe(1);
+    const log = b.log.join('\n');
+    expect(log).toMatch(/\|message\|Guilmon matrix-evolve to\.\.\.\n[^]*?\|detailschange\|p1a: Guilmon\|Gallantmon[^]*?\|message\|Gallantmon!/);
+    expect(log).toMatch(/\|message\|Gallantmon!\n\|-ability\|p1a: Guilmon\|Dauntless Shield\|boost\n\|-boost\|p1a: Guilmon\|def\|1/);
+    // As in Gen 9, only once a battle: not again when it comes back in.
+    b.makeChoices('switch 2', 'move 1');
+    b.makeChoices('switch 2', 'move 1');
+    expect(b.p1.active[0].species.name).toBe('Gallantmon');
+    expect(b.p1.active[0].boosts.def).toBe(0);
+  });
+
+  it('boosts Pyro Fang with Strong Jaw (70 -> 105)', () => {
+    const b = singles([guilmon(['Pyro Fang'], 'Leftovers')], [target]);
+    b.makeChoices('move 1', 'move 1');
+    const pyro = b.dex.getActiveMove('Pyro Fang');
+    expect(b.runEvent('BasePower', b.p1.active[0], b.p2.active[0], pyro, pyro.basePower, true)).toBe(105);
+  });
+
+  it('counts Lightning Joust as Steel and Electric against the target\'s types (like Flying Press)', () => {
+    const vs = (foe: string) => {
+      const b = singles([guilmon(['Lightning Joust'])], [mon(foe, 'Leftovers', 'Pressure', ['Splash'])]);
+      return b.p2.active[0].runEffectiveness(b.dex.getActiveMove('Lightning Joust'));
+    };
+    expect(vs('Gyarados')).toBe(1); // Water / Flying: Steel resisted, Electric 4x
+    expect(vs('Lapras')).toBe(1); // Water / Ice: Steel neutral, Electric super effective
+    expect(vs('Skarmory')).toBe(0); // Steel / Flying: Steel resisted, Electric super effective
+    expect(vs('Garchomp')).toBe(-1); // Dragon / Ground: Electric resisted by Dragon; Ground isn't immune (it's a Steel move)
+  });
+
+  it('attacks with Sp. Def for Shield of Just (Sp. Def rises make it stronger, Sp. Atk ones don\'t)', () => {
+    const b = singles([guilmon(['Shield of Just'])], [target]);
+    b.makeChoices('move 1 mega', 'move 1');
+    const p = b.p1.active[0], t = b.p2.active[0];
+    (b as unknown as { randomizer: (n: number) => number }).randomizer = n => n;
+    const damage = () => {
+      const move = b.dex.getActiveMove('Shield of Just');
+      move.willCrit = false;
+      return b.actions.getDamage(p, t, move, true) as number;
+    };
+    const base = damage();
+    p.boosts.spa = 6;
+    expect(damage()).toBe(base);
+    p.boosts.spa = 0;
+    p.boosts.spd = 2;
+    expect(damage()).toBeGreaterThan(base * 1.7);
+  });
+});

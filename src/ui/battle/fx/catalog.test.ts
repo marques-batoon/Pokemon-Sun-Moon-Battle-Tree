@@ -5,7 +5,7 @@ import { gen7 } from '../../../team/dex';
 import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import {
   abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  futureHitSpec, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
+  futureHitSpec, MATRIX_START, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -349,5 +349,27 @@ describe('moves over 100 power', () => {
     expect(futureHitSpec('doomdesire')).toBe(FUTURE_HIT.doomdesire);
     expect(futureHitSpec('doomdesire')).not.toEqual(futureHitSpec('futuresight'));
     expect(FUTURE_HIT.futuresight.layers.find(l => l.kind === 'pillar')).toMatchObject({ at: 'user' });
+  });
+});
+
+describe('Matrix Evolution (Gallantmon)', () => {
+  it('has its own sequence, as long as Warp Digivolution\'s, after Digimon Tamers', () => {
+    expect(warpStart('Gallantmon')).toBe(MATRIX_START);
+    expect(warpStart('WarGreymon')).not.toBe(MATRIX_START);
+    const kinds = MATRIX_START.layers.map(l => l.kind);
+    for (const k of ['banner', 'scan', 'fractal', 'merge', 'sphere', 'pillar']) expect(kinds).toContain(k);
+    expect(MATRIX_START.layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'Matrix Evolution!' });
+    const end = (spec: typeof MATRIX_START) => Math.max(...spec.layers.map(l => (l.delay ?? 0) + ('dur' in l ? l.dur ?? 0 : 0)));
+    expect(end(MATRIX_START)).toBe(end(WARP_START));
+    const burst = warpBurst('Gallantmon');
+    expect(burst.layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'Gallantmon!' });
+    expect(key(burst)).not.toBe(key(warpBurst('WarGreymon')));
+  });
+
+  it('gives Guilmon\'s and Gallantmon\'s signature moves their own animations', () => {
+    for (const m of ['Pyro Fang', 'Lightning Joust', 'Shield of Just']) expect(moveSpec(classifyMove(m)), m).toBe(SIGNATURE_MOVES[m.toLowerCase().replace(/[^a-z]/g, '')]);
+    expect(SIGNATURE_MOVES.pyrofang.layers.map(l => l.kind)).toContain('jaws');
+    expect(SIGNATURE_MOVES.lightningjoust.layers.map(l => l.kind)).toContain('bolt');
+    expect(SIGNATURE_MOVES.shieldofjust.layers.map(l => l.kind)).toContain('wall');
   });
 });

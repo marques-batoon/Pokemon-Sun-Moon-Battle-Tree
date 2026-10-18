@@ -2,7 +2,7 @@ import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
-import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
+import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
   ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
@@ -45,7 +45,7 @@ const GROUPS: { label: string; moves: string[] }[] = [
       'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
   },
   { label: 'Hitmonchanium Z (custom)', moves: Object.values(HITMONCHANIUM_Z.moves).map(z => z.name) },
-  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster'] },
+  { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster', 'Pyro Fang', 'Lightning Joust', 'Shield of Just'] },
 ];
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
 const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;
@@ -290,7 +290,7 @@ export function AnimationPreview() {
         <button disabled={field.digimon[side]?.form === warpForm && field.digimon[side]?.stage === 2} onClick={() => play([
           { kind: 'warp-start', side, target: null, condition: warpForm, durationMs: WARP_START_MS },
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
-        ])}>{isDarkWarp(warpForm) ? 'Dark Warp Digivolve' : 'Warp Digivolve'}</button>
+        ])}>{warpNames(warpForm).verb}</button>
         <button onClick={() => play([{ kind: 'charged', side, target: null, label: 'Electromorphosis', durationMs: CHARGED_MS }])}>Electromorphosis</button>
         <button onClick={() => play([
           { kind: 'balloon-pop', side: other(side), target: null, durationMs: BALLOON_POP_MS },

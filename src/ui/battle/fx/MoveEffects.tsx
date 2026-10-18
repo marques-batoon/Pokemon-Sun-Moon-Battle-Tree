@@ -431,6 +431,50 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </Fragment>
       );
     }
+    case 'fractal': {
+      // Each ring: a circle of code glyphs (SVG text on a circular path), squashed into an orbit and tilted its own way.
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-fractal" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 1500) })}>
+          {Array.from({ length: layer.rings ?? 3 }, (_, r) => {
+            const id = `fractal-${ctx.seed}-${i}-${r}`;
+            const text = Array.from({ length: 44 }, (_, g) => GLYPHS[Math.floor(rand(ctx.seed, r * 61 + g, 15) * 16)]).join('');
+            return (
+              <span key={r} className={`ring${r % 2 ? ' rev' : ''}`} style={css({ '--tilt': deg(-28 + r * 28 + (rand(ctx.seed, r, 16) - 0.5) * 10), '--rs': `${1 - r * 0.14}` })}>
+                <svg viewBox="0 0 100 100" aria-hidden>
+                  <defs><path id={id} d="M50,50 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" /></defs>
+                  <text><textPath href={`#${id}`}>{text}</textPath></text>
+                </svg>
+              </span>
+            );
+          })}
+        </span>
+      );
+    }
+    case 'merge': {
+      // From below the stage, off to the side nearer the middle, curving up into the Pokémon.
+      const p = anchor(layer.at);
+      const fromX = (p.x < ctx.w / 2 ? 1 : -1) * ctx.w * 0.22;
+      return (
+        <span key={i} className="fxl fx-merge" style={css({
+          '--x': px(p.x), '--y': px(p.y), '--fx': px(fromX), '--fy': px(ctx.h - p.y + layer.size * ctx.k), '--s': px(layer.size * ctx.k),
+          '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 800),
+        })} />
+      );
+    }
+    case 'sphere': {
+      const p = anchor(layer.at);
+      return (
+        <span key={i} className="fxl fx-sphere" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 900) })}>
+          <span className="swirl" />
+        </span>
+      );
+    }
+    case 'scan': {
+      const p = anchor(layer.at);
+      const h = p.size ?? 110 * ctx.k;
+      return <span key={i} className="fxl fx-scan" style={css({ '--x': px(p.x), '--y': px(p.y), '--h': px(h), '--w': px(h * 1.1), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 500) })} />;
+    }
     case 'pillar': {
       const p = anchor(layer.at);
       return (
@@ -460,7 +504,8 @@ interface Props {
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
     case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
-    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon': return l.at === 'target';
+    case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon':
+    case 'fractal': case 'merge': case 'sphere': case 'scan': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

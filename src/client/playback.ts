@@ -172,6 +172,7 @@ export const BIG_MOVE_MS: Record<string, number> = {
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
 export const SIGNATURE_MS: Record<string, number> = {
   ...BIG_MOVE_MS, solarbeam: 1500, gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500,
+  pyrofang: 1000, lightningjoust: 1100, shieldofjust: 1300,
 };
 /** A damaging Z-Move's category (Physical or Special, from its base move), from the engine's silent hint line, until its move line. */
 const zCategories = new WeakMap<ClientBattle, 'Physical' | 'Special'>();

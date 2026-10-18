@@ -1,6 +1,6 @@
 // Digimon (custom addition, see DATA_NOTES.md "Custom additions"): Pokémon-style
 // entries designed by the user. A Digimon holding its warp item Warp Digivolves
-// in battle, like Mega Evolution, except that a team can Warp Digivolve any
+// (Guilmon: Matrix Evolves) in battle, like Mega Evolution, except that a team can Warp Digivolve any
 // number of Digimon (and still Mega Evolve once). No simulator imports: the UI
 // thread and the worker both build their data from this.
 
@@ -28,6 +28,11 @@ export interface WarpDigimon {
   moves: string[];
   /** A Dark Warp Digivolution (BlackWarGreymon): its own name in messages and buttons, dark energy in the animation. */
   dark?: boolean;
+  /**
+   * A Matrix Evolution (Gallantmon, after Digimon Tamers): the same mechanics as Warp Digivolution, with its own name in
+   * messages and buttons and its own animation.
+   */
+  matrix?: boolean;
 }
 
 const AGUMON: WarpDigimon['base'] = {
@@ -79,8 +84,37 @@ const TENTOMON_MOVES = [...new Set([
   'U-turn', 'Venoshock', 'Volt Switch', 'Wild Charge', 'X-Scissor', 'Zap Cannon',
 ])];
 
+// Guilmon -> Gallantmon (added 2026-10-18, designed by the user): Guilmon's own list, and the one it learns instead
+// while holding Gallantite (Gallantmon's).
+const GUILMON_MOVES = [...new Set([
+  // Level-up
+  'Scratch', 'Growl', 'Ember', 'Leer', 'Bite', 'Dragon Tail', 'Fire Fang', 'Rock Tomb', 'Pyro Fang', 'Scary Face', 'Crunch',
+  'Dragon Claw', 'Fire Punch', 'Outrage',
+  // TMs
+  'Aerial Ace', 'Body Slam', 'Breaking Swipe', 'Brick Break', 'Bulldoze', 'Crunch', 'Dig', 'Dragon Claw', 'Dragon Dance',
+  'Dragon Pulse', 'Dragon Tail', 'Earthquake', 'Endure', 'Facade', 'Fire Blast', 'Fire Fang', 'Fire Pledge', 'Fire Punch',
+  'Fire Spin', 'Flame Charge', 'Flamethrower', 'Flare Blitz', 'Fling', 'Heat Wave', 'Hyper Voice', 'Ice Fang', 'Iron Head',
+  'Iron Tail', 'Mud-Slap', 'Outrage', 'Overheat', 'Protect', 'Rest', 'Roar', 'Rock Slide', 'Rock Tomb', 'Scary Face',
+  'Shadow Claw', 'Sleep Talk', 'Snarl', 'Stomping Tantrum', 'Stone Edge', 'Substitute', 'Sunny Day', 'Swords Dance', 'Tera Blast',
+  'Thunder Fang', 'Temper Flare', 'Trailblaze', 'Will-O-Wisp',
+])];
+const GALLANTMON_MOVES = [...new Set([
+  // Level-up
+  'Scratch', 'Growl', 'Protect', 'Metal Claw', 'Leer', 'Bite', 'Dragon Tail', 'Fire Fang', 'Slash', 'Pyro Fang', 'Scary Face',
+  'Crunch', 'Spark', 'Iron Defense', 'Sacred Sword', 'Play Rough', 'Lightning Joust', "King's Shield", 'Shield of Just',
+  'Wild Charge', 'Close Combat', 'Giga Impact',
+  // TMs
+  'Aerial Ace', 'Agility', 'Aura Sphere', 'Body Press', 'Body Slam', 'Brick Break', 'Bulk Up', 'Bulldoze', 'Calm Mind',
+  'Close Combat', 'Dazzling Gleam', 'Dig', 'Discharge', 'Dragon Claw', 'Dragon Tail', 'Earthquake', 'Electric Terrain', 'Endure',
+  'Facade', 'Fire Fang', 'Fire Punch', 'Flash Cannon', 'Focus Blast', 'Giga Impact', 'Heavy Slam', 'Helping Hand', 'Hyper Beam',
+  'Iron Defense', 'Iron Head', 'Iron Tail', 'Light Screen', 'Low Kick', 'Magnet Rise', 'Metal Claw', 'Misty Terrain',
+  'Play Rough', 'Protect', 'Reflect', 'Rest', 'Rock Slide', 'Rock Tomb', 'Sacred Sword', 'Shadow Claw', 'Sleep Talk',
+  'Smart Strike', 'Solar Blade', 'Spark', 'Stone Edge', 'Substitute', 'Supercell Slam', 'Swords Dance', 'Tera Blast', 'Thunder',
+  'Thunder Punch', 'Thunder Wave', 'Thunderbolt', 'Trailblaze', 'Volt Switch', 'Wild Charge', 'Zen Headbutt',
+])];
+
 /** What each Digimon can learn without a warp item (or holding someone else's). */
-export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES };
+export const DIGIMON_BASE_MOVES: Record<string, string[]> = { Agumon: AGUMON_MOVES, Gabumon: GABUMON_MOVES, Tentomon: TENTOMON_MOVES, Guilmon: GUILMON_MOVES };
 
 export const WARP_DIGIMON: WarpDigimon[] = [{
   base: AGUMON,
@@ -147,6 +181,23 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   item: 'Herculeskabuterite',
   itemDesc: 'If held by a Tentomon, this item allows it to Warp Digivolve into HerculesKabuterimon in battle.',
   moves: TENTOMON_MOVES,
+}, {
+  // Guilmon -> Gallantmon (added 2026-10-18, designed by the user): Matrix Evolution (Digimon Tamers), which works
+  // exactly like Warp Digivolution. Holding Gallantite, Guilmon learns Gallantmon's list instead of its own.
+  base: {
+    num: 10204, name: 'Guilmon', types: ['Fire', 'Dragon'], color: 'Red',
+    baseStats: { hp: 55, atk: 70, def: 60, spa: 35, spd: 54, spe: 35 },
+    abilities: { 0: 'Strong Jaw' }, weightkg: 22, genderRatio: { M: 0.875, F: 0.125 },
+  },
+  warp: {
+    name: 'Gallantmon', types: ['Steel', 'Fairy'], color: 'Red',
+    baseStats: { hp: 95, atk: 145, def: 130, spa: 65, spd: 125, spe: 74 },
+    abilities: { 0: 'Dauntless Shield' }, weightkg: 110,
+  },
+  item: 'Gallantite',
+  itemDesc: 'If held by a Guilmon, this item allows it to Matrix Evolve into Gallantmon in battle.',
+  matrix: true,
+  moves: GALLANTMON_MOVES,
 }];
 
 export interface DigimonMove {
@@ -161,6 +212,12 @@ export interface DigimonMove {
   pulse?: boolean;
   /** Critical-hit ratio as the simulator counts it: 2 = one stage higher than usual (like Slash). */
   critRatio?: number;
+  /** A biting move (boosted by Strong Jaw). */
+  bite?: boolean;
+  /** A second type it also counts as against the target's types, as Flying Press does (Lightning Joust: Electric). */
+  alsoType?: string;
+  /** The user's stat it attacks with instead of Attack / Sp. Atk, as Body Press does (Shield of Just: Sp. Def). */
+  attackStat?: 'def' | 'spd';
   /** Chance (%) of a burn or paralysis, or of a stat drop on the target (none: no secondary effect, so Sheer Force doesn't boost it). */
   secondary?: { chance: number; status?: 'brn' | 'par'; boosts?: Partial<Record<Exclude<StatID, 'hp'>, number>> };
   desc: string;
@@ -207,6 +264,19 @@ export const DIGIMON_MOVES: DigimonMove[] = [
     name: 'Giga Blaster', type: 'Electric', category: 'Special', basePower: 100, accuracy: 100, pp: 10, contact: false,
     secondary: { chance: 20, status: 'par' }, desc: '20% chance to paralyze the target.',
   },
+  // Guilmon and Gallantmon (2026-10-18, designed by the user):
+  {
+    name: 'Pyro Fang', type: 'Fire', category: 'Physical', basePower: 70, accuracy: 100, pp: 15, contact: true, bite: true,
+    secondary: { chance: 20, status: 'brn' }, desc: '20% chance to burn the target. Boosted by Strong Jaw.',
+  },
+  {
+    name: 'Lightning Joust', type: 'Steel', category: 'Physical', basePower: 95, accuracy: 100, pp: 10, contact: true, alsoType: 'Electric',
+    secondary: { chance: 20, status: 'par' }, desc: 'Combines Electric in its type effectiveness. 20% chance to paralyze the target.',
+  },
+  {
+    name: 'Shield of Just', type: 'Fairy', category: 'Special', basePower: 85, accuracy: 100, pp: 10, contact: false, attackStat: 'spd',
+    secondary: { chance: 20, boosts: { atk: -1 } }, desc: 'Uses user\'s Sp. Def stat as Sp. Atk in damage calculation. 20% chance to lower the target\'s Attack by 1.',
+  },
 ];
 
 /**
@@ -225,6 +295,8 @@ export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon
   BlackWarGreymon: { file: 'pokemon/blackwargreymon.png', back: 'pokemon/back/blackwargreymon.png', icon: 'pokemon/icons/blackwargreymon.png', w: 96, h: 96, stageScale: 1.5 },
   Tentomon: { file: 'pokemon/tentomon.png', back: 'pokemon/back/tentomon.png', icon: 'pokemon/icons/tentomon.png', w: 96, h: 96 },
   HerculesKabuterimon: { file: 'pokemon/herculeskabuterimon.png', back: 'pokemon/back/herculeskabuterimon.png', icon: 'pokemon/icons/herculeskabuterimon.png', w: 96, h: 96, stageScale: 1.5 },
+  Guilmon: { file: 'pokemon/guilmon.png', back: 'pokemon/back/guilmon.png', icon: 'pokemon/icons/guilmon.png', w: 96, h: 96 },
+  Gallantmon: { file: 'pokemon/gallantmon.png', back: 'pokemon/back/gallantmon.png', icon: 'pokemon/icons/gallantmon.png', w: 96, h: 96, stageScale: 1.5 },
 };
 /** How much larger a warp form is drawn on the battle stage (1 for anything else). */
 export const warpStageScale = (species: string) => (isWarpForm(species) ? DIGIMON_SPRITES[species]?.stageScale ?? 1.3 : 1);
@@ -251,6 +323,22 @@ export const isWarpForm = (species: string | undefined | null) => !!species && W
 export const isDigimon = (species: string) => BASES.has(toId(species));
 /** Whether a warp item or warp form is a Dark Warp Digivolution (Blackwargreyite / BlackWarGreymon). */
 export const isDarkWarp = (itemOrForm: string | undefined | null) => !!(BY_ITEM.get(toId(itemOrForm ?? '')) ?? BY_FORM.get(toId(itemOrForm ?? '')))?.dark;
+/** Whether a warp item or warp form is a Matrix Evolution (Gallantite / Gallantmon). */
+export const isMatrix = (itemOrForm: string | undefined | null) => !!(BY_ITEM.get(toId(itemOrForm ?? '')) ?? BY_FORM.get(toId(itemOrForm ?? '')))?.matrix;
+
+/** The kinds of warp: Warp Digivolution, Dark Warp Digivolution (BlackWarGreymon), Matrix Evolution (Gallantmon). */
+export type WarpKind = 'warp' | 'dark' | 'matrix';
+/** What each kind is called: the change, the button, "...ing", and the call in battle ("Guilmon matrix-evolve to..."). */
+export const WARP_NAMES: Record<WarpKind, { noun: string; verb: string; ing: string; call: string }> = {
+  warp: { noun: 'Warp Digivolution', verb: 'Warp Digivolve', ing: 'Warp Digivolving', call: 'warp-digivolve' },
+  dark: { noun: 'Dark Warp Digivolution', verb: 'Dark Warp Digivolve', ing: 'Dark Warp Digivolving', call: 'dark warp-digivolve' },
+  matrix: { noun: 'Matrix Evolution', verb: 'Matrix Evolve', ing: 'Matrix Evolving', call: 'matrix-evolve' },
+};
+/** The kind of warp a warp item or warp form gives (Warp Digivolution for anything else). */
+export const warpKind = (itemOrForm: string | undefined | null): WarpKind => (isMatrix(itemOrForm) ? 'matrix' : isDarkWarp(itemOrForm) ? 'dark' : 'warp');
+/** What a warp item's or warp form's change is called. */
+export const warpNames = (itemOrForm: string | undefined | null) => WARP_NAMES[warpKind(itemOrForm)];
+
 /** What a set Warp Digivolves into in battle (null without its warp item). */
 export function warpFormForSet(species: string, item: string | undefined | null): string | null {
   const d = BY_ITEM.get(toId(item ?? ''));
@@ -316,15 +404,19 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
   for (const m of DIGIMON_MOVES) {
     moves[toId(m.name)] = {
       num: moveNum++, name: m.name, type: m.type, category: m.category, basePower: m.basePower, accuracy: m.accuracy, pp: m.pp,
-      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}) },
+      priority: 0, flags: { protect: 1, mirror: 1, ...(m.contact ? { contact: 1 } : {}), ...(m.pulse ? { pulse: 1 } : {}), ...(m.bite ? { bite: 1 } : {}) },
       ...(m.critRatio ? { critRatio: m.critRatio } : {}),
+      ...(m.attackStat ? { overrideOffensiveStat: m.attackStat } : {}),
       secondary: m.secondary ? { ...m.secondary } : null, target: 'normal', gen: 7, isNonstandard: null,
       shortDesc: m.desc, desc: m.desc,
     };
   }
   const conditions = { warpdigivolution: { name: 'Warp Digivolution' } };
-  // Gen 9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis): made usable in Gen 7; the
-  // engine gives Electromorphosis its Gen 9 Charge (src/engine/custom.ts).
-  const abilities = { electromorphosis: { inherit: true, gen: 7, isNonstandard: null } };
+  // Gen 8-9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis, Gallantmon's Dauntless Shield): made
+  // usable in Gen 7; the engine gives them their Gen 9 behaviour (src/engine/custom.ts).
+  const abilities = {
+    electromorphosis: { inherit: true, gen: 7, isNonstandard: null },
+    dauntlessshield: { inherit: true, gen: 7, isNonstandard: null },
+  };
   return { Species: species, FormatsData: formatsData, Items: items, Moves: moves, Learnsets: learnsets, Conditions: conditions, Abilities: abilities };
 }

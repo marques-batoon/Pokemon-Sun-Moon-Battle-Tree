@@ -787,6 +787,37 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   58% { transform: translateX(-2px); filter: brightness(1.2) drop-shadow(0 0 10px #ff9a1f) }
   100% { transform: none; filter: none }
 }
+/*
+ * Matrix Evolution (Gallantmon; after Digimon Tamers): the Digimon glows red at the D-Arc's call and shakes, then its
+ * skin peels away into data, leaving its polygon wireframe (the sprite masked to a mesh of glowing green lines), which
+ * turns as fractal code orbits it; the Tamer merges with it in a sphere of light that grows bright until the new form
+ * bursts out.
+ */
+.fx-matrix-start { --mesh: repeating-linear-gradient(0deg, #000 0 1.5px, transparent 1.5px 7px), repeating-linear-gradient(60deg, #000 0 1.5px, transparent 1.5px 7px), repeating-linear-gradient(120deg, #000 0 1.5px, transparent 1.5px 7px);
+  animation: matrix-start calc(2600ms * var(--spd, 1)) ease-in-out forwards; }
+@keyframes matrix-start {
+  0% { filter: none; transform: none; -webkit-mask-image: none; mask-image: none; }
+  8% { filter: brightness(1.5) drop-shadow(0 0 10px #ff3b30); transform: none; }
+  12% { transform: translateX(-2%); } 15% { transform: translateX(2%); } 18% { transform: translateX(-2%); }
+  21% { filter: brightness(1.9) drop-shadow(0 0 16px #ff3b30); transform: translateX(1%); -webkit-mask-image: none; mask-image: none; }
+  22% { filter: brightness(0) invert(1) sepia(1) saturate(7) hue-rotate(65deg) drop-shadow(0 0 3px #3dff8a); transform: none; -webkit-mask-image: var(--mesh); mask-image: var(--mesh); }
+  40% { transform: rotateY(180deg) scale(1.04); }
+  58% { transform: rotateY(360deg) scale(1.08); filter: brightness(0) invert(1) sepia(1) saturate(7) hue-rotate(65deg) drop-shadow(0 0 5px #3dff8a); }
+  70% { transform: scale(1.14); filter: brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(10deg) drop-shadow(0 0 8px #ffe8a0); -webkit-mask-image: var(--mesh); mask-image: var(--mesh); }
+  71% { filter: brightness(0) invert(1) drop-shadow(0 0 14px #ff3b30); -webkit-mask-image: none; mask-image: none; }
+  84% { transform: scale(1.24); filter: brightness(0) invert(1) drop-shadow(0 0 20px #ff9a3d); }
+  100% { transform: scale(1.3); filter: brightness(0) invert(1) drop-shadow(0 0 28px #fff); -webkit-mask-image: none; mask-image: none; }
+}
+/* Gallantmon steps out of the light: a holy-knight gleam in gold and red, settling with a flourish. */
+.fx-matrix-burst { animation: matrix-burst calc(1300ms * var(--spd, 1)) cubic-bezier(.2, .8, .2, 1); }
+@keyframes matrix-burst {
+  0% { transform: scale(1.12) translateY(-6%); filter: brightness(0) invert(1) drop-shadow(0 0 28px #fff); }
+  20% { transform: scale(0.96) translateY(0); filter: brightness(1.7) drop-shadow(0 0 16px #ffd54a) drop-shadow(0 0 6px #ff3b30); }
+  34% { transform: scale(1.05) translateY(-2%); }
+  46% { transform: scale(1); filter: brightness(1.3) drop-shadow(0 0 12px #ffd54a); }
+  70% { filter: brightness(1.1) drop-shadow(0 0 8px #ffd54a); }
+  100% { transform: none; filter: none; }
+}
 /* Dark Warp Digivolution (BlackWarGreymon): the new form glows with dark energy instead. */
 .fx-warp-burst.dark { animation-name: dark-warp-burst; }
 @keyframes dark-warp-burst {
@@ -948,6 +979,28 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .fx-wire .lat.two { inset: 16%; transform: translateY(-28%) rotateX(72deg); }
 @keyframes wire-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @keyframes wire-close { 0% { transform: translate(-50%, -60%) scale(1.8); opacity: 0; } 25% { opacity: 1; } 70% { transform: translate(-50%, -60%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.85); opacity: 0; } }
+/* Matrix Evolution: fractal code orbiting the Digimon, the Tamer's ball of light merging in, a sphere of light, the data scan. */
+.fx-fractal { width: var(--s); height: var(--s); animation-name: fractal-close; animation-timing-function: cubic-bezier(.3, .7, .3, 1); }
+.fx-fractal .ring { position: absolute; inset: calc((1 - var(--rs)) * 50%); transform: rotate(var(--tilt)) scaleY(0.3); }
+.fx-fractal svg { display: block; width: 100%; height: 100%; overflow: visible; animation: fractal-spin calc(1600ms * var(--spd, 1)) linear infinite; filter: drop-shadow(0 0 2px var(--c)) drop-shadow(0 0 5px var(--c)); }
+.fx-fractal .ring.rev svg { animation-direction: reverse; animation-duration: calc(1200ms * var(--spd, 1)); }
+.fx-fractal text { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-weight: 800; font-size: 6.4px; letter-spacing: 0.4px; fill: var(--c); }
+@keyframes fractal-spin { to { transform: rotate(360deg); } }
+@keyframes fractal-close { 0% { transform: translate(-50%, -55%) scale(1.7); opacity: 0; } 18% { opacity: 1; } 75% { transform: translate(-50%, -55%) scale(0.95); opacity: 1; } 100% { transform: translate(-50%, -55%) scale(0.6); opacity: 0; } }
+.fx-merge { width: var(--s); height: var(--s); border-radius: 50%; background: radial-gradient(circle, #ffffff 0 28%, var(--c) 48%, color-mix(in srgb, var(--c2) 70%, transparent) 62%, transparent 72%); filter: drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 20px var(--c2)); animation-name: merge-in; animation-timing-function: ease-in-out; }
+@keyframes merge-in {
+  0% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy))) scale(0.6); opacity: 0; }
+  12% { opacity: 1; }
+  55% { transform: translate(calc(-50% + var(--fx) * 0.45), calc(-50% + var(--fy) * 0.2)) scale(1); box-shadow: calc(var(--fx) * -0.06) 18px 24px 4px color-mix(in srgb, var(--c) 45%, transparent); }
+  86% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+}
+.fx-sphere { width: var(--s); height: var(--s); border-radius: 50%; overflow: hidden; border: 2px solid color-mix(in srgb, var(--c2) 70%, #fff); box-shadow: 0 0 18px var(--c2), inset 0 0 26px var(--c);
+  -webkit-mask-image: radial-gradient(closest-side, rgb(0 0 0 / 0.1) 50%, rgb(0 0 0 / 0.45) 72%, #000 90%, transparent 100%); mask-image: radial-gradient(closest-side, rgb(0 0 0 / 0.1) 50%, rgb(0 0 0 / 0.45) 72%, #000 90%, transparent 100%); animation-name: sphere-form; animation-timing-function: ease-in; }
+.fx-sphere .swirl { position: absolute; inset: -25%; background: conic-gradient(var(--c), var(--c2), var(--c), #ffd54a, var(--c), var(--c2), var(--c)); animation: vortex-spin calc(700ms * var(--spd, 1)) linear infinite; }
+@keyframes sphere-form { 0% { transform: translate(-50%, -58%) scale(0.2); opacity: 0; filter: brightness(1); } 30% { transform: translate(-50%, -58%) scale(1.05); opacity: 0.9; } 40% { transform: translate(-50%, -58%) scale(1); } 85% { opacity: 0.95; filter: brightness(1.6); } 100% { transform: translate(-50%, -58%) scale(1.12); opacity: 0.9; filter: brightness(2.4); } }
+.fx-scan { width: var(--w); height: calc(var(--h) * 0.08); background: linear-gradient(transparent, var(--c) 40%, #ffffff 50%, var(--c) 60%, transparent); filter: drop-shadow(0 0 6px var(--c)); border-radius: 50%; animation-name: scan-down; animation-timing-function: linear; }
+@keyframes scan-down { 0% { transform: translate(-50%, calc(var(--h) * -0.56)); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(-50%, calc(var(--h) * 0.44)); opacity: 0; } }
 /* An Ability's name popping up over the Pokémon as it takes in a move (Water Absorb...). */
 /* Focus Sash / Focus Band: wraps across the Pokémon (drawn in from one end), glows as it hangs on, then tears in two. */
 .fx-sash { z-index: 4; }

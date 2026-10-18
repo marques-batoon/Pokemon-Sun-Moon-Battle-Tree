@@ -7,7 +7,7 @@ import {
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
-import { isDarkWarp } from '../../../data/custom/digimon';
+import { isDarkWarp, isMatrix } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 
 /** Is the animation's acting Pokémon at this position? */
@@ -146,8 +146,8 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'mega': return 'fx-mega-burst';
     case 'paradox-start': return `fx-paradox-${anim.condition === 'future' ? 'future' : 'ancient'}-start`;
     case 'paradox': return `fx-paradox-${anim.condition === 'future' ? 'future' : 'ancient'}-burst`;
-    case 'warp-start': return 'fx-warp-start';
-    case 'warp': return isDarkWarp(anim.condition) ? 'fx-warp-burst dark' : 'fx-warp-burst';
+    case 'warp-start': return isMatrix(anim.condition) ? 'fx-matrix-start' : 'fx-warp-start';
+    case 'warp': return isMatrix(anim.condition) ? 'fx-matrix-burst' : isDarkWarp(anim.condition) ? 'fx-warp-burst dark' : 'fx-warp-burst';
     case 'forme': return `fx-transform-${v}`;
     case 'miss': return `fx-dodge-${v}`;
     default: return '';

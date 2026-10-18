@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DIGIMON_BASE_MOVES, WARP_DIGIMON } from '../data/custom/digimon';
 import { canHoldItem } from '../data/custom/paradox';
 import { allMoves, eligibleSpecies, gen7, learnableMoves, speciesAbilities } from './dex';
-import { calcStats, changeSpecies, megaFormForSet, newSet } from './sets';
+import { calcStats, changeSpecies, megaFormForSet, newSet, statForms } from './sets';
 
 describe('Agumon in the team builder', () => {
   it('offers Agumon as a team member, but not WarGreymon (Warp Digivolution only)', () => {
@@ -115,5 +115,36 @@ describe('Tentomon in the team builder', () => {
     expect(moves).not.toContain('Tera Blast');
     expect((await learnableMoves('Tentomon', 'Herculeskabuterite')).map(m => m.name)).toEqual(moves);
     expect(allMoves().map(m => m.name)).not.toContain('Giga Blaster');
+  });
+});
+
+describe('Guilmon in the team builder', () => {
+  it('offers Guilmon, not Gallantmon (Matrix Evolution only)', () => {
+    const names = eligibleSpecies().map(s => s.name);
+    expect(names).toContain('Guilmon');
+    expect(names).not.toContain('Gallantmon');
+    expect(speciesAbilities('Guilmon')).toEqual(['Strong Jaw']);
+    expect(gen7.items.get('Gallantite')?.shortDesc).toMatch(/Matrix Evolve into Gallantmon/);
+  });
+
+  it('learns its own list, and Gallantmon\'s instead while holding Gallantite', async () => {
+    const own = (await learnableMoves('Guilmon')).map(m => m.name);
+    for (const m of ['Pyro Fang', 'Scratch', 'Outrage', 'Breaking Swipe', 'Temper Flare', 'Tera Blast', 'Trailblaze', 'Will-O-Wisp']) expect(own).toContain(m);
+    expect(own).not.toContain('Lightning Joust');
+    expect(own).toHaveLength(new Set(DIGIMON_BASE_MOVES.Guilmon).size);
+    const gallant = (await learnableMoves('Guilmon', 'Gallantite')).map(m => m.name);
+    for (const m of ['Lightning Joust', 'Shield of Just', 'Pyro Fang', "King's Shield", 'Supercell Slam', 'Body Press', 'Thunderbolt']) expect(gallant).toContain(m);
+    expect(gallant).not.toContain('Flamethrower');
+    expect(gallant).toHaveLength(new Set(WARP_DIGIMON.find(d => d.item === 'Gallantite')!.moves).size);
+    expect(allMoves().map(m => m.name)).not.toContain('Shield of Just');
+  });
+
+  it('keeps Gallantite for Guilmon and shows Gallantmon, as a Matrix Evolution', () => {
+    expect(canHoldItem('Guilmon', 'Gallantite')).toBe(true);
+    expect(canHoldItem('Agumon', 'Gallantite')).toBe(false);
+    expect(canHoldItem('Guilmon', 'Wargreyite')).toBe(false);
+    expect(megaFormForSet({ species: 'Guilmon', item: 'Gallantite' })).toBe('Gallantmon');
+    expect(statForms({ species: 'Guilmon', item: 'Gallantite' })).toMatchObject({ evolved: 'Gallantmon', change: 'Matrix Evolution', battlesAs: 'base' });
+    expect(statForms({ species: 'Agumon', item: 'Blackwargreyite' }).change).toBe('Dark Warp Digivolution');
   });
 });

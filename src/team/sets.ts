@@ -1,5 +1,5 @@
 import type { Nature, StatsTable } from '@pkmn/data';
-import { isDarkWarp, isWarpForm } from '../data/custom/digimon';
+import { isWarpForm, warpNames } from '../data/custom/digimon';
 import { canHoldItem, paradoxFormForSet } from '../data/custom/paradox';
 import { gen7, speciesAbilities } from './dex';
 import { DEFAULT_LEVEL, MAX_EV_STAT, MAX_EV_TOTAL, MAX_IV, STAT_IDS, type PokemonSet, type StatID } from './types';
@@ -46,7 +46,7 @@ export const battleSpecies = (set: Pick<PokemonSet, 'species' | 'item'>): string
 
 /**
  * The forms whose stats the team builder can show for a set: its own species and, if its held item evolves
- * it, that form (Mega Evolution, Warp Digivolution or Paradox form), with what to call the change.
+ * it, that form (Mega Evolution, Warp Digivolution, Matrix Evolution or Paradox form), with what to call the change.
  * `battlesAs`: which of the two it is when the battle starts (the Paradox form; the base form otherwise).
  */
 export function statForms(set: Pick<PokemonSet, 'species' | 'item'>): { base: string; evolved: string | null; change: string; battlesAs: 'base' | 'evolved' } {
@@ -54,7 +54,7 @@ export function statForms(set: Pick<PokemonSet, 'species' | 'item'>): { base: st
   if (paradox) return { base: set.species, evolved: paradox, change: 'Paradox form', battlesAs: 'evolved' };
   const mega = megaFormForSet(set);
   if (!mega) return { base: set.species, evolved: null, change: '', battlesAs: 'base' };
-  const change = isWarpForm(mega) ? (isDarkWarp(mega) ? 'Dark Warp Digivolution' : 'Warp Digivolution') : 'Mega Evolution';
+  const change = isWarpForm(mega) ? warpNames(mega).noun : 'Mega Evolution';
   return { base: set.species, evolved: mega, change, battlesAs: 'base' };
 }
 

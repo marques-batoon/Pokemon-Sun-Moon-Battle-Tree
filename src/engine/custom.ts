@@ -2,7 +2,7 @@
 // turn counts the battle screen shows). Runs where the simulator runs.
 import type { ActiveMove, Battle, Effect, Move, Pokemon, Side } from '@pkmn/sim';
 import { CUSTOM_MEGAS, HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../data/custom';
-import { isDarkWarp, isWarpForm, isWarpItem, WARP_DIGIMON } from '../data/custom/digimon';
+import { DIGIMON_MOVES, isWarpForm, isWarpItem, WARP_DIGIMON, warpNames } from '../data/custom/digimon';
 import { PARADOX_ABILITIES, PARADOX_ITEMS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -80,6 +80,7 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
 
   addParadoxLogic(data);
   addElectromorphosis(data);
+  addDigimonLogic(data);
   for (const [id, hook] of Object.entries(TIMED_MOVES)) {
     const condition = parent.Moves[id].condition as Entry;
     data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, [hook]: tagTurns(condition[hook] as Handler) } };
@@ -188,6 +189,35 @@ function addElectromorphosis(data: Record<string, Record<string, Entry>>) {
 }
 
 /**
+ * The Digimon's moves and Abilities that need more than data: a move with a second type (Lightning Joust: Steel that
+ * also counts as Electric against the target's types, like Flying Press; only its own type gives STAB and immunities),
+ * and Dauntless Shield (Gallantmon) as in Gen 9: +1 Defense the first time it takes effect in a battle (Matrix
+ * Evolving counts), not on every switch-in as in Gen 8.
+ */
+function addDigimonLogic(data: Record<string, Record<string, Entry>>) {
+  for (const m of DIGIMON_MOVES.filter(m => m.alsoType)) {
+    const also = m.alsoType!;
+    Object.assign(data.Moves[toId(m.name)], {
+      onEffectiveness(this: Battle, typeMod: number, _target: Pokemon | null, type: string) {
+        return typeMod + this.dex.getEffectiveness(also, type);
+      },
+    });
+  }
+  Object.assign(data.Abilities.dauntlessshield, {
+    onStart(this: Battle, pokemon: Pokemon) {
+      // Matrix Evolving: it takes effect after the call ("Gallantmon!"), not in the middle of the change (warpDigivolve).
+      if (pokemon.m.warping) {
+        pokemon.m.abilityHeld = true;
+        return;
+      }
+      if (pokemon.m.shieldBoost) return;
+      pokemon.m.shieldBoost = true;
+      this.boost({ def: 1 }, pokemon);
+    },
+  });
+}
+
+/**
  * Paradox Evolution: the Paradoxorbs can't be taken away, and Protosynthesis /
  * Quark Drive (as this app defines them) boost the highest stat while the
  * Pokémon is on the field, with no weather, terrain or Booster Energy needed.
@@ -276,13 +306,20 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
   const who = displayName(pokemon);
   battle.add('-activate', pokemon, `item: ${item.name}`, '[silent]');
   // The anime's call, split around the warp animation: "Agumon warp-digivolve to..." ... "WarGreymon!"
-  // (BlackWarGreymon: "Agumon dark warp-digivolve to...").
-  battle.add('message', `${who} ${isDarkWarp(form) ? 'dark ' : ''}warp-digivolve to...`);
+  // (BlackWarGreymon: "Agumon dark warp-digivolve to..."; Gallantmon: "Guilmon matrix-evolve to...").
+  battle.add('message', `${who} ${warpNames(form).call} to...`);
+  pokemon.m.warping = true;
   pokemon.formeChange(form, battle.dex.conditions.get('warpdigivolution'), true);
+  pokemon.m.warping = false;
   // As for Mega Evolution: it counts as an action for Truant, and there's no going back.
   pokemon.moveThisTurnResult = true;
   pokemon.formeRegression = true;
   battle.add('message', `${form}!`);
+  // An Ability that acts as it starts (Gallantmon's Dauntless Shield) waited for the call: now it does.
+  if (pokemon.m.abilityHeld) {
+    pokemon.m.abilityHeld = false;
+    battle.singleEvent('Start', pokemon.getAbility(), pokemon.abilityState, pokemon);
+  }
 }
 
 type Actions = Battle['actions'];

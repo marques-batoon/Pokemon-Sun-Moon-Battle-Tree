@@ -3,7 +3,7 @@
 // Attacks have a distinct look per type, with separate physical (contact at
 // the target) and special (something travels from the user) versions.
 import type { MoveFx } from '../../../client/move-class';
-import { isDarkWarp, WARP_DIGIMON } from '../../../data/custom/digimon';
+import { isDarkWarp, isMatrix, WARP_DIGIMON } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 import { BIG_MOVES, FUTURE_HIT } from './big-moves';
 
@@ -97,7 +97,15 @@ export type Layer =
   /** A Focus Sash (or Focus Band) wraps across the Pokémon, glows as it hangs on, then tears in two. */
   | { kind: 'sash'; at: Anchor; color: string; color2: string; delay?: number; dur?: number }
   /** Tailwind: streaks of wind (and leaves) sweep across the stage from behind the user toward the foe. */
-  | { kind: 'gust'; color: string; count: number; delay?: number; dur?: number; /** Leaves riding the wind (default); false: streaks only. */ leaves?: boolean };
+  | { kind: 'gust'; color: string; count: number; delay?: number; dur?: number; /** Leaves riding the wind (default); false: streaks only. */ leaves?: boolean }
+  /** Matrix Evolution (Digimon Tamers): rings of glowing code ("fractal code") orbiting a spot at different tilts. */
+  | { kind: 'fractal'; at: Anchor; color: string; size: number; rings?: number; delay?: number; dur?: number }
+  /** Matrix Evolution: a ball of light (the Tamer, turned to data) streaks in from below the stage and merges into the Pokémon. */
+  | { kind: 'merge'; at: Anchor; color: string; color2?: string; size: number; delay?: number; dur?: number }
+  /** A sphere of light forming around the Pokémon, swirling inside (`color2`), glowing brighter until it's white. */
+  | { kind: 'sphere'; at: Anchor; color: string; color2?: string; size: number; delay?: number; dur?: number }
+  /** A glowing scan line sweeping down over the Pokémon (Matrix Evolution: its skin peeling away into data). */
+  | { kind: 'scan'; at: Anchor; color: string; delay?: number; dur?: number };
 
 export interface FxSpec {
   layers: Layer[];
@@ -986,7 +994,7 @@ export const SIGNATURE_Z_MOVES = Object.keys(Z_SIGNATURE);
 
 /**
  * Moves with their own animation: every move over 100 power (BIG_MOVES, in big-moves.ts; Solar Beam here), and the
- * Digimon's signature moves, after the attacks they're named for.
+ * Digimon's signature moves (Guilmon's and Gallantmon's too), after the attacks they're named for.
  * Gaia Force (WarGreymon's Terra Force): energy gathers into a giant sun over the user, which is
  * hurled at the target and explodes in fire. Cocytus Pulse (MetalGarurumon's Cocytus Breath): a
  * freezing blast of breath that frosts the field and shatters into ice at the target.
@@ -1081,6 +1089,45 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffd23f', color2: '#ff6a00', count: 10, size: 12, spread: 90, delay: 320 },
     { kind: 'crack', color: '#ffb000', delay: 320 },
     { kind: 'screen', color: '#ffd27f', mode: 'flash', delay: 300, dur: 220 },
+  ] },
+  // Pyro Fang (Guilmon, 2026-10-18): flames gather in its jaws, which close on the target wreathed in fire.
+  pyrofang: { shake: 'light', layers: [
+    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff5a1a', color2: '#ffd23f', count: 14, size: 14, spread: 90, dur: 300 },
+    { kind: 'aura', at: 'user', color: '#ff5a1a', size: 170, dur: 360 },
+    { kind: 'jaws', color: '#ff7a1a', delay: 200 },
+    { kind: 'impact', color: '#ffd23f', size: 200, star: true, delay: 290 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff3a1a', color2: '#ffd23f', count: 18, size: 18, spread: 120, delay: 300 },
+    { kind: 'rings', at: 'target', color: '#ff7a1a', count: 2, size: 160, delay: 310 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'rise', color: '#ff5a1a', color2: '#ffd23f', count: 10, size: 16, spread: 60, delay: 420, dur: 450 },
+  ] },
+  // Lightning Joust (Gallantmon): the sacred lance crackles with electricity, then is thrust through the target, a
+  // bolt and a burst of steel and sparks where it strikes.
+  lightningjoust: { shake: 'strong', layers: [
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe14a', color2: '#ffffff', count: 16, size: 12, spread: 110, dur: 320 },
+    { kind: 'aura', at: 'user', color: '#ffe14a', size: 200, dur: 380 },
+    { kind: 'slash', color: '#e8eef8', count: 1, angle: -24, width: 14, delay: 230 },
+    { kind: 'slash', color: '#ffe14a', count: 1, angle: -24, width: 5, delay: 245 },
+    { kind: 'impact', color: '#ffffff', size: 280, star: true, delay: 260 },
+    { kind: 'bolt', color: '#ffe14a', delay: 280 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14a', color2: '#ffffff', count: 20, size: 14, spread: 140, delay: 280 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'burst', color: '#c8d0e8', color2: '#ffffff', count: 10, size: 14, spread: 110, delay: 290 },
+    { kind: 'rings', at: 'target', color: '#ffe14a', count: 3, size: 220, delay: 300 },
+    { kind: 'screen', color: '#fff6b0', mode: 'flash', delay: 270, dur: 200 },
+  ] },
+  // Shield of Just (Gallantmon): its shield, Aegis, shines with sacred light, gathering it, then releases it in a
+  // radiant blast of pink and gold light that bursts on the target.
+  shieldofjust: { shake: 'strong', layers: [
+    { kind: 'wall', color: '#ffd0e4', delay: 0 },
+    { kind: 'rays', at: 'user', color: '#ffe9a8', size: 300, delay: 100, dur: 600 },
+    { kind: 'particles', at: 'user', shape: 'star', motion: 'converge', color: '#ffd54a', color2: '#ffd0e4', count: 18, size: 12, spread: 140, delay: 80, dur: 450 },
+    { kind: 'screen', color: '#fff0f6', mode: 'tint', delay: 300, dur: 900 },
+    { kind: 'beam', color: '#ff8ac0', color2: '#ffffff', width: 62, delay: 440, dur: 650 },
+    { kind: 'beam', color: '#ffd54a', color2: '#ffffff', width: 20, delay: 470, dur: 620 },
+    { kind: 'rings', at: 'path', color: '#ffe9a8', count: 5, size: 80, delay: 460, dur: 560 },
+    { kind: 'impact', color: '#ffffff', size: 380, star: true, delay: 720 },
+    { kind: 'rays', at: 'target', color: '#ffd0e4', size: 420, delay: 730, dur: 550 },
+    { kind: 'rings', at: 'target', color: '#ff8ac0', count: 3, size: 340, delay: 740 },
+    { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#ffd54a', color2: '#ffffff', count: 16, size: 13, spread: 180, delay: 740 },
   ] },
 };
 
@@ -1436,8 +1483,45 @@ export const WARP_START: FxSpec = { layers: [
   { kind: 'aura', at: 'user', color: '#ffffff', size: 210, delay: 1850, dur: 750 },
   { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 2300, dur: 320 },
 ] };
-/** The warp sequence for a form: a Dark Warp Digivolution's banner says so. */
+/**
+ * Matrix Evolution (Gallantmon; the same epic scale as Warp Digivolution), after Digimon Tamers' Matrix Evolution
+ * (the dub's Biomerge Digivolution): at the D-Arc's call ("MATRIX EVOLUTION!") the Digimon glows red and shakes;
+ * a scan sweeps down it and its skin peels away into data (red fragments rising), leaving its polygon wireframe in
+ * glowing green (sprite class fx-matrix-start), which turns as rings of fractal code orbit it. The Tamer, turned to a
+ * ball of light, streaks in from below and merges with it; a sphere of light forms around the two as they become
+ * one, a column of light shines down, and a white flash. Then (MATRIX_BURST) the sphere bursts into fragments of data
+ * and the new form steps out in a holy knight's radiance of gold and red, with its name.
+ */
+export const MATRIX_START: FxSpec = { layers: [
+  { kind: 'screen', color: '#0a0204', mode: 'dim', dur: 2600 },
+  { kind: 'aura', at: 'user', color: '#ff3b30', size: 220, dur: 650 },
+  { kind: 'rings', at: 'user', color: '#ff5a4a', count: 2, size: 220, delay: 60, dur: 600 },
+  { kind: 'banner', text: 'Matrix Evolution!', color: '#ff3b30', delay: 200, dur: 1500 },
+  { kind: 'scan', at: 'user', color: '#3dff8a', delay: 540, dur: 520 },
+  { kind: 'particles', at: 'user', shape: 'gem', motion: 'rise', color: '#e8352a', color2: '#3dff8a', count: 22, size: 12, spread: 90, delay: 560, dur: 900 },
+  { kind: 'fractal', at: 'user', color: '#3dff8a', size: 260, rings: 3, delay: 760, dur: 1500 },
+  { kind: 'merge', at: 'user', color: '#ffe8a0', color2: '#ff9a3d', size: 64, delay: 1050, dur: 780 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'swirl', color: '#ffe8a0', color2: '#3dff8a', count: 16, size: 9, spread: 90, delay: 1550, dur: 900 },
+  { kind: 'sphere', at: 'user', color: '#ffb08a', color2: '#ff3b30', size: 240, delay: 1700, dur: 900 },
+  { kind: 'pillar', at: 'user', color: '#ffd0c0', color2: '#ffffff', width: 110, delay: 1950, dur: 650 },
+  { kind: 'screen', color: '#ffffff', mode: 'flash', delay: 2300, dur: 320 },
+] };
+/** Matrix Evolution's ending: the sphere of light bursts into data and the new form appears in gold and red light. */
+function matrixBurst(form: string): FxSpec {
+  return { shake: 'strong', layers: [
+    { kind: 'screen', color: '#fff6e0', mode: 'flash', dur: 450 },
+    { kind: 'particles', at: 'user', shape: 'gem', motion: 'burst', color: '#ffffff', color2: '#3dff8a', count: 18, size: 16, spread: 170 },
+    { kind: 'rays', at: 'user', color: '#ffd54a', size: 420, dur: 900 },
+    { kind: 'rings', at: 'user', color: '#ff3b30', count: 2, size: 280 },
+    { kind: 'rings', at: 'user', color: '#ffd54a', count: 2, size: 220, delay: 120 },
+    { kind: 'particles', at: 'user', shape: 'star', motion: 'burst', color: '#ffd54a', color2: '#ffffff', count: 12, size: 14, spread: 130, delay: 80 },
+    ...(form ? [{ kind: 'banner', text: `${form}!`, color: '#ff3b30', delay: 180, dur: 1050 } as Layer] : []),
+  ] };
+}
+
+/** The warp sequence for a form: a Dark Warp Digivolution's banner says so; a Matrix Evolution has its own. */
 export function warpStart(form = ''): FxSpec {
+  if (isMatrix(form)) return MATRIX_START;
   if (!isDarkWarp(form)) return WARP_START;
   return { layers: WARP_START.layers.map(l => (l.kind === 'banner' ? { ...l, text: 'Dark Warp Digivolve!', color: '#a05bff' } : l)) };
 }
@@ -1464,6 +1548,7 @@ function darkWarpBurst(form: string): FxSpec {
 }
 
 export function warpBurst(form = ''): FxSpec {
+  if (isMatrix(form)) return matrixBurst(form);
   if (isDarkWarp(form)) return darkWarpBurst(form);
   const types = WARP_DIGIMON.find(d => d.warp.name === form)?.warp.types ?? [];
   const st = types.map(t => WARP_BURST_STYLE[t]).find(Boolean) ?? DEFAULT_BURST;

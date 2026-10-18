@@ -3,6 +3,7 @@ import { calculate, Field, Generations, Move as CalcMove, Pokemon as CalcPokemon
 import type { Battle, Pokemon, Side } from '@pkmn/sim';
 import { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } from '../../data/champions';
 import { CUSTOM_SPECIES, HITMONCHANIUM_Z } from '../../data/custom';
+import { DIGIMON_MOVES } from '../../data/custom/digimon';
 import { PARADOX_FORMS } from '../../data/custom/paradox';
 
 const gen = Generations.get(7);
@@ -171,14 +172,29 @@ export function estimateDamage(
   }
 
   try {
+    const custom = opts.useZ ? undefined : DIGIMON_MOVES.find(m => toId(m.name) === move.id);
+    const att = calcPokemon(attacker, opts.attackerForme);
+    // A Digimon move attacking with another stat (Shield of Just: Sp. Def, as Body Press uses Defense): the calc only
+    // knows Body Press by name, so it's given that stat (and its boosts) as Sp. Atk / Attack.
+    if (custom?.attackStat) {
+      const stat = custom.category === 'Physical' ? 'atk' : 'spa';
+      att.rawStats[stat] = att.rawStats[custom.attackStat];
+      att.stats[stat] = att.stats[custom.attackStat];
+      att.boosts[stat] = att.boosts[custom.attackStat];
+    }
     const result = calculate(
       gen,
-      calcPokemon(attacker, opts.attackerForme),
+      att,
       calcPokemon(defender, opts.defenderForme),
       calcMoveFor(battle, attacker, move, !!opts.useZ),
       calcField(battle, attacker.side, defender.side),
     );
-    const [min, max] = rangeOf(result.damage);
+    let [min, max] = rangeOf(result.damage);
+    // A Digimon move with a second type (Lightning Joust: Electric too, like Flying Press): its effectiveness counts too.
+    if (custom?.alsoType) {
+      const k = 2 ** battle.dex.getEffectiveness(custom.alsoType, (opts.defenderForme?.species ? battle.dex.species.get(opts.defenderForme.species).types : defender.getTypes()) as string[]);
+      [min, max] = [Math.floor(min * k), Math.floor(max * k)];
+    }
     return { min, max, frac: Math.min(1, (min + max) / 2 / hp), ko: min >= hp };
   } catch (err) {
     calcErrors.count++;

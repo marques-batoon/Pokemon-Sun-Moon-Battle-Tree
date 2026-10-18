@@ -207,6 +207,18 @@ describe('effectiveness hints', () => {
     expect(effectivenessLabel('Normal', ['Ghost'])).toBe('No effect');
     expect(effectivenessLabel('Water', ['Normal'])).toBeNull();
   });
+
+  it('counts a move\'s second type too (Lightning Joust: Steel and Electric; Flying Press: Fighting and Flying)', async () => {
+    const { effectivenessLabel, secondMoveType } = await import('./effectiveness');
+    expect(secondMoveType('lightningjoust')).toBe('Electric');
+    expect(secondMoveType('Flying Press')).toBe('Flying');
+    expect(secondMoveType('ironhead')).toBeUndefined();
+    expect(effectivenessLabel('Steel', ['Water', 'Flying'], 'Electric')).toBe('Super effective');
+    expect(effectivenessLabel('Steel', ['Steel', 'Flying'], 'Electric')).toBeNull();
+    // Only the move's own type makes a Pokémon immune: Ground isn't immune to Lightning Joust (Dragon resists Electric).
+    expect(effectivenessLabel('Steel', ['Dragon', 'Ground'], 'Electric')).toBe('Not very effective');
+    expect(effectivenessLabel('Fighting', ['Ghost'], 'Flying')).toBe('No effect');
+  });
 });
 
 describe('export / import all teams', () => {

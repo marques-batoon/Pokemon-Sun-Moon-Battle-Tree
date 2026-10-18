@@ -534,3 +534,11 @@ describe('planLine: moves over 100 power', () => {
     expect(plan('|-end|p1a: Mew|move: Doom Desire')[0].animation).toMatchObject({ kind: 'future-hit', side: 'p1', condition: 'doomdesire' });
   });
 });
+
+describe('planLine: Matrix Evolution', () => {
+  it('plays like a Warp Digivolution, named for Gallantmon', () => {
+    const { args, kwArgs } = Protocol.parseBattleLine('|detailschange|p1a: Guilmon|Gallantmon, L50, M');
+    const steps = planLine(args as readonly string[], kwArgs as Record<string, unknown>, new ClientBattle(new Generations(Dex)), true);
+    expect(steps.map(s => [s.animation?.kind, s.animation?.condition, s.applyLine])).toEqual([['warp-start', 'Gallantmon', false], ['warp', 'Gallantmon', true]]);
+  });
+});
