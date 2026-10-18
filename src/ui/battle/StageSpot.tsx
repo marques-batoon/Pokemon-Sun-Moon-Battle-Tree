@@ -7,7 +7,7 @@ import { animatedSpriteBoost, substituteSprite } from '../sprites';
 import { useAppSettings } from '../useAppSettings';
 import { SHIELDS } from './fx/catalog';
 import { posKey } from './fx/geometry';
-import { actsAt, spriteClass } from './fx/stage-fx';
+import { actsAt, spriteClass, spriteVars } from './fx/stage-fx';
 
 type Side = 'p1' | 'p2';
 
@@ -168,6 +168,8 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
   const mega = !!pokemon && /-Mega(-[XYZ])?$/.test(pokemon.species);
   const boost = pokemon && spriteStyle === '3d' ? animatedSpriteBoost(pokemon.species) : 1;
   const size = (warp ? warpScale : mega ? MEGA_SCALE : 1) * boost;
+  // A move over 100 power times the user's motion to its hit.
+  const moveVars = spriteVars(side, slot, anim);
   const dollClass = mine?.kind === 'sub-start' ? 'fx-doll-drop'
     : mine?.kind === 'sub-hit' ? `fx-doll-hit-${v}`
     : mine?.kind === 'sub-end' ? 'fx-doll-break'
@@ -185,7 +187,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
         <div className={`sprite-sub ${subClass}`}>
           <div
             className={`sprite-wrap ${spriteClass(side, slot, anim)} ${seeded ? 'seeded' : ''} ${charged ? 'charged' : ''} ${mega ? 'is-mega' : ''} ${warp ? 'is-warp' : ''} ${warp || boost > 1 ? 'is-large' : ''}`}
-            style={size !== 1 ? { '--sprite-size': size } as CSSProperties : undefined}
+            style={size !== 1 || moveVars ? { ...(size !== 1 ? { '--sprite-size': size } : {}), ...moveVars } as CSSProperties : undefined}
           >
             <PokemonSprite
               key={pokemon.species}

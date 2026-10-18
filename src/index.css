@@ -1145,6 +1145,93 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   70% { transform: translate(-13%, 8%) scale(0.9, 1.08); filter: brightness(3); } 76% { transform: translate(-6%, 4%) rotate(-5deg); filter: brightness(1.3); }
 }
 
+/* Solar Beam's charging turn: the user soaks up sunlight, glowing brighter and brighter. */
+.fx-solar-charge { animation: solar-charge calc(1000ms * var(--spd, 1)) ease-in; }
+@keyframes solar-charge { 0% { filter: none; } 40% { filter: brightness(1.25) drop-shadow(0 0 8px #ffe066); } 85% { filter: brightness(1.7) drop-shadow(0 0 18px #fff3a0) drop-shadow(0 0 6px #ffffff); } 100% { filter: brightness(1.4) drop-shadow(0 0 10px #ffe066); } }
+
+/*
+ * Moves over 100 power (stage-fx bigMoveClass): the user charges in, leaps, dives from the sky, rampages, casts the
+ * move or explodes. --hit (from the move's layers) is when the motion peaks: reaching the target, sending the move
+ * off, blowing up. Two animations each: the build-up to --hit, then what follows from --hit on.
+ */
+.fx-sig-charge-p1 { --to: translate(60%, -40%) scale(1.1); --back: translate(-10%, 6%) scale(1.06);
+  --trail: drop-shadow(-26px 16px 0 rgb(255 255 255 / 0.45)) drop-shadow(-52px 32px 0 rgb(255 255 255 / 0.2)); }
+.fx-sig-charge-p2 { --to: translate(-60%, 40%) scale(1.1); --back: translate(10%, -6%) scale(1.06);
+  --trail: drop-shadow(26px -16px 0 rgb(255 255 255 / 0.45)) drop-shadow(52px -32px 0 rgb(255 255 255 / 0.2)); }
+.fx-sig-leap-p1, .fx-sig-dive-p1, .fx-sig-rampage-p1 { --to: translate(42%, -30%) scale(1.1); }
+.fx-sig-leap-p2, .fx-sig-dive-p2, .fx-sig-rampage-p2 { --to: translate(-42%, 30%) scale(1.1); }
+.fx-sig-leap-p1 { --up: translate(22%, -75%) scale(1.04) rotate(8deg); }
+.fx-sig-leap-p2 { --up: translate(-22%, -45%) scale(1.04) rotate(-8deg); }
+.fx-sig-dive-p1 { --up: translate(8%, -170%) scale(0.8); --above: translate(62%, -150%) scale(0.9); }
+.fx-sig-dive-p2 { --up: translate(-8%, -150%) scale(0.8); --above: translate(-55%, -90%) scale(0.9); }
+.fx-sig-rampage-p1 { --mid: translate(8%, -5%); }
+.fx-sig-rampage-p2 { --mid: translate(-8%, 5%); }
+.fx-sig-cast-p1 { --recoil: translate(-7%, 5%) scale(0.97); }
+.fx-sig-cast-p2 { --recoil: translate(7%, -5%) scale(0.97); }
+.fx-sig-charge-p1, .fx-sig-charge-p2 { animation: sig-charge calc(var(--hit, 600ms) * var(--spd, 1)) both, sig-return calc(500ms * var(--spd, 1)) ease-out calc(var(--hit, 600ms) * var(--spd, 1)) forwards; }
+.fx-sig-leap-p1, .fx-sig-leap-p2 { animation: sig-leap calc(var(--hit, 600ms) * var(--spd, 1)) both, sig-return calc(500ms * var(--spd, 1)) ease-out calc(var(--hit, 600ms) * var(--spd, 1)) forwards; }
+.fx-sig-dive-p1, .fx-sig-dive-p2 { animation: sig-dive calc(var(--hit, 600ms) * var(--spd, 1)) both, sig-return calc(500ms * var(--spd, 1)) ease-out calc(var(--hit, 600ms) * var(--spd, 1)) forwards; }
+.fx-sig-cast-p1, .fx-sig-cast-p2 { animation: sig-gather calc(var(--hit, 500ms) * var(--spd, 1)) ease-out both, sig-release calc(700ms * var(--spd, 1)) ease-out calc(var(--hit, 500ms) * var(--spd, 1)) forwards; }
+.fx-sig-explode-p1, .fx-sig-explode-p2 { animation: sig-swell calc(var(--hit, 600ms) * var(--spd, 1)) ease-in both, sig-blast calc(900ms * var(--spd, 1)) ease-out calc(var(--hit, 600ms) * var(--spd, 1)) forwards; }
+/* A rampage (Outrage, Thrash, Petal Dance, Raging Fury): three wild blows, at 320, 560 and 800ms (the catalog's hits). */
+.fx-sig-rampage-p1, .fx-sig-rampage-p2 { animation: sig-rampage calc(1100ms * var(--spd, 1)) ease-in-out both; }
+@keyframes sig-charge {
+  0% { transform: none; filter: none; }
+  55% { transform: var(--back); filter: brightness(1.4) drop-shadow(0 0 10px #fff); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  85% { filter: brightness(1.6) var(--trail); }
+  100% { transform: var(--to); filter: brightness(1.7) drop-shadow(0 0 14px #fff); }
+}
+@keyframes sig-leap {
+  0% { transform: none; filter: none; }
+  25% { transform: translate(0, 6%) scale(1.08, 0.88); animation-timing-function: ease-out; }
+  65% { transform: var(--up); filter: brightness(1.2); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  100% { transform: var(--to); filter: brightness(1.7) drop-shadow(0 0 14px #fff); }
+}
+@keyframes sig-dive {
+  0% { transform: none; opacity: 1; filter: none; }
+  18% { transform: translate(0, 6%) scale(1.06, 0.9); filter: brightness(1.4) drop-shadow(0 0 10px #fff); animation-timing-function: ease-in; }
+  48% { transform: var(--up); opacity: 0; }
+  62% { transform: var(--above); opacity: 0; animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  70% { opacity: 1; }
+  100% { transform: var(--to); opacity: 1; filter: brightness(1.9) drop-shadow(0 0 18px #fff); }
+}
+@keyframes sig-return {
+  0% { transform: var(--to); filter: brightness(1.7) drop-shadow(0 0 14px #fff); }
+  25% { transform: var(--to); filter: brightness(1.2); }
+  100% { transform: none; filter: none; }
+}
+@keyframes sig-gather { 0% { transform: none; filter: none; } 100% { transform: scale(1.08) translateY(-2%); filter: brightness(1.6) drop-shadow(0 0 14px #fff); } }
+@keyframes sig-release {
+  0% { transform: scale(1.08) translateY(-2%); filter: brightness(1.6) drop-shadow(0 0 14px #fff); }
+  15%, 45% { transform: var(--recoil); filter: brightness(1.9) drop-shadow(0 0 18px #fff); }
+  100% { transform: none; filter: none; }
+}
+@keyframes sig-swell {
+  0% { transform: none; filter: none; }
+  30% { transform: scale(1.06) translateX(-1.5%); }
+  45% { transform: scale(1.1) translateX(1.5%); filter: brightness(1.5) saturate(1.4); }
+  60% { transform: scale(1.14) translateX(-2%); }
+  75% { transform: scale(1.2) translateX(2%); filter: brightness(2) drop-shadow(0 0 16px #ffb347); }
+  90% { transform: scale(1.26) translateX(-1.5%); }
+  100% { transform: scale(1.32); filter: brightness(3) drop-shadow(0 0 24px #fff); }
+}
+@keyframes sig-blast {
+  0% { transform: scale(1.32); opacity: 1; filter: brightness(3) drop-shadow(0 0 24px #fff); }
+  25% { transform: scale(1.1); opacity: 0.15; filter: brightness(4); }
+  70% { transform: scale(0.96); opacity: 0.35; filter: brightness(0.6) grayscale(0.6); }
+  100% { transform: none; opacity: 1; filter: none; }
+}
+@keyframes sig-rampage {
+  0% { transform: none; filter: none; }
+  15% { transform: scale(1.06); filter: brightness(1.3) saturate(1.5); }
+  29% { transform: var(--to) rotate(5deg); filter: brightness(1.6) saturate(1.5); }
+  40% { transform: var(--mid) rotate(-4deg); }
+  51% { transform: var(--to) rotate(-6deg); filter: brightness(1.6) saturate(1.5); }
+  62% { transform: var(--mid) rotate(4deg); }
+  73% { transform: var(--to) scale(1.04) rotate(6deg); filter: brightness(1.8) saturate(1.6) drop-shadow(0 0 12px #fff); }
+  100% { transform: none; filter: none; }
+}
+
 /* A critical hit: small bold "CRIT" over the Pokémon hit, cyan with a white outline (and a faint shadow outside it, for light backgrounds). */
 .fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(14px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.06em;
   text-shadow: 1.5px 0 0 #fff, -1.5px 0 0 #fff, 0 1.5px 0 #fff, 0 -1.5px 0 #fff, 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 4px rgb(0 40 60 / 0.55); animation-name: fx-crit; }

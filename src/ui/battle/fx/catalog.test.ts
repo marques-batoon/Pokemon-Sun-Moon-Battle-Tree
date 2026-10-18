@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
-import { MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, WARP_MS, WARP_START_MS } from '../../../client/playback';
+import { BIG_MOVE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MS, WARP_MS, WARP_START_MS } from '../../../client/playback';
+import { gen7 } from '../../../team/dex';
+import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import {
-  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, sashSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
+  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  futureHitSpec, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -24,7 +26,7 @@ describe('animation catalog', () => {
   it('picks the animation by type and category for attacks', () => {
     expect(moveSpec(classifyMove('Earthquake'))).toBe(ATTACKS.Ground.physical);
     expect(moveSpec(classifyMove('Earth Power'))).toBe(ATTACKS.Ground.special);
-    expect(moveSpec(classifyMove('Flare Blitz'))).toBe(ATTACKS.Fire.physical);
+    expect(moveSpec(classifyMove('Fire Punch'))).toBe(ATTACKS.Fire.physical);
     expect(moveSpec(classifyMove('Flamethrower'))).toBe(ATTACKS.Fire.special);
   });
 
@@ -293,5 +295,59 @@ describe('type-chart immunities', () => {
     expect(immuneSpec('normal-ghost').layers.find(l => l.kind === 'orb')).toMatchObject({ through: true });
     expect(immuneSpec('fighting-ghost').layers.find(l => l.kind === 'orb')).toMatchObject({ through: true, count: 3 });
     expect(immuneSpec('unknown-pair').layers.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Solar Beam', () => {
+  it('has its own beam of sunlight, and a charging turn with a shaft of light', () => {
+    expect(moveSpec(classifyMove('Solar Beam')).layers.filter(l => l.kind === 'beam')).toHaveLength(2);
+    expect(moveSpec(classifyMove('Solar Beam'))).not.toBe(moveSpec(classifyMove('Energy Ball')));
+    expect(SOLAR_CHARGE.layers.find(l => l.kind === 'pillar')).toMatchObject({ at: 'user' });
+  });
+});
+
+describe('moves over 100 power', () => {
+  const big = [...gen7.moves].filter(m => m.basePower > 100 && m.category !== 'Status' && !m.isZ);
+
+  it('gives every one its own animation, with a length and a motion for its user', () => {
+    expect(big.length).toBeGreaterThan(70);
+    for (const m of big) {
+      expect(SIGNATURE_MOVES[m.id], m.name).toBeDefined();
+      expect(moveSpec(classifyMove(m.name)), m.name).toBe(SIGNATURE_MOVES[m.id]);
+      expect(SIGNATURE_MS[m.id], m.name).toBeGreaterThan(1000);
+    }
+    expect(Object.keys(BIG_MOVE_MS).sort()).toEqual(Object.keys(BIG_MOVES).sort());
+    expect(Object.keys(BIG_MOVE_MOTION).sort()).toEqual(Object.keys(BIG_MOVES).sort());
+    // Each is tailored: no two the same, and none the plain attack of its type.
+    const looks = big.map(m => key(SIGNATURE_MOVES[m.id]));
+    expect(new Set(looks).size).toBe(big.length);
+    for (const m of big) expect(SIGNATURE_MOVES[m.id], m.name).not.toBe(ATTACKS[m.type as keyof typeof ATTACKS].physical);
+  });
+
+  it('times every layer to start before the animation ends, the hits well within it', () => {
+    for (const [id, spec] of Object.entries(BIG_MOVES)) {
+      for (const l of spec.layers) expect((l.delay ?? 0), `${id} ${l.kind}`).toBeLessThan(BIG_MOVE_MS[id] - 300);
+      for (const l of spec.layers.filter(l => l.kind === 'impact')) expect((l.delay ?? 0), id).toBeLessThanOrEqual(BIG_MOVE_MS[id] - 400);
+    }
+  });
+
+  it('fits a few of them to the move', () => {
+    const kinds = (id: string) => BIG_MOVES[id].layers.map(l => l.kind);
+    // Explosion blows up at the user; Draco Meteor and Eruption rain down; Thunder strikes twice from the sky.
+    expect(BIG_MOVES.explosion.layers.some(l => l.kind === 'impact' && l.at === 'user' && l.size >= 600)).toBe(true);
+    expect(kinds('dracometeor').filter(k => k === 'meteor')).toHaveLength(3);
+    expect(kinds('eruption').filter(k => k === 'meteor')).toHaveLength(3);
+    expect(kinds('thunder').filter(k => k === 'bolt')).toHaveLength(2);
+    expect(kinds('hyperbeam')).toContain('beam');
+    expect(BIG_MOVES.prismaticlaser.layers.some(l => l.kind === 'rings' && l.rainbow)).toBe(true);
+    expect(BIG_MOVES.blueflare.layers.find(l => l.kind === 'column')).toMatchObject({ color: '#2a6ae0' });
+    expect(BIG_MOVE_MOTION).toMatchObject({ explosion: 'explode', highjumpkick: 'leap', bravebird: 'dive', outrage: 'rampage', closecombat: 'charge', hydropump: 'cast' });
+  });
+
+  it('has Future Sight and Doom Desire land from above two turns later', () => {
+    expect(futureHitSpec('futuresight')).toBe(FUTURE_HIT.futuresight);
+    expect(futureHitSpec('doomdesire')).toBe(FUTURE_HIT.doomdesire);
+    expect(futureHitSpec('doomdesire')).not.toEqual(futureHitSpec('futuresight'));
+    expect(FUTURE_HIT.futuresight.layers.find(l => l.kind === 'pillar')).toMatchObject({ at: 'user' });
   });
 });

@@ -5,6 +5,7 @@
 import type { MoveFx } from '../../../client/move-class';
 import { isDarkWarp, WARP_DIGIMON } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
+import { BIG_MOVES, FUTURE_HIT } from './big-moves';
 
 export type Anchor = 'user' | 'target';
 export type Shape =
@@ -984,12 +985,31 @@ export function signatureZMoveSpec(moveId: string): FxSpec | null {
 export const SIGNATURE_Z_MOVES = Object.keys(Z_SIGNATURE);
 
 /**
- * Signature moves with their own animation, after the Digimon attacks they're named for.
+ * Moves with their own animation: every move over 100 power (BIG_MOVES, in big-moves.ts; Solar Beam here), and the
+ * Digimon's signature moves, after the attacks they're named for.
  * Gaia Force (WarGreymon's Terra Force): energy gathers into a giant sun over the user, which is
  * hurled at the target and explodes in fire. Cocytus Pulse (MetalGarurumon's Cocytus Breath): a
  * freezing blast of breath that frosts the field and shatters into ice at the target.
  */
 export const SIGNATURE_MOVES: Record<string, FxSpec> = {
+  ...BIG_MOVES,
+  // Solar Beam (on request): light gathers at the user, then a thick beam of sunlight, white at its core, blasts the
+  // target, rings of light riding along it, and bursts on the target in light, sparkles and leaves. Its charging
+  // turn ("absorbed light") is SOLAR_CHARGE.
+  solarbeam: { shake: 'light', layers: [
+    { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffe066', color2: '#fffbe0', count: 20, size: 10, spread: 130, dur: 450 },
+    { kind: 'aura', at: 'user', color: '#ffd84a', size: 230, delay: 100, dur: 450 },
+    { kind: 'rays', at: 'user', color: '#fff6c0', size: 280, delay: 150, dur: 450 },
+    { kind: 'screen', color: '#fff8d0', mode: 'tint', delay: 350, dur: 950 },
+    { kind: 'beam', color: '#bfee6a', color2: '#fffbe0', width: 56, delay: 420, dur: 820 },
+    { kind: 'beam', color: '#fff3a0', color2: '#ffffff', width: 26, delay: 450, dur: 780 },
+    { kind: 'rings', at: 'path', color: '#fff3a0', count: 5, size: 70, delay: 470, dur: 620 },
+    { kind: 'impact', color: '#fffbe0', size: 320, star: true, delay: 600 },
+    { kind: 'rays', at: 'target', color: '#fff3a0', size: 400, delay: 620, dur: 700 },
+    { kind: 'rings', at: 'target', color: '#ffe066', count: 3, size: 320, delay: 640, dur: 600 },
+    { kind: 'particles', at: 'target', shape: 'dot', motion: 'burst', color: '#ffe066', color2: '#c8f07a', count: 26, size: 10, spread: 200, delay: 640, dur: 650 },
+    { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#7ac74c', color2: '#c8f08a', count: 10, size: 14, spread: 170, delay: 660, dur: 700 },
+  ] },
   gaiaforce: { shake: 'strong', layers: [
     { kind: 'screen', color: '#1a0800', mode: 'dim', dur: 1500 },
     { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff9a1f', color2: '#fff3b0', count: 22, size: 16, spread: 170, dur: 700 },
@@ -1272,6 +1292,24 @@ export const SKY_DROPPED: FxSpec = { shake: 'strong', layers: [
   { kind: 'particles', at: 'user', shape: 'rock', motion: 'spray', color: '#a07a4a', color2: '#d8b98a', count: 12, size: 12, spread: 90, delay: 410, dur: 500 },
   { kind: 'particles', at: 'user', shape: 'wisp', motion: 'burst', color: '#d8c4a4', color2: '#f0e6d4', count: 10, size: 22, spread: 100, delay: 420, dur: 460 },
 ] };
+
+/**
+ * Solar Beam's (and Solar Blade's) charging turn, "absorbed light": a shaft of sunlight shines down on the user, motes
+ * of light stream into it and it glows brighter and brighter (sprite class fx-solar-charge), the screen warm with light.
+ */
+export const SOLAR_CHARGE: FxSpec = { layers: [
+  { kind: 'screen', color: '#fff3c8', mode: 'tint', dur: 950 },
+  { kind: 'pillar', at: 'user', color: '#fff3b0', color2: '#ffffff', width: 130, dur: 950 },
+  { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffe066', color2: '#fffbe0', count: 26, size: 10, spread: 160, delay: 100, dur: 700 },
+  { kind: 'particles', at: 'user', shape: 'star', motion: 'fall', color: '#fffbe0', color2: '#ffe066', count: 10, size: 10, spread: 70, delay: 50, dur: 700 },
+  { kind: 'aura', at: 'user', color: '#ffd84a', size: 230, delay: 300, dur: 650 },
+  { kind: 'rays', at: 'user', color: '#fff6c0', size: 270, delay: 420, dur: 550 },
+] };
+
+/** Future Sight or Doom Desire (`id`) lands two turns after it was used: it falls from above onto the Pokémon. */
+export function futureHitSpec(id: string): FxSpec {
+  return FUTURE_HIT[id] ?? FUTURE_HIT.futuresight;
+}
 
 /** A critical hit: small "CRIT" text (cyan, white outline) over the Pokémon hit, with the damage (after the move's animation). */
 export const CRIT: FxSpec = { layers: [

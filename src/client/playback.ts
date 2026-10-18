@@ -64,7 +64,11 @@ export type AnimationKind =
   /** Sky Drop's first turn: its user (`side`/`slot`) takes the target (`target`/`targetSlot`) up into the sky. */
   | 'sky-drop'
   /** Sky Drop's attack: the Pokémon it carried (`side`/`slot`) is dropped from the sky and slams into the ground. */
-  | 'sky-dropped';
+  | 'sky-dropped'
+  /** Solar Beam's (or Solar Blade's) charging turn: the user absorbs sunlight. */
+  | 'solar-charge'
+  /** Future Sight or Doom Desire (`condition`) lands on the Pokémon (`side`/`slot`) two turns after it was used. */
+  | 'future-hit';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -151,8 +155,24 @@ export const PARADOX_START_MS = 1100;
 export const WARP_START_MS = 2600;
 /** Damaging Z-Moves (catalog Z_MOVE_MS). */
 const Z_MOVE_MS = 2200;
+/** Every move over 100 power has its own animation (catalog BIG_MOVES): how long each plays. */
+export const BIG_MOVE_MS: Record<string, number> = {
+  explosion: 1700, selfdestruct: 1500, vcreate: 1300, prismaticlaser: 1600, blastburn: 1800, eruption: 1800, focuspunch: 1400,
+  frenzyplant: 1600, gigaimpact: 1500, headsmash: 1400, hydrocannon: 1700, hyperbeam: 1500, mindblown: 1700, roaroftime: 1600,
+  rockwrecker: 1600, shelltrap: 1400, waterspout: 1700, boomburst: 1500, doomdesire: 1100, freezeshock: 1200, iceburn: 1400,
+  lastresort: 1200, lightofruin: 1600, psychoboost: 1600, skyattack: 1300, steelbeam: 1500, blueflare: 1400, boltstrike: 1200,
+  burnup: 1300, dracometeor: 1800, fleurcannon: 1400, highjumpkick: 1200, leafstorm: 1300, overheat: 1300, skullbash: 1300,
+  steelroller: 1100, solarblade: 1100, belch: 1300, bravebird: 1300, closecombat: 1400, doubleedge: 1300, dragonascent: 1300,
+  flareblitz: 1300, focusblast: 1400, futuresight: 1100, glaiverush: 1200, gunkshot: 1200, headcharge: 1300, headlongrush: 1200,
+  megakick: 1300, megahorn: 1200, meteorbeam: 1300, outrage: 1400, petaldance: 1300, powerwhip: 1200, precipiceblades: 1500,
+  ragingfury: 1300, seedflare: 1300, shadowforce: 1200, superpower: 1300, synchronoise: 1400, technoblast: 1400, thrash: 1400,
+  volttackle: 1300, woodhammer: 1300, zapcannon: 1500, blizzard: 1300, clangingscales: 1500, fireblast: 1300, hurricane: 1300,
+  hydropump: 1300, originpulse: 1300, poltergeist: 1400, steameruption: 1100, thunder: 1100,
+};
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
-export const SIGNATURE_MS: Record<string, number> = { gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500 };
+export const SIGNATURE_MS: Record<string, number> = {
+  ...BIG_MOVE_MS, solarbeam: 1500, gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500,
+};
 /** A damaging Z-Move's category (Physical or Special, from its base move), from the engine's silent hint line, until its move line. */
 const zCategories = new WeakMap<ClientBattle, 'Physical' | 'Special'>();
 export const WARP_MS = 1300;
@@ -176,6 +196,8 @@ export const SASH_MS = 900;
 export const IMMUNE_MS = 1100;
 export const SKY_DROP_MS = 900;
 export const SKY_DROPPED_MS = 900;
+export const SOLAR_CHARGE_MS = 1000;
+export const FUTURE_HIT_MS = 900;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -315,7 +337,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
   const step = (animation: Omit<BattleAnimation, 'id'> | null): PlannedStep => ({ animation, applyLine: true });
 
   switch (cmd) {
-    case 'move': {
+    // "-anim": a move's animation without the move line, when a two-turn move fires on the turn it charges (Solar
+    // Beam in sun, a Power Herb): animated as the move itself.
+    case 'move':
+    case '-anim': {
       const side = sideOf(args[1]);
       const slot = slotOf(args[1]);
       const target = sideOf(args[3]) ?? side;
@@ -438,6 +463,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (effect === 'attract' && cmd !== '-end') return [step({ kind: 'infatuated', ...who, target: null, durationMs: CONFUSED_MS })];
       // A Focus Band lets its holder hang on ("-activate|X|item: Focus Band").
       if (cmd === '-activate' && effect === 'itemfocusband') return [step({ kind: 'sash', ...who, target: null, condition: 'focusband', durationMs: SASH_MS })];
+      // Future Sight / Doom Desire lands ("-end|X|move: Future Sight"); its damage follows.
+      if (cmd === '-end' && (effect === 'futuresight' || effect === 'doomdesire')) {
+        return [step({ kind: 'future-hit', ...who, target: null, condition: effect, durationMs: FUTURE_HIT_MS })];
+      }
       if (cmd === '-activate' && PROTECTIONS.has(effect)) return [step({ kind: 'blocked', ...who, target: null, condition: effect, durationMs: BLOCKED_MS })];
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
@@ -478,6 +507,10 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       return [step({ kind: cmd === '-boost' ? 'boost' : 'unboost', ...at(args[1]), target: null, durationMs: base })];
     }
     case '-prepare': {
+      // Solar Beam / Solar Blade: the user absorbs light ("X absorbed light!").
+      if (toId(args[2]) === 'solarbeam' || toId(args[2]) === 'solarblade') {
+        return [step({ kind: 'solar-charge', ...at(args[1]), target: null, condition: toId(args[2]), durationMs: SOLAR_CHARGE_MS })];
+      }
       // Sky Drop: the user grabs its target and both go up into the sky (StageSpot shows where they went).
       if (toId(args[2]) === 'skydrop' && args[3]) {
         const carried = at(args[3]);

@@ -2,9 +2,10 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, SKY_DROPPED, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
-  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, type FxSpec, type Layer,
 } from './catalog';
+import { BIG_MOVE_MOTION } from './big-moves';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
 import { isDarkWarp } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
@@ -34,6 +35,38 @@ const SIGNATURE_SPRITES: Record<string, { user?: string; target?: string }> = {
   thunderboltblitzkrieg: { user: 'fx-blitz', target: 'fx-blitzed' },
 };
 
+/**
+ * The moves over 100 power (BIG_MOVE_MOTION): the user charges in, leaps, dives from the sky or rampages at its
+ * target (else it casts the move from where it stands), or explodes. By side, as it moves toward the other side.
+ */
+function bigMoveClass(id: string, side: Side, atFoe: boolean): string | null {
+  const motion = BIG_MOVE_MOTION[id];
+  if (!motion) return null;
+  const toward = motion === 'charge' || motion === 'leap' || motion === 'dive' || motion === 'rampage';
+  return `fx-sig-${toward && !atFoe ? 'cast' : motion}-${side}`;
+}
+
+const hitsTarget = (l: Layer) => l.kind === 'impact' && (l.at ?? 'target') === 'target';
+const sendsOff = (l: Layer) =>
+  ['orb', 'beam', 'bolt', 'meteor', 'slash', 'column', 'gust'].includes(l.kind) || hitsTarget(l) || (l.kind === 'rings' && l.at === 'path')
+  || ((l.kind === 'vortex' || l.kind === 'pillar') && l.at === 'target');
+const firstDelay = (layers: Layer[]) => (layers.length ? Math.min(...layers.map(l => l.delay ?? 0)) : null);
+
+/**
+ * CSS variables for the user's sprite in a move over 100 power: --hit, when its motion peaks (the moment it reaches
+ * the target, sends the move off, or blows up), from the move's layers.
+ */
+export function spriteVars(side: Side, slot: number, anim: BattleAnimation | null): CSSProperties | undefined {
+  if (anim?.kind !== 'move' || !anim.fx || anim.still || anim.fx.kind !== 'attack' || !actsAt(anim, side, slot)) return undefined;
+  const motion = BIG_MOVE_MOTION[anim.fx.moveId];
+  if (!motion || motion === 'rampage') return undefined;
+  const { layers } = moveSpec(anim.fx);
+  const hit = motion === 'explode'
+    ? firstDelay(layers.filter(l => l.kind === 'impact' && l.at === 'user'))
+    : firstDelay(layers.filter(motion === 'cast' ? sendsOff : hitsTarget));
+  return { '--hit': `${hit ?? 500}ms` } as CSSProperties;
+}
+
 /** Animation class for the sprite at one position. a/b variants restart CSS animations on consecutive events. */
 export function spriteClass(side: Side, slot: number, anim: BattleAnimation | null): string {
   if (!anim) return '';
@@ -55,7 +88,11 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
       const fx = anim.fx;
       if (anim.still || !fx) return `fx-power-${v}`;
       if (signature?.user) return `${signature.user}-${side}`;
-      const atFoe = anim.target && anim.target !== side;
+      const atFoe = !!anim.target && anim.target !== side;
+      if (fx.kind === 'attack') {
+        const big = bigMoveClass(fx.moveId, side, atFoe);
+        if (big) return big;
+      }
       switch (fx.kind) {
         // Physical Z-Moves charge at the target; special ones are unleashed from where the user stands.
         case 'z': return fx.category === 'Special' ? `fx-zcast-${side}` : `fx-zuser-${side}`;
@@ -89,6 +126,7 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'balloon-in': return 'fx-balloon-float';
     case 'sash': return `fx-brace-${v}`;
     case 'sky-dropped': return `fx-dropped-${side}`;
+    case 'solar-charge': return 'fx-solar-charge';
     case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
     case 'ability': {
       // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
@@ -154,6 +192,8 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'immune': return immuneSpec(anim.condition ?? '');
     case 'sky-drop': return SKY_DROP;
     case 'sky-dropped': return SKY_DROPPED;
+    case 'solar-charge': return SOLAR_CHARGE;
+    case 'future-hit': return futureHitSpec(anim.condition ?? 'futuresight');
     case 'hit': return anim.crit ? CRIT : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':

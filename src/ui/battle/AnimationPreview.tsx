@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -24,10 +24,13 @@ import { StageSpot } from './StageSpot';
 type Side = 'p1' | 'p2';
 type Step = Omit<BattleAnimation, 'id'>;
 
+const SIGNATURE_MS_IDS = Object.keys(SIGNATURE_MS);
 /** One physical and one special example per type, then status families, draining moves and Z-Moves. */
 const GROUPS: { label: string; moves: string[] }[] = [
-  { label: 'Physical', moves: ['Return', 'Flare Blitz', 'Waterfall', 'Wild Charge', 'Leaf Blade', 'Icicle Crash', 'Close Combat', 'Poison Jab', 'Earthquake', 'Brave Bird', 'Zen Headbutt', 'X-Scissor', 'Stone Edge', 'Shadow Claw', 'Outrage', 'Crunch', 'Iron Head', 'Play Rough'] },
-  { label: 'Special', moves: ['Hyper Voice', 'Flamethrower', 'Hydro Pump', 'Thunderbolt', 'Energy Ball', 'Ice Beam', 'Aura Sphere', 'Sludge Bomb', 'Earth Power', 'Air Slash', 'Psychic', 'Bug Buzz', 'Power Gem', 'Shadow Ball', 'Dragon Pulse', 'Dark Pulse', 'Flash Cannon', 'Moonblast'] },
+  { label: 'Physical', moves: ['Return', 'Fire Punch', 'Waterfall', 'Wild Charge', 'Leaf Blade', 'Icicle Crash', 'Cross Chop', 'Poison Jab', 'Earthquake', 'Drill Peck', 'Zen Headbutt', 'X-Scissor', 'Stone Edge', 'Shadow Claw', 'Dragon Claw', 'Crunch', 'Iron Head', 'Play Rough'] },
+  { label: 'Special', moves: ['Hyper Voice', 'Flamethrower', 'Surf', 'Thunderbolt', 'Energy Ball', 'Ice Beam', 'Aura Sphere', 'Sludge Bomb', 'Earth Power', 'Air Slash', 'Psychic', 'Bug Buzz', 'Power Gem', 'Shadow Ball', 'Dragon Pulse', 'Dark Pulse', 'Flash Cannon', 'Moonblast'] },
+  // Every move over 100 power has its own animation (catalog BIG_MOVES, plus Solar Beam): strongest first.
+  { label: 'Over 100 power', moves: [...SIGNATURE_MS_IDS].map(id => gen7.moves.get(id)).filter(m => !!m && m.basePower > 100).sort((a, b) => b!.basePower - a!.basePower || a!.name.localeCompare(b!.name)).map(m => m!.name) },
   { label: 'Status', moves: ['Swords Dance', 'Calm Mind', 'Charge', 'Growl', 'Screech', 'Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract', 'Leech Seed', 'Substitute', 'Protect', 'Detect', "King's Shield", 'Spiky Shield', 'Baneful Bunker', 'Recover', 'Roost', 'Rain Dance', 'Sunny Day', 'Electric Terrain', 'Grassy Terrain', 'Psychic Terrain', 'Misty Terrain', 'Trick Room', 'Magic Room', 'Wonder Room', 'Gravity', 'Reflect', 'Light Screen', 'Aurora Veil', 'Safeguard', 'Mist', 'Stealth Rock', 'Spikes', 'Tailwind', 'Roar'] },
   { label: 'Draining', moves: ['Giga Drain', 'Drain Punch', 'Draining Kiss', 'Leech Life', 'Horn Leech'] },
   {
@@ -128,6 +131,8 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
   const target = fx.category === 'Status' && ['powerup', 'protect', 'heal', 'substitute', 'field'].includes(fx.kind) && fx.field !== 'hazard' ? side : foe;
   const steps: Step[] = [];
   if (fx.kind === 'z') steps.push({ kind: 'zpower', side, target: null, durationMs: 1100 });
+  // Solar Beam: its charging turn (absorbing light) first.
+  if (fx.moveId === 'solarbeam') steps.push({ kind: 'solar-charge', side, target: null, condition: 'solarbeam', durationMs: SOLAR_CHARGE_MS });
   steps.push({ kind: 'move', side, target, moveName: name, moveType: fx.type, moveCategory: fx.category, fx, durationMs: moveDuration(fx) });
   if (fx.moveId === 'charge') steps.push({ kind: 'charged', side, target: null, durationMs: CHARGED_MS });
   if (fx.kind === 'substitute' && !f.sub[side]) {
@@ -150,6 +155,8 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
   if (fx.field === 'screen' && !f.shields[side].includes(fx.moveId)) {
     steps.push({ kind: 'side-start', side, target: null, condition: fx.moveId, durationMs: SIDE_MS });
   }
+  // Future Sight / Doom Desire: shown landing straight away (two turns later in battle).
+  if (fx.moveId === 'futuresight' || fx.moveId === 'doomdesire') steps.push({ kind: 'future-hit', side: foe, target: null, condition: fx.moveId, durationMs: FUTURE_HIT_MS });
   if (fx.category !== 'Status' && f.protect[foe]) {
     steps.push({ kind: 'blocked', side: foe, target: null, condition: f.protect[foe]!, durationMs: BLOCKED_MS });
   } else if (fx.category !== 'Status') {

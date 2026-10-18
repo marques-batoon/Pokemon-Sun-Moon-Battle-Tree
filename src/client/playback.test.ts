@@ -477,3 +477,60 @@ describe('planLine: Sky Drop landing', () => {
     expect(planned[13].map(s => s.animation?.kind)).toEqual(['hit']);
   });
 });
+
+describe('planLine: Solar Beam', () => {
+  const run = (p1: string, p2: string, turns: number) => {
+    const sim = new Battle({ formatid: 'gen7customgame' as ID, seed: '1,2,3,4' });
+    sim.setPlayer('p1', { name: 'A', team: Teams.pack(Teams.import(p1)) });
+    sim.setPlayer('p2', { name: 'B', team: Teams.pack(Teams.import(p2)) });
+    sim.makeChoices('team 1', 'team 1');
+    for (let i = 0; i < turns; i++) sim.makeChoices('default', 'default');
+    const client = new ClientBattle(new Generations(Dex));
+    const planned: Planned[] = [];
+    for (let i = 0; i < sim.log.length; i++) {
+      if (sim.log[i].startsWith('|split|')) { i++; continue; }
+      const { args, kwArgs } = Protocol.parseBattleLine(sim.log[i]);
+      for (const s of planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)) if (s.animation) planned.push(s.animation);
+      client.add(args, kwArgs);
+    }
+    return planned.filter(a => a.kind === 'solar-charge' || (a.kind === 'move' && a.moveName === 'Solar Beam'));
+  };
+  const venusaur = (ability: string) => `Venusaur\nAbility: ${ability}\nLevel: 50\n- Solar Beam`;
+
+  it('absorbs light on the charging turn, then fires on the next', () => {
+    expect(run(venusaur('Overgrow'), `Snorlax\nAbility: Thick Fat\nLevel: 50\n- Splash`, 2).map(a => [a.kind, a.still ?? null, a.durationMs])).toEqual([
+      ['move', true, 450], ['solar-charge', null, 1000], ['move', false, 1500],
+    ]);
+  });
+
+  it('fires the same turn in sun (the "-anim" line is animated as the move)', () => {
+    const steps = run(venusaur('Chlorophyll'), `Torkoal\nAbility: Drought\nLevel: 50\n- Splash`, 1);
+    expect(steps.map(a => [a.kind, a.still ?? null])).toEqual([['move', true], ['solar-charge', null], ['move', false]]);
+    expect(steps[2]).toMatchObject({ side: 'p1', target: 'p2', moveType: 'Grass' });
+  });
+});
+
+describe('planLine: moves over 100 power', () => {
+  const plan = (line: string) => {
+    const { args, kwArgs } = Protocol.parseBattleLine(line);
+    return planLine(args as readonly string[], kwArgs as Record<string, unknown>, new ClientBattle(new Generations(Dex)), true);
+  };
+
+  it('plays each for its own length', () => {
+    expect(plan('|move|p1a: Snorlax|Hyper Beam|p2a: Mew')[0].animation?.durationMs).toBe(1500);
+    expect(plan('|move|p1a: Electrode|Explosion|p2a: Mew|[spread] p2a')[0].animation?.durationMs).toBe(1700);
+    expect(plan('|move|p1a: Raikou|Thunder|p2a: Mew')[0].animation?.durationMs).toBe(1100);
+    // Under 100 power: the type's attack.
+    expect(plan('|move|p1a: Raikou|Thunderbolt|p2a: Mew')[0].animation?.durationMs).toBe(1000);
+  });
+
+  it('shows Future Sight landing two turns later, before its damage', () => {
+    const turns: [string, string][] = [['move 1', 'move 1'], ['move 1', 'move 1'], ['move 1', 'move 1']];
+    const planned = planBattle(`Alakazam\nAbility: Synchronize\nLevel: 50\n- Future Sight`, `Snorlax\nAbility: Thick Fat\nLevel: 100\nEVs: 252 HP / 252 SpD\n- Splash`, turns);
+    const landing = planned.findIndex(a => a.kind === 'future-hit');
+    expect(landing).toBeGreaterThan(0);
+    expect(planned[landing]).toMatchObject({ side: 'p2', condition: 'futuresight', durationMs: 900 });
+    expect(planned[landing + 1]).toMatchObject({ kind: 'hit', side: 'p2' });
+    expect(plan('|-end|p1a: Mew|move: Doom Desire')[0].animation).toMatchObject({ kind: 'future-hit', side: 'p1', condition: 'doomdesire' });
+  });
+});
