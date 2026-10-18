@@ -1,7 +1,7 @@
 import { Dex, type ActiveMove, type Battle, type Move, type Pokemon, type PokemonSet, type Species, type TeamValidator } from '@pkmn/sim';
 import { RULES } from '../data/battle-tree';
 import { AURA_GUARD, CHAMPIONS_MOD, championsOverrides, NEW_LEARNSET_IDS, NEW_MOVE_IDS } from '../data/champions';
-import { customOverrides, isCustomLearn, mergeModData } from '../data/custom';
+import { canHoldCustomItem, customOverrides, HITMONCHANIUM_Z, isCustomLearn, mergeModData } from '../data/custom';
 import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem } from '../data/custom/digimon';
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_SIDE } from './custom';
@@ -32,7 +32,7 @@ let registered = false;
 /**
  * Gen 7 plus the Pokémon Champions Megas (see DATA_NOTES.md): their stones, the
  * Pokémon, moves and Abilities they need, Champions' Mega data, and Aura Guard;
- * plus the custom additions (Mega Politoed, Poliwrathium Z) and duration tags
+ * plus the custom additions (Mega Politoed, Poliwrathium Z, Hitmonchanium Z) and duration tags
  * on field-effect start messages.
  */
 function registerChampionsMod(): void {
@@ -79,10 +79,11 @@ function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSou
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-/** Paradoxorbs only go on Pokémon with that kind of Paradox form; a warp item only on its own Digimon. */
+/** Paradoxorbs only go on Pokémon with that kind of Paradox form; a warp item only on its own Digimon; Hitmonchanium Z only on Hitmonchan. */
 function onValidateSet(this: TeamValidator, set: PokemonSet): string[] | undefined {
   const kind = paradoxKindOfItem(set.item);
   const species = this.dex.species.get(set.species);
+  if (!canHoldCustomItem(species.name, set.item)) return [`${species.name} can't hold ${this.dex.items.get(set.item).name}: only ${HITMONCHANIUM_Z.user} can.`];
   if ((!kind && !isWarpItem(set.item)) || canHoldItem(species.name, set.item)) return undefined;
   const item = this.dex.items.get(set.item);
   if (!kind) return [`${species.name} can't hold ${item.name}: only ${item.itemUser?.join(' or ')} can Warp Digivolve with it.`];

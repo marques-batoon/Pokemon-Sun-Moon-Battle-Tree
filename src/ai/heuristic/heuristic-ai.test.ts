@@ -5,7 +5,6 @@ import { seedFromString } from '../../engine/seed';
 import { BattleSession } from '../../engine/session';
 import type { SimRequest } from '../../engine/sim-types';
 import { planOpponent } from '../../run/selection';
-import { DEFAULT_SETTINGS } from '../../run/types';
 import { RandomAI } from '../random-ai';
 import { HeuristicAI } from './heuristic-ai';
 
@@ -192,8 +191,8 @@ describe('HeuristicAI switching', () => {
 describe('HeuristicAI in full Battle Tree battles', () => {
   const runBattle = (seed: string, p1: 'heuristic' | 'random', p2: 'heuristic' | 'random', a: number, bBattle: number) => {
     const warnings: string[] = [];
-    const left = planOpponent(`${seed}-l`, 'singles', 'super', a, DEFAULT_SETTINGS);
-    const right = planOpponent(`${seed}-r`, 'singles', 'super', bBattle, DEFAULT_SETTINGS);
+    const left = planOpponent(`${seed}-l`, 'singles', 'super', a);
+    const right = planOpponent(`${seed}-r`, 'singles', 'super', bBattle);
     const session = new BattleSession({
       format: 'singles',
       teamPreview: false,
@@ -252,6 +251,21 @@ describe('calc bridge', () => {
       return !described.has(name) && !calcGen.species.get(name.toLowerCase().replace(/[^a-z0-9]/g, '') as never);
     });
     expect(missing).toEqual([]);
+  });
+
+  it('estimates Hitmonchanium Z moves with their own power and Iron Fist, and Hitmonchan\'s punching Close Combat', async () => {
+    const { calcErrors, estimateDamage } = await import('./calc');
+    const before = calcErrors.count;
+    const foe = `Snorlax @ Leftovers\nAbility: Thick Fat\nEVs: 252 HP / 252 Def\n- Rest`;
+    const chan = (item: string, ability: string) => scenario(`Hitmonchan @ ${item}\nAbility: ${ability}\nEVs: 252 Atk\nAdamant Nature\n- Thunder Punch\n- Close Combat`, foe);
+    const z = (b: Battle) => estimateDamage(b, b.p1.active[0], b.p2.active[0], 'thunderpunch', { useZ: true }).max;
+    const cc = (b: Battle) => estimateDamage(b, b.p1.active[0], b.p2.active[0], 'closecombat').max;
+    // Thunderbolt Blitzkrieg: 145 power, a punch (x1.2 with Iron Fist), vs Electrium Z's Gigavolt Havoc (140, no boost).
+    const blitz = z(chan('Hitmonchanium Z', 'Iron Fist'));
+    const havoc = z(chan('Electrium Z', 'Iron Fist'));
+    expect(blitz / havoc).toBeGreaterThan(1.15);
+    expect(cc(chan('Leftovers', 'Iron Fist')) / cc(chan('Leftovers', 'Keen Eye'))).toBeGreaterThan(1.15);
+    expect(calcErrors.count).toBe(before);
   });
 
   it('estimates real damage against Aegislash (default forme name differs in the calc)', async () => {

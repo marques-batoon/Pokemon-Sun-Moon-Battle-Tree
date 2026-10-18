@@ -5,6 +5,7 @@ import type { Battle as ClientBattle } from '@pkmn/client';
 import { isWarpForm } from '../data/custom/digimon';
 import { paradoxKindOfForm } from '../data/custom/paradox';
 import { classifyMove, type MoveFx } from './move-class';
+import { CARRIED } from './semi-invulnerable';
 import { gen7 } from '../team/dex';
 
 export type AnimationKind =
@@ -61,7 +62,9 @@ export type AnimationKind =
    */
   | 'immune'
   /** Sky Drop's first turn: its user (`side`/`slot`) takes the target (`target`/`targetSlot`) up into the sky. */
-  | 'sky-drop';
+  | 'sky-drop'
+  /** Sky Drop's attack: the Pokémon it carried (`side`/`slot`) is dropped from the sky and slams into the ground. */
+  | 'sky-dropped';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -172,6 +175,7 @@ export const BALLOON_IN_MS = 1100;
 export const SASH_MS = 900;
 export const IMMUNE_MS = 1100;
 export const SKY_DROP_MS = 900;
+export const SKY_DROPPED_MS = 900;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -183,7 +187,7 @@ const isAbsorb = (id: string) => (ABSORB_ABILITIES as readonly string[]).include
 /** "ability: Water Absorb" (a [from] tag or a -start effect) -> "Water Absorb". */
 const abilityName = (tag: unknown) => (typeof tag === 'string' ? /^ability: (.+)$/i.exec(tag)?.[1] ?? null : null);
 /** Who used the last move (and its type), so an Ability's animation can show the attack being taken in. */
-const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number; type?: string }>();
+const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number; type?: string; id?: string }>();
 /** Pokémon a critical hit was just announced for ("-crit" comes before the damage), by side and slot. */
 const pendingCrits = new WeakMap<ClientBattle, Set<string>>();
 const critKey = (ident: string | undefined) => { const { side, slot } = at(ident); return `${side}${slot}`; };
@@ -324,7 +328,7 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const zCategory = zCategories.get(battle);
       if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
       zCategories.delete(battle);
-      lastMoveUser.set(battle, { side, slot, type: fx.type });
+      lastMoveUser.set(battle, { side, slot, type: fx.type, id: toId(args[2]) });
       pendingCrits.delete(battle);
       // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed). Taken in by an
       // Ability (Water Absorb...): the Ability's own animation shows it instead.
@@ -356,7 +360,12 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const kind = cmd === '-heal' ? 'heal' : 'from' in kwArgs ? 'residual' : 'hit';
       // Residual damage remembers its cause (burn, poison, confusion, weather...) for its animation.
       const crit = kind === 'hit' && takeCrit(battle, args[1]);
-      return [step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, ...(crit ? { crit } : {}), durationMs: base })];
+      const hit = step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, ...(crit ? { crit } : {}), durationMs: base });
+      // Sky Drop's attack lands on the Pokémon it carried: first it's dropped from the sky and slams into the ground.
+      if (kind === 'hit' && lastMoveUser.get(battle)?.id === 'skydrop' && mon && CARRIED in mon.volatiles) {
+        return [{ animation: { kind: 'sky-dropped', side, slot, target: null, durationMs: SKY_DROPPED_MS }, applyLine: false }, hit];
+      }
+      return [hit];
     }
     case '-crit': {
       // Shown with the damage that follows (or the Substitute taking it): "CRIT" over the Pokémon.

@@ -1,7 +1,7 @@
 import { ALL_STAR_LEGEND_EVERY, BOSSES, BRACKETS, multiPartners, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
-import type { PlannedOpponent, PlannedTrainer, RunSettings } from './types';
+import type { PlannedOpponent, PlannedTrainer } from './types';
 
 export type ScheduleSlot =
   | { type: 'boss'; bossKey: string }
@@ -43,43 +43,24 @@ export function specialPool(): { trainer: SpecialTrainer; weight: number }[] {
     .map(trainer => ({ trainer, weight: (trainer.weight * trainer.versions.length) / 2 }));
 }
 
-/**
- * The regular-trainer pool used when a locked Anabel is rolled: the bracket of
- * the previous battle (APPROXIMATION, see brackets.json anabelFallback).
- */
-export function anabelFallbackPool(format: Format, course: Course, battle: number): string {
-  for (let n = battle - 1; n >= 1; n--) {
-    const slot = scheduleSlot(format, course, n);
-    if (slot.type === 'pool') return slot.poolKey;
-  }
-  throw new Error(`No regular pool before ${course} battle ${battle}`);
-}
-
 export interface TrainerChoice {
   trainer: Trainer;
-  replacedAnabel: boolean;
 }
 
 /**
  * Draws the opponent trainer for battle N (uniform within pools; special pool by weight).
  * `exclude`: trainer ids that can't be drawn (Multi: the player's partner and the first opponent).
+ * Anabel is always in the special pool (app choice, 2026-10-17: in the game she needs Guzzlord's chapter of the
+ * Looker episode; the option to leave her out was removed on request).
  */
 export function chooseTrainer(
-  format: Format, course: Course, battle: number, settings: RunSettings, rng: Rng, exclude: ReadonlySet<number> = new Set(),
+  format: Format, course: Course, battle: number, rng: Rng, exclude: ReadonlySet<number> = new Set(),
 ): TrainerChoice {
   const slot = scheduleSlot(format, course, battle);
   const allowed = (ids: number[]) => ids.filter(id => !exclude.has(id));
-  if (slot.type === 'boss') return { trainer: TRAINERS[chooseBoss(slot.bossKey, rng).trainerId], replacedAnabel: false };
-  if (slot.type === 'pool') return { trainer: TRAINERS[rng.pick(allowed(BRACKETS.pools[slot.poolKey].trainerIds))], replacedAnabel: false };
-
-  // All Star Mode has no regular trainers to stand in for a locked Anabel: she just isn't drawn.
-  const locked = (t: SpecialTrainer) => course === 'allstar' && t.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked;
-  const special = rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id) && !locked(t.trainer)), t => t.weight).trainer;
-  if (special.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked) {
-    const pool = allowed(BRACKETS.pools[anabelFallbackPool(format, course, battle)].trainerIds);
-    return { trainer: TRAINERS[rng.pick(pool)], replacedAnabel: true };
-  }
-  return { trainer: special, replacedAnabel: false };
+  if (slot.type === 'boss') return { trainer: TRAINERS[chooseBoss(slot.bossKey, rng).trainerId] };
+  if (slot.type === 'pool') return { trainer: TRAINERS[rng.pick(allowed(BRACKETS.pools[slot.poolKey].trainerIds))] };
+  return { trainer: rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id)), t => t.weight).trainer };
 }
 
 /**
@@ -140,14 +121,13 @@ const samePersonIds = (id: number) => TRAINERS.filter(t => samePerson(t, TRAINER
 export const battleSeedText = (runSeed: string, battle: number) => `${runSeed}|battle-${battle}`;
 
 /** `lead`: a set that must lead (Tate and Liza's pairs); otherwise the trainer's own lead, if any (Tai's Agumon). */
-function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
+function planTrainer({ trainer }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
   const leadId = lead ?? trainer.leadSetId;
   const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng, leadId === undefined ? undefined : SETS[leadId]);
   return {
     trainerId: trainer.id,
     displayName: displayName(trainer),
     kind: trainer.kind,
-    replacedAnabel,
     setIds: sets.map(s => s.id),
     team: sets.map(s => treeSetToPokemonSet(s, trainer.iv, rng)),
   };
@@ -161,7 +141,7 @@ function planTrainer({ trainer, replacedAnabel }: TrainerChoice, format: Format,
  * their pairs (TRAINER_PAIRS); with one of them as your partner, the other doesn't appear.
  */
 export function planOpponent(
-  runSeed: string, format: Format, course: Course, battle: number, settings: RunSettings, partnerId?: number,
+  runSeed: string, format: Format, course: Course, battle: number, partnerId?: number,
 ): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|opponent`);
@@ -174,17 +154,17 @@ export function planOpponent(
   if (slot.type === 'boss') {
     // A Battle Legend you have as your partner isn't drawn: another battle-50 pair comes instead.
     const boss = chooseBoss(slot.bossKey, rng, exclude);
-    const first = planTrainer({ trainer: TRAINERS[boss.trainerId], replacedAnabel: false }, format, rng);
+    const first = planTrainer({ trainer: TRAINERS[boss.trainerId] }, format, rng);
     if (!multi) return { battle, ...first, seedText };
-    return { battle, ...first, seedText, second: planTrainer({ trainer: TRAINERS[boss.partnerTrainerId!], replacedAnabel: false }, format, rng) };
+    return { battle, ...first, seedText, second: planTrainer({ trainer: TRAINERS[boss.partnerTrainerId!] }, format, rng) };
   }
   // A trainer whose every Multi Battle partner is out (your partner) can't be drawn either.
   if (multi) for (const t of TRAINERS) if (multiPartners(t.id).length && multiPartners(t.id).every(id => exclude.has(id))) exclude.add(t.id);
-  const firstChoice = chooseTrainer(format, course, battle, settings, rng, exclude);
+  const firstChoice = chooseTrainer(format, course, battle, rng, exclude);
   const partners = multi ? multiPartners(firstChoice.trainer.id).filter(id => !exclude.has(id)) : [];
   if (partners.length) {
     // Izzy brings his partner (Tai), who goes first.
-    const partner = planTrainer({ trainer: TRAINERS[partners.length === 1 ? partners[0] : rng.pick(partners)], replacedAnabel: false }, format, rng);
+    const partner = planTrainer({ trainer: TRAINERS[partners.length === 1 ? partners[0] : rng.pick(partners)] }, format, rng);
     return { battle, ...partner, seedText, second: planTrainer(firstChoice, format, rng) };
   }
   const pair = multi ? pairedTrainer(firstChoice.trainer.id) : null;
@@ -192,7 +172,7 @@ export function planOpponent(
     const leads = rng.pick(pair.pair.multiLeads);
     const at = (id: number) => leads[pair.pair.trainerIds.indexOf(id)];
     const first = planTrainer(firstChoice, format, rng, at(firstChoice.trainer.id));
-    const second = planTrainer({ trainer: TRAINERS[pair.partnerId], replacedAnabel: false }, format, rng, at(pair.partnerId));
+    const second = planTrainer({ trainer: TRAINERS[pair.partnerId] }, format, rng, at(pair.partnerId));
     return { battle, ...first, seedText, second };
   }
   const first = planTrainer(firstChoice, format, rng);
@@ -204,15 +184,14 @@ export function planOpponent(
   for (const t of TRAINERS) if (multiPartners(t.id).length) exclude.add(t.id);
   // 15% of the time (on request), the teammate is someone the first opponent has pair greetings with (by weight).
   if (slot.type === 'special') {
-    const locked = (t: SpecialTrainer) => t.requires === 'lookerGuzzlordChapter' && !settings.anabelUnlocked;
     const friends = new Set(pairGreetingPartners(first.trainerId));
-    const candidates = specialPool().filter(p => friends.has(p.trainer.id) && !exclude.has(p.trainer.id) && !locked(p.trainer));
+    const candidates = specialPool().filter(p => friends.has(p.trainer.id) && !exclude.has(p.trainer.id));
     if (candidates.length && rng.next() < PAIR_TEAMMATE_CHANCE) {
       const friend = rng.weighted(candidates, p => p.weight).trainer;
-      return { battle, ...first, seedText, second: planTrainer({ trainer: friend, replacedAnabel: false }, format, rng) };
+      return { battle, ...first, seedText, second: planTrainer({ trainer: friend }, format, rng) };
     }
   }
-  const second = chooseTrainer(format, course, battle, settings, rng, exclude);
+  const second = chooseTrainer(format, course, battle, rng, exclude);
   return { battle, ...first, seedText, second: planTrainer(second, format, rng) };
 }
 
@@ -230,7 +209,7 @@ export function planChosenOpponent(runSeed: string, format: Format, battle: numb
     if (trainer?.kind !== 'special' && trainer?.kind !== 'legend') throw new Error('Choose special trainers or Battle Legends.');
     const size = teamSizeFor(trainer, format);
     if (!canField(trainer, size)) throw new Error(`${displayName(trainer)} can't field ${size} Pokémon here.`);
-    return { trainer, replacedAnabel: false };
+    return { trainer };
   };
   const chosen = choose(trainerIds[0]);
   if (format !== 'multi') return { battle, ...planTrainer(chosen, format, rng), seedText };

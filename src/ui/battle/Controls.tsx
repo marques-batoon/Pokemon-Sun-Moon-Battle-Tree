@@ -71,7 +71,7 @@ function MoveGrid({ active, warp = false, dark = false, mega, setMega, megaAllow
           // Z-Moves never miss.
           const accuracy = zInfo ? '—' : data ? (data.accuracy === true ? '—' : `${data.accuracy}%`) : '';
           const title = !data ? m.move
-            : zInfo ? `${zInfo.name} (Z-Move from ${data.name}) · ${type} ${category} · ${zInfo.effect ? `Z-Power: ${zInfo.effect}` : `Power ${power}`} · Accuracy ${accuracy}`
+            : zInfo ? `${zInfo.name} (Z-Move from ${data.name}) · ${type} ${category} · ${zInfo.effect ? `Z-Power: ${zInfo.effect}` : `Power ${power}`} · Accuracy ${accuracy}${zInfo.desc ? `\n${zInfo.desc}` : ''}`
             : `${data.name} · ${type} ${category} · Power ${power} · Accuracy ${accuracy}\n${data.shortDesc ?? ''}`;
           return (
             <button

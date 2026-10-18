@@ -1,10 +1,10 @@
 import type { SemiInvulnerable } from '../../client/semi-invulnerable';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { classifyMove } from '../../client/move-class';
-import { POLIWRATHIUM_Z } from '../../data/custom';
+import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { isDarkWarp, WARP_DIGIMON } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, moveDuration, ROOMS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -13,7 +13,7 @@ import { useAppSettings } from '../useAppSettings';
 import { useElementSize } from '../useElementSize';
 import { horizonVar } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
-import { effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
+import { effectAnchors, effectPoints, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
 import { StageBackdrop } from './StageBackdrop';
@@ -41,13 +41,16 @@ const GROUPS: { label: string; moves: string[] }[] = [
       'Guardian of Alola', 'Soul-Stealing 7-Star Strike', 'Clangorous Soulblaze', 'Splintered Stormshards', "Let's Snuggle Forever", 'Searing Sunraze Smash',
       'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
   },
+  { label: 'Hitmonchanium Z (custom)', moves: Object.values(HITMONCHANIUM_Z.moves).map(z => z.name) },
   { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster'] },
 ];
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
 const zFromBaseMove = (name: string) => classifyMove(name).kind === 'z' && gen7.moves.get(name)?.basePower === 1;
 const SPECIES: Record<Side, [string, string]> = { p1: ['Salamence', 'Salamence-Mega'], p2: ['Garchomp', 'Garchomp-Mega'] };
-/** Poliwrath's own Z-Moves are previewed with Poliwrath as the user. */
+/** Poliwrath's and Hitmonchan's own Z-Moves are previewed with them as the user. */
 const POLIWRATH_Z_MOVES = new Set(Object.values(POLIWRATHIUM_Z.moves).map(z => z.name));
+const HITMONCHAN_Z_MOVES = new Set(Object.values(HITMONCHANIUM_Z.moves).map(z => z.name));
+const zUser = (move: string) => (POLIWRATH_Z_MOVES.has(move) ? POLIWRATHIUM_Z.user : HITMONCHAN_Z_MOVES.has(move) ? HITMONCHANIUM_Z.user : null);
 /** Warp Digivolution preview: the chosen Digimon steps in, then becomes its warp form. */
 const baseOfWarp = (form: string) => WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ?? form;
 const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
@@ -363,6 +366,15 @@ export function AnimationPreview() {
             <option value="carried">Carried off by Sky Drop</option>
           </select>
         </label>
+        <button disabled={hidden[other(side)] !== 'carried'} onClick={() => {
+          // Sky Drop's attack: the user comes down, and the Pokémon it carried is dropped (then takes the hit).
+          setHidden(h => ({ ...h, [side]: null }));
+          play([
+            { kind: 'sky-dropped', side: other(side), target: null, durationMs: SKY_DROPPED_MS },
+            { kind: 'hit', side: other(side), target: null, hpDelta: -30, durationMs: 600 },
+          ]);
+          setTimeout(() => setHidden(h => ({ ...h, [other(side)]: null })), SKY_DROPPED_MS * speed);
+        }}>Sky Drop lands</button>
         <button disabled={!held.length} onClick={() => play(held)}>Held back</button>
         <button onClick={endTurn}>End turn</button>
         <button disabled={!anyShields} onClick={() => play((['p1', 'p2'] as const).flatMap(s => [...field.shields[s], ...(field.tailwind[s] ? ['tailwind'] : [])].map(c => (
@@ -377,7 +389,7 @@ export function AnimationPreview() {
           {(['p2', 'p1'] as const).filter(s => field.tailwind[s]).map(s => <TailwindCue key={s} side={s} />)}
           {(['p2', 'p1'] as const).map(s => (
             <StageSpot
-              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : s === side && POLIWRATH_Z_MOVES.has(move) && !field.mega[s] ? POLIWRATHIUM_Z.user : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
+              key={s} side={s} pokemon={{ species: field.digimon[s] ? (field.digimon[s]!.stage === 2 ? field.digimon[s]!.form : baseOfWarp(field.digimon[s]!.form)) : s === side && zUser(move) && !field.mega[s] ? zUser(move)! : SPECIES[s][field.mega[s] ? 1 : 0] }} anim={anim}
               substitute={field.sub[s]} seeded={field.seeded[s]} charged={field.charged[s]} status={field.status[s]} confused={field.confused[s]}
               infatuated={field.infatuated[s]} protect={field.protect[s]} hidden={hidden[s]}
             />
@@ -385,7 +397,7 @@ export function AnimationPreview() {
           {(['p2', 'p1'] as const).map(s => (
             <ShieldWalls key={s} side={s} conditions={field.shields[s]} anim={anim} size={size} points={points} />
           ))}
-          {spec && anchors && <MoveEffects key={anim!.id} spec={spec} user={anchors.user} targets={anchors.targets} size={size} points={points} seed={anim!.id} />}
+          {spec && anchors && <MoveEffects key={anim!.id} spec={spec} user={anchors.user} targets={anchors.targets} size={size} points={effectPoints(anim, points)} seed={anim!.id} />}
         </div>
         {anim?.moveName && <div className="anim-preview-label">{anim.moveName}</div>}
       </div>

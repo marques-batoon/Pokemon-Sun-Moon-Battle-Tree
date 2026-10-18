@@ -104,6 +104,7 @@ describe('animation catalog', () => {
       'catastropika', '10000000voltthunderbolt', 'stokedsparksurfer', 'pulverizingpancake', 'sinisterarrowraid', 'maliciousmoonsault', 'oceanicoperetta',
       'guardianofalola', 'soulstealing7starstrike', 'clangoroussoulblaze', 'splinteredstormshards', 'letssnuggleforever', 'searingsunrazesmash',
       'menacingmoonrazemaelstrom', 'lightthatburnsthesky', 'genesissupernova', 'omegawrath', 'riptiderocketrush', 'glacialguardiangauntlet',
+      'superdrainpunch', 'skyrocketpunch', 'punchingbarrage', 'omegapunch', 'glacialguardbreaker', 'infernalfuryfist', 'thunderboltblitzkrieg',
     ]));
     const typeZs = new Set(TYPES.flatMap(t => [zMoveSpec(t, 'Physical'), zMoveSpec(t, 'Special')]).map(key));
     const seen = new Set<string>();
@@ -116,7 +117,9 @@ describe('animation catalog', () => {
       expect(typeZs.has(key(spec))).toBe(false);
       seen.add(key(spec));
     }
-    expect(seen.size).toBe(SIGNATURE_Z_MOVES.length);
+    // All different, except Omega Punch, which is Omega Wrath's (on request).
+    expect(seen.size).toBe(SIGNATURE_Z_MOVES.length - 1);
+    expect(signatureZMoveSpec('omegapunch')).toEqual(signatureZMoveSpec('omegawrath'));
     // The battle screen picks them by the move used, whatever the base move's category.
     for (const name of ['Catastropika', 'Oceanic Operetta', 'Genesis Supernova', "Let's Snuggle Forever", 'Omega Wrath', 'Glacial Guardian Gauntlet']) {
       const fx = classifyMove(name);

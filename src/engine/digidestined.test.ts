@@ -4,7 +4,6 @@ import { multiPartners, SETS, TRAINER_DUO_QUOTES, TRAINER_QUOTES, trainerQuotes,
 import { treeSetToPokemonSet } from '../run/opponent';
 import { Rng } from '../run/rng';
 import { multiDuo, planChosenOpponent, planOpponent, scheduleSlot } from '../run/selection';
-import { DEFAULT_SETTINGS } from '../run/types';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats } from './format';
 
 registerBattleTreeFormats();
@@ -50,7 +49,7 @@ describe('Izzy (DigiDestined)', () => {
     expect(multiDuo(izzy.id)).toEqual([tai.id, izzy.id]);
     let seen = 0;
     for (let i = 0; i < 4000; i++) {
-      const o = planOpponent(`izzy-multi-${i}`, 'multi', 'super', multiSpecial, DEFAULT_SETTINGS);
+      const o = planOpponent(`izzy-multi-${i}`, 'multi', 'super', multiSpecial);
       const ids = [o.trainerId, o.second!.trainerId];
       if (ids.includes(izzy.id)) {
         seen++;
@@ -69,7 +68,7 @@ describe('Izzy (DigiDestined)', () => {
 
   it('never appears against you when he is your partner', () => {
     for (let i = 0; i < 1000; i++) {
-      const o = planOpponent(`izzy-partner-${i}`, 'multi', 'super', multiSpecial, DEFAULT_SETTINGS, izzy.id);
+      const o = planOpponent(`izzy-partner-${i}`, 'multi', 'super', multiSpecial, izzy.id);
       expect([o.trainerId, o.second!.trainerId]).not.toContain(izzy.id);
     }
   });
@@ -116,7 +115,7 @@ describe('Kaito (Digimon Tamer)', () => {
     expect(multiPartners(kaito.id)).toEqual([tai.id]);
     let seen = 0;
     for (let i = 0; i < 4000; i++) {
-      const m = planOpponent(`kaito-multi-${i}`, 'multi', 'super', multiSpecial, DEFAULT_SETTINGS);
+      const m = planOpponent(`kaito-multi-${i}`, 'multi', 'super', multiSpecial);
       const ids = [m.trainerId, m.second!.trainerId];
       if (ids.includes(kaito.id)) {
         seen++;

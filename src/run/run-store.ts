@@ -53,12 +53,19 @@ function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): 
   return { owned, beaten, prices };
 }
 
+/** Saves from before 2026-10-17 have an "Anabel can appear" setting; she always can now (the option was removed on request). */
+function withoutAnabelSetting(settings: RunState['settings']): RunState['settings'] {
+  const { anabelUnlocked: _removed, ...rest } = settings as RunState['settings'] & { anabelUnlocked?: boolean };
+  return rest;
+}
+
 /**
  * All Star runs saved before 2026-10-11 were all marked debug (All Star Mode earned nothing); now it earns BP and
  * partner progress, so only practice runs (random AI) and debug starts (a later battle) stay debug. (A debug choice
  * of opponents can't be told apart: such a run counts as an ordinary All Star run.)
  */
-function migrateRun(run: RunState): RunState {
+function migrateRun(saved: RunState): RunState {
+  const run = { ...saved, settings: withoutAnabelSetting(saved.settings) };
   if (run.course !== 'allstar' || !run.debug) return run;
   const firstBattle = run.history[0]?.battle ?? run.battle;
   return { ...run, debug: (run.settings?.ai ?? 'heuristic') !== 'heuristic' || firstBattle > 1 };
@@ -120,7 +127,7 @@ export class RunStore {
           records: { ...base.records, ...file.profile.records },
           bpSpent: file.profile.bpSpent ?? 0,
           partners: migratePartners(file.profile.partners, base.partners),
-          settings: { ...base.settings, ...file.profile.settings },
+          settings: withoutAnabelSetting({ ...base.settings, ...file.profile.settings }),
         },
         runs,
       };

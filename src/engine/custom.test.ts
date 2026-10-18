@@ -115,6 +115,120 @@ describe('Poliwrathium Z', () => {
   });
 });
 
+describe('Hitmonchanium Z', () => {
+  const chan = (moves: string[], ability = 'Iron Fist', extra = 'EVs: 252 Atk\nAdamant Nature\n') => mon('Hitmonchan', 'Hitmonchanium Z', ability, moves, extra);
+  const plainFoe = mon('Snorlax', '', 'Thick Fat', ['Splash'], 'EVs: 252 HP / 252 Def\n');
+  const zNames = (b: Battle) => (b.p1.activeRequest as { active: { canZMove?: ({ move: string } | null)[] }[] }).active[0].canZMove?.map(z => z?.move ?? null);
+  const active = (b: Battle, slot = 0) => b.p1.active[slot];
+  const zOf = (b: Battle, move: string) => b.actions.getActiveZMove(b.dex.moves.get(move), active(b));
+
+  it('is legal on Hitmonchan with these moves, and only Hitmonchan can hold it', () => {
+    expect(validate(team(chan(['Drain Punch', 'Sky Uppercut', 'Close Combat', 'Focus Punch'])))).toEqual([]);
+    expect(validate(team(chan(['Ice Punch', 'Fire Punch', 'Thunder Punch', 'Mach Punch'])))).toEqual([]);
+    expect(validate(team(mon('Hitmonlee', 'Hitmonchanium Z', 'Limber', ['High Jump Kick'], 'EVs: 252 Atk\n'))).join(' ')).toMatch(/Hitmonlee can't hold Hitmonchanium Z: only Hitmonchan can/);
+  });
+
+  it('turns those seven moves into Hitmonchan\'s own Z-Moves, and no others', () => {
+    expect(zNames(battle(chan(['Drain Punch', 'Sky Uppercut', 'Close Combat', 'Focus Punch']), plainFoe))).toEqual(['Super Drain Punch', 'Sky Rocket Punch', 'Punching Barrage', 'Omega Punch']);
+    expect(zNames(battle(chan(['Ice Punch', 'Fire Punch', 'Thunder Punch', 'Mach Punch']), plainFoe))).toEqual(['Glacial Guardbreaker', 'Infernal Fury Fist', 'Thunderbolt Blitzkrieg', null]);
+  });
+
+  it('has their own power, as punching moves (Iron Fist boosts them); Omega Punch has Focus Punch\'s Z power', () => {
+    const b = battle(chan(['Drain Punch']), plainFoe);
+    const power: Record<string, number> = {};
+    for (const base of ['Drain Punch', 'Sky Uppercut', 'Close Combat', 'Focus Punch', 'Ice Punch', 'Fire Punch', 'Thunder Punch']) {
+      const z = zOf(b, base);
+      power[z.name] = z.basePower;
+      expect([z.category, z.isZ]).toEqual(['Physical', 'hitmonchaniumz']);
+      expect(!!z.flags.punch, z.name).toBe(z.name !== 'Omega Punch');
+    }
+    expect(power).toEqual({
+      'Super Drain Punch': 150, 'Sky Rocket Punch': 170, 'Punching Barrage': 200, 'Omega Punch': 200,
+      'Glacial Guardbreaker': 145, 'Infernal Fury Fist': 145, 'Thunderbolt Blitzkrieg': 145,
+    });
+    const barrage = zOf(b, 'Close Combat');
+    expect(b.runEvent('BasePower', active(b), b.p2.active[0], barrage, barrage.basePower, true)).toBe(240);
+  });
+
+  it('Super Drain Punch heals 75% of the damage dealt, then raises Atk and Def (and Sp. Def only from full HP)', () => {
+    // A bulky foe that resists it, so the healing isn't capped by Hitmonchan's max HP.
+    const b = battle(chan(['Drain Punch']), mon('Cresselia', '', 'Levitate', ['Splash'], 'EVs: 252 HP / 252 Def\nBold Nature\n'));
+    const p = active(b);
+    p.sethp(20);
+    const foe = b.p2.active[0];
+    const foeBefore = foe.hp;
+    b.makeChoices('move 1 zmove', 'move 1');
+    const dealt = foeBefore - foe.hp;
+    expect(b.log.join('\n')).toMatch(/\|move\|p1a: Hitmonchan\|Super Drain Punch\|p2a: Cresselia/);
+    expect(dealt).toBeGreaterThan(0);
+    expect(p.hp - 20).toBe(Math.round(dealt * 0.75));
+    expect(p.boosts).toMatchObject({ atk: 1, def: 1, spd: 0 });
+
+    const full = battle(chan(['Drain Punch']), plainFoe);
+    full.makeChoices('move 1 zmove', 'move 1');
+    expect(active(full).boosts).toMatchObject({ atk: 1, def: 1, spd: 1 });
+  });
+
+  it('Sky Rocket Punch hits a Pokémon in the sky (Fly, Bounce), then raises Atk and Speed', () => {
+    for (const move of ['Fly', 'Bounce']) {
+      const b = battle(chan(['Sky Uppercut']), mon('Aerodactyl', '', 'Pressure', [move], 'EVs: 252 HP / 252 Spe\n'));
+      b.makeChoices('move 1 zmove', 'move 1');
+      const log = b.log.join('\n');
+      expect(log, move).toMatch(new RegExp(`\\|-prepare\\|p2a: Aerodactyl\\|${move}`));
+      expect(log, move).toMatch(/\|move\|p1a: Hitmonchan\|Sky Rocket Punch\|p2a: Aerodactyl/);
+      expect(log, move).not.toMatch(/\|-miss\|p1a: Hitmonchan/);
+      expect(b.p2.active[0].hp, move).toBeLessThan(b.p2.active[0].maxhp);
+      expect(active(b).boosts).toMatchObject({ atk: 1, spe: 1 });
+    }
+  });
+
+  it('Punching Barrage just hits; Omega Punch acts as Omega Wrath (free Substitute, +1 Atk and Def)', () => {
+    const barrage = battle(chan(['Close Combat']), plainFoe);
+    barrage.makeChoices('move 1 zmove', 'move 1');
+    expect(barrage.log.join('\n')).toMatch(/\|move\|p1a: Hitmonchan\|Punching Barrage/);
+    expect(active(barrage).boosts).toMatchObject({ atk: 0, def: 0, spd: 0, spe: 0 });
+
+    const omega = battle(chan(['Focus Punch']), plainFoe);
+    const hp = active(omega).hp;
+    omega.makeChoices('move 1 zmove', 'move 1');
+    expect(omega.log.join('\n')).toMatch(/\|move\|p1a: Hitmonchan\|Omega Punch/);
+    expect(active(omega).volatiles.substitute).toBeTruthy();
+    expect(active(omega).hp).toBe(hp);
+    expect(active(omega).boosts).toMatchObject({ atk: 1, def: 1 });
+  });
+
+  it('Glacial Guardbreaker raises Atk, Def and Sp. Def; Infernal Fury Fist raises Atk 4 and Speed 1 but burns Hitmonchan', () => {
+    const ice = battle(chan(['Ice Punch']), plainFoe);
+    ice.makeChoices('move 1 zmove', 'move 1');
+    expect(active(ice).boosts).toMatchObject({ atk: 1, def: 1, spd: 1 });
+    const fire = battle(chan(['Fire Punch']), plainFoe);
+    fire.makeChoices('move 1 zmove', 'move 1');
+    expect(active(fire).boosts).toMatchObject({ atk: 4, spe: 1 });
+    expect(active(fire).status).toBe('brn');
+    expect(fire.log.join('\n')).toMatch(/\|-status\|p1a: Hitmonchan\|brn/);
+  });
+
+  it('Thunderbolt Blitzkrieg goes first (+2) even against a faster foe, then raises Speed 2', () => {
+    // Jolteon is faster and uses Quick Attack (+1); it resists Electric, so it survives to move.
+    const b = battle(chan(['Thunder Punch']), mon('Jolteon', '', 'Quick Feet', ['Quick Attack'], 'EVs: 252 HP / 252 Spe\nTimid Nature\n'));
+    b.makeChoices('move 1 zmove', 'move 1');
+    const log = b.log.join('\n');
+    expect(log.indexOf('|move|p2a: Jolteon|Quick Attack')).toBeGreaterThan(-1);
+    expect(log.indexOf('|move|p1a: Hitmonchan|Thunderbolt Blitzkrieg')).toBeLessThan(log.indexOf('|move|p2a: Jolteon|Quick Attack'));
+    expect(active(b).boosts).toMatchObject({ spe: 2 });
+  });
+
+  it('makes Close Combat a punching move when Hitmonchan uses it (and only then)', () => {
+    const punchFlag = (who: string) => {
+      const b = battle(mon(who, 'Leftovers', who === 'Hitmonchan' ? 'Iron Fist' : 'Guts', ['Close Combat'], 'EVs: 252 Atk\n'), plainFoe);
+      const cc = b.dex.getActiveMove('closecombat');
+      b.singleEvent('ModifyMove', cc, null, active(b), b.p2.active[0], cc, cc);
+      return !!cc.flags.punch;
+    };
+    expect([punchFlag('Hitmonchan'), punchFlag('Machamp')]).toEqual([true, false]);
+  });
+});
+
 describe('field effect durations', () => {
   it('tags weather, terrain, rooms and Tailwind with their real length', () => {
     const b = battle(mon('Politoed', 'Damp Rock', 'Drizzle', ['Trick Room', 'Tailwind']), mon('Tapu Koko', 'Terrain Extender', 'Electric Surge', ['Splash']));

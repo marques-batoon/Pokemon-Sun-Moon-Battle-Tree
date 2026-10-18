@@ -454,3 +454,26 @@ describe('planLine: Sky Drop', () => {
     expect(planLine(fly.args as readonly string[], fly.kwArgs as Record<string, unknown>, client, true)[0].animation?.kind).not.toBe('sky-drop');
   });
 });
+
+describe('planLine: Sky Drop landing', () => {
+  it('drops the carried Pokémon from the sky before its damage shows (and the drop line\'s state waits for the hit)', async () => {
+    const { trackSemiInvulnerable } = await import('./semi-invulnerable');
+    const client = new ClientBattle(new Generations(Dex));
+    const planned: ReturnType<typeof planLine>[] = [];
+    for (const line of ['|player|p1|A|', '|player|p2|B|', '|gametype|singles', '|gen|7', '|start',
+      '|switch|p1a: Aerodactyl|Aerodactyl, L50|100/100', '|switch|p2a: Garchomp|Garchomp, L50|100/100',
+      '|move|p1a: Aerodactyl|Sky Drop||[still]', '|-prepare|p1a: Aerodactyl|Sky Drop|p2a: Garchomp',
+      '|move|p1a: Aerodactyl|Sky Drop|p2a: Garchomp|[from] lockedmove', '|-damage|p2a: Garchomp|78/100', '|-end|p2a: Garchomp|Sky Drop',
+      '|move|p1a: Aerodactyl|Earthquake|p2a: Garchomp', '|-damage|p2a: Garchomp|50/100']) {
+      const { args, kwArgs } = Protocol.parseBattleLine(line);
+      planned.push(planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true));
+      client.add(args, kwArgs);
+      trackSemiInvulnerable(client, args as readonly string[], kwArgs as Record<string, unknown>);
+    }
+    const drop = planned[10];
+    expect(drop.map(s => [s.animation?.kind, s.applyLine])).toEqual([['sky-dropped', false], ['hit', true]]);
+    expect(drop[0].animation).toMatchObject({ side: 'p2' });
+    // An ordinary hit afterwards is just a hit.
+    expect(planned[13].map(s => s.animation?.kind)).toEqual(['hit']);
+  });
+});

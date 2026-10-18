@@ -66,7 +66,69 @@ export const POLIWRATHIUM_Z = {
   } as Record<string, CustomZMove>,
 };
 
+/** A Hitmonchanium Z move: made from one particular base move, with its own power and effects. */
+export interface HitmonchanZMove extends CustomZMove {
+  /** Power; null: the base move's Z power, as with Poliwrathium Z (Omega Punch, from Focus Punch). */
+  basePower: number | null;
+  /** A punching move (Iron Fist boosts it). */
+  punch?: boolean;
+  /** Its own priority (Thunderbolt Blitzkrieg +2). */
+  priority?: number;
+  /** Heals the user this share of the damage dealt (rounded half up, as the games round drain). */
+  drain?: [number, number];
+  /** Also raises Sp. Def by 1 stage if the user was at full HP when the move began. */
+  fullHpSpd?: boolean;
+  /** Burns the user after the attack. */
+  burnSelf?: boolean;
+  /** Hits a target in the semi-invulnerable turn of Fly, Bounce or Sky Drop. */
+  hitsSky?: boolean;
+}
+
+/**
+ * Hitmonchanium Z (custom, designed by the user): only Hitmonchan can hold it. Each of these base moves becomes
+ * Hitmonchan's own Z-Move (any other move: no Z-Move, as with the games' signature crystals).
+ */
+export const HITMONCHANIUM_Z = {
+  item: 'Hitmonchanium Z',
+  user: 'Hitmonchan',
+  desc: 'Hitmonchan only: Drain Punch, Sky Uppercut, Close Combat, Focus Punch, Ice Punch, Fire Punch and Thunder Punch can become its own Z-Moves.',
+  moves: {
+    'Drain Punch': {
+      name: 'Super Drain Punch', type: 'Fighting', basePower: 150, punch: true, drain: [3, 4], boosts: { atk: 1, def: 1 }, fullHpSpd: true,
+      desc: 'The user heals 75% of the damage dealt, then raises its Attack and Defense by 1 stage (and its Sp. Def by 1 if it was at full HP when the move began). Punching move.',
+    },
+    'Sky Uppercut': {
+      name: 'Sky Rocket Punch', type: 'Fighting', basePower: 170, punch: true, hitsSky: true, boosts: { atk: 1, spe: 1 },
+      desc: 'Hits a target in the sky (Fly, Bounce, Sky Drop). Raises the user\'s Attack and Speed by 1 stage. Punching move.',
+    },
+    'Close Combat': {
+      name: 'Punching Barrage', type: 'Fighting', basePower: 200, punch: true, boosts: {},
+      desc: 'A barrage of punches. Punching move.',
+    },
+    'Focus Punch': {
+      name: 'Omega Punch', type: 'Fighting', basePower: null, substitute: true, boosts: { atk: 1, def: 1 },
+      desc: 'Power depends on the base move. After the attack, the user sets up a Substitute without losing HP and raises its Attack and Defense by 1 stage (as Omega Wrath).',
+    },
+    'Ice Punch': {
+      name: 'Glacial Guardbreaker', type: 'Ice', basePower: 145, punch: true, boosts: { atk: 1, def: 1, spd: 1 },
+      desc: 'An ice-coated uppercut. Raises the user\'s Attack, Defense and Sp. Def by 1 stage. Punching move.',
+    },
+    'Fire Punch': {
+      name: 'Infernal Fury Fist', type: 'Fire', basePower: 145, punch: true, boosts: { atk: 4, spe: 1 }, burnSelf: true,
+      desc: 'Raises the user\'s Attack by 4 stages and Speed by 1 stage, but burns the user. Punching move.',
+    },
+    'Thunder Punch': {
+      name: 'Thunderbolt Blitzkrieg', type: 'Electric', basePower: 145, punch: true, priority: 2, boosts: { spe: 2 },
+      desc: 'Usually goes first (+2 priority). Raises the user\'s Speed by 2 stages. Punching move.',
+    },
+  } as Record<string, HitmonchanZMove>,
+};
+
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+/** Hitmonchanium Z can only be held by Hitmonchan (on request; the game's own crystals can be held by anyone). */
+export const canHoldCustomItem = (species: string, item: string) =>
+  toId(item) !== toId(HITMONCHANIUM_Z.item) || toId(species) === toId(HITMONCHANIUM_Z.user);
 
 /** Extra moves made legal for this app (the species can't learn them in Sun & Moon). */
 export const CUSTOM_LEARNS: Record<string, string[]> = {
@@ -125,6 +187,19 @@ export function customOverrides(parent: ParentData) {
       num: num++, name: z.name, type: z.type, category: 'Physical', basePower: 1, accuracy: true, pp: 1, priority: 0,
       flags: {}, isZ: toId(POLIWRATHIUM_Z.item), target: 'normal', gen: 7, isNonstandard: null,
       self: { boosts: { ...z.boosts } }, shortDesc: z.desc, desc: z.desc,
+    };
+  }
+  items[toId(HITMONCHANIUM_Z.item)] = {
+    name: HITMONCHANIUM_Z.item, num: 10102, gen: 7, isNonstandard: null,
+    zMove: true, itemUser: [HITMONCHANIUM_Z.user], shortDesc: HITMONCHANIUM_Z.desc, desc: HITMONCHANIUM_Z.desc,
+  };
+  num = 10120;
+  for (const z of Object.values(HITMONCHANIUM_Z.moves)) {
+    moves[toId(z.name)] = {
+      num: num++, name: z.name, type: z.type, category: 'Physical', basePower: z.basePower ?? 1, accuracy: true, pp: 1, priority: z.priority ?? 0,
+      flags: z.punch ? { punch: 1 } : {}, isZ: toId(HITMONCHANIUM_Z.item), target: 'normal', gen: 7, isNonstandard: null,
+      ...(z.drain ? { drain: z.drain } : {}), ...(Object.keys(z.boosts).length ? { self: { boosts: { ...z.boosts } } } : {}),
+      shortDesc: z.desc, desc: z.desc,
     };
   }
   return { Species: species, FormatsData: formatsData, Items: items, Moves: moves };

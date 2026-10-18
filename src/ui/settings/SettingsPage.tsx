@@ -97,8 +97,6 @@ export function SettingsPage() {
       <section className="panel">
         <h2>New challenge defaults</h2>
         <p className="muted small">Pre-filled when you start a challenge. Each challenge keeps the settings it started with.</p>
-        <Toggle checked={defaults.anabelUnlocked} onChange={v => setDefault({ anabelUnlocked: v })}
-          label="Anabel can appear" hint="In the game she appears only after you reach Guzzlord's chapter of the Looker episode." />
         <Toggle checked={defaults.teamPreviewEachBattle} onChange={v => setDefault({ teamPreviewEachBattle: v })}
           label="Team Preview before every battle" hint="Showdown-style. In the game you bring the same 3 until you take a break, and never see the opponent's team in advance." />
         <label className="inline-field">

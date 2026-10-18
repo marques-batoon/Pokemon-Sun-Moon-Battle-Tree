@@ -4,7 +4,7 @@ import type { RunTeam } from '../run/controller';
 import type { EngineTransport } from '../client/transport';
 import type { FromEngine, ToEngine } from '../engine/protocol';
 import { bpForWin, planChosenOpponent, planOpponent } from '../run/selection';
-import { DEFAULT_SETTINGS, PARTNER_BRING, retryStart, type PlannedOpponent } from '../run/types';
+import { PARTNER_BRING, retryStart, type PlannedOpponent } from '../run/types';
 import type { PokemonSet } from '../team/types';
 import {
   parseToGuest, parseToHost, withoutNicknames, type GuestEngineMessage, type LobbyView, type OnlineCourse, type ToGuest, type ToHost,
@@ -304,7 +304,7 @@ export class OnlineRoom {
   // --- host ---
 
   private planNext(battle: number) {
-    this.next = planOpponent(this.seedText, 'multi', this.snapshot.lobby.course, battle, DEFAULT_SETTINGS);
+    this.next = planOpponent(this.seedText, 'multi', this.snapshot.lobby.course, battle);
     this.debugNext = false;
   }
 

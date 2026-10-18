@@ -7,7 +7,9 @@ import type { ID } from '@pkmn/data';
 export type SemiInvulnerable = 'underground' | 'sky' | 'underwater' | 'phantom' | 'carried';
 
 /** The battle screen's own volatile for a Pokémon carried off by Sky Drop (the client doesn't track it). */
-const CARRIED = 'skydropped';
+export const CARRIED = 'skydropped';
+/** The last move used in each battle (Sky Drop's attack drops the Pokémon it carried). */
+const lastMove = new WeakMap<ClientBattle, string>();
 
 /** Moves whose charging turn hides the user, and where (Bounce and Sky Drop go up like Fly). */
 export const SEMI_INVULNERABLE_MOVES: Record<string, SemiInvulnerable> = {
@@ -22,9 +24,10 @@ const toID = (s: string | undefined) => (s ?? '').toLowerCase().replace(/[^a-z0-
  * cleared by the client when it uses its next move: the attack). It comes back early if it can't
  * move (`cant`) or when a Power Herb skips the charge.
  */
-export function trackSemiInvulnerable(battle: ClientBattle, args: readonly string[]): void {
+export function trackSemiInvulnerable(battle: ClientBattle, args: readonly string[], kwArgs: Record<string, unknown> = {}): void {
   const kind = args[0];
-  if (kind !== '-prepare' && kind !== 'cant' && kind !== '-enditem' && kind !== '-end') return;
+  if (kind === 'move') lastMove.set(battle, toID(args[2]));
+  if (kind !== '-prepare' && kind !== 'cant' && kind !== '-enditem' && kind !== '-end' && kind !== '-damage') return;
   const poke = args[1] ? battle.getPokemon(args[1] as never) : null;
   if (!poke) return;
   if (kind === '-prepare') {
@@ -38,6 +41,12 @@ export function trackSemiInvulnerable(battle: ClientBattle, args: readonly strin
   }
   if (kind === '-end') {
     if (toID(args[2]) === 'skydrop' && CARRIED in poke.volatiles) poke.removeVolatile(CARRIED as ID);
+    return;
+  }
+  // Sky Drop's attack lands: it's dropped to the ground (the battle screen shows the fall first; "-end" follows,
+  // unless the drop knocked it out).
+  if (kind === '-damage') {
+    if (!('from' in kwArgs) && lastMove.get(battle) === 'skydrop' && CARRIED in poke.volatiles) poke.removeVolatile(CARRIED as ID);
     return;
   }
   if (kind === '-enditem' && toID(args[2]) !== 'powerherb') return;

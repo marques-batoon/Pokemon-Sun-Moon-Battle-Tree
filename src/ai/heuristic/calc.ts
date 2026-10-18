@@ -2,7 +2,7 @@
 import { calculate, Field, Generations, Move as CalcMove, Pokemon as CalcPokemon, Side as CalcSide } from '@smogon/calc';
 import type { Battle, Pokemon, Side } from '@pkmn/sim';
 import { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } from '../../data/champions';
-import { CUSTOM_SPECIES } from '../../data/custom';
+import { CUSTOM_SPECIES, HITMONCHANIUM_Z } from '../../data/custom';
 import { PARADOX_FORMS } from '../../data/custom/paradox';
 
 const gen = Generations.get(7);
@@ -130,6 +130,22 @@ function moveOverrides(move: ReturnType<Battle['dex']['moves']['get']>) {
 }
 
 /**
+ * The move as the calc should see it. Hitmonchanium Z: its own Z-Moves' power and punch flag (the calc would make
+ * a type Z-Move from the base move); Omega Punch takes the base move's Z power, as the calc does. Close Combat is a
+ * punching move for Hitmonchan (Iron Fist).
+ */
+function calcMoveFor(battle: Battle, attacker: Pokemon, move: ReturnType<Battle['dex']['moves']['get']>, useZ: boolean): CalcMove {
+  const z = useZ && attacker.getItem().id === toId(HITMONCHANIUM_Z.item) ? HITMONCHANIUM_Z.moves[move.name] : undefined;
+  if (z && z.basePower !== null) {
+    const zMove = battle.dex.moves.get(z.name);
+    return new CalcMove(gen, move.name, { overrides: { ...moveOverrides(zMove), name: z.name, category: move.category } as never });
+  }
+  const punching = move.id === 'closecombat' && attacker.baseSpecies.baseSpecies === HITMONCHANIUM_Z.user;
+  const overrides = punching ? { flags: { ...move.flags, punch: 1 } } : moveOverrides(move);
+  return new CalcMove(gen, move.name, { useZ, overrides: overrides as never });
+}
+
+/**
  * Expected damage of `moveId` from attacker to defender in the current battle
  * state. Handles OHKO moves and Endeavor, which the calc reports as 0.
  * Never throws: unknown/unsupported cases count as no damage.
@@ -159,7 +175,7 @@ export function estimateDamage(
       gen,
       calcPokemon(attacker, opts.attackerForme),
       calcPokemon(defender, opts.defenderForme),
-      new CalcMove(gen, move.name, { useZ: !!opts.useZ, overrides: moveOverrides(move) as never }),
+      calcMoveFor(battle, attacker, move, !!opts.useZ),
       calcField(battle, attacker.side, defender.side),
     );
     const [min, max] = rangeOf(result.damage);

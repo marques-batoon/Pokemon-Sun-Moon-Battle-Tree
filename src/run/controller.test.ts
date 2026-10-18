@@ -78,7 +78,7 @@ describe('RunController', () => {
     expect(run.bp).toBe(wins.reduce((s, h) => s + bpForWin('normal', h.battle), 0));
     run.history.forEach((h, i) => {
       expect(h.battle).toBe(i + 1);
-      expect(h.opponent).toBe(planOpponent('normal-run', 'singles', 'normal', i + 1, DEFAULT_SETTINGS).displayName);
+      expect(h.opponent).toBe(planOpponent('normal-run', 'singles', 'normal', i + 1).displayName);
     });
     const profile = store.getState().profile;
     expect(profile.records['singles-normal']).toEqual({ best: run.wins, last: run.wins });
@@ -229,13 +229,13 @@ describe('RunController: Doubles', () => {
   const DOUBLES_TEAM: RunTeam = { ...TEAM, bring: [0, 1, 2, 3] };
 
   it('plans Doubles opponents with 4 Pokémon and Battle Legend Blue at battle 20 / 50', () => {
-    expect(planOpponent('d', 'doubles', 'normal', 5, DEFAULT_SETTINGS).team).toHaveLength(4);
-    const blue = planOpponent('d', 'doubles', 'normal', 20, DEFAULT_SETTINGS);
+    expect(planOpponent('d', 'doubles', 'normal', 5).team).toHaveLength(4);
+    const blue = planOpponent('d', 'doubles', 'normal', 20);
     expect(blue.displayName).toBe('Battle Legend Blue');
     expect(blue.team).toHaveLength(4);
     // Battle 50 of Super Doubles is a Battle Legend: Blue or Red (weight 7 each), or Tai or Matt (1 each).
-    expect(planOpponent('d', 'doubles', 'super', 50, DEFAULT_SETTINGS).kind).toBe('legend');
-    expect(planOpponent('d', 'doubles', 'super', 30, DEFAULT_SETTINGS).kind).toBe('special');
+    expect(planOpponent('d', 'doubles', 'super', 50).kind).toBe('legend');
+    expect(planOpponent('d', 'doubles', 'super', 30).kind).toBe('special');
   });
 
   it('requires bringing exactly 4 and keeps Singles and Doubles runs apart', () => {
@@ -268,7 +268,7 @@ describe('RunController: Doubles', () => {
     const run = await playOut(controller, 'doubles-normal');
     stop();
     expect(['lost', 'cleared']).toContain(run.status);
-    run.history.forEach((h, i) => expect(h.opponent).toBe(planOpponent('doubles-run', 'doubles', 'normal', i + 1, DEFAULT_SETTINGS).displayName));
+    run.history.forEach((h, i) => expect(h.opponent).toBe(planOpponent('doubles-run', 'doubles', 'normal', i + 1).displayName));
     const profile = store.getState().profile;
     expect(profile.records['doubles-normal'].last).toBe(run.wins);
     expect(profile.records['singles-normal']).toEqual({ best: 0, last: 0 });

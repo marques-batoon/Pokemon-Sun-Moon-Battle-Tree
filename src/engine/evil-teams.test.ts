@@ -5,7 +5,6 @@ import { treeSetToPokemonSet } from '../run/opponent';
 import { partnerTrainer } from '../run/partners';
 import { Rng } from '../run/rng';
 import { planOpponent, scheduleSlot } from '../run/selection';
-import { DEFAULT_SETTINGS } from '../run/types';
 import { trainerArt, trainerSpriteId } from '../ui/sprites';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats } from './format';
 
@@ -67,11 +66,11 @@ describe('evil team leaders and admins', () => {
     const archie = [byKey('Archie (RSE)').id, byKey('Archie (ORAS)').id];
     let seenArchie = 0;
     for (let i = 0; i < 3000; i++) {
-      const o = planOpponent(`two-archies-${i}`, 'multi', 'super', battle, DEFAULT_SETTINGS);
+      const o = planOpponent(`two-archies-${i}`, 'multi', 'super', battle);
       const ids = [o.trainerId, o.second!.trainerId];
       expect(archie.every(id => ids.includes(id)), `run ${i}`).toBe(false);
       if (ids.some(id => archie.includes(id))) seenArchie++;
-      const withPartner = planOpponent(`partner-archie-${i}`, 'multi', 'super', battle, DEFAULT_SETTINGS, archie[0]);
+      const withPartner = planOpponent(`partner-archie-${i}`, 'multi', 'super', battle, archie[0]);
       expect([withPartner.trainerId, withPartner.second!.trainerId]).not.toContain(archie[1]);
     }
     expect(seenArchie).toBeGreaterThan(0);

@@ -1011,6 +1011,146 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .fx-fairy-glow { animation: fairy-glow calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes fairy-glow { 0%, 38%, 100% { filter: none; } 55% { filter: brightness(1.2) drop-shadow(0 0 10px #ff9ccc); } 75% { filter: drop-shadow(0 0 5px #ffc0dc); } }
 
+/* Fist materials (fx-gauntlets.mat-*): ice is the default look above. */
+.fx-gauntlets.mat-fire .gauntlet { filter: drop-shadow(0 0 10px #ff7a1a) drop-shadow(0 0 24px #ff3a00) drop-shadow(0 0 2px #7a1a00); }
+.fx-gauntlets.mat-fire .ice { background: radial-gradient(circle at 42% 48%, #fffbe0 0 12%, #ffe066 24%, #ff9a2a 46%, #e0400a 72%, #8a1a00 100%);
+  box-shadow: inset 0 0 0 3px rgb(255 230 120 / 0.7), inset -6px -8px 0 rgb(120 20 0 / 0.45); animation: fist-flicker 0.16s steps(2) infinite; }
+.fx-gauntlets.mat-fire .ice::after { background: radial-gradient(ellipse 30% 45% at 25% 0%, rgb(255 230 90 / 0.95), transparent 70%), radial-gradient(ellipse 25% 40% at 60% 0%, rgb(255 160 40 / 0.9), transparent 70%), radial-gradient(ellipse 22% 35% at 85% 6%, rgb(255 230 90 / 0.85), transparent 70%); }
+.fx-gauntlets.mat-electric .gauntlet { filter: drop-shadow(0 0 8px #ffe14a) drop-shadow(0 0 18px #fff3a0) drop-shadow(0 0 2px #7a5a00); }
+.fx-gauntlets.mat-electric .ice { background: radial-gradient(circle at 45% 45%, #ffffff 0 18%, #fff3a0 35%, #ffd23f 60%, #e0a800 100%); box-shadow: inset 0 0 0 3px rgb(255 255 255 / 0.8); animation: fist-flicker 0.1s steps(2) infinite; }
+.fx-gauntlets.mat-electric .ice::after { background: repeating-linear-gradient(62deg, transparent 0 9px, rgb(255 255 255 / 0.95) 9px 11px, transparent 11px 17px), repeating-linear-gradient(-48deg, transparent 0 12px, rgb(255 250 200 / 0.8) 12px 13px); }
+.fx-gauntlets.mat-power .gauntlet { filter: drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 20px var(--c2)) drop-shadow(0 0 2px #5a1a00); }
+.fx-gauntlets.mat-power .ice { background: radial-gradient(circle at 40% 40%, #ffffff 0 10%, var(--c2) 28%, var(--c) 62%, color-mix(in srgb, var(--c) 60%, #000) 100%); box-shadow: inset 0 0 0 3px rgb(255 240 200 / 0.6), inset -6px -8px 0 rgb(90 20 0 / 0.4); }
+.fx-gauntlets.mat-life .gauntlet { filter: drop-shadow(0 0 10px #9cf5ac) drop-shadow(0 0 20px #3fae5a) drop-shadow(0 0 2px #1a4a20); }
+.fx-gauntlets.mat-life .ice { background: radial-gradient(circle at 40% 42%, #ffffff 0 10%, #ffd27f 26%, #ff8a3d 50%, #3fae5a 88%); box-shadow: inset 0 0 0 3px rgb(200 255 210 / 0.75), inset -6px -8px 0 rgb(20 80 30 / 0.35); }
+@keyframes fist-flicker { from { filter: brightness(1); } to { filter: brightness(1.3) saturate(1.2); } }
+/* Barrage: each fist jabs straight into the target (a little off the middle each time) and bursts. */
+.fx-gauntlets.barrage .gauntlet { animation-name: fist-jab; animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6); }
+@keyframes fist-jab {
+  0% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(0.5); opacity: 0; }
+  15% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(0.9); opacity: 1; }
+  70% { transform: translate(calc(var(--tx) + var(--jx) - 50%), calc(var(--ty) + var(--jy) - 50%)) rotate(var(--r)) scale(1.2); opacity: 1; }
+  78% { transform: translate(calc(var(--tx) + var(--jx) - 50%), calc(var(--ty) + var(--jy) - 50%)) rotate(var(--r)) scale(1.35); filter: brightness(1.8); }
+  100% { transform: translate(calc(var(--tx) + var(--jx) * 1.4 - 50%), calc(var(--ty) + var(--jy) * 1.4 - 50%)) rotate(var(--r)) scale(1.6); opacity: 0; }
+}
+
+/* Anime speed lines converging on a Pokémon (its middle stays clear), flickering. */
+.fx-speedlines { left: 0; top: 0; width: var(--sw); height: var(--sh); z-index: 3; opacity: 0; transform-origin: var(--cx) var(--cy); animation-name: speedlines; animation-timing-function: linear;
+  background: repeating-conic-gradient(from 0deg at var(--cx) var(--cy), transparent 0deg 4deg, var(--c) 4deg 4.5deg, transparent 4.5deg 9.5deg, var(--c) 9.5deg 9.8deg, transparent 9.8deg 13deg);
+  -webkit-mask-image: radial-gradient(circle at var(--cx) var(--cy), transparent 0 13%, rgb(0 0 0 / 0.35) 22%, #000 46%);
+  mask-image: radial-gradient(circle at var(--cx) var(--cy), transparent 0 13%, rgb(0 0 0 / 0.35) 22%, #000 46%); }
+.fx-speedlines::after { content: ''; position: absolute; inset: 0; opacity: 0; animation: speedlines-flick 90ms steps(1) infinite;
+  background: repeating-conic-gradient(from 2deg at var(--cx) var(--cy), transparent 0deg 6deg, var(--c) 6deg 6.3deg, transparent 6.3deg 11deg); }
+@keyframes speedlines { 0% { opacity: 0; transform: scale(1.2); } 15% { opacity: 0.9; } 80% { opacity: 0.8; } 100% { opacity: 0; transform: scale(1); } }
+@keyframes speedlines-flick { 50% { opacity: 1; } }
+
+/* Hitmonchan's Z-Moves: the two Pokémon (stage-fx SIGNATURE_SPRITES), over the 2.2 s of a Z-Move; the punches land at
+   about 56% (Thunderbolt Blitzkrieg's from 29% to 45%). p1 faces up and right, p2 down and left. */
+/* Thunderbolt Blitzkrieg: sparks, then he's gone in a flash (electric after-images trailing behind), and snaps back. */
+.fx-blitz-p1 { animation: blitz-p1 calc(2200ms * var(--spd, 1)) linear; }
+.fx-blitz-p2 { animation: blitz-p2 calc(2200ms * var(--spd, 1)) linear; }
+@keyframes blitz-p1 {
+  0%, 100% { transform: none; filter: none; opacity: 1; }
+  6%, 14% { transform: scale(0.96, 1.04); filter: brightness(1.5) drop-shadow(0 0 10px #ffe14a); }
+  10% { filter: brightness(2) drop-shadow(0 0 16px #ffe14a); }
+  18% { transform: translate(8%, -5%) skewX(-12deg); opacity: 1; filter: brightness(2) drop-shadow(-26px 12px 0 rgb(255 225 74 / 0.6)) drop-shadow(-52px 24px 0 rgb(255 225 74 / 0.35)) drop-shadow(-78px 36px 0 rgb(255 225 74 / 0.18)); }
+  21%, 47% { transform: translate(14%, -9%); opacity: 0; }
+  49% { transform: translate(6%, -4%) skewX(10deg); opacity: 1; filter: brightness(2.2) drop-shadow(26px -12px 0 rgb(255 225 74 / 0.6)) drop-shadow(52px -24px 0 rgb(255 225 74 / 0.35)) drop-shadow(78px -36px 0 rgb(255 225 74 / 0.18)); }
+  56% { transform: none; filter: brightness(1.3) drop-shadow(0 0 10px #ffe14a); }
+  80% { filter: drop-shadow(0 0 6px #ffe14a); }
+}
+@keyframes blitz-p2 {
+  0%, 100% { transform: none; filter: none; opacity: 1; }
+  6%, 14% { transform: scale(0.96, 1.04); filter: brightness(1.5) drop-shadow(0 0 10px #ffe14a); }
+  10% { filter: brightness(2) drop-shadow(0 0 16px #ffe14a); }
+  18% { transform: translate(-8%, 5%) skewX(12deg); opacity: 1; filter: brightness(2) drop-shadow(26px -12px 0 rgb(255 225 74 / 0.6)) drop-shadow(52px -24px 0 rgb(255 225 74 / 0.35)) drop-shadow(78px -36px 0 rgb(255 225 74 / 0.18)); }
+  21%, 47% { transform: translate(-14%, 9%); opacity: 0; }
+  49% { transform: translate(-6%, 4%) skewX(-10deg); opacity: 1; filter: brightness(2.2) drop-shadow(-26px 12px 0 rgb(255 225 74 / 0.6)) drop-shadow(-52px 24px 0 rgb(255 225 74 / 0.35)) drop-shadow(-78px 36px 0 rgb(255 225 74 / 0.18)); }
+  56% { transform: none; filter: brightness(1.3) drop-shadow(0 0 10px #ffe14a); }
+  80% { filter: drop-shadow(0 0 6px #ffe14a); }
+}
+/* ...and the target is hit from every side at once, then knocked back by the last one. */
+.fx-blitzed-p1 { animation: blitzed-p1 calc(2200ms * var(--spd, 1)) linear; }
+.fx-blitzed-p2 { animation: blitzed-p2 calc(2200ms * var(--spd, 1)) linear; }
+@keyframes blitzed-p2 {
+  0%, 28%, 70%, 100% { transform: none; filter: none; }
+  30% { transform: translate(-4%, 2%); filter: brightness(2) drop-shadow(0 0 8px #ffe14a); } 32% { transform: translate(4%, -3%); } 34% { transform: translate(-3%, -2%); filter: brightness(1.4); }
+  36% { transform: translate(3%, 3%); filter: brightness(2); } 38% { transform: translate(-4%, 1%); } 40% { transform: translate(4%, -2%); filter: brightness(1.4); } 42% { transform: translate(-2%, 3%); filter: brightness(2); }
+  46% { transform: translate(10%, -6%) scale(0.92, 1.06); filter: brightness(3) drop-shadow(0 0 14px #fff6b0); }
+  54% { transform: translate(5%, -3%); filter: brightness(1.2); }
+}
+@keyframes blitzed-p1 {
+  0%, 28%, 70%, 100% { transform: none; filter: none; }
+  30% { transform: translate(4%, -2%); filter: brightness(2) drop-shadow(0 0 8px #ffe14a); } 32% { transform: translate(-4%, 3%); } 34% { transform: translate(3%, 2%); filter: brightness(1.4); }
+  36% { transform: translate(-3%, -3%); filter: brightness(2); } 38% { transform: translate(4%, -1%); } 40% { transform: translate(-4%, 2%); filter: brightness(1.4); } 42% { transform: translate(2%, -3%); filter: brightness(2); }
+  46% { transform: translate(-10%, 6%) scale(0.92, 1.06); filter: brightness(3) drop-shadow(0 0 14px #fff6b0); }
+  54% { transform: translate(-5%, 3%); filter: brightness(1.2); }
+}
+/* Infernal Fury Fist: a long power-up, shaking harder and harder in the flames, growing, then the lunge; burned after. */
+.fx-inferno-p1 { animation: inferno-p1 calc(2200ms * var(--spd, 1)) linear; }
+.fx-inferno-p2 { animation: inferno-p2 calc(2200ms * var(--spd, 1)) linear; }
+@keyframes inferno-p1 {
+  0%, 100% { transform: none; filter: none; }
+  8% { transform: translateX(-0.6%) scale(1.02); filter: brightness(1.3) drop-shadow(0 0 8px #ff5a1a); } 12% { transform: translateX(0.6%) scale(1.03); }
+  18% { transform: translateX(-1.2%) scale(1.05); filter: brightness(1.6) drop-shadow(0 0 14px #ff5a1a); } 22% { transform: translateX(1.2%) scale(1.06); }
+  28% { transform: translateX(-2%) scale(1.08); filter: brightness(1.9) drop-shadow(0 0 20px #ff3a00); } 32% { transform: translateX(2%) scale(1.09); }
+  38% { transform: translateX(-2.6%) scale(1.11); filter: brightness(2.2) drop-shadow(0 0 26px #ff3a00); } 42% { transform: translateX(2.6%) scale(1.12); }
+  48% { transform: translate(-6%, 4%) scale(1.14); filter: brightness(2.6) drop-shadow(0 0 30px #ffd23f); }
+  56% { transform: translate(18%, -13%) scale(1.12); filter: brightness(2.8) drop-shadow(0 0 30px #fff); }
+  66% { transform: none; filter: drop-shadow(0 0 10px #ff5a1a); }
+  78%, 86% { filter: brightness(0.8) sepia(0.6) saturate(2.5) hue-rotate(-25deg); } 82% { filter: brightness(1.1) drop-shadow(0 0 8px #d8401a); }
+}
+@keyframes inferno-p2 {
+  0%, 100% { transform: none; filter: none; }
+  8% { transform: translateX(0.6%) scale(1.02); filter: brightness(1.3) drop-shadow(0 0 8px #ff5a1a); } 12% { transform: translateX(-0.6%) scale(1.03); }
+  18% { transform: translateX(1.2%) scale(1.05); filter: brightness(1.6) drop-shadow(0 0 14px #ff5a1a); } 22% { transform: translateX(-1.2%) scale(1.06); }
+  28% { transform: translateX(2%) scale(1.08); filter: brightness(1.9) drop-shadow(0 0 20px #ff3a00); } 32% { transform: translateX(-2%) scale(1.09); }
+  38% { transform: translateX(2.6%) scale(1.11); filter: brightness(2.2) drop-shadow(0 0 26px #ff3a00); } 42% { transform: translateX(-2.6%) scale(1.12); }
+  48% { transform: translate(6%, -4%) scale(1.14); filter: brightness(2.6) drop-shadow(0 0 30px #ffd23f); }
+  56% { transform: translate(-18%, 13%) scale(1.12); filter: brightness(2.8) drop-shadow(0 0 30px #fff); }
+  66% { transform: none; filter: drop-shadow(0 0 10px #ff5a1a); }
+  78%, 86% { filter: brightness(0.8) sepia(0.6) saturate(2.5) hue-rotate(-25deg); } 82% { filter: brightness(1.1) drop-shadow(0 0 8px #d8401a); }
+}
+/* Super Drain Punch: Hitmonchan charges in like any physical Z-Move, then glows green with the life he takes. */
+.fx-drainer-p1 { animation: zuser-p1 calc(2200ms * var(--spd, 1)) ease-in-out, drainer-glow calc(2200ms * var(--spd, 1)) linear; }
+.fx-drainer-p2 { animation: zuser-p2 calc(2200ms * var(--spd, 1)) ease-in-out, drainer-glow calc(2200ms * var(--spd, 1)) linear; }
+@keyframes drainer-glow { 0%, 72%, 100% { } 80%, 90% { filter: brightness(1.3) drop-shadow(0 0 14px #7ce38a); } }
+/* The target, smashed back by the punch at about 56% (and, drained, losing its colour for a moment). */
+.fx-smashed-p1, .fx-drain-smashed-p1 { animation: smashed-p1 calc(2200ms * var(--spd, 1)) ease-out; }
+.fx-smashed-p2, .fx-drain-smashed-p2 { animation: smashed-p2 calc(2200ms * var(--spd, 1)) ease-out; }
+.fx-drain-smashed-p1 { animation-name: smashed-p1, drained-grey; }
+.fx-drain-smashed-p2 { animation-name: smashed-p2, drained-grey; }
+@keyframes smashed-p2 { 0%, 54%, 80%, 100% { transform: none; filter: none; } 57% { transform: translate(11%, -7%) scale(0.9, 1.08); filter: brightness(3); } 62% { transform: translate(8%, -5%) rotate(4deg); filter: brightness(1.4); } 70% { transform: translate(3%, -2%); } }
+@keyframes smashed-p1 { 0%, 54%, 80%, 100% { transform: none; filter: none; } 57% { transform: translate(-11%, 7%) scale(0.9, 1.08); filter: brightness(3); } 62% { transform: translate(-8%, 5%) rotate(-4deg); filter: brightness(1.4); } 70% { transform: translate(-3%, 2%); } }
+@keyframes drained-grey { 0%, 62%, 92%, 100% { } 68%, 86% { filter: grayscale(0.7) brightness(0.75); } }
+/* Sky Rocket Punch: the uppercut launches the target into the sky; it drops back down. */
+.fx-launched-p1, .fx-launched-p2 { animation: launched calc(2200ms * var(--spd, 1)) ease-out; }
+@keyframes launched {
+  0%, 55%, 100% { transform: none; filter: none; }
+  57% { transform: translateY(-10%) scale(0.92, 1.1); filter: brightness(3); }
+  68% { transform: translateY(-150%) rotate(-18deg) scale(0.85); filter: brightness(1.3); }
+  76% { transform: translateY(-160%) rotate(12deg) scale(0.85); }
+  86% { transform: translateY(0) scale(1.08, 0.9); animation-timing-function: ease-out; }
+  90% { transform: translateY(-7%); } 94% { transform: none; }
+}
+/* Punching Barrage: pummeled by fist after fist, then sent back by the last one. */
+.fx-pummeled-p1 { animation: pummeled-p1 calc(2200ms * var(--spd, 1)) linear; }
+.fx-pummeled-p2 { animation: pummeled-p2 calc(2200ms * var(--spd, 1)) linear; }
+@keyframes pummeled-p2 {
+  0%, 27%, 85%, 100% { transform: none; filter: none; }
+  29% { transform: translate(2%, -1%); filter: brightness(1.8); } 32% { transform: translate(-2%, 1%); } 35% { transform: translate(3%, -2%); filter: brightness(1.8); } 38% { transform: translate(-2%, 2%); }
+  41% { transform: translate(3%, -1%); filter: brightness(1.8); } 44% { transform: translate(-3%, 1%); } 47% { transform: translate(4%, -2%); filter: brightness(1.8); } 50% { transform: translate(-2%, 2%); }
+  53% { transform: translate(4%, -3%); filter: brightness(1.8); } 56% { transform: translate(-2%, 1%); } 64% { transform: none; }
+  70% { transform: translate(13%, -8%) scale(0.9, 1.08); filter: brightness(3); } 76% { transform: translate(6%, -4%) rotate(5deg); filter: brightness(1.3); }
+}
+@keyframes pummeled-p1 {
+  0%, 27%, 85%, 100% { transform: none; filter: none; }
+  29% { transform: translate(-2%, 1%); filter: brightness(1.8); } 32% { transform: translate(2%, -1%); } 35% { transform: translate(-3%, 2%); filter: brightness(1.8); } 38% { transform: translate(2%, -2%); }
+  41% { transform: translate(-3%, 1%); filter: brightness(1.8); } 44% { transform: translate(3%, -1%); } 47% { transform: translate(-4%, 2%); filter: brightness(1.8); } 50% { transform: translate(2%, -2%); }
+  53% { transform: translate(-4%, 3%); filter: brightness(1.8); } 56% { transform: translate(2%, -1%); } 64% { transform: none; }
+  70% { transform: translate(-13%, 8%) scale(0.9, 1.08); filter: brightness(3); } 76% { transform: translate(-6%, 4%) rotate(-5deg); filter: brightness(1.3); }
+}
+
 /* A critical hit: small bold "CRIT" over the Pokémon hit, cyan with a white outline (and a faint shadow outside it, for light backgrounds). */
 .fx-label.crit { padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; color: var(--c); font-size: calc(14px * var(--k, 1)); font-weight: 900; font-style: italic; letter-spacing: 0.06em;
   text-shadow: 1.5px 0 0 #fff, -1.5px 0 0 #fff, 0 1.5px 0 #fff, 0 -1.5px 0 #fff, 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 1px 4px rgb(0 40 60 / 0.55); animation-name: fx-crit; }
@@ -1142,7 +1282,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /* Ice gauntlets (Glacial Guardian Gauntlet): heavy blocks of ice form around both arms, glint, then smash into the target and shatter. */
 .fx-gauntlets { z-index: 3; }
 .fx-gauntlets .gauntlet { position: absolute; left: 0; top: 0; width: var(--s); height: calc(var(--s) * 0.92); filter: drop-shadow(0 0 8px var(--c2)) drop-shadow(0 0 2px rgb(20 70 110 / 0.8));
-  animation: gauntlet calc(var(--dur) * var(--spd, 1)) cubic-bezier(0.3, 0.7, 0.4, 1) calc(var(--delay, 0ms) * var(--spd, 1)) both; }
+  animation: gauntlet calc(var(--dur) * var(--spd, 1)) cubic-bezier(0.3, 0.7, 0.4, 1) calc((var(--delay, 0ms) + var(--stagger, 0ms)) * var(--spd, 1)) both; }
 /* A spiky cluster of thick, see-through ice: the fist and forearm show faintly inside it. */
 .fx-gauntlets .ice { position: absolute; inset: 0; overflow: hidden;
   clip-path: polygon(10% 18%, 22% 0, 36% 12%, 52% 0, 66% 10%, 82% 2%, 100% 26%, 92% 50%, 100% 74%, 80% 100%, 50% 92%, 20% 100%, 0 78%, 6% 50%, 0 30%);
@@ -1152,7 +1292,10 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
   background: linear-gradient(115deg, transparent 28%, rgb(255 255 255 / 0.7) 29% 32%, transparent 33% 58%, rgb(255 255 255 / 0.5) 59% 61%, transparent 62%),
     linear-gradient(25deg, transparent 55%, rgb(255 255 255 / 0.45) 56% 58%, transparent 59%); }
 .fx-gauntlets .ice::before { content: ''; position: absolute; top: -20%; bottom: -20%; left: 0; width: 30%; z-index: 1; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.95), transparent);
-  animation: gauntlet-glint calc(var(--dur) * var(--spd, 1)) linear calc(var(--delay, 0ms) * var(--spd, 1)) both; }
+  animation: gauntlet-glint calc(var(--dur) * var(--spd, 1)) linear calc((var(--delay, 0ms) + var(--stagger, 0ms)) * var(--spd, 1)) both; }
+/* Hitmonchan's fists: rounded (knuckles along the top), not a spiky gauntlet; made of ice, fire, electricity, fighting power or life energy. */
+.fx-gauntlets.fists .ice { clip-path: polygon(6% 34%, 12% 16%, 24% 8%, 34% 16%, 42% 6%, 54% 4%, 62% 14%, 72% 6%, 84% 10%, 92% 24%, 97% 42%, 99% 64%, 92% 84%, 74% 97%, 46% 100%, 22% 94%, 6% 78%, 0 56%);
+  border-radius: 18%; }
 @keyframes gauntlet {
   0% { transform: translate(calc(var(--ox) - 50%), calc(var(--oy) - 50%)) rotate(var(--r)) scale(0.15); opacity: 0; }
   10% { opacity: 1; }
@@ -1183,6 +1326,30 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .spot.semi-carried .sprite-sub { transform: translateY(-78%) scale(0.5); opacity: 0.9; }
 .spot-p2.semi-carried .sprite-sub { transform: translateY(-40%) scale(0.5); }
 .spot.semi-carried .sprite-wrap:not([class*="fx-"]) { animation: carried-struggle 0.8s ease-in-out infinite; transform-origin: 50% 0; }
+/* Dropped by Sky Drop's attack: from where it hung, it plummets and slams into the ground (squashing), then bounces
+   once. While it falls, its spot drops the "in the sky" look (the sprite itself starts up there and falls). */
+.spot.semi-carried:has(.fx-dropped-p1, .fx-dropped-p2) .sprite-sub { transform: none; transition: none; opacity: 1; }
+.spot:has(.fx-dropped-p1, .fx-dropped-p2) .semi-badge, .spot:has(.fx-dropped-p1, .fx-dropped-p2) .semi-cue { display: none; }
+.fx-dropped-p1 { animation: dropped-p1 calc(900ms * var(--spd, 1)) linear both; transform-origin: 50% 50%; }
+.fx-dropped-p2 { animation: dropped-p2 calc(900ms * var(--spd, 1)) linear both; transform-origin: 50% 50%; }
+@keyframes dropped-p1 {
+  0% { transform: translateY(-78%) scale(0.5) rotate(-7deg); }
+  12% { transform: translateY(-84%) scale(0.52) rotate(6deg); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  44% { transform: translateY(0) scale(1, 1.05) rotate(10deg); }
+  46% { transform: translateY(3%) scale(1.25, 0.72) rotate(0deg); filter: brightness(1.6); }
+  56% { transform: translateY(-9%) scale(0.95, 1.06); filter: none; }
+  66% { transform: translateY(0) scale(1.05, 0.95); }
+  76%, 100% { transform: none; }
+}
+@keyframes dropped-p2 {
+  0% { transform: translateY(-40%) scale(0.5) rotate(7deg); }
+  12% { transform: translateY(-46%) scale(0.52) rotate(-6deg); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  44% { transform: translateY(0) scale(1, 1.05) rotate(-10deg); }
+  46% { transform: translateY(3%) scale(1.25, 0.72) rotate(0deg); filter: brightness(1.6); }
+  56% { transform: translateY(-9%) scale(0.95, 1.06); filter: none; }
+  66% { transform: translateY(0) scale(1.05, 0.95); }
+  76%, 100% { transform: none; }
+}
 @keyframes carried-struggle { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg) translateY(-3%); } }
 .semi-cue { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); pointer-events: none; z-index: 2; }
 .spot-p1 .semi-cue { bottom: 3%; }

@@ -4,9 +4,7 @@ import { gen7 } from '../team/dex';
 import { pickTeamSets, rollAbility } from './opponent';
 import { Rng } from './rng';
 import { bpForWin, chooseTrainer, courseSchedule, planOpponent, scheduleSlot, specialPool, teamSizeFor } from './selection';
-import { DEFAULT_SETTINGS, type RunSettings } from './types';
 
-const SETTINGS: RunSettings = DEFAULT_SETTINGS;
 
 /** Chi-square critical value at p = 0.001 (Wilson-Hilferty approximation). */
 function chiSquareCritical(df: number): number {
@@ -20,11 +18,11 @@ function chiSquare(counts: Map<number, number>, expected: Map<number, number>): 
   return stat;
 }
 
-function drawTrainers(course: Course, battle: number, settings: RunSettings, n: number, seed: string) {
+function drawTrainers(course: Course, battle: number, n: number, seed: string) {
   const rng = new Rng(seed);
   const counts = new Map<number, number>();
   for (let i = 0; i < n; i++) {
-    const { trainer } = chooseTrainer('singles', course, battle, settings, rng);
+    const { trainer } = chooseTrainer('singles', course, battle, rng);
     counts.set(trainer.id, (counts.get(trainer.id) ?? 0) + 1);
   }
   return counts;
@@ -77,7 +75,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
   it.each(brackets)('%s battle %i draws uniformly from pool %s', (course, battle, poolKey) => {
     const pool = BRACKETS.pools[poolKey].trainerIds;
     const n = pool.length * 1000;
-    const counts = drawTrainers(course, battle, SETTINGS, n, `mc-${course}-${battle}`);
+    const counts = drawTrainers(course, battle, n, `mc-${course}-${battle}`);
     expect([...counts.keys()].sort((a, b) => a - b)).toEqual(pool);
     const expected = new Map(pool.map(id => [id, n / pool.length]));
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
@@ -98,7 +96,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 7 + 7);
 
     const n = 100_000;
-    const counts = drawTrainers('super', 30, SETTINGS, n, 'special');
+    const counts = drawTrainers('super', 30, n, 'special');
     const expected = new Map(pool.map(t => [t.trainer.id, (n * t.weight) / total]));
     expect([...counts.keys()].sort()).toEqual(pool.map(t => t.trainer.id).sort());
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
@@ -106,7 +104,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
 
   it('gives Sun- and Moon-exclusive trainers the same chance', () => {
     const n = 200_000;
-    const counts = drawTrainers('super', 40, SETTINGS, n, 'exclusives');
+    const counts = drawTrainers('super', 40, n, 'exclusives');
     const byVersion = { sun: 0, moon: 0 };
     for (const { trainer } of specialPool()) {
       if (trainer.versions.length === 1) byVersion[trainer.versions[0]] += counts.get(trainer.id) ?? 0;
@@ -116,31 +114,20 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(Math.abs(byVersion.sun - byVersion.moon)).toBeLessThan(4.5 * Math.sqrt(2 * n * p));
   });
 
-  it('never shows Anabel when locked; her share (weight 3.5) goes to the previous bracket\'s trainers', () => {
-    const settings = { ...SETTINGS, anabelUnlocked: false };
-    const rng = new Rng('anabel-locked');
+  it('always has Anabel in the special draw, at her weight (no unlock needed in this app)', () => {
+    const rng = new Rng('anabel');
     const n = 100_000;
-    let replaced = 0;
-    const replacements = new Map<number, number>();
-    for (let i = 0; i < n; i++) {
-      const { trainer, replacedAnabel } = chooseTrainer('singles', 'super', 20, settings, rng);
-      expect(trainer.name).not.toBe('Anabel');
-      if (replacedAnabel) {
-        replaced++;
-        replacements.set(trainer.id, (replacements.get(trainer.id) ?? 0) + 1);
-      }
-    }
+    let anabel = 0;
+    for (let i = 0; i < n; i++) if (chooseTrainer('singles', 'super', 20, rng).trainer.name === 'Anabel') anabel++;
     const p = specialPool().find(t => t.trainer.name === 'Anabel')!.weight / specialPool().reduce((s, t) => s + t.weight, 0);
-    expect(Math.abs(replaced - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
-    const pool = BRACKETS.pools['b11-19'].trainerIds;
-    for (const id of replacements.keys()) expect(pool).toContain(id);
+    expect(Math.abs(anabel - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
   });
 
   it('always picks a Battle Legend at the boss battles (battle 50 of Super: Red or Blue, or rarely Tai or Matt)', () => {
     const rng = new Rng('boss');
-    expect(chooseTrainer('singles', 'normal', 20, SETTINGS, rng).trainer.id).toBe(203);
+    expect(chooseTrainer('singles', 'normal', 20, rng).trainer.id).toBe(203);
     for (let i = 0; i < 30; i++) {
-      const t = chooseTrainer('singles', 'super', 50, SETTINGS, rng).trainer;
+      const t = chooseTrainer('singles', 'super', 50, rng).trainer;
       expect(t.kind).toBe('legend');
       expect([190, 191].includes(t.id) || ['Tai', 'Matt'].includes(t.name)).toBe(true);
     }
@@ -208,14 +195,14 @@ describe('team generation', () => {
 
 describe('planOpponent', () => {
   it('is deterministic for a run seed and battle, and differs across battles', () => {
-    const a = planOpponent('run-x', 'singles', 'super', 12, SETTINGS);
-    expect(planOpponent('run-x', 'singles', 'super', 12, SETTINGS)).toEqual(a);
-    expect(planOpponent('run-x', 'singles', 'super', 13, SETTINGS)).not.toEqual(a);
+    const a = planOpponent('run-x', 'singles', 'super', 12);
+    expect(planOpponent('run-x', 'singles', 'super', 12)).toEqual(a);
+    expect(planOpponent('run-x', 'singles', 'super', 13)).not.toEqual(a);
   });
 
   it('applies the trainer\'s IVs at Lv. 50', () => {
     for (const battle of [3, 25, 45, 55]) {
-      const plan = planOpponent('ivs', 'singles', 'super', battle, SETTINGS);
+      const plan = planOpponent('ivs', 'singles', 'super', battle);
       const trainer = TRAINERS[plan.trainerId];
       for (const set of plan.team) {
         expect(set.level).toBe(50);

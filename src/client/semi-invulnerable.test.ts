@@ -68,3 +68,25 @@ describe('Sky Drop', () => {
     expect(seen).toEqual([['sky', 'carried'], [null, null]]);
   });
 });
+
+describe('Sky Drop landing', () => {
+  it('drops the carried Pokémon when the attack lands (also when it knocks it out), but not when it is cut short', () => {
+    const client = new ClientBattle(new Generations(Dex));
+    const feed = (line: string) => {
+      const { args, kwArgs } = Protocol.parseBattleLine(line);
+      client.add(args, kwArgs);
+      trackSemiInvulnerable(client, args as readonly string[], kwArgs as Record<string, unknown>);
+    };
+    for (const line of ['|player|p1|A|', '|player|p2|B|', '|gametype|singles', '|gen|7', '|start',
+      '|switch|p1a: Aerodactyl|Aerodactyl, L50|100/100', '|switch|p2a: Garchomp|Garchomp, L50|100/100',
+      '|move|p1a: Aerodactyl|Sky Drop||[still]', '|-prepare|p1a: Aerodactyl|Sky Drop|p2a: Garchomp']) feed(line);
+    const garchomp = client.p2.active[0]!;
+    expect(semiInvulnerableOf(garchomp)).toBe('carried');
+    // Weather damage while it's up there doesn't drop it.
+    feed('|-damage|p2a: Garchomp|95/100|[from] Sandstorm');
+    expect(semiInvulnerableOf(garchomp)).toBe('carried');
+    feed('|move|p1a: Aerodactyl|Sky Drop|p2a: Garchomp|[from] lockedmove');
+    feed('|-damage|p2a: Garchomp|0 fnt');
+    expect(semiInvulnerableOf(garchomp)).toBeNull();
+  });
+});

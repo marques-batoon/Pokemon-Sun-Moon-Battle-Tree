@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, SKY_DROPPED, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, type FxSpec,
 } from './catalog';
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
@@ -21,6 +21,19 @@ const IMMUNE_CLASS: Record<string, string> = {
   ghost: 'fx-intangible', normal: 'fx-unfazed', ground: 'fx-grounded', flying: 'fx-hover', dark: 'fx-dark-guard', steel: 'fx-metal-glint', fairy: 'fx-fairy-glow',
 };
 
+/**
+ * Hitmonchan's Z-Moves move both Pokémon (catalog Z_SIGNATURE): Hitmonchan himself (default: the physical Z-Move
+ * charge, fx-zuser) and the target, timed to the punches. By side, as they move toward or away from the other side.
+ */
+const SIGNATURE_SPRITES: Record<string, { user?: string; target?: string }> = {
+  superdrainpunch: { user: 'fx-drainer', target: 'fx-drain-smashed' },
+  skyrocketpunch: { target: 'fx-launched' },
+  punchingbarrage: { target: 'fx-pummeled' },
+  glacialguardbreaker: { target: 'fx-smashed' },
+  infernalfuryfist: { user: 'fx-inferno', target: 'fx-smashed' },
+  thunderboltblitzkrieg: { user: 'fx-blitz', target: 'fx-blitzed' },
+};
+
 /** Animation class for the sprite at one position. a/b variants restart CSS animations on consecutive events. */
 export function spriteClass(side: Side, slot: number, anim: BattleAnimation | null): string {
   if (!anim) return '';
@@ -34,11 +47,14 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     const healer = anim.kind === 'leech' ? other : user;
     return here === drained ? `fx-drained-${v}` : here === healer ? `fx-absorb-${v}` : '';
   }
+  const signature = anim.kind === 'move' && anim.fx && !anim.still ? SIGNATURE_SPRITES[anim.fx.moveId] : undefined;
+  if (signature?.target && anim.target && !actsAt(anim, side, slot) && anim.target === side && (anim.targetSlot ?? 0) === slot) return `${signature.target}-${side}`;
   if (!actsAt(anim, side, slot)) return '';
   switch (anim.kind) {
     case 'move': {
       const fx = anim.fx;
       if (anim.still || !fx) return `fx-power-${v}`;
+      if (signature?.user) return `${signature.user}-${side}`;
       const atFoe = anim.target && anim.target !== side;
       switch (fx.kind) {
         // Physical Z-Moves charge at the target; special ones are unleashed from where the user stands.
@@ -72,6 +88,7 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'balloon-in': return 'fx-balloon-float';
     case 'sash': return `fx-brace-${v}`;
+    case 'sky-dropped': return `fx-dropped-${side}`;
     case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
     case 'ability': {
       // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate).
@@ -136,6 +153,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
     case 'immune': return immuneSpec(anim.condition ?? '');
     case 'sky-drop': return SKY_DROP;
+    case 'sky-dropped': return SKY_DROPPED;
     case 'hit': return anim.crit ? CRIT : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':
@@ -160,6 +178,16 @@ export function effectAnchors(anim: BattleAnimation): { user: Pos; targets: Pos[
     ? anim.spread.map(t => posKey(t.side, t.slot))
     : anim.target ? [posKey(anim.target, anim.targetSlot)] : [];
   return { user: posKey(anim.side, anim.slot), targets };
+}
+
+/**
+ * Where effects are drawn, from the measured sprites. A Pokémon dropped by Sky Drop is measured as its fall starts,
+ * up in the sky, so its effects use its usual spot on the ground instead.
+ */
+export function effectPoints<T>(anim: BattleAnimation | null, points: Partial<Record<Pos, T>>): Partial<Record<Pos, T>> {
+  if (anim?.kind !== 'sky-dropped' || !anim.side) return points;
+  const { [posKey(anim.side, anim.slot)]: _inTheSky, ...rest } = points;
+  return rest;
 }
 
 /** Screen-shake class and start delay for the stage while an effect plays. */

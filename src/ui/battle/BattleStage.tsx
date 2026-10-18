@@ -8,7 +8,7 @@ import { useElementSize } from '../useElementSize';
 import { needsFrontSprites } from '../sprites';
 import { horizonVar, posKey, type Point } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
-import { actsAt, effectAnchors, effectSpec, shakeProps } from './fx/stage-fx';
+import { actsAt, effectAnchors, effectPoints, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
 import { StageBackdrop } from './StageBackdrop';
@@ -173,7 +173,7 @@ export function BattleStage({ battle, animation, playing, speed = 1, me = 'p1' }
         <ShieldWalls side="p2" conditions={shields('p2')} anim={animation} size={size} points={points} doubles={doubles} />
         <ShieldWalls side="p1" conditions={shields('p1')} anim={animation} size={size} points={points} doubles={doubles} />
         {spec && anchors && (
-          <MoveEffects key={animation!.id} spec={spec} user={anchors.user} targets={anchors.targets} size={size} points={points} doubles={doubles} seed={animation!.id} />
+          <MoveEffects key={animation!.id} spec={spec} user={anchors.user} targets={anchors.targets} size={size} points={effectPoints(animation, points)} doubles={doubles} seed={animation!.id} />
         )}
       </div>
       {(['p2', 'p1'] as const).map(side => (

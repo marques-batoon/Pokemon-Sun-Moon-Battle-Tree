@@ -7,6 +7,7 @@
 import paradoxData from './paradox.json';
 import type { SpriteAvailability } from '../champions';
 import { canHoldWarpItem } from './digimon';
+import { canHoldCustomItem } from './index';
 
 export type ParadoxKind = 'ancient' | 'future';
 
@@ -49,11 +50,11 @@ export function paradoxFormForSet(species: string, item: string | undefined | nu
 }
 /**
  * Whether the species may hold this item: Paradoxorbs only go on Pokémon with that kind of Paradox
- * form, and a warp item (Wargreyite) only on its own Digimon.
+ * form, a warp item (Wargreyite) only on its own Digimon, and Hitmonchanium Z only on Hitmonchan.
  */
 export function canHoldItem(species: string, item: string): boolean {
   const kind = paradoxKindOfItem(item);
-  return (!kind || !!paradoxFormOf(species, kind)) && canHoldWarpItem(species, item);
+  return (!kind || !!paradoxFormOf(species, kind)) && canHoldWarpItem(species, item) && canHoldCustomItem(species, item);
 }
 
 const ABILITY_DESC = 'Raises this Pokemon\'s highest stat (not HP) by 1.3x, or Speed by 1.5x, while it is on the field. Ties go Atk > Def > SpA > SpD > Spe. Not a stat stage; no weather or terrain needed.';

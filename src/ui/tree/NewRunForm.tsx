@@ -135,10 +135,6 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
       <fieldset className="settings">
         <legend>Settings</legend>
         <label>
-          <input type="checkbox" checked={settings.anabelUnlocked} onChange={e => setSettings(s => ({ ...s, anabelUnlocked: e.target.checked }))} />
-          {' '}Anabel can appear (reached Guzzlord's chapter of the Looker episode)
-        </label>
-        <label>
           Opponent AI{' '}
           <select value={settings.ai} onChange={e => setSettings(s => ({ ...s, ai: e.target.value as RunSettings['ai'] }))}>
             <option value="heuristic">Battle Tree AI</option>

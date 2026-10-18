@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { multiPartners, pairedTrainer, pairGreeting, pairGreetingPartners, samePerson, TRAINERS } from '../data/battle-tree';
 import { PAIR_TEAMMATE_CHANCE, planOpponent, scheduleSlot, specialPool } from './selection';
-import { DEFAULT_SETTINGS } from './types';
 
 const battle = Array.from({ length: 60 }, (_, i) => i + 1).find(n => scheduleSlot('multi', 'super', n).type === 'special')!;
 
@@ -31,7 +30,7 @@ describe('Multi Battles: teammates with pair greetings', () => {
     const n = 8000;
     let hits = 0;
     for (let i = 0; i < n; i++) {
-      const o = planOpponent(`pair-teammate-${i}`, 'multi', 'super', battle, DEFAULT_SETTINGS);
+      const o = planOpponent(`pair-teammate-${i}`, 'multi', 'super', battle);
       const [a, b] = [TRAINERS[o.trainerId], TRAINERS[o.second!.trainerId]];
       if (a.kind === 'special' && b.kind === 'special' && pairGreeting(a, b) !== null) {
         hits++;

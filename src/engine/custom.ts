@@ -1,12 +1,16 @@
 // Battle logic for the custom content in src/data/custom (and the field-effect
 // turn counts the battle screen shows). Runs where the simulator runs.
 import type { ActiveMove, Battle, Effect, Move, Pokemon, Side } from '@pkmn/sim';
-import { CUSTOM_MEGAS, POLIWRATHIUM_Z } from '../data/custom';
+import { CUSTOM_MEGAS, HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../data/custom';
 import { isDarkWarp, isWarpForm, isWarpItem, WARP_DIGIMON } from '../data/custom/digimon';
 import { PARADOX_ABILITIES, PARADOX_ITEMS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 
 const toId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 const POLIWRATHIUM_ID = toId(POLIWRATHIUM_Z.item);
+const HITMONCHANIUM_ID = toId(HITMONCHANIUM_Z.item);
+const HITMONCHAN_Z = Object.values(HITMONCHANIUM_Z.moves);
+/** Sky Rocket Punch hits a target up in the sky (Fly, Bounce, Sky Drop), like Sky Uppercut. */
+const SKY_HITTERS = new Set(HITMONCHAN_Z.filter(z => z.hitsSky).map(z => toId(z.name)));
 
 type Handler = (this: Battle, ...args: unknown[]) => unknown;
 type Entry = Record<string, unknown>;
@@ -56,15 +60,16 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
     });
   }
   Object.assign(data.Items[POLIWRATHIUM_ID], { onTakeItem: false });
-  // Omega Wrath also sets up a Substitute, without the usual HP cost.
-  const omega = Object.values(POLIWRATHIUM_Z.moves).find(z => z.substitute);
-  if (omega) {
+  Object.assign(data.Items[HITMONCHANIUM_ID], { onTakeItem: false });
+  // Omega Wrath (and Hitmonchan's Omega Punch) also sets up a Substitute, without the usual HP cost.
+  for (const omega of [...Object.values(POLIWRATHIUM_Z.moves), ...HITMONCHAN_Z].filter(z => z.substitute)) {
     Object.assign(data.Moves[toId(omega.name)], {
       onAfterMoveSecondarySelf(this: Battle, source: Pokemon) {
         source.addVolatile('substitute');
       },
     });
   }
+  addHitmonchanLogic(data, parent);
 
   data.Conditions ??= {};
   data.Conditions.frz = { inherit: true, onBeforeMove: thawCheck };
@@ -79,6 +84,52 @@ export function addCustomBattleLogic(data: Record<string, Record<string, Entry>>
     const condition = parent.Moves[id].condition as Entry;
     data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, [hook]: tagTurns(condition[hook] as Handler) } };
   }
+}
+
+/**
+ * Hitmonchanium Z's moves (the data has their power, punch flag, drain, priority and stat rises): Super Drain Punch's
+ * extra Sp. Def rise when Hitmonchan was at full HP as it began, Infernal Fury Fist burning Hitmonchan, Sky Rocket
+ * Punch reaching a target in the sky, and Close Combat counting as a punching move when Hitmonchan uses it.
+ */
+function addHitmonchanLogic(data: Record<string, Record<string, Entry>>, parent: { Moves: Record<string, Entry> }) {
+  for (const z of HITMONCHAN_Z) {
+    const entry = data.Moves[toId(z.name)];
+    if (z.fullHpSpd) {
+      Object.assign(entry, {
+        onTryMove(this: Battle, source: Pokemon) {
+          source.m.zFullHp = source.hp === source.maxhp;
+        },
+        onAfterMoveSecondarySelf(this: Battle, source: Pokemon) {
+          if (source.m.zFullHp) this.boost({ spd: 1 }, source, source);
+          source.m.zFullHp = false;
+        },
+      });
+    }
+    if (z.burnSelf) {
+      Object.assign(entry, {
+        onAfterMoveSecondarySelf(this: Battle, source: Pokemon, _target: Pokemon, move: ActiveMove) {
+          source.trySetStatus('brn', source, move);
+        },
+      });
+    }
+  }
+  // Up in the sky, a Pokémon can be hit only by a few moves (Sky Uppercut, Thunder...): Sky Rocket Punch too.
+  for (const id of ['fly', 'bounce']) {
+    const condition = parent.Moves[id].condition as Entry;
+    const original = condition.onInvulnerability as Handler;
+    data.Moves[id] = { ...data.Moves[id], inherit: true, condition: { ...condition, onInvulnerability(this: Battle, ...args: unknown[]) {
+      return SKY_HITTERS.has((args[2] as ActiveMove).id) ? undefined : original.apply(this, args);
+    } } };
+  }
+  const skyDrop = parent.Moves.skydrop.condition as Entry;
+  const skyDropCheck = skyDrop.onAnyInvulnerability as Handler;
+  data.Moves.skydrop = { ...data.Moves.skydrop, inherit: true, condition: { ...skyDrop, onAnyInvulnerability(this: Battle, ...args: unknown[]) {
+    return SKY_HITTERS.has((args[2] as ActiveMove).id) ? undefined : skyDropCheck.apply(this, args);
+  } } };
+  // In this app, Close Combat is a punching move when Hitmonchan uses it (Iron Fist boosts it).
+  data.Moves.closecombat = { ...data.Moves.closecombat, inherit: true, onModifyMove(this: Battle, move: ActiveMove, pokemon: Pokemon) {
+    if (pokemon.baseSpecies.baseSpecies === HITMONCHANIUM_Z.user) move.flags = { ...move.flags, punch: 1 };
+  } };
 }
 
 /** Chance, in fifths, that a frozen Pokémon thaws out when it tries to move: 1/5 (20%) as in the games, 3/5 (60%) with a Fire-type move (on request). */
@@ -237,14 +288,29 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
 type Actions = Battle['actions'];
 const proto = (self: Actions) => Object.getPrototypeOf(self) as Actions;
 
-/** Poliwrathium Z: the Z-Move a damaging Fighting / Water / Ice move becomes, with the base move's power and category. */
-function poliwrathZMove(actions: Actions, move: Move, pokemon: Pokemon): ActiveMove | null {
-  const z = pokemon?.getItem().id === POLIWRATHIUM_ID && move.category !== 'Status' ? POLIWRATHIUM_Z.moves[move.type] : undefined;
+/**
+ * The custom crystals' Z-Moves: Poliwrathium Z by the base move's type (Fighting / Water / Ice), with the base move's
+ * Z power; Hitmonchanium Z by the base move itself, with its own power (Omega Punch: the base move's Z power).
+ */
+function customZ(item: string, move: Move): { name: string; basePower: number | null; priority?: number } | null {
+  if (move.category === 'Status') return null;
+  if (item === POLIWRATHIUM_ID) {
+    const z = POLIWRATHIUM_Z.moves[move.type];
+    return z ? { name: z.name, basePower: null } : null;
+  }
+  if (item === HITMONCHANIUM_ID) return HITMONCHANIUM_Z.moves[move.name] ?? null;
+  return null;
+}
+
+/** The custom crystals' Z-Move for this base move, ready to use (category from the base move). */
+function customZMove(actions: Actions, move: Move, pokemon: Pokemon): ActiveMove | null {
+  const z = pokemon ? customZ(pokemon.getItem().id, move) : null;
   if (!z) return null;
   const zMove = actions.dex.getActiveMove(z.name);
-  zMove.basePower = move.zMove!.basePower!;
+  zMove.basePower = z.basePower ?? move.zMove!.basePower!;
   zMove.category = move.category;
-  zMove.priority = move.priority;
+  // Thunderbolt Blitzkrieg has its own priority (the turn order already used it, from the move's data).
+  zMove.priority = z.priority ?? (z.basePower === null ? move.priority : 0);
   zMove.isZOrMaxPowered = true;
   return zMove;
 }
@@ -253,6 +319,7 @@ function poliwrathZMove(actions: Actions, move: Move, pokemon: Pokemon): ActiveM
  * Engine hooks for the custom content. Poliwrathium Z: Poliwrath's damaging
  * Fighting / Water / Ice moves become its own Z-Moves, with the base move's Z
  * power and category (as Fightinium / Waterium / Icium Z would give).
+ * Hitmonchanium Z: seven of Hitmonchan's moves become its own Z-Moves.
  * Everything else is unchanged.
  */
 export const CUSTOM_ACTIONS = {
@@ -285,16 +352,16 @@ export const CUSTOM_ACTIONS = {
   },
   getZMove(this: Actions, move: Move, pokemon: Pokemon, skipChecks?: boolean): string | undefined {
     const item = pokemon.getItem();
-    if (item.id !== POLIWRATHIUM_ID) return proto(this).getZMove.call(this, move, pokemon, skipChecks);
+    if (item.id !== POLIWRATHIUM_ID && item.id !== HITMONCHANIUM_ID) return proto(this).getZMove.call(this, move, pokemon, skipChecks);
     if (!skipChecks) {
       if (pokemon.side.zMoveUsed || !item.itemUser?.includes(pokemon.species.name)) return undefined;
       if (!pokemon.getMoveData(move)?.pp) return undefined;
     }
-    const z = POLIWRATHIUM_Z.moves[move.type];
-    return z && move.category !== 'Status' && move.zMove?.basePower ? z.name : undefined;
+    const z = customZ(item.id, move);
+    return z && (z.basePower !== null || move.zMove?.basePower) ? z.name : undefined;
   },
   getActiveZMove(this: Actions, move: Move, pokemon: Pokemon): ActiveMove {
-    const zMove = poliwrathZMove(this, move, pokemon) ?? proto(this).getActiveZMove.call(this, move, pokemon);
+    const zMove = customZMove(this, move, pokemon) ?? proto(this).getActiveZMove.call(this, move, pokemon);
     // A damaging Z-Move is Physical or Special by its base move, which the protocol doesn't say:
     // a silent line tells the battle screen, for the animation (the sim asks twice per use; same answer).
     if (pokemon && zMove.category !== 'Status') this.battle.add('-activate', pokemon, `Z-Move: ${zMove.category}`, '[silent]');

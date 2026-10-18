@@ -89,9 +89,10 @@ function CodeStreams({ layer, ctx }: { layer: Extract<Layer, { kind: 'code' }>; 
 
 function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx }) {
   const count = layer.count ?? 1;
-  // Through the target: on past it by two-thirds of the way again.
+  // Through the target: on past it by two-thirds of the way again. Reverse: from the target back to the user.
   const far = layer.through ? 1.65 : 1;
-  const dx = (ctx.target.x - ctx.user.x) * far, dy = (ctx.target.y - ctx.user.y) * far;
+  const [from, to] = layer.reverse ? [ctx.target, ctx.user] : [ctx.user, ctx.target];
+  const dx = (to.x - from.x) * far, dy = (to.y - from.y) * far;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const shape: Shape = layer.shape ?? 'dot';
   return (
@@ -103,7 +104,7 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
             key={i}
             className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${shape === 'dot' ? 'glow' : ''}`}
             style={css({
-              '--x': px(ctx.user.x), '--y': px(ctx.user.y + jitter), '--dx': px(dx), '--dy': px(dy), '--lift': px(-Math.min(90, Math.abs(dx) * 0.25)),
+              '--x': px(from.x), '--y': px(from.y + jitter), '--dx': px(dx), '--dy': px(dy), '--lift': px(-Math.min(90, Math.abs(dx) * 0.25)),
               '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--ang': deg(angle),
               '--delay': ms((layer.delay ?? 0) + i * (layer.gap ?? 80)), '--dur': ms(layer.dur ?? 500),
             })}
@@ -300,20 +301,49 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       return <span key={i} className="fxl fx-rays" style={css({ '--x': px(p.x), '--y': px(p.y), '--s': px(layer.size * ctx.k), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 800) })} />;
     }
     case 'gauntlets': {
-      // Ice forms around both arms (at the sides of the sprite, a little above its centre: sized from the measured
-      // sprite when there is one), winds up, then both fists fly into the target from either side and shatter.
+      // Fists sized from the measured sprite when there is one. Pair: ice forms around both arms (at the sides of
+      // the sprite, a little above its centre), winds up, then both fists fly into the target from either side and
+      // shatter. One-two: the second fist just after the first. Single: one huge fist, from the arm nearer the foe.
+      // Barrage: fist after fist from alternating sides, or (around) from every side of the target at once.
       const h = user.size ?? layer.size * ctx.k * 1.9;
-      const s = h * 0.3;
-      const fist = (dir: 1 | -1) => css({ '--ox': px(dir * h * 0.3), '--oy': px(-h * 0.2), '--ix': px(dir * s * 0.55), '--r': deg(dir * 14) });
+      const style = layer.style ?? 'pair';
+      const s = h * { pair: 0.3, 'one-two': 0.42, single: 0.62, barrage: 0.3 }[style];
+      const toward: 1 | -1 = target.x >= user.x ? 1 : -1;
+      const around = style === 'barrage' && !!layer.around;
+      const fists: { dir: 1 | -1; stagger: number; n: number }[] =
+        style === 'pair' ? [{ dir: -1, stagger: 0, n: 0 }, { dir: 1, stagger: 0, n: 1 }]
+        : style === 'one-two' ? [{ dir: -1, stagger: 0, n: 0 }, { dir: 1, stagger: 260, n: 1 }]
+        : style === 'single' ? [{ dir: toward, stagger: 0, n: 0 }]
+        : Array.from({ length: layer.count ?? 6 }, (_, n) => ({ dir: (n % 2 ? 1 : -1) as 1 | -1, stagger: n * (layer.gap ?? 70), n }));
+      const fist = ({ dir, stagger, n }: { dir: 1 | -1; stagger: number; n: number }) => {
+        // Where each barrage fist lands: a little around the target's middle.
+        const jx = style === 'barrage' ? (rand(ctx.seed, n, 51) - 0.5) * h * 0.5 : 0;
+        const jy = style === 'barrage' ? (rand(ctx.seed, n, 52) - 0.5) * h * 0.4 : 0;
+        // Around: each fist comes in from a different angle, from just outside the target.
+        const a = n * 2.4 + rand(ctx.seed, n, 53) * 0.6;
+        const [ox, oy] = around ? [Math.cos(a) * h * 0.95, Math.sin(a) * h * 0.7] : [dir * h * 0.3, -h * 0.2];
+        // A barrage fist's knuckles (the top of the fist) face where it's going.
+        const [ex, ey] = around ? [jx - ox, jy - oy] : [target.x - user.x + jx - ox, target.y - user.y + jy - oy];
+        const r = style === 'barrage' ? (Math.atan2(ey, ex) * 180) / Math.PI + 90 : dir * 14;
+        return css({
+          '--ox': px(ox), '--oy': px(oy), '--ix': px(dir * s * (style === 'pair' ? 0.55 : 0.25)), '--r': deg(r),
+          '--jx': px(jx), '--jy': px(jy), '--stagger': ms(stagger),
+        });
+      };
+      const origin = around ? target : user;
       return (
-        <span key={i} className="fxl fx-gauntlets" style={css({
-          '--x': px(user.x), '--y': px(user.y), '--tx': px(target.x - user.x), '--ty': px(target.y - user.y), '--s': px(s),
+        <span key={i} className={`fxl fx-gauntlets ${style}${style === 'pair' ? '' : ' fists'} mat-${layer.material ?? 'ice'}`} style={css({
+          '--x': px(origin.x), '--y': px(origin.y), '--tx': px(around ? 0 : target.x - user.x), '--ty': px(around ? 0 : target.y - user.y), '--s': px(s),
           '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': ms(layer.dur ?? 2000),
         })}>
-          <span className="gauntlet" style={fist(-1)}><span className="ice" /></span>
-          <span className="gauntlet" style={fist(1)}><span className="ice" /></span>
+          {fists.map(f => <span key={f.n} className="gauntlet" style={fist(f)}><span className="ice" /></span>)}
         </span>
       );
+    }
+    case 'speedlines': {
+      // Over the whole stage, converging on the Pokémon; its middle stays clear.
+      const p = anchor(layer.at);
+      return <span key={i} className="fxl fx-speedlines" style={css({ '--x': '0px', '--y': '0px', '--cx': px(p.x), '--cy': px(p.y), '--sw': px(ctx.w), '--sh': px(ctx.h), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 600) })} />;
     }
     case 'cocoon': {
       const p = anchor(layer.at);
@@ -390,7 +420,7 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
             const side = (r1 - 0.5) * ctx.h * 0.7;
             const back = ctx.w * (0.18 + r2 * 0.2);
             const x = user.x - ux * back - uy * side, y = user.y - uy * back + ux * side;
-            const leaf = c % 4 === 3;
+            const leaf = layer.leaves !== false && c % 4 === 3;
             return (
               <span key={c} className={`fxl fx-gust ${leaf ? 'leaf' : 'streak'}`} style={css({
                 '--x': px(x), '--y': px(y), '--ang': ang, '--dist': px(dist), '--len': px(ctx.w * (0.1 + r3 * 0.12)), '--c': layer.color,

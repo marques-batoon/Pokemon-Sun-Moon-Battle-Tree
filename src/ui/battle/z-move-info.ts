@@ -11,6 +11,8 @@ export interface ZMoveInfo {
   power: string;
   /** Status Z-Moves: the extra effect, e.g. "+1 Atk" or "resets lowered stats". */
   effect: string | null;
+  /** The custom crystals' Z-Moves (Poliwrathium Z, Hitmonchanium Z): what they do besides the damage. */
+  desc?: string;
 }
 
 const STAT_LABEL: Record<string, string> = { atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe', accuracy: 'Accuracy', evasion: 'Evasion' };
@@ -43,9 +45,11 @@ export function zMoveInfo(base: Move, zName: string): ZMoveInfo {
     return { name: zName, type: base.type, category: 'Status', power: '—', effect };
   }
   const zMove = gen7.moves.get(zName);
+  // Custom Z-Moves (numbered from 10100) say what else they do.
+  const desc = zMove && zMove.num >= 10100 && zMove.shortDesc ? { desc: zMove.shortDesc } : {};
   if (zMove && zMove.basePower > 1) {
-    return { name: zMove.name, type: zMove.type, category: zMove.category, power: String(zMove.basePower), effect: null };
+    return { name: zMove.name, type: zMove.type, category: zMove.category, power: String(zMove.basePower), effect: null, ...desc };
   }
   const power = base.zMove?.basePower;
-  return { name: zName, type: zMove?.type ?? base.type, category: base.category, power: power ? String(power) : 'var.', effect: null };
+  return { name: zName, type: zMove?.type ?? base.type, category: base.category, power: power ? String(power) : 'var.', effect: null, ...desc };
 }

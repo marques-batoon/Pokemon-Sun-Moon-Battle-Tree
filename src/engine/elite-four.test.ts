@@ -4,7 +4,6 @@ import { SETS, TRAINERS } from '../data/battle-tree';
 import { treeSetToPokemonSet } from '../run/opponent';
 import { Rng } from '../run/rng';
 import { planOpponent, scheduleSlot, specialPool } from '../run/selection';
-import { DEFAULT_SETTINGS } from '../run/types';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats } from './format';
 
 registerBattleTreeFormats();
@@ -43,7 +42,7 @@ describe('Elite Four and Champions', () => {
     for (let i = 0; i < 300; i++) {
       for (const [format, course] of [['singles', 'super'], ['doubles', 'super'], ['multi', 'super'], ['singles', 'allstar']] as const) {
         const battle = specialBattle(format, course);
-        const o = planOpponent(`e4-${i}`, format, course, battle, DEFAULT_SETTINGS, format === 'multi' ? TRAINERS.find(t => t.name === 'Sina')!.id : undefined);
+        const o = planOpponent(`e4-${i}`, format, course, battle, format === 'multi' ? TRAINERS.find(t => t.name === 'Sina')!.id : undefined);
         for (const id of [o.trainerId, o.second?.trainerId]) if (id !== undefined && ELITE.some(t => t.id === id)) drawn.add(`${format}-${course}`);
       }
     }

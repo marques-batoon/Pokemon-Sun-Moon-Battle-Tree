@@ -51,8 +51,6 @@ export const PARTNER_OFFER_SIZE = 6;
 export const PARTNER_BRING = 2;
 
 export interface RunSettings {
-  /** Reached Guzzlord's chapter of the Looker episode (Anabel can appear). */
-  anabelUnlocked: boolean;
   /**
    * Off (game rule): the 3 Pokémon and their order are fixed when the challenge
    * starts or resumes, and the opponent's team is hidden. On: Showdown-style
@@ -63,7 +61,7 @@ export interface RunSettings {
   ai: AIKind;
 }
 
-export const DEFAULT_SETTINGS: RunSettings = { anabelUnlocked: true, teamPreviewEachBattle: false, ai: 'heuristic' };
+export const DEFAULT_SETTINGS: RunSettings = { teamPreviewEachBattle: false, ai: 'heuristic' };
 
 /** One opposing trainer and the team they bring. */
 export interface PlannedTrainer {
@@ -71,8 +69,6 @@ export interface PlannedTrainer {
   /** "Youngster Florian", "Battle Legend Red". */
   displayName: string;
   kind: 'regular' | 'special' | 'legend';
-  /** Anabel was rolled but is locked, so an ordinary trainer stands in. */
-  replacedAnabel: boolean;
   setIds: number[];
   team: PokemonSet[];
 }

@@ -143,7 +143,7 @@ export class RunController {
       wins: battle - 1,
       bp: 0,
       status: 'ready',
-      next: planOpponent(seedText, format, course, battle, settings, partner?.trainerId),
+      next: planOpponent(seedText, format, course, battle, partner?.trainerId),
       ...(partner && { partner }),
       history: [],
       // Checkpoint and retry starts count; debug starts ("start at battle N") and practice runs don't, and neither
@@ -346,7 +346,7 @@ export class RunController {
       this.finish({ ...base, status: 'cleared' });
     } else {
       const battle = run.battle + 1;
-      this.save({ ...base, battle, status: 'ready', next: planOpponent(run.seedText, run.format, run.course, battle, run.settings, run.partner?.trainerId) });
+      this.save({ ...base, battle, status: 'ready', next: planOpponent(run.seedText, run.format, run.course, battle, run.partner?.trainerId) });
     }
   }
 

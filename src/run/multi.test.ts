@@ -61,7 +61,7 @@ function winThrough(controller: RunController, battle: FakeBattle, key: Paramete
 describe('Multi: planning opponents', () => {
   it('pairs two different trainers with 2 Pokémon each, never the player’s partner', () => {
     for (let battle = 1; battle <= 60; battle++) {
-      const plan = planOpponent('multi-plan', 'multi', 'super', battle, DEFAULT_SETTINGS, SINA);
+      const plan = planOpponent('multi-plan', 'multi', 'super', battle, SINA);
       expect(plan.second).toBeDefined();
       expect(plan.second!.trainerId).not.toBe(plan.trainerId);
       expect([plan.trainerId, plan.second!.trainerId]).not.toContain(SINA);
@@ -70,14 +70,14 @@ describe('Multi: planning opponents', () => {
       if (battle % 10 === 0 && battle !== 50) expect([plan.kind, plan.second!.kind]).toEqual(['special', 'special']);
     }
     // Same inputs, same pair.
-    expect(planOpponent('multi-plan', 'multi', 'super', 7, DEFAULT_SETTINGS, SINA)).toEqual(planOpponent('multi-plan', 'multi', 'super', 7, DEFAULT_SETTINGS, SINA));
+    expect(planOpponent('multi-plan', 'multi', 'super', 7, SINA)).toEqual(planOpponent('multi-plan', 'multi', 'super', 7, SINA));
   });
 
   it('draws battle 50 between Red & Blue, Marques & Thomas (weight 7 each) and Tai & Matt (weight 1), first trainer always first', () => {
     const pairs = new Map<string, number>();
     const n = 4000;
     for (let i = 0; i < n; i++) {
-      const plan = planOpponent(`b50-${i}`, 'multi', 'super', 50, DEFAULT_SETTINGS, SINA);
+      const plan = planOpponent(`b50-${i}`, 'multi', 'super', 50, SINA);
       const names = `${plan.displayName} & ${plan.second!.displayName}`;
       pairs.set(names, (pairs.get(names) ?? 0) + 1);
       expect([plan.team.length, plan.second!.team.length]).toEqual([2, 2]);
@@ -90,7 +90,7 @@ describe('Multi: planning opponents', () => {
     near(pairs.get('Battle Legend Red & Battle Legend Blue')!, 7 / 15);
     near(pairs.get('Battle Legend Tai & Battle Legend Matt')!, 1 / 15);
     // Their teams come from their own sets, with their own moves.
-    const plan = [...Array(200).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, DEFAULT_SETTINGS, SINA)).find(p => p.displayName.endsWith('Marques'))!;
+    const plan = [...Array(200).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
     expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam'].includes(s.species))).toBe(true);
     expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa'].includes(s.species))).toBe(true);
     const venusaur = SETS.find(s => s.label === 'Venusaur (Marques 1)')!;
@@ -102,7 +102,7 @@ describe('Multi: planning opponents', () => {
     for (const format of ['singles', 'doubles'] as const) {
       const seen = new Map<string, number>();
       for (let i = 0; i < n; i++) {
-        const plan = planOpponent(`${format}50-${i}`, format, 'super', 50, DEFAULT_SETTINGS);
+        const plan = planOpponent(`${format}50-${i}`, format, 'super', 50);
         seen.set(plan.displayName, (seen.get(plan.displayName) ?? 0) + 1);
         expect(plan.team).toHaveLength(format === 'singles' ? 3 : 4);
       }
@@ -112,16 +112,16 @@ describe('Multi: planning opponents', () => {
       }
     }
     // Battle 100, 150... draw the same way.
-    expect(planOpponent('b100', 'singles', 'super', 100, DEFAULT_SETTINGS).kind).toBe('legend');
-    expect(planOpponent('b150', 'multi', 'super', 150, DEFAULT_SETTINGS, SINA).second!.kind).toBe('legend');
+    expect(planOpponent('b100', 'singles', 'super', 100).kind).toBe('legend');
+    expect(planOpponent('b150', 'multi', 'super', 150, SINA).second!.kind).toBe('legend');
     // Normal courses keep their Battle Legend alone.
-    expect(planOpponent('n20', 'singles', 'normal', 20, DEFAULT_SETTINGS).displayName).toBe('Battle Legend Red');
+    expect(planOpponent('n20', 'singles', 'normal', 20).displayName).toBe('Battle Legend Red');
   });
 
   it('has Tai lead with his Agumon and Matt with his Gabumon, in every format', () => {
     const species = (plan: { team: { species: string }[] }) => plan.team.map(s => s.species);
     const find = (format: 'singles' | 'doubles' | 'multi', name: string) => [...Array(400).keys()]
-      .map(i => planOpponent(`lead-${format}-${i}`, format, 'super', 50, DEFAULT_SETTINGS, format === 'multi' ? SINA : undefined))
+      .map(i => planOpponent(`lead-${format}-${i}`, format, 'super', 50, format === 'multi' ? SINA : undefined))
       .filter(p => p.displayName === `Battle Legend ${name}`);
     for (const [format, size] of [['singles', 3], ['doubles', 4]] as const) {
       const tai = find(format, 'Tai');
@@ -139,17 +139,18 @@ describe('Multi: planning opponents', () => {
     }
   });
 
-  it('replaces a locked Anabel with an ordinary trainer, per trainer', () => {
-    const settings = { ...DEFAULT_SETTINGS, anabelUnlocked: false };
-    for (let n = 0; n < 300; n++) {
-      const plan = planOpponent(`anabel-${n}`, 'multi', 'super', 20, settings, SINA);
+  it('can draw Anabel at any special-trainer battle (no unlock needed in this app)', () => {
+    let anabel = 0;
+    for (let n = 0; n < 600; n++) {
+      const plan = planOpponent(`anabel-${n}`, 'multi', 'super', 20, SINA);
       for (const t of [plan, plan.second!]) {
-        expect(TRAINERS[t.trainerId].name).not.toBe('Anabel');
+        if (TRAINERS[t.trainerId].name === 'Anabel') anabel++;
         // Izzy and Kaito bring Tai (a Battle Legend) as their partner.
         const tamersTai = t === plan && multiPartners(plan.second!.trainerId).includes(plan.trainerId);
-        expect(t.kind).toBe(t.replacedAnabel ? 'regular' : tamersTai ? 'legend' : 'special');
+        expect(t.kind).toBe(tamersTai ? 'legend' : 'special');
       }
     }
+    expect(anabel).toBeGreaterThan(0);
   });
 
   it('always pairs Tate with Liza, leading with Solrock + Lunatone or Gallade + Gardevoir', () => {
@@ -158,7 +159,7 @@ describe('Multi: planning opponents', () => {
     const species = (id: number) => SETS[id].species;
     let seen = 0;
     for (let n = 0; n < 600; n++) {
-      const plan = planOpponent(`twins-${n}`, 'multi', 'super', 10 * (1 + (n % 4)), DEFAULT_SETTINGS, SINA);
+      const plan = planOpponent(`twins-${n}`, 'multi', 'super', 10 * (1 + (n % 4)), SINA);
       const ids = [plan.trainerId, plan.second!.trainerId];
       if (!ids.includes(tate) && !ids.includes(liza)) continue;
       seen++;
@@ -169,21 +170,21 @@ describe('Multi: planning opponents', () => {
     expect(seen).toBeGreaterThan(5);
     // With one twin as your partner, the other never shows up as an opponent.
     for (let n = 0; n < 300; n++) {
-      const plan = planOpponent(`twin-partner-${n}`, 'multi', 'super', 20, DEFAULT_SETTINGS, tate);
+      const plan = planOpponent(`twin-partner-${n}`, 'multi', 'super', 20, tate);
       expect([plan.trainerId, plan.second!.trainerId]).not.toContain(liza);
     }
   });
 
   it('lets Tate and Liza appear on their own in Singles', () => {
     const tate = partnerTrainer('Tate').id;
-    const plans = Array.from({ length: 2000 }, (_, n) => planOpponent(`solo-${n}`, 'singles', 'super', 10, DEFAULT_SETTINGS));
+    const plans = Array.from({ length: 2000 }, (_, n) => planOpponent(`solo-${n}`, 'singles', 'super', 10));
     expect(plans.some(p => p.trainerId === tate)).toBe(true);
     expect(plans.every(p => !p.second)).toBe(true);
   });
 
   it("doesn't change Singles and Doubles plans", () => {
-    expect(planOpponent('x', 'singles', 'super', 12, DEFAULT_SETTINGS).second).toBeUndefined();
-    expect(planOpponent('x', 'doubles', 'super', 30, DEFAULT_SETTINGS).team).toHaveLength(4);
+    expect(planOpponent('x', 'singles', 'super', 12).second).toBeUndefined();
+    expect(planOpponent('x', 'doubles', 'super', 30).team).toHaveLength(4);
   });
 });
 
@@ -257,7 +258,7 @@ describe('Multi: partners and the Super Multi course', () => {
   it('lets you buy special trainers you beat, cheaper the more you beat them, with six Pokémon to choose two from', () => {
     // A seed whose battle 10 is a special trainer you don't start with.
     const seed = Array.from({ length: 50 }, (_, i) => `scout-${i}`).find(s => {
-      const p = planOpponent(s, 'singles', 'super', 10, DEFAULT_SETTINGS);
+      const p = planOpponent(s, 'singles', 'super', 10);
       return p.kind === 'special' && !['Sina', 'Dexio'].includes(TRAINERS[p.trainerId].name);
     })!;
     const { controller, battle, store } = setup();
@@ -347,11 +348,15 @@ describe('Multi: partners and the Super Multi course', () => {
     controller.startRun({ format: 'doubles', course: 'allstar', team: { ...SINGLES_TEAM, sets: [...SINGLES_TEAM.sets, ...SINGLES_TEAM.sets.slice(0, 1)], bring: [0, 1, 2, 3] }, settings: { ...DEFAULT_SETTINGS, ai: 'random' }, seedText: 'old-b' });
     const file = JSON.parse(kv.get('tree.v1')!);
     for (const key of ['singles-allstar', 'doubles-allstar']) file.runs[key].debug = true;
+    // Saves from before the "Anabel can appear" option was removed (she always can now).
+    file.profile.settings.anabelUnlocked = false;
+    file.runs['singles-allstar'].settings.anabelUnlocked = false;
     file.profile.partners.beaten = { Cynthia: 2, Wally: 1 };
     file.profile.partners.prices = { Cynthia: 9990, Nobody: 5 };
     kv.set('tree.v1', JSON.stringify(file));
     const { profile, runs } = new RunStore(kv).getState();
     expect([runs['singles-allstar']!.debug, runs['doubles-allstar']!.debug]).toEqual([false, true]);
+    expect('anabelUnlocked' in profile.settings || 'anabelUnlocked' in runs['singles-allstar']!.settings).toBe(false);
     expect(profile.partners.prices).toEqual({ Cynthia: 9990 });
     expect(partnersForSale(profile.partners).map(p => [p.name, p.price])).toEqual([['Cynthia', 9990], ['Wally', 1000]]);
   });
@@ -508,11 +513,11 @@ describe('All Star Mode', () => {
     for (let i = 0; i < 30; i++) {
       for (let n = 1; n <= 10; n++) {
         for (const format of ['singles', 'doubles'] as const) {
-          const o = planOpponent(`iv-${format}-${i}`, format, 'allstar', n, { ...DEFAULT_SETTINGS, anabelUnlocked: i % 2 === 0 });
+          const o = planOpponent(`iv-${format}-${i}`, format, 'allstar', n);
           expect(['special', 'legend']).toContain(o.kind);
           expect(all31(o.team), `${format} ${n}`).toBe(true);
         }
-        const m = planOpponent(`iv-multi-${i}`, 'multi', 'allstar', n, DEFAULT_SETTINGS, SINA);
+        const m = planOpponent(`iv-multi-${i}`, 'multi', 'allstar', n, SINA);
         expect(all31(m.team) && all31(m.second!.team), `multi ${n}`).toBe(true);
       }
     }
@@ -520,21 +525,18 @@ describe('All Star Mode', () => {
 
   it('works for Doubles and Multi too (Multi with a partner), with Battle Legends every 10th battle', () => {
     for (let i = 0; i < 20; i++) {
-      for (const n of [1, 2, 3, 4, 5, 9]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n, DEFAULT_SETTINGS).kind).toBe('special');
-      expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 10, DEFAULT_SETTINGS).kind).toBe('legend');
-      const multi = planOpponent(`asm-${i}`, 'multi', 'allstar', 3, DEFAULT_SETTINGS, SINA);
+      for (const n of [1, 2, 3, 4, 5, 9]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n).kind).toBe('special');
+      expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 10).kind).toBe('legend');
+      const multi = planOpponent(`asm-${i}`, 'multi', 'allstar', 3, SINA);
       // Izzy and Kaito bring Tai (a Battle Legend), Tai first.
       const tamer = multiPartners(multi.second!.trainerId).includes(multi.trainerId);
       expect([multi.kind, multi.second!.kind]).toEqual([tamer ? 'legend' : 'special', 'special']);
       expect([multi.trainerId, multi.second!.trainerId]).not.toContain(SINA);
-      expect(planOpponent(`asm-${i}`, 'multi', 'allstar', 10, DEFAULT_SETTINGS, SINA).second!.kind).toBe('legend');
+      expect(planOpponent(`asm-${i}`, 'multi', 'allstar', 10, SINA).second!.kind).toBe('legend');
     }
-    // A locked Anabel just isn't drawn (there are no ordinary trainers to stand in).
-    const locked = { ...DEFAULT_SETTINGS, anabelUnlocked: false };
-    for (let i = 0; i < 300; i++) {
-      const plan = planOpponent(`as-anabel-${i}`, 'singles', 'allstar', 1, locked);
-      expect([plan.kind, TRAINERS[plan.trainerId].name === 'Anabel']).toEqual(['special', false]);
-    }
+    // Anabel can be drawn here too.
+    const names = Array.from({ length: 600 }, (_, i) => TRAINERS[planOpponent(`as-anabel-${i}`, 'singles', 'allstar', 1).trainerId].name);
+    expect(names).toContain('Anabel');
     expect([bpForWin('allstar', 5), bpForWin('allstar', 10), bpForWin('allstar', 15), bpForWin('allstar', 60), bpForWin('allstar', 61)]).toEqual([2, 50, 3, 50, 7]);
   });
 
@@ -550,10 +552,10 @@ describe('All Star Mode', () => {
 
   it('beating someone outside All Star Mode brings their All Star price down to 1000 BP', () => {
     const seed = Array.from({ length: 50 }, (_, i) => `cap-${i}`).find(s => {
-      const p = planOpponent(s, 'singles', 'super', 10, DEFAULT_SETTINGS);
+      const p = planOpponent(s, 'singles', 'super', 10);
       return p.kind === 'special' && !['Sina', 'Dexio'].includes(TRAINERS[p.trainerId].name);
     })!;
-    const name = trainerKey(TRAINERS[planOpponent(seed, 'singles', 'super', 10, DEFAULT_SETTINGS).trainerId]);
+    const name = trainerKey(TRAINERS[planOpponent(seed, 'singles', 'super', 10).trainerId]);
     const { controller, battle, store } = setup();
     controller.debugUnlockSuper('singles');
     store.updateProfile(p => ({ ...p, partners: { ...p.partners, beaten: { [name]: 4 }, prices: { [name]: 9970 } } }));
@@ -577,7 +579,7 @@ describe('All Star Mode', () => {
     const reds = TRAINERS.filter(t => trainerKey(t) === 'Red').map(t => t.id);
     for (let i = 0; i < 40; i++) {
       for (const [course, n] of [['super', 50], ['allstar', 10]] as const) {
-        const o = planOpponent(`legend-partner-${i}`, 'multi', course, n, DEFAULT_SETTINGS, red.id);
+        const o = planOpponent(`legend-partner-${i}`, 'multi', course, n, red.id);
         expect([o.kind, o.second!.kind]).toEqual(['legend', 'legend']);
         expect(reds).not.toContain(o.trainerId);
         expect(reds).not.toContain(o.second!.trainerId);

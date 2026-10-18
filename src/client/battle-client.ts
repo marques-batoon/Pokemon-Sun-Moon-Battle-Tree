@@ -324,7 +324,7 @@ export class BattleClient {
       if (args[0] === 'turn') draft.currentMove = null;
       draft.fieldTimers = nextTimers(draft.fieldTimers, args as readonly string[], kwArgs as Record<string, unknown>);
       battle.add(args, kwArgs);
-      trackSemiInvulnerable(battle, args as readonly string[]);
+      trackSemiInvulnerable(battle, args as readonly string[], kwArgs as Record<string, unknown>);
       if (args[0] === 'gametype') linkMultiAllies(battle);
     }
     const anim = step.animation;

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { gen7 } from '../../team/dex';
 import { zMoveInfo } from './z-move-info';
+import { canHoldItem } from '../../data/custom/paradox';
 
 const info = (base: string, z: string) => zMoveInfo(gen7.moves.get(base)!, z);
 
@@ -29,5 +30,24 @@ describe('zMoveInfo', () => {
     expect(info('Celebrate', 'Z-Celebrate').effect).toBe('+1 all stats');
     expect(info('Haze', 'Z-Haze').effect).toBe('restores all HP');
     expect(info('Metronome', 'Z-Metronome').effect).toBeNull();
+  });
+});
+
+describe('Hitmonchanium Z on the move buttons', () => {
+  it('shows each Z-Move\'s own power (Omega Punch: Focus Punch\'s Z power) and what else it does', () => {
+    expect(info('Thunder Punch', 'Thunderbolt Blitzkrieg')).toMatchObject({ name: 'Thunderbolt Blitzkrieg', type: 'Electric', category: 'Physical', power: '145' });
+    expect(info('Thunder Punch', 'Thunderbolt Blitzkrieg').desc).toMatch(/\+2 priority/);
+    expect(info('Drain Punch', 'Super Drain Punch')).toMatchObject({ power: '150', type: 'Fighting' });
+    expect(info('Focus Punch', 'Omega Punch')).toMatchObject({ power: '200', type: 'Fighting' });
+    expect(canHoldItem('Hitmonchan', 'Hitmonchanium Z')).toBe(true);
+    expect(canHoldItem('Hitmonlee', 'Hitmonchanium Z')).toBe(false);
+  });
+});
+
+describe('Hitmonchanium Z in the team builder', () => {
+  it('is offered for Hitmonchan only', async () => {
+    const { allItems } = await import('../../team/dex');
+    const offered = (species: string) => allItems().filter(i => canHoldItem(species, i.name)).some(i => i.name === 'Hitmonchanium Z');
+    expect([offered('Hitmonchan'), offered('Hitmonlee'), offered('Poliwrath')]).toEqual([true, false, false]);
   });
 });
