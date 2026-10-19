@@ -1,5 +1,5 @@
 {
-  "about": "Trainers who can appear at battle 50 (and every 50 battles after) alongside the Battle Legends. Teams are in battle-50-trainers.txt; entries can also name the game's Battle Legends (Red, Blue) to put them in another format's slot, with their Super teams, or a Digimon Tamer from digidestined.json (Takato, with his special-trainer team). 'lead' (optional): the Pokémon (species) that always leads their team. After editing either file, run: npm run data:custom",
+  "about": "Trainers who can appear at battle 50 (and every 50 battles after) alongside the Battle Legends. Teams are in battle-50-trainers.txt; entries can also name the game's Battle Legends (Red, Blue) to put them in another format's slot, with their Super teams, or a trainer from digidestined.json (Takato and Henry, Battle Legends there), with their team there. 'lead' (optional): the Pokémon (species) that always leads their team. After editing either file, run: npm run data:custom",
   "trainers": {
     "Marques": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/marques.png" },
     "Thomas": { "class": "Pokémon Trainer", "gender": "M", "sprite": "/trainers/thomas.png" },
@@ -15,6 +15,11 @@
     { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Tai"], "weight": 3.5 },
     { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Matt"], "weight": 3.5 },
     { "format": "multi", "course": "super", "battle": 50, "trainers": ["Tai", "Matt"], "weight": 3.5 },
-    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Tai", "Takato"], "weight": 3.5 }
+    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Tai", "Takato"], "weight": 3.5 },
+    { "format": "singles", "course": "super", "battle": 50, "trainers": ["Takato"], "weight": 3.5 },
+    { "format": "singles", "course": "super", "battle": 50, "trainers": ["Henry"], "weight": 3.5 },
+    { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Takato"], "weight": 3.5 },
+    { "format": "doubles", "course": "super", "battle": 50, "trainers": ["Henry"], "weight": 3.5 },
+    { "format": "multi", "course": "super", "battle": 50, "trainers": ["Takato", "Henry"], "weight": 3.5 }
   ]
 }

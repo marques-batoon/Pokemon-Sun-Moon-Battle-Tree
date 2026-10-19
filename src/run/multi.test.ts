@@ -7,11 +7,11 @@ import { createInProcessTransport } from '../engine/in-process-transport';
 import { memoryStore, type KeyValueStore } from '../storage/kv';
 import { importShowdownText } from '../team/showdown-text';
 import { RunController, type RunTeam } from './controller';
-import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, partnerTrainer } from './partners';
+import { defaultPartnerBook, partnersForSale, partnerTeam, rollOffer, partnerTrainer, withDigimon } from './partners';
 import { Rng } from './rng';
 import { RunStore } from './run-store';
 import { bpForWin, planChosenOpponent, planOpponent, teamSizeFor } from './selection';
-import { canField } from './opponent';
+import { canField, dexNum } from './opponent';
 import { SETS } from '../data/battle-tree';
 import { bpBalance, DEFAULT_SETTINGS, partnerPrice, priceAfterWin, priceOf, type RunState } from './types';
 
@@ -73,7 +73,7 @@ describe('Multi: planning opponents', () => {
     expect(planOpponent('multi-plan', 'multi', 'super', 7, SINA)).toEqual(planOpponent('multi-plan', 'multi', 'super', 7, SINA));
   });
 
-  it('draws battle 50 between Red & Blue (weight 7), Tai & Matt and Tai & Takato (3.5 each) and Marques & Thomas (1), first trainer always first', () => {
+  it('draws battle 50 between Red & Blue (weight 7), Tai & Matt, Tai & Takato and Takato & Henry (3.5 each) and Marques & Thomas (1), first trainer always first', () => {
     const pairs = new Map<string, number>();
     const n = 4000;
     for (let i = 0; i < n; i++) {
@@ -83,22 +83,23 @@ describe('Multi: planning opponents', () => {
       expect([plan.team.length, plan.second!.team.length]).toEqual([2, 2]);
       expect(plan.kind).toBe('legend');
     }
-    expect([...pairs.keys()].sort()).toEqual(['Battle Legend Red & Battle Legend Blue', 'Battle Legend Tai & Battle Legend Matt', 'Battle Legend Tai & Digimon Tamer Takato', 'Pokémon Trainer Marques & Pokémon Trainer Thomas']);
-    // 7 : 3.5 : 3.5 : 1 (on request, 2026-10-18), out of 15.
+    expect([...pairs.keys()].sort()).toEqual(['Battle Legend Red & Battle Legend Blue', 'Battle Legend Tai & Battle Legend Matt', 'Battle Legend Tai & Battle Legend Takato', 'Battle Legend Takato & Battle Legend Henry', 'Pokémon Trainer Marques & Pokémon Trainer Thomas']);
+    // 7 : 3.5 : 3.5 : 3.5 : 1 (on request, 2026-10-18), out of 18.5.
     const near = (count: number, p: number) => expect(Math.abs(count - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
-    near(pairs.get('Battle Legend Red & Battle Legend Blue')!, 7 / 15);
-    near(pairs.get('Battle Legend Tai & Battle Legend Matt')!, 3.5 / 15);
-    near(pairs.get('Battle Legend Tai & Digimon Tamer Takato')!, 3.5 / 15);
-    near(pairs.get('Pokémon Trainer Marques & Pokémon Trainer Thomas')!, 1 / 15);
+    near(pairs.get('Battle Legend Red & Battle Legend Blue')!, 7 / 18.5);
+    near(pairs.get('Battle Legend Tai & Battle Legend Matt')!, 3.5 / 18.5);
+    near(pairs.get('Battle Legend Tai & Battle Legend Takato')!, 3.5 / 18.5);
+    near(pairs.get('Battle Legend Takato & Battle Legend Henry')!, 3.5 / 18.5);
+    near(pairs.get('Pokémon Trainer Marques & Pokémon Trainer Thomas')!, 1 / 18.5);
     // Their teams come from their own sets, with their own moves.
-    const plan = [...Array(400).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
+    const plan = [...Array(600).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
     expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam'].includes(s.species))).toBe(true);
     expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa'].includes(s.species))).toBe(true);
     const venusaur = SETS.find(s => s.label === 'Venusaur (Marques 1)')!;
     expect(venusaur.moves).toContain('Hidden Power Fire');
   });
 
-  it('draws battle 50 of Super Singles and Super Doubles between Red and Blue (7 each), Tai and Matt (3.5 each)', () => {
+  it('draws battle 50 of Super Singles and Super Doubles between Red and Blue (7 each), Tai, Matt, Takato and Henry (3.5 each)', () => {
     const n = 4800;
     for (const format of ['singles', 'doubles'] as const) {
       const seen = new Map<string, number>();
@@ -107,8 +108,8 @@ describe('Multi: planning opponents', () => {
         seen.set(plan.displayName, (seen.get(plan.displayName) ?? 0) + 1);
         expect(plan.team).toHaveLength(format === 'singles' ? 3 : 4);
       }
-      expect([...seen.keys()].sort()).toEqual(['Battle Legend Blue', 'Battle Legend Matt', 'Battle Legend Red', 'Battle Legend Tai']);
-      for (const [name, p] of [['Red', 7 / 21], ['Blue', 7 / 21], ['Tai', 3.5 / 21], ['Matt', 3.5 / 21]] as const) {
+      expect([...seen.keys()].sort()).toEqual(['Battle Legend Blue', 'Battle Legend Henry', 'Battle Legend Matt', 'Battle Legend Red', 'Battle Legend Tai', 'Battle Legend Takato']);
+      for (const [name, p] of [['Red', 7 / 28], ['Blue', 7 / 28], ['Tai', 3.5 / 28], ['Matt', 3.5 / 28], ['Takato', 3.5 / 28], ['Henry', 3.5 / 28]] as const) {
         expect(Math.abs(seen.get(`Battle Legend ${name}`)! - n * p), `${format} ${name}`).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
       }
     }
@@ -136,7 +137,7 @@ describe('Multi: planning opponents', () => {
     // In Super Multi, Tai battles beside Matt (Gabumon) or Takato (Guilmon).
     for (const p of multi) {
       const partner = p.second!.displayName === 'Battle Legend Matt' ? 'Gabumon' : 'Guilmon';
-      expect(['Battle Legend Matt', 'Digimon Tamer Takato']).toContain(p.second!.displayName);
+      expect(['Battle Legend Matt', 'Battle Legend Takato']).toContain(p.second!.displayName);
       expect([species(p)[0], species(p.second!)[0]]).toEqual(['Agumon', partner]);
       expect([p.team.length, p.second!.team.length]).toEqual([2, 2]);
     }
@@ -148,8 +149,8 @@ describe('Multi: planning opponents', () => {
       const plan = planOpponent(`anabel-${n}`, 'multi', 'super', 20, SINA);
       for (const t of [plan, plan.second!]) {
         if (TRAINERS[t.trainerId].name === 'Anabel') anabel++;
-        // Izzy and Kaito bring Tai (a Battle Legend) as their partner (Takato, Henry and Rika bring each other).
-        const tamersTai = t === plan && TRAINERS[plan.trainerId].name === 'Tai' && multiPartners(plan.second!.trainerId).includes(plan.trainerId);
+        // Izzy and Kaito bring Tai (a Battle Legend) as their partner, Rika brings Takato or Henry (Battle Legends too).
+        const tamersTai = t === plan && TRAINERS[plan.trainerId].kind === 'legend' && multiPartners(plan.second!.trainerId).includes(plan.trainerId);
         expect(t.kind).toBe(tamersTai ? 'legend' : 'special');
       }
     }
@@ -342,6 +343,33 @@ describe('Multi: partners and the Super Multi course', () => {
     expect(partnersForSale(partners).map(p => p.price)).toEqual([1000, 1000]);
   });
 
+  it('always offers a trainer\'s Digimon as a partner Pokémon (first), and adds it to offers saved before', () => {
+    const digimon: Record<string, string> = { Tai: 'Agumon', Matt: 'Gabumon', Izzy: 'Tentomon', Kaito: 'Agumon', Takato: 'Guilmon', 'Henry (Tamer)': 'Terriermon', Rika: 'Renamon' };
+    for (const [name, species] of Object.entries(digimon)) {
+      for (let i = 0; i < 40; i++) {
+        const offer = rollOffer(name, new Rng(`digimon-offer|${name}|${i}`)).map(id => SETS[id]);
+        expect(offer[0].species, `${name} ${i}`).toBe(species);
+        expect(offer.length).toBe(6);
+        expect(new Set(offer.map(dexNum)).size).toBe(offer.length);
+        expect(new Set(offer.map(s => s.item)).size).toBe(offer.length);
+      }
+    }
+    // Someone without a Digimon: unchanged.
+    expect(withDigimon('Cynthia', [1, 2, 3])).toEqual([1, 2, 3]);
+    // A saved offer without the Digimon gets it on loading, first, keeping the others (still six at most).
+    const tai = partnerTrainer('Tai');
+    const others = tai.roster.filter(id => SETS[id].species !== 'Agumon').slice(0, 6);
+    const kv = memoryStore();
+    setup(kv);
+    new RunStore(kv).updateProfile(p => p);
+    const file = JSON.parse(kv.get('tree.v1')!);
+    file.profile.partners.owned.Tai = { offer: others };
+    kv.set('tree.v1', JSON.stringify(file));
+    const { offer } = new RunStore(kv).getState().profile.partners.owned.Tai;
+    expect(SETS[offer[0]].species).toBe('Agumon');
+    expect(offer).toEqual([offer[0], ...others.slice(0, 5)]);
+  });
+
   it('keeps saved prices, and lets All Star runs saved before they earned BP earn it (not practice or debug ones)', () => {
     const kv = memoryStore();
     const { controller } = setup(kv);
@@ -531,13 +559,11 @@ describe('All Star Mode', () => {
       for (const n of [1, 2, 3, 4, 5, 9]) expect(planOpponent(`as-${i}`, 'doubles', 'allstar', n).kind).toBe('special');
       expect(planOpponent(`as-${i}`, 'doubles', 'allstar', 10).kind).toBe('legend');
       const multi = planOpponent(`asm-${i}`, 'multi', 'allstar', 3, SINA);
-      // Izzy and Kaito bring Tai (a Battle Legend), Tai first (Takato, Henry and Rika bring each other).
-      const tamer = TRAINERS[multi.trainerId].name === 'Tai' && multiPartners(multi.second!.trainerId).includes(multi.trainerId);
+      // Izzy and Kaito bring Tai (a Battle Legend), Tai first; Rika brings Takato or Henry (Battle Legends too).
+      const tamer = TRAINERS[multi.trainerId].kind === 'legend' && multiPartners(multi.second!.trainerId).includes(multi.trainerId);
       expect([multi.kind, multi.second!.kind]).toEqual([tamer ? 'legend' : 'special', 'special']);
       expect([multi.trainerId, multi.second!.trainerId]).not.toContain(SINA);
-      // The battle-50 draw: Tai's partner can be Takato, a Digimon Tamer (special trainer).
-      const legends = planOpponent(`asm-${i}`, 'multi', 'allstar', 10, SINA);
-      expect(TRAINERS[legends.second!.trainerId].name === 'Takato' ? 'legend' : legends.second!.kind).toBe('legend');
+      expect(planOpponent(`asm-${i}`, 'multi', 'allstar', 10, SINA).second!.kind).toBe('legend');
     }
     // Anabel can be drawn here too.
     const names = Array.from({ length: 600 }, (_, i) => TRAINERS[planOpponent(`as-anabel-${i}`, 'singles', 'allstar', 1).trainerId].name);
@@ -585,8 +611,7 @@ describe('All Star Mode', () => {
     for (let i = 0; i < 40; i++) {
       for (const [course, n] of [['super', 50], ['allstar', 10]] as const) {
         const o = planOpponent(`legend-partner-${i}`, 'multi', course, n, red.id);
-        // Tai's partner can be Takato, a Digimon Tamer (special trainer).
-        expect([o.kind, TRAINERS[o.second!.trainerId].name === 'Takato' ? 'legend' : o.second!.kind]).toEqual(['legend', 'legend']);
+        expect([o.kind, o.second!.kind]).toEqual(['legend', 'legend']);
         expect(reds).not.toContain(o.trainerId);
         expect(reds).not.toContain(o.second!.trainerId);
       }

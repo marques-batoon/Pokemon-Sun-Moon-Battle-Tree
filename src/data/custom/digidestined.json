@@ -1,7 +1,7 @@
 {
  "source": "Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.",
  "notes": [
-  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Takato, Henry, Rika).",
+  "Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Rika). \"legend\": a Battle Legend instead (Takato, Henry), at battle 50 per battle-50.json.",
   "\"lead\": the species that always leads their team. \"partners\": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).",
   "IV 31 like every special trainer; IV lines are ignored. Sprites are the user's own pixel art in public/trainers/."
  ],
@@ -356,16 +356,12 @@
   },
   {
    "name": "Takato",
-   "class": "Digimon Tamer",
+   "class": "Battle Legend",
    "classGender": "M",
    "region": "Digital World",
    "sprite": "/trainers/takato.png",
-   "weight": 7,
+   "legend": true,
    "lead": "Guilmon",
-   "partners": [
-    "Henry",
-    "Rika"
-   ],
    "sets": [
     {
      "species": "Guilmon",
@@ -532,16 +528,12 @@
   {
    "name": "Henry",
    "key": "Henry (Tamer)",
-   "class": "Digimon Tamer",
+   "class": "Battle Legend",
    "classGender": "M",
    "region": "Digital World",
    "sprite": "/trainers/henry.png",
-   "weight": 7,
+   "legend": true,
    "lead": "Terriermon",
-   "partners": [
-    "Takato",
-    "Rika"
-   ],
    "sets": [
     {
      "species": "Terriermon",

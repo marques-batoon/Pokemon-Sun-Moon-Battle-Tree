@@ -1,5 +1,5 @@
 import type { KeyValueStore } from '../storage/kv';
-import { defaultPartnerBook, rollOffer } from './partners';
+import { defaultPartnerBook, rollOffer, withDigimon } from './partners';
 import { Rng } from './rng';
 import { DEFAULT_SETTINGS, RUN_KEYS, type PartnerBook, type RunKey, type RunState, type TreeProfile } from './types';
 
@@ -39,7 +39,8 @@ function migratePartners(saved: OldPartnerBook | undefined, base: PartnerBook): 
   const owned: PartnerBook['owned'] = { ...base.owned };
   for (const [name, entry] of Object.entries(saved.owned ?? {})) {
     try {
-      owned[name] = { offer: entry.offer ?? rollOffer(name, new Rng(`migrated-partner|${name}`)) };
+      // An offer from before a trainer's Digimon was always in it (2026-10-18) gets it.
+      owned[name] = { offer: withDigimon(name, entry.offer ?? rollOffer(name, new Rng(`migrated-partner|${name}`))) };
     } catch {
       // Not a special trainer or Battle Legend (corrupt entry): drop it.
     }

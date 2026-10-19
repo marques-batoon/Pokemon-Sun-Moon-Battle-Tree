@@ -1,6 +1,7 @@
-import { SETS, TRAINERS, trainerKey, type LegendTrainer, type SpecialTrainer } from '../data/battle-tree';
+import { SETS, TRAINERS, trainerKey, type LegendTrainer, type SpecialTrainer, type TreeSet } from '../data/battle-tree';
+import { isDigimon } from '../data/custom/digimon';
 import type { PokemonSet } from '../team/types';
-import { pickUpTo, treeSetToPokemonSet } from './opponent';
+import { dexNum, pickUpTo, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import { DEFAULT_PARTNERS, PARTNER_BRING, PARTNER_OFFER_SIZE, priceOf, type PartnerBook, type RunPartner } from './types';
 
@@ -21,13 +22,31 @@ export function partnerTrainer(name: string): PartnerTrainer {
 /** Whether beating this trainer puts them in the partner shop (special trainers and Battle Legends). */
 export const isPartnerKind = (kind: string) => kind === 'special' || kind === 'legend';
 
+/** A trainer's Digimon (Tai's Agumon, Izzy's Tentomon, Henry's Terriermon...), if they have one. */
+function digimonSet(trainer: PartnerTrainer): TreeSet | undefined {
+  return trainer.roster.map(id => SETS[id]).find(s => isDigimon(s.species));
+}
+
 /**
  * The Pokémon you can choose a partner's two from: up to six of their Battle Tree
  * sets, all different species and items, so any two of them obey the partner's
- * Species and Item Clause. Rolled once, when you get the partner.
+ * Species and Item Clause. Rolled once, when you get the partner. A trainer with a
+ * Digimon always offers it (on request, 2026-10-18), first.
  */
 export function rollOffer(name: string, rng: Rng): number[] {
-  return pickUpTo(partnerTrainer(name), PARTNER_OFFER_SIZE, rng).map(s => s.id);
+  const trainer = partnerTrainer(name);
+  return pickUpTo(trainer, PARTNER_OFFER_SIZE, rng, digimonSet(trainer)).map(s => s.id);
+}
+
+/**
+ * An offer rolled before the Digimon were always in it: the trainer's Digimon comes in first, and the others stay
+ * if they still go with it (different species and item), up to six. Any other offer is returned as it is.
+ */
+export function withDigimon(name: string, offer: readonly number[]): number[] {
+  const digimon = digimonSet(partnerTrainer(name));
+  if (!digimon || offer.includes(digimon.id)) return [...offer];
+  const others = offer.map(id => SETS[id]).filter(s => dexNum(s) !== dexNum(digimon) && s.item !== digimon.item);
+  return [digimon.id, ...others.map(s => s.id)].slice(0, PARTNER_OFFER_SIZE);
 }
 
 /**

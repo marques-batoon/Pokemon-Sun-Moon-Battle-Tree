@@ -81,11 +81,12 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
   });
 
-  it('special trainers from both versions: shared trainers weight 7 (Anabel 3.5), each version exclusive 3.5; Gym Leaders 7 (Giovanni 1), Elite Four and Champions 3.5, evil teams 1 (Courtney 7), the DigiDestined and Digimon Tamers 7', () => {
+  it('special trainers from both versions: shared trainers weight 7 (Anabel 3.5), each version exclusive 3.5; Gym Leaders 7 (Giovanni 1), Elite Four and Champions 3.5, evil teams 1 (Courtney 7), Izzy, Kaito and Rika 7 (Takato and Henry are Battle Legends)', () => {
     const pool = specialPool();
-    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 5);
+    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 3);
+    expect(pool.some(p => ['Takato', 'Henry'].includes(p.trainer.name) && p.trainer.custom)).toBe(false);
     const weightOf = (name: string) => pool.find(p => p.trainer.name === name)!.weight;
-    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca', 'Courtney', 'Izzy', 'Kaito', 'Takato', 'Henry', 'Rika']) expect(weightOf(name), name).toBe(7);
+    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca', 'Courtney', 'Izzy', 'Kaito', 'Rika']) expect(weightOf(name), name).toBe(7);
     // Anabel 3.5 (on request; the game's 1 is a seventh of the others').
     for (const name of ['Anabel', 'Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui']) expect(weightOf(name), name).toBe(3.5);
     // The evil team leaders and admins: 1 (Courtney 7).
@@ -93,7 +94,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     // Giovanni (a Gym Leader here): 1, on request.
     expect(weightOf('Giovanni')).toBe(1);
     const total = pool.reduce((s, t) => s + t.weight, 0);
-    expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 5 * 7);
+    expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 3 * 7);
 
     const n = 100_000;
     const counts = drawTrainers('super', 30, n, 'special');
@@ -123,13 +124,13 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(Math.abs(anabel - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
   });
 
-  it('always picks a Battle Legend at the boss battles (battle 50 of Super: Red or Blue, or rarely Tai or Matt)', () => {
+  it('always picks a Battle Legend at the boss battles (battle 50 of Super: Red or Blue, or Tai, Matt, Takato or Henry)', () => {
     const rng = new Rng('boss');
     expect(chooseTrainer('singles', 'normal', 20, rng).trainer.id).toBe(203);
     for (let i = 0; i < 30; i++) {
       const t = chooseTrainer('singles', 'super', 50, rng).trainer;
       expect(t.kind).toBe('legend');
-      expect([190, 191].includes(t.id) || ['Tai', 'Matt'].includes(t.name)).toBe(true);
+      expect([190, 191].includes(t.id) || ['Tai', 'Matt', 'Takato', 'Henry'].includes(t.name)).toBe(true);
     }
   });
 });

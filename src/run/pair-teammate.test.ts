@@ -23,8 +23,8 @@ function expectedRate(chance: number): number {
 }
 
 describe('Multi Battles: teammates with pair greetings', () => {
-  it('pick a teammate the first opponent has pair greetings with 15% of the time (else an ordinary draw)', () => {
-    expect(PAIR_TEAMMATE_CHANCE).toBe(0.15);
+  it('pick a teammate the first opponent has pair greetings with 30% of the time (else an ordinary draw)', () => {
+    expect(PAIR_TEAMMATE_CHANCE).toBe(0.3);
     const expected = expectedRate(PAIR_TEAMMATE_CHANCE);
     expect(expected).toBeGreaterThan(expectedRate(0) + 0.1);
     const n = 8000;

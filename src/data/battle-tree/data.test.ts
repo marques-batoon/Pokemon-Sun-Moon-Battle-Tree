@@ -74,7 +74,8 @@ describe('trainers.json', () => {
   it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, and the DigiDestined and Digimon Tamers (Izzy, Kaito, Takato, Henry, Rika)', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
     expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 5);
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26 + 5, 4 + 4]);
+    // Takato and Henry are Battle Legends (since 2026-10-18), kept in the Tamers' file so ids don't move.
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190, 11 + 47 + 33 + 26 + 3, 4 + 4 + 2]);
     // Izzy comes last (earlier ids don't move): a special trainer at 7 with his own sprite, leading with Tentomon.
     const izzy = TRAINERS[315] as SpecialTrainer;
     expect([izzy.name, izzy.class, izzy.kind, izzy.weight, izzy.iv, izzy.sprite, izzy.roster.length]).toEqual(['Izzy', 'DigiDestined', 'special', 7, 31, '/trainers/izzy.png', 8]);
@@ -83,11 +84,12 @@ describe('trainers.json', () => {
     const kaito = TRAINERS[316] as SpecialTrainer;
     expect([kaito.name, kaito.class, kaito.kind, kaito.weight, kaito.iv, kaito.sprite, kaito.roster.length]).toEqual(['Kaito', 'Digimon Tamer', 'special', 7, 31, '/trainers/kaito.png', 8]);
     expect([SETS[kaito.leadSetId!].species, SETS[kaito.leadSetId!].item]).toEqual(['Agumon', 'Blackwargreyite']);
-    // Then Takato, Henry (keyed "Henry (Tamer)": the game has a Gentleman Henry) and Rika, at 7, with their Matrix Evolution leads.
-    expect(TRAINERS.slice(317, 320).map(t => [t.name, trainerKey(t), t.class, t.kind === 'special' && t.weight, SETS[t.leadSetId!].species, SETS[t.leadSetId!].item])).toEqual([
-      ['Takato', 'Takato', 'Digimon Tamer', 7, 'Guilmon', 'Gallantite'],
-      ['Henry', 'Henry (Tamer)', 'Digimon Tamer', 7, 'Terriermon', 'Megagargoite'],
-      ['Rika', 'Rika', 'Digimon Tamer', 7, 'Renamon', 'Sakuyaite'],
+    // Then Takato and Henry (keyed "Henry (Tamer)": the game has a Gentleman Henry), Battle Legends, and Rika, a special
+    // trainer at 7, with their Matrix Evolution leads.
+    expect(TRAINERS.slice(317, 320).map(t => [t.name, trainerKey(t), t.class, t.kind, t.kind === 'special' ? t.weight : t.kind === 'legend' && t.course, SETS[t.leadSetId!].species, SETS[t.leadSetId!].item])).toEqual([
+      ['Takato', 'Takato', 'Battle Legend', 'legend', 'super', 'Guilmon', 'Gallantite'],
+      ['Henry', 'Henry (Tamer)', 'Battle Legend', 'legend', 'super', 'Terriermon', 'Megagargoite'],
+      ['Rika', 'Rika', 'Digimon Tamer', 'special', 7, 'Renamon', 'Sakuyaite'],
     ]);
     // Every special trainer has a unique key (lines, pictures, partners), even when names repeat.
     const specials = TRAINERS.filter(t => t.kind === 'special');
@@ -119,14 +121,14 @@ describe('trainers.json', () => {
     const lead = (name: string) => SETS[TRAINERS.find(t => t.name === name)!.leadSetId!];
     expect([lead('Tai').species, lead('Tai').item, lead('Tai').moves]).toEqual(['Agumon', 'Wargreyite', expect.arrayContaining(['Gaia Force'])]);
     expect([lead('Matt').species, lead('Matt').item, lead('Matt').moves]).toEqual(['Gabumon', 'Metalgaruruite', expect.arrayContaining(['Cocytus Pulse'])]);
-    // Battle 50 of Super Singles / Doubles: the Battle Legend (7) and Tai and Matt (3.5 each); Super Multi: Red & Blue (7),
-    // Marques & Thomas (1), Tai & Matt (3.5) and Tai & Takato (3.5; Takato is a Digimon Tamer, a special trainer).
+    // Battle 50 of Super Singles / Doubles: the Battle Legend (7) and Tai, Matt, Takato and Henry (3.5 each); Super Multi:
+    // Red & Blue (7), Marques & Thomas (1), Tai & Matt, Tai & Takato and Takato & Henry (3.5 each).
     const at50 = (format: string) => Object.values(BOSSES).filter(b => b.format === format && b.course === 'super' && b.battle === 50)
       .map(b => [TRAINERS[b.trainerId].name, b.partnerTrainerId === undefined ? null : TRAINERS[b.partnerTrainerId].name, b.weight ?? 7]);
-    expect(at50('singles')).toEqual(expect.arrayContaining([['Red', null, 7], ['Blue', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5]]));
-    expect(at50('doubles')).toEqual(expect.arrayContaining([['Blue', null, 7], ['Red', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5]]));
-    expect(at50('multi')).toEqual(expect.arrayContaining([['Red', 'Blue', 7], ['Marques', 'Thomas', 1], ['Tai', 'Matt', 3.5], ['Tai', 'Takato', 3.5]]));
-    expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([4, 4, 4]);
+    expect(at50('singles')).toEqual(expect.arrayContaining([['Red', null, 7], ['Blue', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5], ['Takato', null, 3.5], ['Henry', null, 3.5]]));
+    expect(at50('doubles')).toEqual(expect.arrayContaining([['Blue', null, 7], ['Red', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5], ['Takato', null, 3.5], ['Henry', null, 3.5]]));
+    expect(at50('multi')).toEqual(expect.arrayContaining([['Red', 'Blue', 7], ['Marques', 'Thomas', 1], ['Tai', 'Matt', 3.5], ['Tai', 'Takato', 3.5], ['Takato', 'Henry', 3.5]]));
+    expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([6, 6, 5]);
   });
 
   it("lets every Gym Leader, Elite Four member and Champion field 4 Pokémon under the clauses (Doubles)", () => {

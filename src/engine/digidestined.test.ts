@@ -147,17 +147,17 @@ describe('Kaito (Digimon Tamer)', () => {
   });
 });
 
-describe('Takato, Henry and Rika (Digimon Tamers)', () => {
+describe('Takato and Henry (Battle Legends) and Rika (Digimon Tamer)', () => {
   const takato = TRAINERS.find(t => t.name === 'Takato')!;
   const henry = TRAINERS.find(t => t.name === 'Henry' && t.custom)!;
   const rika = TRAINERS.find(t => t.name === 'Rika')!;
   const tamers = [takato, henry, rika];
   const leads: Record<string, [string, string]> = { Takato: ['Guilmon', 'Gallantite'], Henry: ['Terriermon', 'Megagargoite'], Rika: ['Renamon', 'Sakuyaite'] };
 
-  it('are special trainers at weight 7 with eight sets each, every one legal for a player in Sun & Moon', () => {
+  it('have eight sets each, every one legal for a player in Sun & Moon; Takato and Henry are Battle Legends, Rika a special trainer at 7', () => {
     const problems: string[] = [];
     for (const t of tamers) {
-      expect([t.kind, t.class, t.custom, t.iv, t.roster.length, t.kind === 'special' && t.weight, t.sprite]).toEqual(['special', 'Digimon Tamer', true, 31, 8, 7, `/trainers/${t.name.toLowerCase()}.png`]);
+      expect([t.custom, t.iv, t.roster.length, t.sprite]).toEqual([true, 31, 8, `/trainers/${t.name.toLowerCase()}.png`]);
       expect(new Set(t.roster.map(id => SETS[id].item)).size, t.name).toBe(8);
       for (const id of t.roster) {
         const set = treeSetToPokemonSet(SETS[id], 31, new Rng('x')) as unknown as SimSet;
@@ -167,6 +167,8 @@ describe('Takato, Henry and Rika (Digimon Tamers)', () => {
       }
     }
     expect(problems).toEqual([]);
+    expect([takato.kind, takato.class, henry.kind, henry.class]).toEqual(['legend', 'Battle Legend', 'legend', 'Battle Legend']);
+    expect([rika.kind, rika.class, rika.kind === 'special' && rika.weight]).toEqual(['special', 'Digimon Tamer', 7]);
     // The game has a Gentleman Henry: the Tamer's lines go by his own key.
     expect([henry.name, henry.key, TRAINERS.some(t => t.name === 'Henry' && !t.custom)]).toEqual(['Henry', 'Henry (Tamer)', true]);
   });
@@ -180,25 +182,57 @@ describe('Takato, Henry and Rika (Digimon Tamers)', () => {
     }
   });
 
-  it('in a Multi Battle always battle alongside one of the other two (who goes first), never with anyone else', () => {
-    for (const t of tamers) expect([...multiPartners(t.id)].sort()).toEqual(tamers.filter(o => o !== t).map(o => o.id).sort());
-    const pairs = new Set<string>();
-    for (let i = 0; i < 6000; i++) {
-      const o = planOpponent(`tamers-multi-${i}`, 'multi', 'super', multiSpecial);
-      const ids = [o.trainerId, o.second!.trainerId];
-      const inIt = tamers.filter(t => ids.includes(t.id));
-      if (!inIt.length) continue;
-      expect(inIt, `run ${i}`).toHaveLength(2);
-      pairs.add(ids.join('-'));
-      expect([SETS[o.setIds[0]].species, SETS[o.second!.setIds[0]].species]).toEqual(ids.map(id => leads[TRAINERS[id].name][0]));
+  it('Takato and Henry battle at battle 50 of every Super course (alone, or together in Multi, Takato first), with their leads', () => {
+    for (const [format, size] of [['singles', 3], ['doubles', 4]] as const) {
+      const seen = new Set<string>();
+      for (let i = 0; i < 600; i++) {
+        const o = planOpponent(`tamer-legend-${format}-${i}`, format, 'super', 50);
+        const t = TRAINERS[o.trainerId];
+        if (t !== takato && t !== henry) continue;
+        seen.add(t.name);
+        expect([SETS[o.setIds[0]].species, o.team.length]).toEqual([leads[t.name][0], size]);
+      }
+      expect([...seen].sort(), format).toEqual(['Henry', 'Takato']);
     }
-    expect(pairs.size).toBe(6);
-    // With one of them as your partner, the other two battle together.
+    let together = 0;
+    for (let i = 0; i < 600; i++) {
+      const o = planOpponent(`tamer-legend-multi-${i}`, 'multi', 'super', 50);
+      const ids = [o.trainerId, o.second!.trainerId];
+      if (ids.includes(henry.id)) {
+        // Henry only ever comes with Takato, Takato first.
+        expect(ids).toEqual([takato.id, henry.id]);
+        expect([SETS[o.setIds[0]].species, SETS[o.second!.setIds[0]].species]).toEqual(['Guilmon', 'Terriermon']);
+        together++;
+      }
+      // Takato: with Henry (him first) or with Tai (Tai first).
+      if (ids.includes(takato.id) && !ids.includes(henry.id)) expect(ids).toEqual([tai.id, takato.id]);
+    }
+    expect(together).toBeGreaterThan(0);
+  });
+
+  it('in a Multi special battle Rika always brings Takato or Henry (who goes first); they appear there only with her', () => {
+    expect([...multiPartners(rika.id)].sort()).toEqual([takato.id, henry.id].sort());
+    const seen = new Set<number>();
+    for (let i = 0; i < 6000; i++) {
+      const o = planOpponent(`rika-multi-${i}`, 'multi', 'super', multiSpecial);
+      const ids = [o.trainerId, o.second!.trainerId];
+      if (ids.includes(rika.id)) {
+        expect(ids[1], `run ${i}`).toBe(rika.id);
+        expect([takato.id, henry.id]).toContain(ids[0]);
+        seen.add(ids[0]);
+        expect([SETS[o.setIds[0]].species, SETS[o.second!.setIds[0]].species]).toEqual([leads[TRAINERS[ids[0]].name][0], 'Renamon']);
+      } else {
+        expect(ids).not.toContain(takato.id);
+        expect(ids).not.toContain(henry.id);
+      }
+    }
+    expect(seen.size).toBe(2);
+    // With Takato as your partner, Rika brings Henry.
     for (let i = 0; i < 1500; i++) {
-      const o = planOpponent(`tamers-partner-${i}`, 'multi', 'super', multiSpecial, takato.id);
+      const o = planOpponent(`rika-partner-${i}`, 'multi', 'super', multiSpecial, takato.id);
       const ids = [o.trainerId, o.second!.trainerId];
       expect(ids).not.toContain(takato.id);
-      if (ids.includes(henry.id) || ids.includes(rika.id)) expect(ids.sort()).toEqual([henry.id, rika.id].sort());
+      if (ids.includes(rika.id)) expect(ids).toEqual([henry.id, rika.id]);
     }
   });
 

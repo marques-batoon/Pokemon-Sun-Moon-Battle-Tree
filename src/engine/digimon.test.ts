@@ -361,7 +361,7 @@ describe('Guilmon and Gallantmon (Matrix Evolution)', () => {
     expect(Object.values(g.baseStats).reduce((x, y) => x + y, 0)).toBe(309);
     const m = dex.species.get('Gallantmon');
     expect([m.baseSpecies, m.battleOnly, m.requiredItem, m.types, m.abilities, m.weightkg]).toEqual(['Guilmon', 'Guilmon', 'Gallantite', ['Steel', 'Fairy'], { 0: 'Dauntless Shield' }, 110]);
-    expect(m.baseStats).toEqual({ hp: 95, atk: 145, def: 130, spa: 65, spd: 125, spe: 74 });
+    expect(m.baseStats).toEqual({ hp: 85, atk: 145, def: 120, spa: 75, spd: 125, spe: 84 });
     expect(Object.values(m.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
     expect(dex.items.get('Gallantite').megaStone).toEqual({ Guilmon: 'Gallantmon' });
     expect(dex.abilities.get('Dauntless Shield').isNonstandard).toBeNull();

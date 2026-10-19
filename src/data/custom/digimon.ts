@@ -254,7 +254,7 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   },
   warp: {
     name: 'Gallantmon', types: ['Steel', 'Fairy'], color: 'Red',
-    baseStats: { hp: 95, atk: 145, def: 130, spa: 65, spd: 125, spe: 74 },
+    baseStats: { hp: 85, atk: 145, def: 120, spa: 75, spd: 125, spe: 84 },
     abilities: { 0: 'Dauntless Shield' }, weightkg: 110,
   },
   item: 'Gallantite',

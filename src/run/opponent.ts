@@ -45,7 +45,7 @@ export function treeSetByLabel(label: string): TreeSet {
 }
 
 /** National Dex number: Species Clause compares these (Rotom-Wash and Rotom-Heat clash). */
-const dexNum = (set: TreeSet) => gen7.species.get(set.species)!.num;
+export const dexNum = (set: TreeSet) => gen7.species.get(set.species)!.num;
 
 /**
  * Picks a trainer's team: roster sets drawn uniformly one at a time, skipping

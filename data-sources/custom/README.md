@@ -50,7 +50,8 @@ team, ...).
   has a Gentleman Henry), use another section title ("Henry (Tamer)") and give `"name": "Henry"`: the title is
   then their key for lines. Each trainer has a class ("DigiDestined", "Digimon Tamer"),
   gender, sprite (in `public/trainers/`), `lead` (the Pokémon that always leads: Izzy's Tentomon),
-  `weight` in the special-trainer pool (all 7) and `partners`: as an opponent in a Multi Battle
+  `weight` in the special-trainer pool (all 7), or `"legend": true` to make them a Battle Legend instead (Takato,
+  Henry: then `battle-50-trainers.json` says where and how often, and they have no weight or partners), and `partners`: as an opponent in a Multi Battle
   they always battle alongside one of these, picked with equal chance, and the partner goes first
   (on the left). A partner can be a Battle Legend (Tai) or another trainer in this file. To give
   Izzy Mimi or Joe as partners too, add them here (with their own teams) and list them in his

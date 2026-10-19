@@ -28,6 +28,8 @@ interface CustomTrainer {
   name: string; key?: string; person?: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[];
   /** The DigiDestined: own sprite, the species that always leads, own weight, fixed Multi Battle partners (by name). */
   sprite?: string; lead?: string; weight?: number; partners?: string[];
+  /** A Digimon Tamer who is a Battle Legend (Takato, Henry): where and how often in battle-50.json. */
+  legend?: boolean;
 }
 
 /** A trainer's unique name for data lookups (lines, pictures, partners): `key` if two share a name. */
@@ -122,14 +124,29 @@ const EVIL_TEAMS = customTrainers(
   1, 'evil-teams.txt (designed for the user)',
 );
 
-/** The DigiDestined and Digimon Tamers (Izzy, Kaito, Takato...), after the evil teams (earlier ids don't move): weight as given (7), own sprite and lead. */
+/**
+ * The DigiDestined and Digimon Tamers (Izzy, Kaito, Takato...), after the evil teams (earlier ids don't move): weight as
+ * given (7), own sprite and lead. Takato and Henry are Battle Legends (on request, 2026-10-18; special trainers before,
+ * kept here so their ids don't move): they battle where battle-50.json puts them.
+ */
 const DIGIDESTINED_LIST = digidestinedJson.trainers as CustomTrainer[];
-const DIGIDESTINED = customTrainers(
+const DIGIDESTINED_TRAINERS = customTrainers(
   DIGIDESTINED_LIST,
   GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length,
   GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length,
   3.5, 'digidestined.txt (designed by the user)',
 );
+/** A Digimon Tamer made a Battle Legend: their first battle-50 entry says their own format and course. */
+function asBattleLegend(t: SpecialTrainer): LegendTrainer {
+  const entry = BATTLE_50.entries.find(e => e.trainers.includes(t.name));
+  if (!entry) throw new Error(`${t.name} is a Battle Legend, but no battle-50 entry names them`);
+  const { versions: _versions, weight: _weight, region: _region, ...rest } = t;
+  return { ...rest, kind: 'legend', number: null, bossKey: BATTLE_50.bossKey(entry), format: entry.format, course: entry.course };
+}
+const DIGIDESTINED = {
+  sets: DIGIDESTINED_TRAINERS.sets,
+  trainers: DIGIDESTINED_TRAINERS.trainers.map((t, i): Trainer => (DIGIDESTINED_LIST[i].legend ? asBattleLegend(t) : t)),
+};
 
 export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets];
 export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers];
@@ -186,7 +203,7 @@ export const BRACKETS: BracketsFile = {
     ...GAME_BRACKETS.specialTrainerPool,
     trainerIds: [
       ...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id),
-      ...EVIL_TEAMS.trainers.map(t => t.id), ...DIGIDESTINED.trainers.map(t => t.id),
+      ...EVIL_TEAMS.trainers.map(t => t.id), ...DIGIDESTINED.trainers.filter(t => t.kind === 'special').map(t => t.id),
     ],
   },
 };

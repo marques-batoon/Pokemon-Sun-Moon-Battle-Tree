@@ -211,7 +211,7 @@ for (const b of battle50.battles) {
   if (b.trainers.length !== (b.format === 'multi' ? 2 : 1)) problems.push(`battle-50-trainers.json: a ${b.format} battle needs ${b.format === 'multi' ? 'two trainers' : 'one trainer'}`);
 }
 
-// --- The DigiDestined (special trainers) ---
+// --- The DigiDestined and Digimon Tamers (special trainers, or Battle Legends: Takato, Henry) ---
 const digidestined = JSON.parse(readFileSync(new URL('digidestined.json', dir), 'utf8'));
 const digidestinedTrainers = parseExports('digidestined.txt', title => {
   const info = digidestined.trainers[title];
@@ -219,13 +219,16 @@ const digidestinedTrainers = parseExports('digidestined.txt', title => {
   // A section title other than the name ("Henry (Tamer)": the game has a Gentleman Henry) is their key (lines).
   const name = info.name ?? title;
   return {
-    name, ...(name !== title ? { key: title } : {}), class: info.class, classGender: info.gender, region: 'Digital World', sprite: info.sprite, weight: info.weight,
+    name, ...(name !== title ? { key: title } : {}), class: info.class, classGender: info.gender, region: 'Digital World', sprite: info.sprite,
+    // A Battle Legend (Takato, Henry) has no special-trainer weight: battle-50-trainers.json says where and how often.
+    ...(info.legend ? { legend: true } : { weight: info.weight }),
     ...(info.lead ? { lead: info.lead } : {}), ...(info.partners?.length ? { partners: info.partners } : {}),
   };
 });
 for (const t of digidestinedTrainers) {
   if (t.lead && !t.sets.some(s => s.species === t.lead)) problems.push(`digidestined.json: ${t.name}'s lead ${t.lead} isn't on their team`);
-  if (!(t.weight > 0)) problems.push(`digidestined.json: ${t.name} needs a weight`);
+  if (!t.legend && !(t.weight > 0)) problems.push(`digidestined.json: ${t.name} needs a weight`);
+  if (t.legend && !battle50.battles.some(b => b.trainers.includes(t.name))) problems.push(`digidestined.json: ${t.name} is a Battle Legend but no battle-50-trainers.json entry names them`);
   for (const p of t.partners ?? []) {
     if (!battle50Trainers.some(b => b.name === p) && !digidestinedTrainers.some(d => d.name === p)) problems.push(`digidestined.json: ${t.name}'s partner ${p} has no team`);
   }
@@ -268,7 +271,7 @@ save('evil-teams.json', {
 save('digidestined.json', {
   source: 'Designed by the user (2026-10-11): data-sources/custom/digidestined.txt (teams, built for the user) and digidestined.json (who, sprite, lead, weight, partners); built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Takato, Henry, Rika).',
+    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their own weight (all 7: Izzy, Kaito, Rika). "legend": a Battle Legend instead (Takato, Henry), at battle 50 per battle-50.json.',
     '"lead": the species that always leads their team. "partners": in a Multi Battle they always battle alongside one of these (equal chance), who goes first (on the left).',
     'IV 31 like every special trainer; IV lines are ignored. Sprites are the user\'s own pixel art in public/trainers/.',
   ],

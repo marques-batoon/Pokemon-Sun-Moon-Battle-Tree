@@ -1,5 +1,5 @@
 {
-  "about": "The DigiDestined and other Digimon Tamers as special trainers (designed by the user): who they are, their sprite, the Pokémon (species) that always leads their team, and in Multi Battles who partners them. Teams are in digidestined.txt. 'weight': their weight in the special-trainer pool (the Gym Leaders are 7). 'name': their name when the section title (their key in the data, for lines) differs, as 'Henry (Tamer)' (the game has a Gentleman Henry). 'partners': in a Multi Battle they always battle alongside one of these (picked with equal chance), who goes first (shown on the left); a partner can be a Battle Legend (Tai) or another trainer listed here. After editing either file, run: npm run data:custom",
+  "about": "The DigiDestined and other Digimon Tamers as special trainers (designed by the user): who they are, their sprite, the Pokémon (species) that always leads their team, and in Multi Battles who partners them. Teams are in digidestined.txt. 'weight': their weight in the special-trainer pool (the Gym Leaders are 7). 'name': their name when the section title (their key in the data, for lines) differs, as 'Henry (Tamer)' (the game has a Gentleman Henry). 'legend': true makes them a Battle Legend instead (Takato, Henry): they then appear where battle-50-trainers.json puts them, at its weights, and have no weight or partners here. 'partners': in a Multi Battle they always battle alongside one of these (picked with equal chance), who goes first (shown on the left); a partner can be a Battle Legend (Tai) or another trainer listed here. After editing either file, run: npm run data:custom",
   "trainers": {
     "Izzy": {
       "class": "DigiDestined",
@@ -22,15 +22,11 @@
       ]
     },
     "Takato": {
-      "class": "Digimon Tamer",
+      "class": "Battle Legend",
       "gender": "M",
       "sprite": "/trainers/takato.png",
       "lead": "Guilmon",
-      "weight": 7,
-      "partners": [
-        "Henry",
-        "Rika"
-      ]
+      "legend": true
     },
     "Rika": {
       "class": "Digimon Tamer",
@@ -45,15 +41,11 @@
     },
     "Henry (Tamer)": {
       "name": "Henry",
-      "class": "Digimon Tamer",
+      "class": "Battle Legend",
       "gender": "M",
       "sprite": "/trainers/henry.png",
       "lead": "Terriermon",
-      "weight": 7,
-      "partners": [
-        "Takato",
-        "Rika"
-      ]
+      "legend": true
     }
   }
 }

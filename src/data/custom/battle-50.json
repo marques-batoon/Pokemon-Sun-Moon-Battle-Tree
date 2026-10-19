@@ -565,6 +565,52 @@
     "Takato"
    ],
    "weight": 3.5
+  },
+  {
+   "format": "singles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Takato"
+   ],
+   "weight": 3.5
+  },
+  {
+   "format": "singles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Henry"
+   ],
+   "weight": 3.5
+  },
+  {
+   "format": "doubles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Takato"
+   ],
+   "weight": 3.5
+  },
+  {
+   "format": "doubles",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Henry"
+   ],
+   "weight": 3.5
+  },
+  {
+   "format": "multi",
+   "course": "super",
+   "battle": 50,
+   "trainers": [
+    "Takato",
+    "Henry"
+   ],
+   "weight": 3.5
   }
  ]
 }
