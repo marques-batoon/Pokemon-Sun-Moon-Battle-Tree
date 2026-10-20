@@ -401,7 +401,7 @@ const LOCKED: Record<Format, string> = {
  * Counts a win over each special trainer and Battle Legend just beaten, and sets their partner price
  * (priceAfterWin: first beaten in All Star Mode, they come into the shop at 10000 BP).
  */
-function withBeaten(p: TreeProfile, trainerIds: readonly number[], allStar: boolean): TreeProfile['partners'] {
+export function withBeaten(p: TreeProfile, trainerIds: readonly number[], allStar: boolean): TreeProfile['partners'] {
   const beaten = { ...p.partners.beaten };
   const prices = { ...p.partners.prices };
   for (const id of trainerIds) {
@@ -419,7 +419,7 @@ const opponentIds = (next: PlannedOpponent) => [next.trainerId, ...(next.second 
 
 export const isFinished = (run: RunState) => run.status === 'cleared' || run.status === 'lost' || run.status === 'retired';
 
-function checkBring(team: RunTeam, format: Format) {
+export function checkBring(team: RunTeam, format: Format) {
   const { bring, sets } = team;
   const n = BRING[format];
   if (sets.length < MIN_REGISTERED[format]) throw new Error(`A ${format} team needs at least ${MIN_REGISTERED[format]} Pokémon.`);

@@ -229,6 +229,48 @@ export function trainerSpriteUrl(trainer: Trainer): string | null {
   return id ? Sprites.getAvatar(id) : null;
 }
 
+/**
+ * Sprites you can pick to stand for you (Settings; shown in the Duo Tournament): Battle Legends Marques (default) and
+ * Thomas (the user's own sprites, served with the app), and the main-story protagonists from HeartGold and SoulSilver
+ * on, from Pokémon Showdown's trainer sprites (on request, 2026-10-19). Brilliant Diamond and Shining Pearl's Lucas
+ * and Dawn use their Diamond and Pearl sprites (the remakes have none); Let's Go is left out.
+ */
+export const PLAYER_SPRITES: readonly { id: string; name: string; game: string; file?: string }[] = [
+  { id: 'marques', name: 'Battle Legend Marques', game: 'Battle Tree Simulator', file: 'trainers/marques.png' },
+  { id: 'thomas', name: 'Battle Legend Thomas', game: 'Battle Tree Simulator', file: 'trainers/thomas.png' },
+  { id: 'ethan', name: 'Ethan', game: 'HeartGold & SoulSilver' },
+  { id: 'lyra', name: 'Lyra', game: 'HeartGold & SoulSilver' },
+  { id: 'hilbert', name: 'Hilbert', game: 'Black & White' },
+  { id: 'hilda', name: 'Hilda', game: 'Black & White' },
+  { id: 'nate', name: 'Nate', game: 'Black 2 & White 2' },
+  { id: 'rosa', name: 'Rosa', game: 'Black 2 & White 2' },
+  { id: 'calem', name: 'Calem', game: 'X & Y' },
+  { id: 'serena', name: 'Serena', game: 'X & Y' },
+  { id: 'brendan', name: 'Brendan', game: 'Omega Ruby & Alpha Sapphire' },
+  { id: 'may', name: 'May', game: 'Omega Ruby & Alpha Sapphire' },
+  { id: 'elio', name: 'Elio', game: 'Sun & Moon' },
+  { id: 'selene', name: 'Selene', game: 'Sun & Moon' },
+  { id: 'elio-usum', name: 'Elio', game: 'Ultra Sun & Ultra Moon' },
+  { id: 'selene-usum', name: 'Selene', game: 'Ultra Sun & Ultra Moon' },
+  { id: 'victor', name: 'Victor', game: 'Sword & Shield' },
+  { id: 'gloria', name: 'Gloria', game: 'Sword & Shield' },
+  { id: 'lucas', name: 'Lucas', game: 'Brilliant Diamond & Shining Pearl' },
+  { id: 'dawn', name: 'Dawn', game: 'Brilliant Diamond & Shining Pearl' },
+  { id: 'rei', name: 'Rei', game: 'Legends: Arceus' },
+  { id: 'akari', name: 'Akari', game: 'Legends: Arceus' },
+  { id: 'florian-s', name: 'Florian', game: 'Scarlet & Violet' },
+  { id: 'juliana-s', name: 'Juliana', game: 'Scarlet & Violet' },
+  { id: 'urbain', name: 'Urbain', game: 'Legends: Z-A' },
+  { id: 'taunie', name: 'Taunie', game: 'Legends: Z-A' },
+];
+export const DEFAULT_PLAYER_SPRITE = 'marques';
+
+/** The picture for a player sprite id (an unknown id: the default). */
+export function playerSpriteUrl(id: string): string {
+  const entry = PLAYER_SPRITES.find(p => p.id === id) ?? PLAYER_SPRITES.find(p => p.id === DEFAULT_PLAYER_SPRITE)!;
+  return entry.file ? `${import.meta.env.BASE_URL}${entry.file}` : Sprites.getAvatar(entry.id);
+}
+
 export interface TrainerArt { url: string; width: number; height: number }
 const art = artData.named as Record<string, TrainerArt>;
 

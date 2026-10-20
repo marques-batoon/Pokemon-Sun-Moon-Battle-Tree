@@ -6,7 +6,7 @@ import {
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
 import { useTeams } from '../builder/hooks';
-import { BATTLE_TITLE, courseLabel, keyLabel, LEGEND, useRunState } from './hooks';
+import { BATTLE_TITLE, courseLabel, keyLabel, LEGEND, useRunState, useTournament } from './hooks';
 import { NewRunForm } from './NewRunForm';
 import { PartnerCard } from './PartnerCard';
 import { partnersForSale } from '../../run/partners';
@@ -15,13 +15,21 @@ import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { TRAINERS } from '../../data/battle-tree';
 import { useScrollToTopOn } from '../useScrollToTop';
+import type { TournamentController } from '../../run/tournament-controller';
+import { TournamentScreen } from './TournamentScreen';
+import { TournamentForm } from './TournamentForm';
+import { matchKey, nextOpponent, ROUND_NAMES, roundPhrase } from '../../run/tournament';
 
 type View =
   | { kind: 'home' }
   | { kind: 'new'; key: RunKey }
   | { kind: 'run'; key: RunKey }
   /** trainerIds: the opposing trainer, or both in a Multi Battle. */
-  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerIds: number[]; seedText: string };
+  | { kind: 'battle'; key: RunKey; battle: number; opponent: string; trainerIds: number[]; seedText: string }
+  /** The All Star Duo Tournament: starting one, its bracket between matches, and one of your matches. */
+  | { kind: 'tournament-new' }
+  | { kind: 'tournament' }
+  | { kind: 'tournament-battle'; round: number; trainerIds: number[]; battleKey: string };
 
 const battleView = (run: RunState): View => ({
   kind: 'battle',
@@ -32,8 +40,9 @@ const battleView = (run: RunState): View => ({
   seedText: run.next.seedText,
 });
 
-export function TreePage({ controller, teamStore }: { controller: RunController; teamStore: TeamStore }) {
+export function TreePage({ controller, tournaments, teamStore }: { controller: RunController; tournaments: TournamentController; teamStore: TeamStore }) {
   const state = useRunState(controller);
+  const tournament = useTournament(tournaments);
   const teams = useTeams(teamStore);
   const [view, setView] = useState<View>(() => {
     const run = state.active && state.runs[state.active.key];
@@ -41,7 +50,48 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
   });
   const { profile } = state;
   // Each screen (choosing a challenge, the next opponents, a battle, the results) opens at the top of the page.
-  useScrollToTopOn(view.kind === 'battle' ? `battle:${view.key}:${view.battle}` : view.kind === 'home' ? 'home' : `${view.kind}:${view.key}`);
+  useScrollToTopOn(view.kind === 'battle' ? `battle:${view.key}:${view.battle}` : view.kind === 'tournament-battle' ? `${view.kind}:${view.round}`
+    : 'key' in view ? `${view.kind}:${view.key}` : view.kind);
+
+  if (view.kind === 'tournament-new') {
+    return <TournamentForm controller={tournaments} teams={teams} onStarted={() => setView({ kind: 'tournament' })} onCancel={() => setView({ kind: 'home' })} />;
+  }
+
+  if (view.kind === 'tournament') {
+    return (
+      <TournamentScreen
+        controller={tournaments}
+        onBattle={() => {
+          const t = tournaments.tournament;
+          const foes = t && nextOpponent(t);
+          if (!t || !foes) return;
+          // The duo's lines (greeting, closing remark) are the round's: fixed now, before the result moves the round on.
+          const battleKey = matchKey(t);
+          tournaments.startBattle();
+          setView({ kind: 'tournament-battle', round: t.round, trainerIds: foes.trainers.map(p => p.trainerId), battleKey });
+        }}
+        onLeave={() => setView({ kind: 'home' })}
+        onNew={() => setView({ kind: 'tournament-new' })}
+      />
+    );
+  }
+
+  if (view.kind === 'tournament-battle') {
+    return (
+      <>
+        <div className="battle-banner">
+          {view.trainerIds.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
+          <span>All Star Duo Tournament · {ROUND_NAMES[view.round]} · vs {view.trainerIds.map(id => TRAINERS[id].name).join(' & ')}</span>
+        </div>
+        <BattleScreen
+          client={tournaments.battleClient}
+          opponent={{ trainers: view.trainerIds.map(id => TRAINERS[id]), battleKey: view.battleKey }}
+          onContinue={tournament.inBattle ? undefined : () => setView({ kind: 'tournament' })}
+          continueLabel="Back to the bracket"
+        />
+      </>
+    );
+  }
 
   if (view.kind === 'battle') {
     return (
@@ -122,6 +172,7 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
         <FormatSection key={format} format={format} state={state} onOpen={setView}>
           {format === 'multi' && (
             <>
+              <TournamentCard snapshot={tournament} unlocked={isSuperUnlocked(profile, 'multi')} onOpen={setView} />
               <p className="small online-link"><a href="#/online">Team up with a friend online →</a></p>
               <PartnerShop controller={controller} profile={profile} />
             </>
@@ -201,6 +252,38 @@ function FormatSection({ format, state, onOpen, children }: { format: Format; st
       {!isSuperUnlocked(profile, format) && <p className="muted small">{LOCKED_TEXT[format]}</p>}
       {children}
     </section>
+  );
+}
+
+/** The All Star Duo Tournament on the Battle Tree page: what it is, your tournaments, and the one in progress. */
+function TournamentCard({ snapshot, unlocked, onOpen }: { snapshot: ReturnType<typeof useTournament>; unlocked: boolean; onOpen: (v: View) => void }) {
+  const t = snapshot.tournament;
+  const { entered, won } = snapshot.profile.tournaments;
+  const finished = t && (t.status === 'won' || t.status === 'lost' || t.status === 'retired');
+  return (
+    <article className="panel course-card tournament-card">
+      <h3>All Star Duo Tournament</h3>
+      <p className="muted small">
+        A 16-pair bracket, single elimination: you and a partner against 15 duos of special trainers who team up together.
+        Rounds 1–3 pay 2 BP a win; winning the final pays 50 BP. Lose, and you watch the rest play out.
+      </p>
+      <p className="small"><span className="tag">All Star Mode</span> <span className="tag">unrated</span></p>
+      <dl className="run-stats">
+        <div><dt>Tournaments</dt><dd>{entered}</dd></div>
+        <div><dt>Won</dt><dd>{won}</dd></div>
+      </dl>
+      {t && (
+        <p className="saved-run">
+          {t.status === 'in-battle' && !snapshot.inBattle ? 'Match interrupted'
+            : t.status === 'won' ? 'Finished: you won!' : finished ? `Finished: out in ${roundPhrase(t.round)}` : `Saved tournament: ${ROUND_NAMES[t.round]} next`}
+        </p>
+      )}
+      <div className="row-actions">
+        {t && <button className="primary" onClick={() => onOpen({ kind: 'tournament' })}>{finished ? 'See results' : 'Continue'}</button>}
+        <button disabled={!unlocked} className={t ? '' : 'primary'} onClick={() => onOpen({ kind: 'tournament-new' })}>{unlocked ? 'New tournament' : 'Locked'}</button>
+      </div>
+      {!unlocked && <p className="muted small">Opens with Super Multi, once Super Singles and Super Doubles are both unlocked.</p>}
+    </article>
   );
 }
 

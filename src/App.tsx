@@ -1,7 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { BuilderPage } from './ui/builder/BuilderPage';
 import { TestBattlePage } from './ui/battle/TestBattlePage';
-import { engine, getBattleClient, getRunController, getSettingsStore, getTeamStore } from './ui/services';
+import { engine, getBattleClient, getRunController, getSettingsStore, getTeamStore, getTournamentController } from './ui/services';
 import { SettingsPage } from './ui/settings/SettingsPage';
 import { OnlinePage } from './ui/online/OnlinePage';
 import { applyTheme } from './ui/theme';
@@ -50,7 +50,7 @@ export default function App() {
         </nav>
       </SiteHeader>
       <main>
-        {route === 'tree' && <TreePage controller={getRunController()} teamStore={getTeamStore()} />}
+        {route === 'tree' && <TreePage controller={getRunController()} tournaments={getTournamentController()} teamStore={getTeamStore()} />}
         {route === 'builder' && <BuilderPage store={getTeamStore()} />}
         {route === 'battle' && <TestBattlePage client={getBattleClient()} store={getTeamStore()} />}
         {route === 'online' && <OnlinePage teamStore={getTeamStore()} />}

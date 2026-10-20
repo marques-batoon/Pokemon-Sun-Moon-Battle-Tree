@@ -115,13 +115,13 @@ export const displayName = (t: Trainer) => `${t.class} ${t.name}`;
 export const PAIR_TEAMMATE_CHANCE = 0.3;
 
 /** A trainer and any other version of the same character (both Archies): never two of them in one battle. */
-const samePersonIds = (id: number) => TRAINERS.filter(t => samePerson(t, TRAINERS[id])).map(t => t.id);
+export const samePersonIds = (id: number) => TRAINERS.filter(t => samePerson(t, TRAINERS[id])).map(t => t.id);
 
 /** Seed text of battle N in a run; the simulator and opponent rolls both derive from the run seed. */
 export const battleSeedText = (runSeed: string, battle: number) => `${runSeed}|battle-${battle}`;
 
 /** `lead`: a set that must lead (Tate and Liza's pairs); otherwise the trainer's own lead, if any (Tai's Agumon). */
-function planTrainer({ trainer }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
+export function planTrainer({ trainer }: TrainerChoice, format: Format, rng: Rng, lead?: number): PlannedTrainer {
   const leadId = lead ?? trainer.leadSetId;
   const sets = pickTeamSets(trainer, teamSizeFor(trainer, format), rng, leadId === undefined ? undefined : SETS[leadId]);
   return {

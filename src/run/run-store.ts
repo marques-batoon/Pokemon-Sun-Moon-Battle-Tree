@@ -1,6 +1,7 @@
 import type { KeyValueStore } from '../storage/kv';
 import { defaultPartnerBook, rollOffer, withDigimon } from './partners';
 import { Rng } from './rng';
+import type { TournamentState } from './tournament';
 import { DEFAULT_SETTINGS, RUN_KEYS, type PartnerBook, type RunKey, type RunState, type TreeProfile } from './types';
 
 const KEY = 'tree.v1';
@@ -9,6 +10,8 @@ export interface TreeState {
   profile: TreeProfile;
   /** Saved (suspended, in-battle or just-finished) runs, one per course. */
   runs: Partial<Record<RunKey, RunState>>;
+  /** The All Star Duo Tournament in progress (or just finished), if any. */
+  tournament: TournamentState | null;
 }
 
 interface TreeFileV1 extends TreeState {
@@ -22,6 +25,7 @@ export const emptyProfile = (): TreeProfile => ({
   bpSpent: 0,
   partners: defaultPartnerBook(),
   settings: { ...DEFAULT_SETTINGS },
+  tournaments: { entered: 0, won: 0 },
 });
 
 /**
@@ -100,8 +104,12 @@ export class RunStore {
     this.commit({ ...this.state, runs });
   }
 
+  setTournament(tournament: TournamentState | null): void {
+    this.commit({ ...this.state, tournament });
+  }
+
   reset(): void {
-    this.commit({ profile: emptyProfile(), runs: {} });
+    this.commit({ profile: emptyProfile(), runs: {}, tournament: null });
   }
 
   updateProfile(update: (p: TreeProfile) => TreeProfile): void {
@@ -110,7 +118,7 @@ export class RunStore {
 
   private load(): TreeState {
     const raw = this.kv.get(KEY);
-    if (!raw) return { profile: emptyProfile(), runs: {} };
+    if (!raw) return { profile: emptyProfile(), runs: {}, tournament: null };
     try {
       const file = JSON.parse(raw) as TreeFileV1;
       if (file.version !== 1 || !file.profile) throw new Error('unexpected shape');
@@ -129,13 +137,16 @@ export class RunStore {
           bpSpent: file.profile.bpSpent ?? 0,
           partners: migratePartners(file.profile.partners, base.partners),
           settings: withoutAnabelSetting({ ...base.settings, ...file.profile.settings }),
+          // Saves from before the Duo Tournament (2026-10-19) have no tournament count.
+          tournaments: { ...base.tournaments, ...file.profile.tournaments },
         },
         runs,
+        tournament: file.tournament ?? null,
       };
     } catch (err) {
       console.error('Battle Tree progress is unreadable; keeping a backup and starting fresh.', err);
       this.kv.set(`${KEY}.corrupt-${Date.now()}`, raw);
-      return { profile: emptyProfile(), runs: {} };
+      return { profile: emptyProfile(), runs: {}, tournament: null };
     }
   }
 

@@ -1,8 +1,13 @@
 import { useSyncExternalStore } from 'react';
 import type { RunController } from '../../run/controller';
+import type { TournamentController } from '../../run/tournament-controller';
 import type { Course, Format, RunKey, RunState } from '../../run/types';
 
 export function useRunState(controller: RunController) {
+  return useSyncExternalStore(controller.subscribe, controller.getSnapshot);
+}
+
+export function useTournament(controller: TournamentController) {
   return useSyncExternalStore(controller.subscribe, controller.getSnapshot);
 }
 

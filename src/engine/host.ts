@@ -3,7 +3,7 @@ import { createAI } from '../ai';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats, type BattleTreeFormat } from './format';
 import { testOpponentTeam } from './fixtures';
 import type { TeamValidation } from '../team/types';
-import type { AIKind, FromEngine, OpponentSpec, TeamInput, ToEngine } from './protocol';
+import type { AIKind, FromEngine, OpponentSpec, SimMatch, TeamInput, ToEngine } from './protocol';
 import { Rng } from '../run/rng';
 import { seedFromString } from './seed';
 import { BattleSession } from './session';
@@ -41,6 +41,30 @@ function parseTeam(input: TeamInput): PokemonSet[] {
 }
 
 /**
+ * Fights Multi Battles with AIs on all four sides (tournament matches the player isn't in), one after another, and
+ * returns which side won each (0: the first duo). A tie (rare) is settled by a coin flip seeded like the battle.
+ */
+export async function simulateMatches(matches: readonly SimMatch[], ai: AIKind): Promise<(0 | 1)[]> {
+  const winners: (0 | 1)[] = [];
+  for (const match of matches) {
+    const [a, b] = match.sides;
+    const session = new BattleSession({
+      format: 'multi',
+      teamPreview: false,
+      seed: seedFromString(match.seedText),
+      p1: a.trainers[0], p1AI: createAI(ai),
+      p2: b.trainers[0], p2AI: createAI(ai),
+      p3: { ...a.trainers[1], ai: createAI(ai) },
+      p4: { ...b.trainers[1], ai: createAI(ai) },
+    });
+    session.start();
+    const { winner } = await session.done;
+    winners.push(winner === 'p1' ? 0 : winner === 'p2' ? 1 : (new Rng(`${match.seedText}|tie`).next() < 0.5 ? 0 : 1));
+  }
+  return winners;
+}
+
+/**
  * The battle engine behind the worker boundary: owns simulator sessions and
  * speaks the ToEngine/FromEngine protocol. Transport-agnostic so tests can run
  * it in-process.
@@ -65,10 +89,17 @@ export class EngineHost {
         case 'validate':
           this.emit({ type: 'validation', requestId: msg.requestId, result: validateTeamDetailed(msg.format, msg.sets) });
           return;
+        case 'simulate':
+          void simulateMatches(msg.matches, msg.ai).then(
+            winners => this.emit({ type: 'simulated', requestId: msg.requestId, winners }),
+            err => this.emit({ type: 'simulated', requestId: msg.requestId, error: err instanceof Error ? err.message : String(err) }),
+          );
+          return;
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       if (msg.type === 'validate') this.emit({ type: 'validation', requestId: msg.requestId, result: { team: [`Validator error: ${message}`], sets: msg.sets.map(() => []) } });
+      else if (msg.type === 'simulate') this.emit({ type: 'simulated', requestId: msg.requestId, error: message });
       else this.emit({ type: 'error', battleId: msg.battleId, message });
     }
   }

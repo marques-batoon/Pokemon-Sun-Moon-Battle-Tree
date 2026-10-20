@@ -2,12 +2,14 @@
 // mount/unmount cycle can't tear down the worker or reload storage mid-use.
 import { BattleClient } from '../client/battle-client';
 import { createWorkerTransport, type EngineTransport } from '../client/transport';
+import { SimulationClient } from '../client/simulation-client';
 import { ValidationClient } from '../client/validation-client';
 import { localStore, type KeyValueStore } from '../storage/kv';
 import { ANIMATION_SPEED_FACTOR, SettingsStore } from '../settings/settings-store';
 import { TeamStore } from '../storage/team-store';
 import { RunController } from '../run/controller';
 import { RunStore } from '../run/run-store';
+import { TournamentController } from '../run/tournament-controller';
 import { battleName } from '../online/trainer-name';
 import { preloadBattleSprites } from './sprite-preload';
 
@@ -16,6 +18,9 @@ let battleClient: BattleClient | null = null;
 let validationClient: ValidationClient | null = null;
 let teamStore: TeamStore | null = null;
 let runController: RunController | null = null;
+let runStore: RunStore | null = null;
+let simulationClient: SimulationClient | null = null;
+let tournamentController: TournamentController | null = null;
 let settingsStore: SettingsStore | null = null;
 let kv: KeyValueStore | null = null;
 
@@ -66,12 +71,31 @@ export function getTeamStore(): TeamStore {
   return teamStore;
 }
 
+/** Battle Tree progress: runs, the tournament, BP and partners (one store for both controllers). */
+function getRunStore(): RunStore {
+  runStore ??= new RunStore(getKeyValueStore());
+  return runStore;
+}
+
+const playerName = () => battleName(getSettingsStore().getSettings().trainerName);
+
 /** Battle Tree runs get their own battle client so a test battle can't cut off a run's battle. */
 export function getRunController(): RunController {
-  runController ??= new RunController(new RunStore(getKeyValueStore()), newBattleClient(), {
-    playerName: () => battleName(getSettingsStore().getSettings().trainerName),
-  });
+  runController ??= new RunController(getRunStore(), newBattleClient(), { playerName });
   return runController;
+}
+
+/** The engine fights tournament matches you're not in (same worker as battles). */
+export function getSimulationClient(): SimulationClient {
+  simulationClient ??= new SimulationClient(engine());
+  return simulationClient;
+}
+
+/** The All Star Duo Tournament shares the Battle Tree's battle client (one Battle Tree battle at a time). */
+export function getTournamentController(): TournamentController {
+  const sims = getSimulationClient();
+  tournamentController ??= new TournamentController(getRunStore(), getRunController().battleClient, (matches, ai) => sims.simulate(matches, ai), { playerName });
+  return tournamentController;
 }
 
 export function getSettingsStore(): SettingsStore {

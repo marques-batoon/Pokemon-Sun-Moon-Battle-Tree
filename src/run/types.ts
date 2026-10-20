@@ -204,6 +204,8 @@ export interface TreeProfile {
   bpSpent: number;
   partners: PartnerBook;
   settings: RunSettings;
+  /** All Star Duo Tournaments entered and won (practice ones don't count). */
+  tournaments: { entered: number; won: number };
 }
 
 /** Super Multi opens once both Super Singles and Super Doubles are unlocked. */

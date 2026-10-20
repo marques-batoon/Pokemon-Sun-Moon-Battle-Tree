@@ -12,6 +12,8 @@ import { RUN_KEYS } from '../../run/types';
 import { checkDebugPassword } from '../../settings/debug-unlock';
 import { TrainerNameField } from '../components/TrainerNameField';
 import { TRAINER_NAME_MAX } from '../../online/trainer-name';
+import { PLAYER_SPRITES } from '../sprites';
+import { PlayerSprite } from '../components/PlayerSprite';
 
 export function SettingsPage() {
   const store = getSettingsStore();
@@ -32,6 +34,20 @@ export function SettingsPage() {
           Shown in battle, and to your partner in online Multi Battles. Up to {TRAINER_NAME_MAX} letters, numbers, spaces and . ' _ -.
           Not your real name, please: other players can see it.
         </p>
+        <fieldset className="choice-row player-sprites">
+          <legend>Trainer sprite</legend>
+          <p className="muted small">Stands for you in the All Star Duo Tournament. The protagonists' sprites load from Pokémon Showdown's sprite server.</p>
+          <div className="player-sprite-grid">
+            {PLAYER_SPRITES.map(p => (
+              <label key={p.id} className={`player-sprite-choice${settings.trainerSprite === p.id ? ' selected' : ''}`} title={`${p.name} (${p.game})`}>
+                <input type="radio" name="trainer-sprite" checked={settings.trainerSprite === p.id} onChange={() => store.update({ trainerSprite: p.id })} />
+                <PlayerSprite id={p.id} size={64} label={p.name} />
+                <span className="small">{p.name}</span>
+                <span className="muted tiny">{p.game}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
       </section>
 
       <section className="panel">

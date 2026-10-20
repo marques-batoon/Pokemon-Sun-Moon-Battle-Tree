@@ -46,6 +46,8 @@ export interface AppSettings {
   animationSpeed: AnimationSpeed;
   /** Your trainer name in battle and in online Multi Battles ('' = not set: "Player"). See checkTrainerName. */
   trainerName: string;
+  /** The sprite that stands for you (the Duo Tournament bracket...): an id from PLAYER_SPRITES (src/ui/sprites.ts). */
+  trainerSprite: string;
 }
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
@@ -61,6 +63,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   showBattleLog: true,
   animationSpeed: 'normal',
   trainerName: '',
+  trainerSprite: 'marques',
 };
 
 export const SETTINGS_KEY = 'settings.v1';

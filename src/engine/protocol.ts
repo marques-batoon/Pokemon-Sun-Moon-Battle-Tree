@@ -16,6 +16,18 @@ export type OpponentSpec =
   | { kind: 'test-fixture' }
   | { kind: 'team'; name: string; team: PokemonSet[] };
 
+/** One side of a simulated match: two trainers, each with the 2 Pokémon they bring (left trainer first). */
+export interface SimDuo {
+  trainers: [{ name: string; team: PokemonSet[] }, { name: string; team: PokemonSet[] }];
+}
+
+/** A Multi Battle fought by four AIs (a tournament match the player isn't in). */
+export interface SimMatch {
+  /** Hashed into the simulator seed: the same text and teams give the same result. */
+  seedText: string;
+  sides: [SimDuo, SimDuo];
+}
+
 export type ToEngine =
   | {
     type: 'start';
@@ -41,7 +53,9 @@ export type ToEngine =
   /** The AI plays the online partner from now on (they left or are taking too long). */
   | { type: 'takeover'; battleId: string; side: 'p3' }
   | { type: 'stop'; battleId: string }
-  | { type: 'validate'; requestId: number; format: BattleTreeFormat; sets: PokemonSet[] };
+  | { type: 'validate'; requestId: number; format: BattleTreeFormat; sets: PokemonSet[] }
+  /** Fights each match to the end with AIs on all four sides, one after another. */
+  | { type: 'simulate'; requestId: number; matches: SimMatch[]; ai: AIKind };
 
 export type FromEngine =
   | { type: 'started'; battleId: string; seed: string; opponentName: string; playerTeam: PokemonSet[] }
@@ -51,4 +65,7 @@ export type FromEngine =
   | { type: 'invalid-team'; battleId: string; problems: string[] }
   | { type: 'warning'; battleId: string; message: string }
   | { type: 'error'; battleId: string; message: string }
-  | { type: 'validation'; requestId: number; result: TeamValidation };
+  | { type: 'validation'; requestId: number; result: TeamValidation }
+  /** Which side won each simulated match (0: the first duo, 1: the second), in order; or why it failed. */
+  | { type: 'simulated'; requestId: number; winners: (0 | 1)[]; error?: undefined }
+  | { type: 'simulated'; requestId: number; winners?: undefined; error: string };
