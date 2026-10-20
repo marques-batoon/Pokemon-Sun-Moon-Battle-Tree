@@ -5459,7 +5459,7 @@
   ]
  },
  "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
- "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake; and Mallow with every one of the younger female Gym Leaders, added 2026-10-19 on request). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type.",
  "pairs": {
   "Brock & Misty": {
    "Brock": {
@@ -21131,6 +21131,174 @@
     "greeting": "Candice keeps yelling \"Focus!\" at my concerts, so I wrote her a song. Let's go!",
     "trainerWins": "Wrote her a song, now a win!",
     "trainerLoses": "Wrote her a song... still lost!"
+   }
+  },
+  "Flannery & Mallow": {
+   "Flannery": {
+    "greeting": "Mallow says my fire is perfect for her kitchen! Grilling, toasting, baking... and battling! Let's go!",
+    "trainerWins": "We won! Okay, Mallow, the fire's ready. Time to bake!",
+    "trainerLoses": "Ugh, I got way too fired up... Mallow, I think I burned the whole battle."
+   },
+   "Mallow": {
+    "greeting": "Flannery promised me Lavaridge's Lava Cookie recipe if we win! Okay, let's cook up a victory!",
+    "trainerWins": "Victory, served hot! Now hand over that Lava Cookie recipe, Flannery!",
+    "trainerLoses": "A little overcooked... Let's bake those cookies anyway to cheer up, Flannery!"
+   }
+  },
+  "Misty & Mallow": {
+   "Misty": {
+    "greeting": "Mallow invited me to Aina's Kitchen! If my sisters find out I ate there without them, they'll flip!",
+    "trainerWins": "We won! Save me a big bowl of that curry, Mallow!",
+    "trainerLoses": "Lost... but I'm still eating that curry, Mallow!"
+   },
+   "Mallow": {
+    "greeting": "Misty's from Cerulean City! I'm making her my seaside curry after we win. Let's go!",
+    "trainerWins": "Victory curry for Misty, coming right up!",
+    "trainerLoses": "Curry heals all losses, Misty. Let's eat!"
+   }
+  },
+  "Sabrina & Mallow": {
+   "Sabrina": {
+    "greeting": "Mallow's mind is full of recipes. I foresee a feast... and a victory.",
+    "trainerWins": "As foreseen. The feast may begin.",
+    "trainerLoses": "The feast I foresaw... is a consolation one."
+   },
+   "Mallow": {
+    "greeting": "Sabrina knows what I'm cooking before I do! Spooky! But super useful in battle!",
+    "trainerWins": "Sabrina saw it coming! Time to cook!",
+    "trainerLoses": "Sabrina, why didn't you see THAT coming?!"
+   }
+  },
+  "Janine & Mallow": {
+   "Janine": {
+    "greeting": "Mallow says ninjas need a good meal. I'll eat, but only after we win!",
+    "trainerWins": "Victory! Now I'll eat that bento, Mallow.",
+    "trainerLoses": "A ninja must not lose... or skip lunch. Bento, please."
+   },
+   "Mallow": {
+    "greeting": "Janine trains so hard she forgets to eat! I packed her a bento. Let's win first!",
+    "trainerWins": "Bento time, Janine! You earned it!",
+    "trainerLoses": "Eat your bento, Janine. We'll train harder tomorrow!"
+   }
+  },
+  "Whitney & Mallow": {
+   "Whitney": {
+    "greeting": "Mallow said she'd make me Moomoo Milk pancakes if we win! I'm SO ready!",
+    "trainerWins": "Pancake time! We won!",
+    "trainerLoses": "No pancakes?! Waaah!"
+   },
+   "Mallow": {
+    "greeting": "Whitney brought fresh Moomoo Milk from Goldenrod! Pancakes for the winners!",
+    "trainerWins": "Stack 'em high, Whitney! Victory pancakes!",
+    "trainerLoses": "Don't cry, Whitney! Pancakes for everyone anyway!"
+   }
+  },
+  "Jasmine & Mallow": {
+   "Jasmine": {
+    "greeting": "Mallow baked tea cookies for the lighthouse... Um, they're really good. Let's do our best.",
+    "trainerWins": "We won... can I have another cookie?",
+    "trainerLoses": "We lost... the cookies help a little."
+   },
+   "Mallow": {
+    "greeting": "Jasmine's so shy! I'll cheer loud enough for both of us. Let's win and have cookies!",
+    "trainerWins": "Cookie celebration, Jasmine!",
+    "trainerLoses": "Cookies make everything better, Jasmine. Have two!"
+   }
+  },
+  "Clair & Mallow": {
+   "Clair": {
+    "greeting": "Mallow wants to cook for my dragons. Fine. But they have refined tastes.",
+    "trainerWins": "Victory. And the dish was... acceptable.",
+    "trainerLoses": "Defeat. Don't tell anyone I asked for seconds."
+   },
+   "Mallow": {
+    "greeting": "Clair's so fierce! I'll make her a fiery dish worthy of a Dragon Tamer!",
+    "trainerWins": "Fiery and victorious, Clair!",
+    "trainerLoses": "Too much heat for us today, Clair!"
+   }
+  },
+  "Roxanne & Mallow": {
+   "Roxanne": {
+    "greeting": "Mallow's recipes follow precise measurements. Cooking is basically chemistry! Let's battle!",
+    "trainerWins": "A precise victory, just like a good recipe!",
+    "trainerLoses": "I must have measured something wrong..."
+   },
+   "Mallow": {
+    "greeting": "Roxanne took notes on my whole recipe book! Today we write a winning recipe!",
+    "trainerWins": "Recipe for victory: complete!",
+    "trainerLoses": "We'll tweak the recipe, Roxanne!"
+   }
+  },
+  "Winona & Mallow": {
+   "Winona": {
+    "greeting": "Mallow's kitchen smells wonderful from the sky. Let's make this battle just as sweet.",
+    "trainerWins": "Sweet as the air over the jungle.",
+    "trainerLoses": "The winds weren't with us, Mallow."
+   },
+   "Mallow": {
+    "greeting": "Winona flew me over the Lush Jungle! Now let's soar to a win!",
+    "trainerWins": "Soared to victory! Dinner's on me, Winona!",
+    "trainerLoses": "We crashed... dinner's still on me, Winona!"
+   }
+  },
+  "Maylene & Mallow": {
+   "Maylene": {
+    "greeting": "Mallow cooked me a huge training meal! I've got energy to burn! Let's go!",
+    "trainerWins": "That training meal worked! A fourth helping, please!",
+    "trainerLoses": "I'll need another helping to recover!"
+   },
+   "Mallow": {
+    "greeting": "Maylene ate three helpings and asked for more! Now let's put that energy to work!",
+    "trainerWins": "Power food works! Way to go, Maylene!",
+    "trainerLoses": "More food, more training, Maylene!"
+   }
+  },
+  "Candice & Mallow": {
+   "Candice": {
+    "greeting": "Mallow made shave ice from Snowpoint snow! Focus on the battle, then dessert! Kiai!",
+    "trainerWins": "Focused win, then shave ice! Kiai!",
+    "trainerLoses": "I lost focus thinking about dessert!"
+   },
+   "Mallow": {
+    "greeting": "Candice brought snow from Snowpoint for my shave ice! Cool treats for a hot win!",
+    "trainerWins": "Shave ice for the winners, Candice!",
+    "trainerLoses": "Shave ice makes losing a little sweeter, Candice!"
+   }
+  },
+  "Elesa & Mallow": {
+   "Elesa": {
+    "greeting": "Mallow catered my last runway show. Everyone wanted her recipes. Let's give them something to talk about.",
+    "trainerWins": "A sparkling win. Dessert, Mallow?",
+    "trainerLoses": "Even a bad show deserves dessert."
+   },
+   "Mallow": {
+    "greeting": "Elesa says my desserts are runway-ready! Let's make this battle sparkle!",
+    "trainerWins": "Sparkly win, sparkly dessert!",
+    "trainerLoses": "Dessert first next time, Elesa!"
+   }
+  },
+  "Skyla & Mallow": {
+   "Skyla": {
+    "greeting": "Mallow packs lunches for my cargo flights! Best in-flight food ever! Let's win!",
+    "trainerWins": "Delivered! Next flight's lunch is on you, Mallow!",
+    "trainerLoses": "Grounded... but at least there's lunch!"
+   },
+   "Mallow": {
+    "greeting": "Skyla flies my ingredients in from all over the world! Let's deliver a win together!",
+    "trainerWins": "Special delivery: victory!",
+    "trainerLoses": "Lost in delivery, Skyla!"
+   }
+  },
+  "Roxie & Mallow": {
+   "Roxie": {
+    "greeting": "Mallow's cooking at my next show! Loud music, spicy food! Let's rock this battle!",
+    "trainerWins": "Rocked it! Pass the spicy food, Mallow!",
+    "trainerLoses": "Show's over... but the food's still good!"
+   },
+   "Mallow": {
+    "greeting": "Roxie's music makes me cook twice as fast! Let's rock and roll... and win!",
+    "trainerWins": "Rocking victory! Encore dish coming up!",
+    "trainerLoses": "Bad show, good food, Roxie!"
    }
   }
  },

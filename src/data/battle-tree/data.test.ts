@@ -325,6 +325,12 @@ describe('trainer-quotes.json', () => {
     for (const a of girls) for (const b of girls) if (a !== b) expect(pairGreeting(a, b), `${a.name} with ${b.name}`).not.toBeNull();
     expect(pairGreeting(byName('Misty'), byName('Elesa'))).toMatch(/Elesa/);
     expect(pairGreeting(byName('Elesa'), byName('Misty'))).toMatch(/Misty/);
+    // Mallow (a young girl too, though a Captain) has lines with every one of them (on request, 2026-10-19).
+    const mallow = byName('Mallow');
+    for (const g of girls) {
+      expect(pairGreeting(mallow, g), `Mallow with ${g.name}`).not.toBeNull();
+      expect(pairGreeting(g, mallow), `${g.name} with Mallow`).not.toBeNull();
+    }
   });
 
   it('greets you with pair lines when two such special trainers battle together, and closes with matching remarks', async () => {
