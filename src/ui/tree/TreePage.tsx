@@ -14,6 +14,7 @@ import { RunScreen } from './RunScreen';
 import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { TRAINERS } from '../../data/battle-tree';
+import { useScrollToTopOn } from '../useScrollToTop';
 
 type View =
   | { kind: 'home' }
@@ -39,6 +40,8 @@ export function TreePage({ controller, teamStore }: { controller: RunController;
     return run ? battleView(run) : { kind: 'home' };
   });
   const { profile } = state;
+  // Each screen (choosing a challenge, the next opponents, a battle, the results) opens at the top of the page.
+  useScrollToTopOn(view.kind === 'battle' ? `battle:${view.key}:${view.battle}` : view.kind === 'home' ? 'home' : `${view.kind}:${view.key}`);
 
   if (view.kind === 'battle') {
     return (

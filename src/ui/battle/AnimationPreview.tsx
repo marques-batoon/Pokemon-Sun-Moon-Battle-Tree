@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -65,6 +65,9 @@ const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 const PREVIEW_IMMUNITIES = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy'];
 const typeName = (id: string) => id.charAt(0).toUpperCase() + id.slice(1);
 const PREVIEW_BERRIES = ['Sitrus Berry', 'Lum Berry', 'Chesto Berry', 'Liechi Berry', 'Salac Berry', 'Occa Berry', 'Figy Berry', 'Custap Berry', 'Enigma Berry'];
+/** Held items used up, for the preview; those that raise a stat show the rise next. */
+const PREVIEW_ITEMS = ['White Herb', 'Mental Herb', 'Power Herb', 'Weakness Policy', 'Red Card', 'Eject Button', 'Absorb Bulb', 'Cell Battery', 'Snowball', 'Luminous Moss', 'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed', 'Adrenaline Orb'];
+const BOOSTING_ITEMS = new Set(['Weakness Policy', 'Absorb Bulb', 'Cell Battery', 'Snowball', 'Luminous Moss', 'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed', 'Adrenaline Orb']);
 
 /** What the preview stage shows besides the sprites (what the battle state would hold). */
 interface FieldState {
@@ -353,6 +356,24 @@ export function AnimationPreview() {
             <option value="">Berry…</option>
             {PREVIEW_BERRIES.map(b => <option key={b} value={b}>{b}</option>)}
             <option value="steal:Sitrus Berry">Bug Bite: steal a Sitrus Berry</option>
+          </select>
+        </label>
+        <label>
+          {side === 'p1' ? 'You' : 'Opponent'}{' '}use{side === 'p1' ? '' : 's'}{' '}
+          <select aria-label="Use up a held item" value="" onChange={e => {
+            const item = e.target.value;
+            e.target.value = '';
+            if (!item) return;
+            const used: Step = { kind: 'item', side, target: item === 'Red Card' ? other(side) : null, label: item, condition: item.toLowerCase().replace(/[^a-z0-9]/g, ''), durationMs: ITEM_MS };
+            // Power Herb: Solar Beam fires on its charging turn.
+            if (item === 'Power Herb') {
+              const [charge, ...beam] = moveSteps('Solar Beam', side, field);
+              return play([charge, used, ...beam]);
+            }
+            play([used, ...(BOOSTING_ITEMS.has(item) ? [{ kind: 'boost', side, target: null, durationMs: 450 } as Step] : [])]);
+          }}>
+            <option value="">item…</option>
+            {PREVIEW_ITEMS.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
         </label>
         <label>

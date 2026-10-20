@@ -331,6 +331,23 @@ describe('planLine: Berries', () => {
     expect(kinds.indexOf('berry')).toBeLessThan(kinds.indexOf('cure'));
   });
 
+  it('plays a Power Herb between the charge and the attack, and herbs and Weakness Policy before what they do', () => {
+    const held = (species: string, item: string, ability: string, moves: string[]) => set(species, ability, moves).replace(species, `${species} @ ${item}`);
+    const herb = planBattle(held('Venusaur', 'Power Herb', 'Overgrow', ['Solar Beam']), set('Snorlax', 'Thick Fat', ['Splash']), [['move 1', 'move 1']]);
+    const kinds = herb.map(s => s.kind);
+    expect(herb.find(s => s.kind === 'item')).toMatchObject({ side: 'p1', label: 'Power Herb' });
+    expect(kinds.indexOf('solar-charge')).toBeLessThan(kinds.indexOf('item'));
+    expect(herb.findIndex(s => s.kind === 'move' && !s.still)).toBeGreaterThan(kinds.indexOf('item'));
+    const white = planBattle(held('Snorlax', 'White Herb', 'Thick Fat', ['Splash']), set('Gyarados', 'Intimidate', ['Splash']), [['move 1', 'move 1']]);
+    expect(white.find(s => s.kind === 'item')).toMatchObject({ side: 'p1', label: 'White Herb' });
+    expect(white.map(s => s.kind).indexOf('unboost')).toBeLessThan(white.map(s => s.kind).indexOf('item'));
+    const policy = planBattle(held('Snorlax', 'Weakness Policy', 'Thick Fat', ['Splash']), set('Machamp', 'No Guard', ['Cross Chop']), [['move 1', 'move 1']]);
+    const order = policy.map(s => s.kind);
+    expect(policy.find(s => s.kind === 'item')).toMatchObject({ side: 'p1', label: 'Weakness Policy' });
+    expect(order.indexOf('hit')).toBeLessThan(order.indexOf('item'));
+    expect(order.indexOf('item')).toBeLessThan(order.indexOf('boost'));
+  });
+
   it('flies a stolen Berry over to the Bug Bite / Pluck user, who eats it', () => {
     expect(plan('|-enditem|p1a: Snorlax|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p2a: Scizor'))
       .toMatchObject({ kind: 'berry', side: 'p2', target: 'p1', label: 'Sitrus Berry' });
@@ -403,6 +420,18 @@ describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Ba
   it('shows the Focus Sash and Focus Band letting the Pokémon hang on', () => {
     expect(plan('|-enditem|p2a: Alakazam|Focus Sash')).toMatchObject({ kind: 'sash', side: 'p2', condition: 'focussash' });
     expect(plan('|-activate|p1a: Machamp|item: Focus Band')).toMatchObject({ kind: 'sash', side: 'p1', condition: 'focusband' });
+  });
+
+  it('shows other held items being used up (herbs, Weakness Policy, Red Card thrown at the attacker...)', () => {
+    expect(plan('|-enditem|p1a: Snorlax|White Herb')).toMatchObject({ kind: 'item', side: 'p1', target: null, label: 'White Herb', condition: 'whiteherb' });
+    expect(plan('|-enditem|p2b: Garchomp|Weakness Policy')).toMatchObject({ kind: 'item', side: 'p2', slot: 1, condition: 'weaknesspolicy' });
+    expect(plan('|-enditem|p2a: Snorlax|Red Card|[of] p1b: Garchomp')).toMatchObject({ kind: 'item', side: 'p2', target: 'p1', targetSlot: 1, condition: 'redcard' });
+    expect(plan('|-enditem|p1a: Snorlax|Normal Gem|[from] gem')).toMatchObject({ kind: 'item', condition: 'normalgem' });
+    // Not items a move takes or destroys, Berries (their own animation, or one eaten earlier), nor the Air Balloon.
+    for (const line of [
+      '|-enditem|p1a: Snorlax|Leftovers|[from] move: Knock Off|[of] p2a: Weavile', '|-enditem|p1a: Snorlax|Choice Scarf|[silent]|[from] move: Trick',
+      '|-enditem|p1a: Snorlax|Occa Berry|[weaken]', '|-enditem|p1a: Snorlax|Micle Berry', '|-enditem|p1a: Snorlax|Air Balloon',
+    ]) expect(plan(line)?.kind, line).not.toBe('item');
   });
 
   it('shows the hit first, then the sash (the engine announces the sash just before the damage)', () => {

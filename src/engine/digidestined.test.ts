@@ -44,26 +44,56 @@ describe('Izzy (DigiDestined)', () => {
     }
   });
 
-  it('in a Multi Battle always brings Tai, who goes first; neither appears with anyone else that way', () => {
-    expect(multiPartners(izzy.id)).toEqual([tai.id]);
+  it('in a Multi Battle always brings Tai, Colress or Cheren (equal chance), who goes first; Tai comes with no one else that way', () => {
+    const colress = TRAINERS.find(t => t.name === 'Colress' && t.kind === 'special')!;
+    const cheren = TRAINERS.find(t => t.name === 'Cheren' && t.kind === 'special')!;
+    expect(multiPartners(izzy.id)).toEqual([tai.id, colress.id, cheren.id]);
     expect(multiDuo(izzy.id)).toEqual([tai.id, izzy.id]);
-    let seen = 0;
-    for (let i = 0; i < 4000; i++) {
+    const partners = new Map<number, number>();
+    for (let i = 0; i < 6000; i++) {
       const o = planOpponent(`izzy-multi-${i}`, 'multi', 'super', multiSpecial);
       const ids = [o.trainerId, o.second!.trainerId];
       if (ids.includes(izzy.id)) {
-        seen++;
-        expect(ids, `run ${i}`).toEqual([tai.id, izzy.id]);
-        expect([species(o)[0], species(o.second!)[0]]).toEqual(['Agumon', 'Tentomon']);
+        expect(ids[1], `run ${i}`).toBe(izzy.id);
+        expect([tai.id, colress.id, cheren.id]).toContain(ids[0]);
+        partners.set(ids[0], (partners.get(ids[0]) ?? 0) + 1);
+        expect(species(o.second!)[0]).toBe('Tentomon');
+        if (ids[0] === tai.id) expect(species(o)[0]).toBe('Agumon');
         expect([o.team.length, o.second!.team.length]).toEqual([2, 2]);
       }
       // Tai only appears with Izzy or Kaito, first.
       if (ids.includes(tai.id)) expect([ids[0], [izzy.id, kaito.id].includes(ids[1])]).toEqual([tai.id, true]);
     }
-    expect(seen).toBeGreaterThan(0);
-    // Debug mode: choosing Izzy brings Tai too, Tai first.
+    // Each of the three about a third of the time.
+    const total = [...partners.values()].reduce((a, b) => a + b, 0);
+    expect(partners.size).toBe(3);
+    for (const n of partners.values()) expect(Math.abs(n / total - 1 / 3)).toBeLessThan(0.12);
+    // Debug mode: choosing Izzy brings his first partner, Tai, Tai first.
     const chosen = planChosenOpponent('chosen-izzy', 'multi', 7, [izzy.id]);
     expect([chosen.trainerId, chosen.second!.trainerId]).toEqual([tai.id, izzy.id]);
+  });
+
+  it('has team-up lines with Colress and with Cheren (three each, matching), two of each pair\'s about him coming from another world', () => {
+    const colress = TRAINERS.find(t => t.name === 'Colress' && t.kind === 'special')!;
+    const cheren = TRAINERS.find(t => t.name === 'Cheren' && t.kind === 'special')!;
+    const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
+    const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')}|Tentomon|Kabuterimon)(?!\\w)`);
+    for (const [label, partner] of [['Colress & Izzy', colress], ['Cheren & Izzy', cheren]] as const) {
+      const duo = TRAINER_DUO_QUOTES[label];
+      expect([duo[partner.name].length, duo.Izzy.length], label).toEqual([3, 3]);
+      for (let k = 0; k < 3; k++) {
+        expect(trainerQuotes(partner, k, [partner, izzy])).toEqual(duo[partner.name][k]);
+        expect(trainerQuotes(izzy, k, [partner, izzy])).toEqual(duo.Izzy[k]);
+      }
+      const greetings = [...duo[partner.name], ...duo.Izzy].map(q => q.greeting);
+      expect(greetings.filter(g => /world/.test(g)).length, label).toBeGreaterThanOrEqual(2);
+      for (const q of [...duo[partner.name], ...duo.Izzy]) {
+        for (const text of [q.greeting, q.trainerWins, q.trainerLoses]) {
+          expect(text.length).toBeLessThanOrEqual(120);
+          expect(text).not.toMatch(pokemon);
+        }
+      }
+    }
   });
 
   it('never appears against you when he is your partner', () => {

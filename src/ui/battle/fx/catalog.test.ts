@@ -4,7 +4,7 @@ import { BIG_MOVE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MS, W
 import { gen7 } from '../../../team/dex';
 import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import {
-  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   futureHitSpec, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -261,6 +261,24 @@ describe('Berries', () => {
     expect(eaten).not.toHaveProperty('from');
     expect(berrySpec('Lum Berry', true).layers.find(l => l.kind === 'berry')).toMatchObject({ from: 'target' });
     expect(key(berrySpec('Sitrus Berry'))).not.toBe(key(berrySpec('Oran Berry')));
+  });
+});
+
+describe('held items used up', () => {
+  it('pops the item up and sends it its way: herbs crumble, Red Card is thrown at the attacker, the rest burst or sink in', () => {
+    const item = (name: string) => itemSpec(name).layers.find(l => l.kind === 'item');
+    for (const herb of ['White Herb', 'Mental Herb', 'Power Herb']) expect(item(herb), herb).toMatchObject({ item: herb, at: 'user', use: 'crumble' });
+    expect(item('Red Card')).toMatchObject({ use: 'throw', to: 'target' });
+    expect(itemSpec('Red Card').layers.some(l => l.kind === 'impact' && l.at === 'target')).toBe(true);
+    expect(item('Eject Button')).toMatchObject({ use: 'press' });
+    for (const taken of ['Absorb Bulb', 'Cell Battery', 'Snowball', 'Luminous Moss', 'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed']) expect(item(taken), taken).toMatchObject({ use: 'absorb' });
+    expect(item('Weakness Policy')).toMatchObject({ use: 'burst' });
+    // Any other item bursts into sparkles; each is named as it's used.
+    expect(item('Normal Gem')).toMatchObject({ use: 'burst', item: 'Normal Gem' });
+    expect(itemSpec('Mental Herb').layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Mental Herb', at: 'user' });
+    // Each has its own look (besides its name).
+    const look = (id: string) => key(itemSpec(id).layers.filter(l => l.kind !== 'label').map(l => (l.kind === 'item' ? { ...l, item: '' } : l)));
+    expect(new Set(ITEM_USE_IDS.map(look)).size).toBe(ITEM_USE_IDS.length);
   });
 });
 

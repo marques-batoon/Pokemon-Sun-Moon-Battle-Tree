@@ -200,8 +200,10 @@ for (const t of battle50Trainers) {
   if (t.lead && !t.sets.some(s => s.species === t.lead)) problems.push(`battle-50-trainers.json: ${t.name}'s lead ${t.lead} isn't on their team`);
 }
 /** The game's Battle Legends (their Super teams), which battle-50 entries can also name. */
-const GAME_LEGENDS = new Set(JSON.parse(readFileSync(new URL('../src/data/battle-tree/trainers.json', import.meta.url), 'utf8')).trainers
-  .filter(t => t.kind === 'legend' && t.course === 'super').map(t => t.name));
+const GAME_TRAINERS = JSON.parse(readFileSync(new URL('../src/data/battle-tree/trainers.json', import.meta.url), 'utf8')).trainers;
+const GAME_LEGENDS = new Set(GAME_TRAINERS.filter(t => t.kind === 'legend' && t.course === 'super').map(t => t.name));
+/** The game's own special trainers (Colress...), who can be a Multi Battle partner in digidestined.json. */
+const GAME_SPECIALS = new Set(GAME_TRAINERS.filter(t => t.kind === 'special').map(t => t.name));
 /** Digimon Tamers (digidestined.json), whom a battle-50 entry can also name (Tai & Takato), with their own teams. */
 const TAMER_NAMES = new Set(Object.entries(JSON.parse(readFileSync(new URL('digidestined.json', dir), 'utf8')).trainers).map(([title, t]) => t.name ?? title));
 for (const b of battle50.battles) {
@@ -230,7 +232,9 @@ for (const t of digidestinedTrainers) {
   if (!t.legend && !(t.weight > 0)) problems.push(`digidestined.json: ${t.name} needs a weight`);
   if (t.legend && !battle50.battles.some(b => b.trainers.includes(t.name))) problems.push(`digidestined.json: ${t.name} is a Battle Legend but no battle-50-trainers.json entry names them`);
   for (const p of t.partners ?? []) {
-    if (!battle50Trainers.some(b => b.name === p) && !digidestinedTrainers.some(d => d.name === p)) problems.push(`digidestined.json: ${t.name}'s partner ${p} has no team`);
+    const known = battle50Trainers.some(b => b.name === p) || digidestinedTrainers.some(d => d.name === p)
+      || [...gymLeaders, ...eliteFour].some(o => o.name === p) || GAME_SPECIALS.has(p);
+    if (!known) problems.push(`digidestined.json: ${t.name}'s partner ${p} has no team`);
   }
   if ([...gymLeaders, ...eliteFour].some(o => o.name === t.name) || evilTeams.some(o => (o.key ?? o.name) === t.name)) problems.push(`${t.name}: already a special trainer`);
 }

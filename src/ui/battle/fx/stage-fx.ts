@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
@@ -61,6 +61,11 @@ export function spriteVars(side: Side, slot: number, anim: BattleAnimation | nul
   if ((anim?.kind === 'warp-start' || anim?.kind === 'warp') && isMatrix(anim.condition) && actsAt(anim, side, slot)) {
     const t = matrixTheme(anim.condition);
     return { '--matrix': t.tamer, '--matrix-light': t.light } as CSSProperties;
+  }
+  // A held item used up: its holder glows in the item's colour as it takes effect.
+  if (anim?.kind === 'item' && anim.label && actsAt(anim, side, slot)) {
+    const layer = itemSpec(anim.label).layers[0];
+    return layer.kind === 'item' ? ({ '--item': layer.color } as CSSProperties) : undefined;
   }
   if (anim?.kind !== 'move' || !anim.fx || anim.still || anim.fx.kind !== 'attack' || !actsAt(anim, side, slot)) return undefined;
   const motion = BIG_MOVE_MOTION[anim.fx.moveId];
@@ -130,6 +135,7 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'balloon-in': return 'fx-balloon-float';
     case 'sash': return `fx-brace-${v}`;
+    case 'item': return `fx-item-use-${v}`;
     case 'sky-dropped': return `fx-dropped-${side}`;
     case 'solar-charge': return 'fx-solar-charge';
     case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
@@ -194,6 +200,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'balloon-pop': return BALLOON_POP;
     case 'balloon-in': return BALLOON_IN;
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
+    case 'item': return anim.label ? itemSpec(anim.label) : null;
     case 'immune': return immuneSpec(anim.condition ?? '');
     case 'sky-drop': return SKY_DROP;
     case 'sky-dropped': return SKY_DROPPED;

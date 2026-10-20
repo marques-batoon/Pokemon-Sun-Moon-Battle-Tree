@@ -152,12 +152,22 @@ export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets,
 export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers];
 
 /**
- * Trainers who, as opponents in a Multi Battle, always battle alongside one of their partners (Izzy: Tai), who
+ * Trainers who, as opponents in a Multi Battle, always battle alongside one of their partners (Izzy: Tai, Colress or Cheren), who
  * goes first (on the left). The partner is picked with equal chance; a partner can be a Battle Legend (Tai only
  * appears as one otherwise). By trainer id: partner ids.
  */
+/**
+ * A Multi Battle partner named in digidestined.json: a custom special trainer or Battle Legend first (Tai, Takato,
+ * Cheren...), else one of the game's own special trainers (Colress).
+ */
+function multiPartnerByName(name: string): Trainer {
+  const named = TRAINERS.filter(o => (o.kind === 'legend' || o.kind === 'special') && o.name === name);
+  const found = named.find(o => o.custom) ?? named[0];
+  if (!found) throw new Error(`No special trainer or Battle Legend named ${name} (a Multi Battle partner in digidestined.json)`);
+  return found;
+}
 const MULTI_PARTNERS = new Map(DIGIDESTINED_LIST.flatMap((t, i) => (t.partners?.length
-  ? [[DIGIDESTINED.trainers[i].id, t.partners.map(name => TRAINERS.find(o => o.custom && (o.kind === 'legend' || o.kind === 'special') && o.name === name)!.id)]] as [number, number[]][]
+  ? [[DIGIDESTINED.trainers[i].id, t.partners.map(name => multiPartnerByName(name).id)]] as [number, number[]][]
   : [])));
 /** The partners a trainer always battles alongside as an opponent in a Multi Battle (empty: none). */
 export const multiPartners = (trainerId: number): readonly number[] => MULTI_PARTNERS.get(trainerId) ?? [];
@@ -238,17 +248,17 @@ export const TRAINER_QUOTES = quotesJson.quotes as Record<string, TrainerQuotes[
 /** Paired trainers' lines when they battle together in a Multi Battle (Tate and Liza), three sets each. */
 export const TRAINER_MULTI_QUOTES = quotesJson.multi as Record<string, TrainerQuotes[]>;
 /**
- * Greetings for two special trainers drawn together in a Multi Battle who share a region or a type
- * (written for this app): each entry holds one greeting per trainer, by name.
+ * Lines for two special trainers drawn together in a Multi Battle who share a region or a type
+ * (written for this app): each entry holds one set per trainer, by name (a greeting and both closing remarks).
  */
-export const TRAINER_PAIR_GREETINGS = quotesJson.pairs as Record<string, Record<string, string>>;
+export const TRAINER_PAIR_QUOTES = quotesJson.pairs as Record<string, Record<string, TrainerQuotes>>;
 /**
  * Team-up lines for a trainer and their Multi Battle partner (Izzy with Tai), three sets each in matching order,
  * by the two names: used whenever those two battle together (written for this app).
  */
 export const TRAINER_DUO_QUOTES = quotesJson.duos as Record<string, Record<string, TrainerQuotes[]>>;
 const pairKey = (a: string, b: string) => [a, b].sort().join('|');
-const PAIR_GREETINGS = new Map(Object.values(TRAINER_PAIR_GREETINGS).map(entry => {
+const PAIR_QUOTES = new Map(Object.values(TRAINER_PAIR_QUOTES).map(entry => {
   const [a, b] = Object.keys(entry);
   return [pairKey(a, b), entry] as const;
 }));
@@ -269,20 +279,25 @@ for (const [a, b] of [
   for (const [x, y] of [[a, b], [b, a]]) DUO_PARTNERS.set(x, (DUO_PARTNERS.get(x) ?? new Set()).add(y));
 }
 
-/** Special trainers who have pair greetings with this one (TRAINER_PAIR_GREETINGS), by id. */
+/** Special trainers who have pair lines with this one (TRAINER_PAIR_QUOTES), by id. */
 export function pairGreetingPartners(trainerId: number): number[] {
   const me = trainerKey(TRAINERS[trainerId]);
-  return Object.values(TRAINER_PAIR_GREETINGS)
+  return Object.values(TRAINER_PAIR_QUOTES)
     .filter(entry => me in entry)
     .flatMap(entry => Object.keys(entry).filter(name => name !== me))
     .map(name => TRAINERS.find(t => t.kind === 'special' && trainerKey(t) === name)?.id)
     .filter((id): id is number => id !== undefined && !samePerson(TRAINERS[id], TRAINERS[trainerId]));
 }
 
+/** What `trainer` says when battling alongside `other`: greeting and closing remarks (null: no lines for this pair). */
+export function pairQuotes(trainer: Trainer, other: Trainer): TrainerQuotes | null {
+  if (samePerson(trainer, other)) return null;
+  return PAIR_QUOTES.get(pairKey(trainerKey(trainer), trainerKey(other)))?.[trainerKey(trainer)] ?? null;
+}
+
 /** What `trainer` says to greet you when battling alongside `other` (null: no special greeting for this pair). */
 export function pairGreeting(trainer: Trainer, other: Trainer): string | null {
-  if (samePerson(trainer, other)) return null;
-  return PAIR_GREETINGS.get(pairKey(trainerKey(trainer), trainerKey(other)))?.[trainerKey(trainer)] ?? null;
+  return pairQuotes(trainer, other)?.greeting ?? null;
 }
 
 /** Number of distinct quote picks: divisible by every list length up to 10, so each line is equally likely. */
@@ -308,7 +323,7 @@ export function quotePick(battleKey: string): number {
  * opposing trainer in a Multi Battle; paired trainers fighting together use their
  * team-up lines (the same set for both, so they answer each other), and two
  * special trainers who share a region or a type greet you with lines about each
- * other (TRAINER_PAIR_GREETINGS; their closing remarks stay their usual ones). A trainer with
+ * other, and close with remarks about it too (TRAINER_PAIR_QUOTES). A trainer with
  * their fixed Multi Battle partner (Izzy and Tai) uses their team-up lines (TRAINER_DUO_QUOTES).
  */
 export function trainerQuotes(trainer: Trainer, battleKey: string | number, alongside: readonly Trainer[] = []): TrainerQuotes | null {
@@ -323,6 +338,5 @@ export function trainerQuotes(trainer: Trainer, battleKey: string | number, alon
   const lines = sets[pick % sets.length];
   if (duo || together || trainer.kind !== 'special') return lines;
   const other = alongside.find(t => t.id !== trainer.id && t.kind === 'special');
-  const greeting = other ? pairGreeting(trainer, other) : null;
-  return greeting ? { ...lines, greeting } : lines;
+  return (other && pairQuotes(trainer, other)) || lines;
 }

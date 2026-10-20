@@ -53,7 +53,8 @@ team, ...).
   `weight` in the special-trainer pool (all 7), or `"legend": true` to make them a Battle Legend instead (Takato,
   Henry: then `battle-50-trainers.json` says where and how often, and they have no weight or partners), and `partners`: as an opponent in a Multi Battle
   they always battle alongside one of these, picked with equal chance, and the partner goes first
-  (on the left). A partner can be a Battle Legend (Tai) or another trainer in this file. To give
+  (on the left). A partner can be a Battle Legend (Tai), another trainer in this file, or any other special
+  trainer (Izzy's Colress, one of the game's own, and Cheren, a Gym Leader). To give
   Izzy Mimi or Joe as partners too, add them here (with their own teams) and list them in his
   `partners`.
 - **Lines:** `trainer-quotes.json`: their own lines under `"quotes"`, and team-up lines with each
@@ -85,8 +86,9 @@ team, ...).
 - **Lines:** `trainer-quotes.json` under their names (three entries each).
 - **Pair greetings (Multi Battles):** `trainer-quotes.json` under `"pairs"`. When two
   special trainers who share a region or a type (Brock and Misty, Misty and Juan...)
-  are drawn together, each greets you with their line from the pair's entry instead
-  of their usual greeting; their closing remarks stay their usual ones. Each entry is
-  `"Brock & Misty": { "Brock": "...", "Misty": "..." }` (the label is just for you; the
-  two names inside are what count). To add a pair, add an entry like that. At most 120
-  characters each, no Pokémon names (their shared type is fine). `npm test` checks them.
+  are drawn together, each uses their lines from the pair's entry instead of their
+  usual ones: a greeting and both closing remarks. Each entry is
+  `"Brock & Misty": { "Brock": { "greeting": "...", "trainerWins": "...", "trainerLoses": "..." }, "Misty": { ... } }`
+  (the label is just for you; the two names inside are what count). To add a pair, add
+  an entry like that. At most 120 characters each, no Pokémon names (their shared type is
+  fine), and no line used twice. `npm test` checks them.

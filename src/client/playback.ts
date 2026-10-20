@@ -57,6 +57,11 @@ export type AnimationKind =
   /** A Focus Sash (or Focus Band: `condition`) lets the Pokémon hang on with 1 HP. */
   | 'sash'
   /**
+   * Another held item is used up (`label`: its name; `condition`: its id): White Herb, Mental Herb, Power Herb, Weakness
+   * Policy, Eject Button, Absorb Bulb, a Seed... For Red Card, `target`/`targetSlot`: the attacker it sends back.
+   */
+  | 'item'
+  /**
    * A move has no effect because of the type chart (Psychic on Dark, Normal on Ghost...). `side`/`slot`: the immune
    * Pokémon; `target`/`targetSlot`: the move's user, when known; `condition`: the pair, e.g. "psychic-dark".
    */
@@ -195,6 +200,7 @@ export const BERRY_MS = 1000;
 export const BALLOON_POP_MS = 850;
 export const BALLOON_IN_MS = 1100;
 export const SASH_MS = 900;
+export const ITEM_MS = 1000;
 export const IMMUNE_MS = 1100;
 export const SKY_DROP_MS = 900;
 export const SKY_DROPPED_MS = 900;
@@ -532,6 +538,15 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (toId(args[2]) === 'airballoon') return [step({ kind: 'balloon-pop', ...at(args[1]), target: null, durationMs: BALLOON_POP_MS })];
       // A Focus Sash is used up as its holder hangs on.
       if (toId(args[2]) === 'focussash') return [step({ kind: 'sash', ...at(args[1]), target: null, condition: 'focussash', durationMs: SASH_MS })];
+      // Any other item its holder uses up (a herb, Weakness Policy, Red Card, Eject Button, a Seed, a Gem: "[from] gem"),
+      // not one a move destroys or takes ("[from] move: Knock Off", Incinerate...), nor a Berry eaten earlier (a
+      // resist Berry weakening the hit, "[weaken]"; Micle Berry's boost used up).
+      const from = toId(kwArgs.from as string | undefined);
+      if ((!from || from === 'gem') && !('silent' in kwArgs) && !('weaken' in kwArgs) && !gen7.items.get(args[2])?.isBerry) {
+        // Red Card names the attacker it sends back ("[of]").
+        const of = toId(args[2]) === 'redcard' && typeof kwArgs.of === 'string' ? at(kwArgs.of) : null;
+        return [step({ kind: 'item', ...at(args[1]), target: of?.side ?? null, targetSlot: of?.slot, label: args[2], condition: toId(args[2]), durationMs: ITEM_MS })];
+      }
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
     case '-item': {

@@ -403,6 +403,37 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </span>
       );
     }
+    case 'item': {
+      // Held up in front of the Pokémon, about chest height on the side it faces (the opponents face left, yours right),
+      // under its name tag; from there it's thrown at `to` (Red Card) or sinks into the Pokémon (--ax/--ay).
+      const p = anchor(layer.at);
+      const h = p.size ?? 110 * ctx.k;
+      const s = 32 * ctx.k;
+      const toward = p.x > ctx.w / 2 ? -1 : 1;
+      const x = p.x + toward * h * 0.48, y = Math.max(p.y - h * 0.2, s + 4);
+      const to = layer.to ? anchor(layer.to) : null;
+      const icon = itemIconStyle(layer.item, Math.round(s));
+      const bits = layer.use === 'crumble' ? 8 : layer.use === 'burst' || layer.use === 'press' ? 10 : 0;
+      return (
+        <span key={i} className={`fxl fx-item use-${layer.use}`} style={css({
+          '--x': px(x), '--y': px(y), '--s': px(s), '--c': layer.color, '--c2': layer.color2, '--delay': delay, '--dur': ms(layer.dur ?? 1000),
+          '--ax': px(p.x - x), '--ay': px(p.y - y), '--tx': px(to ? to.x - x : 0), '--ty': px(to ? to.y - y : 0), '--spin': deg(toward * 540),
+        })}>
+          <span className="item-glow" />
+          <span className="item-body">
+            {icon ? <span className="item-icon" style={icon} /> : <span className="item-icon item-fallback" />}
+            <span className="item-glint" />
+          </span>
+          {Array.from({ length: bits }, (_, c) => {
+            const a = (c / bits) * Math.PI * 2 + rand(ctx.seed, c, 51) * 0.7;
+            const d = s * (0.8 + rand(ctx.seed, c, 52) * 0.8);
+            // Herb bits flutter down as they fly; sparkles fly straight out.
+            const fall = layer.use === 'crumble' ? s * (0.5 + rand(ctx.seed, c, 53) * 0.6) : 0;
+            return <span key={c} className={`item-bit${c % 2 ? ' alt' : ''}`} style={css({ '--bx': px(Math.cos(a) * d), '--by': px(Math.sin(a) * d * 0.8 + fall), '--rot': deg(rand(ctx.seed, c, 54) * 400 - 200) })} />;
+          })}
+        </span>
+      );
+    }
     case 'gust': {
       // Streaks start behind the user and sweep past it toward the foe, spread around the line between them; every
       // fourth is a leaf riding the wind.

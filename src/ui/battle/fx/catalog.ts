@@ -100,6 +100,13 @@ export type Layer =
   | { kind: 'balloon'; at: Anchor; color: string; pop?: boolean; delay?: number; dur?: number }
   /** A Focus Sash (or Focus Band) wraps across the Pokémon, glows as it hangs on, then tears in two. */
   | { kind: 'sash'; at: Anchor; color: string; color2: string; delay?: number; dur?: number }
+  /**
+   * A held item (its icon, on a round badge ringed in `color2`) is used up: it pops up in front of the Pokémon and
+   * glints (`color`: its glow), then
+   * crumbles into bits (a herb), bursts into sparkles, sinks into the Pokémon (Absorb Bulb, a Seed...), is thrown
+   * at `to` (Red Card) or is pressed and pops (Eject Button).
+   */
+  | { kind: 'item'; at: Anchor; item: string; color: string; color2: string; use: ItemUse; to?: Anchor; delay?: number; dur?: number }
   /** Tailwind: streaks of wind (and leaves) sweep across the stage from behind the user toward the foe. */
   | { kind: 'gust'; color: string; count: number; delay?: number; dur?: number; /** Leaves riding the wind (default); false: streaks only. */ leaves?: boolean }
   /** Matrix Evolution (Digimon Tamers): rings of glowing code ("fractal code") orbiting a spot at different tilts. */
@@ -110,6 +117,9 @@ export type Layer =
   | { kind: 'sphere'; at: Anchor; color: string; color2?: string; size: number; delay?: number; dur?: number }
   /** A glowing scan line sweeping down over the Pokémon (Matrix Evolution: its skin peeling away into data). */
   | { kind: 'scan'; at: Anchor; color: string; delay?: number; dur?: number };
+
+/** How a used-up item goes (Layer 'item'). */
+export type ItemUse = 'crumble' | 'burst' | 'absorb' | 'throw' | 'press';
 
 export interface FxSpec {
   layers: Layer[];
@@ -1457,6 +1467,89 @@ export function berrySpec(item: string, stolen = false): FxSpec {
   return { layers: [
     { kind: 'berry', at: 'user', item, ...(stolen ? { from: 'target' as Anchor } : {}), color, dur: 1000 },
     { kind: 'aura', at: 'user', color, size: 150, delay: 720, dur: 380 },
+  ] };
+}
+
+/**
+ * Held items used up in battle, by id: how each goes (ItemUse), its glow and the label's colour, and what follows
+ * on the Pokémon. What the item does (a stat rise, a switch) plays next, from its own lines.
+ */
+const ITEM_USES: Record<string, { use: ItemUse; color: string; ink: string; extra: Layer[] }> = {
+  // White Herb: a white sparkle shower as the lowered stats go back to normal.
+  whiteherb: { use: 'crumble', color: '#f4fbff', ink: '#6a9a5a', extra: [
+    { kind: 'particles', at: 'user', shape: 'star', motion: 'fall', color: '#ffffff', color2: '#e0f4ff', count: 12, size: 11, spread: 60, delay: 520, dur: 560 },
+    { kind: 'aura', at: 'user', color: '#ffffff', size: 170, delay: 600, dur: 400 },
+  ] },
+  // Mental Herb: calm pink rings ripple out from the Pokémon's head as its mind clears.
+  mentalherb: { use: 'crumble', color: '#f39ad2', ink: '#c0479a', extra: [
+    { kind: 'particles', at: 'user', shape: 'dot', motion: 'converge', color: '#ffc4e8', color2: '#d8a8ff', count: 10, size: 9, spread: 80, delay: 480, dur: 380 },
+    { kind: 'rings', at: 'user', color: '#f7a8dc', count: 3, size: 170, delay: 620, dur: 380 },
+  ] },
+  // Power Herb: a golden surge of power, and the move fires at once.
+  powerherb: { use: 'crumble', color: '#ffb23a', ink: '#d0661a', extra: [
+    { kind: 'rays', at: 'user', color: '#ffd45a', size: 190, delay: 500, dur: 420 },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'rise', color: '#ffe066', color2: '#ff8a2a', count: 12, size: 13, spread: 55, delay: 520, dur: 440 },
+    { kind: 'aura', at: 'user', color: '#ffb020', size: 180, delay: 560, dur: 420 },
+  ] },
+  // Weakness Policy: the policy pays out in a red-orange flash (the stat rise follows).
+  weaknesspolicy: { use: 'burst', color: '#ff7a3a', ink: '#d0402a', extra: [
+    { kind: 'impact', at: 'user', color: '#ffb07a', size: 110, star: true, delay: 520 },
+    { kind: 'rays', at: 'user', color: '#ff8a4a', size: 180, delay: 540, dur: 380 },
+  ] },
+  // Red Card: held up, then thrown at the attacker, who's sent back (the switch follows).
+  redcard: { use: 'throw', color: '#ff4a4a', ink: '#d0303a', extra: [
+    { kind: 'impact', at: 'target', color: '#ff6a6a', size: 100, star: true, delay: 760 },
+  ] },
+  // Eject Button: pressed, and the holder is whisked away (the switch follows).
+  ejectbutton: { use: 'press', color: '#ffd24a', ink: '#c07a1a', extra: [
+    { kind: 'rings', at: 'user', color: '#ffe48a', count: 2, size: 150, delay: 520, dur: 360 },
+  ] },
+  // Items taken in when hit by a move of their type (the stat rise follows).
+  absorbbulb: { use: 'absorb', color: '#5ab0f0', ink: '#2f74c0', extra: [
+    { kind: 'particles', at: 'user', shape: 'drop', motion: 'converge', color: '#7cc4ff', color2: '#d8f0ff', count: 10, size: 11, spread: 75, delay: 640, dur: 340 },
+  ] },
+  cellbattery: { use: 'absorb', color: '#ffe04a', ink: '#c09a10', extra: [
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#fff07a', color2: '#ffd020', count: 10, size: 12, spread: 75, delay: 640, dur: 340 },
+  ] },
+  snowball: { use: 'absorb', color: '#c8ecff', ink: '#4a9ac8', extra: [
+    { kind: 'particles', at: 'user', shape: 'shard', motion: 'converge', color: '#e8f8ff', color2: '#9ad8f8', count: 10, size: 11, spread: 75, delay: 640, dur: 340 },
+  ] },
+  luminousmoss: { use: 'absorb', color: '#8ae8b0', ink: '#2f9a6a', extra: [
+    { kind: 'particles', at: 'user', shape: 'dot', motion: 'rise', color: '#b8ffd8', color2: '#7ad8ff', count: 10, size: 8, spread: 55, delay: 640, dur: 360 },
+  ] },
+  // Seeds: taken in on their terrain (the stat rise follows).
+  electricseed: { use: 'absorb', color: '#ffe04a', ink: '#c09a10', extra: [
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'burst', color: '#fff07a', color2: '#ffd020', count: 8, size: 11, spread: 60, delay: 720, dur: 300 },
+  ] },
+  grassyseed: { use: 'absorb', color: '#7cd05a', ink: '#3f8a2a', extra: [
+    { kind: 'particles', at: 'user', shape: 'leaf', motion: 'burst', color: '#9ae07a', color2: '#5ab83a', count: 8, size: 12, spread: 60, delay: 720, dur: 300 },
+  ] },
+  psychicseed: { use: 'absorb', color: '#f37ac0', ink: '#c0408a', extra: [
+    { kind: 'particles', at: 'user', shape: 'dot', motion: 'burst', color: '#ffa8dc', color2: '#c87aff', count: 8, size: 9, spread: 60, delay: 720, dur: 300 },
+  ] },
+  mistyseed: { use: 'absorb', color: '#ffb8e0', ink: '#c0609a', extra: [
+    { kind: 'particles', at: 'user', shape: 'bubble', motion: 'burst', color: '#ffe0f2', color2: '#ffb8e0', count: 8, size: 11, spread: 60, delay: 720, dur: 300 },
+  ] },
+  adrenalineorb: { use: 'burst', color: '#ff9a3a', ink: '#c0601a', extra: [
+    { kind: 'rings', at: 'user', color: '#ffb46a', count: 2, size: 150, delay: 540, dur: 360 },
+  ] },
+};
+/** Other items used up: they burst into sparkles. */
+const ITEM_USE_DEFAULT = { use: 'burst' as ItemUse, color: '#ffe08a', ink: '#b08a1a', extra: [] as Layer[] };
+/** Items with their own use animation (itemSpec), by id. */
+export const ITEM_USE_IDS = Object.keys(ITEM_USES);
+
+/**
+ * A held item is used up (White Herb, Mental Herb, Power Herb, Weakness Policy, Red Card, Eject Button, a Seed...): its
+ * icon pops up over the Pokémon, glints and goes its way, with the item's name (as the Focus Sash shows). Red Card's
+ * `target` is the attacker it's thrown at. Berries (berrySpec), the Focus Sash and Air Balloon have their own.
+ */
+export function itemSpec(item: string): FxSpec {
+  const u = ITEM_USES[item.toLowerCase().replace(/[^a-z0-9]/g, '')] ?? ITEM_USE_DEFAULT;
+  return { layers: [
+    { kind: 'item', at: 'user', item, color: u.color, color2: u.ink, use: u.use, ...(u.use === 'throw' ? { to: 'target' as Anchor } : {}), dur: 1000 },
+    ...u.extra,
+    { kind: 'label', at: 'user', text: item, color: u.ink, delay: 120, dur: 760 },
   ] };
 }
 

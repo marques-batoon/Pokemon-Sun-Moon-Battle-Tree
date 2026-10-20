@@ -283,14 +283,14 @@ describe('trainer-quotes.json', () => {
     }
   });
 
-  it('has pair greetings for special trainers who share a region or a type: one per trainer, no Pokémon named', async () => {
-    const { TRAINER_PAIR_GREETINGS, TRAINER_QUOTES } = await import('./index');
+  it('has pair lines for special trainers who share a region or a type: a greeting and both closing remarks per trainer, no Pokémon named', async () => {
+    const { TRAINER_DUO_QUOTES, TRAINER_MULTI_QUOTES, TRAINER_PAIR_QUOTES, TRAINER_QUOTES } = await import('./index');
     const special = new Set(TRAINERS.filter(t => t.kind === 'special').map(trainerKey));
     const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
     const pokemon = new RegExp(`(?<![\\w-])(${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?!\\w)`);
     const seen = new Set<string>();
     const lines: string[] = [];
-    for (const [label, entry] of Object.entries(TRAINER_PAIR_GREETINGS)) {
+    for (const [label, entry] of Object.entries(TRAINER_PAIR_QUOTES)) {
       const who = Object.keys(entry);
       expect(who, label).toHaveLength(2);
       for (const name of who) expect(special.has(name), `${label}: ${name}`).toBe(true);
@@ -302,16 +302,19 @@ describe('trainer-quotes.json', () => {
       const key = [...who].sort().join('|');
       expect(seen.has(key), label).toBe(false);
       seen.add(key);
-      lines.push(...Object.values(entry));
+      for (const q of Object.values(entry)) lines.push(q.greeting, q.trainerWins, q.trainerLoses);
     }
-    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 404);
-    const usual = Object.values(TRAINER_QUOTES).flat().map(q => q.greeting);
+    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 404 + 99);
+    // None of them repeats a trainer's usual lines or team-up lines.
+    const usual = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES), ...Object.values(TRAINER_DUO_QUOTES).flatMap(e => Object.values(e))]
+      .flat().flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]);
+    const usualLines = new Set(usual);
     for (const text of lines) {
       expect(text.trim().length).toBeGreaterThan(0);
       expect(text.length).toBeLessThanOrEqual(120);
       // Their shared type may come up (that's the point), but never a Pokémon on their team.
       expect(text).not.toMatch(pokemon);
-      expect(usual).not.toContain(text);
+      expect(usualLines.has(text), text).toBe(false);
     }
     expect(new Set(lines).size).toBe(lines.length);
   });
@@ -324,16 +327,18 @@ describe('trainer-quotes.json', () => {
     expect(pairGreeting(byName('Elesa'), byName('Misty'))).toMatch(/Misty/);
   });
 
-  it('greets you with pair lines when two such special trainers battle together, keeping their usual closing remarks', async () => {
-    const { trainerQuotes, TRAINER_PAIR_GREETINGS } = await import('./index');
+  it('greets you with pair lines when two such special trainers battle together, and closes with matching remarks', async () => {
+    const { trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
     const [brock, misty, surge, cynthia, florian] = ['Brock', 'Misty', 'Lt. Surge', 'Cynthia', 'Florian'].map(byName);
     const key = 'run-9|battle-10';
     const together = trainerQuotes(brock, key, [brock, misty])!;
     const alone = trainerQuotes(brock, key)!;
-    expect(together.greeting).toBe(TRAINER_PAIR_GREETINGS['Brock & Misty'].Brock);
-    expect(trainerQuotes(misty, key, [brock, misty])!.greeting).toBe(TRAINER_PAIR_GREETINGS['Brock & Misty'].Misty);
-    expect(together.trainerWins).toBe(alone.trainerWins);
-    expect(together.trainerLoses).toBe(alone.trainerLoses);
+    expect(together).toEqual(TRAINER_PAIR_QUOTES['Brock & Misty'].Brock);
+    expect(trainerQuotes(misty, key, [brock, misty])).toEqual(TRAINER_PAIR_QUOTES['Brock & Misty'].Misty);
+    // The same lines whichever set the battle picks, and whichever of the two is listed first.
+    expect(trainerQuotes(brock, 'run-2|battle-30', [misty, brock])).toEqual(together);
+    expect(together.trainerWins).not.toBe(alone.trainerWins);
+    expect(together.trainerLoses).not.toBe(alone.trainerLoses);
     // Same type, different regions.
     expect(trainerQuotes(surge, key, [surge, byName('Volkner')])!.greeting).toMatch(/Volkner/);
     // Nothing in common (Kanto Leader and Sinnoh's Champion), or a regular trainer: their usual lines.
@@ -342,11 +347,11 @@ describe('trainer-quotes.json', () => {
   });
 
   it('gives the Elite Four and Champions pair lines with relatives, mentors, fellow Champions and their region or type', async () => {
-    const { trainerQuotes, TRAINER_PAIR_GREETINGS } = await import('./index');
+    const { trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
     const key = 'run-3|battle-7';
     const line = (a: string, b: string) => trainerQuotes(byName(a), key, [byName(a), byName(b)])!.greeting;
-    expect(line('Koga', 'Janine')).toBe(TRAINER_PAIR_GREETINGS['Koga & Janine'].Koga);
-    expect(line('Janine', 'Koga')).toBe(TRAINER_PAIR_GREETINGS['Koga & Janine'].Janine);
+    expect(line('Koga', 'Janine')).toBe(TRAINER_PAIR_QUOTES['Koga & Janine'].Koga.greeting);
+    expect(line('Janine', 'Koga')).toBe(TRAINER_PAIR_QUOTES['Koga & Janine'].Janine.greeting);
     expect(line('Lance', 'Clair')).toMatch(/cousin/i);
     expect(line('Wallace', 'Juan')).toMatch(/teacher/i);
     expect(line('Flint', 'Volkner')).toMatch(/Volkner/);

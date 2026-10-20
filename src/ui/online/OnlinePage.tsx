@@ -9,6 +9,7 @@ import { bpForWin } from '../../run/selection';
 import type { TeamStore } from '../../storage/team-store';
 import { BattleScreen } from '../battle/BattleScreen';
 import { useTeams } from '../builder/hooks';
+import { useScrollToTopOn } from '../useScrollToTop';
 import { TrainerNameField } from '../components/TrainerNameField';
 import { OpponentCard } from '../components/OpponentCard';
 import { TrainerSprite } from '../components/TrainerSprite';
@@ -131,6 +132,8 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
   const nextKey = `online:${snap.code}:${lobby.battle}:${lobby.next.join('-')}:${lobby.quotePick ?? ''}`;
   const [copied, setCopied] = useState(false);
   const invite = `${location.origin}${location.pathname}#/online?room=${snap.code}`;
+  // The battle screen and the lobby each open at the top of the page.
+  useScrollToTopOn(snap.battleId && battle.phase !== 'idle' ? `battle:${snap.battleId}` : snap.status === 'closed' ? 'closed' : 'lobby');
 
   if (snap.battleId && battle.phase !== 'idle') {
     const failed = battle.phase === 'invalid-team' || battle.phase === 'error';
