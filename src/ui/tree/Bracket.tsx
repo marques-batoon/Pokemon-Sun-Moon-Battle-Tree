@@ -1,11 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { TRAINERS } from '../../data/battle-tree';
-import { REVEAL_STAGGER_MS } from './bracket-timing';
-import { playerMatch, ROUND_NAMES, TOURNAMENT_ROUNDS, TOURNAMENT_SIZE, type TournamentEntrant, type TournamentState } from '../../run/tournament';
+import { matchCount, playerMatch, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { Trophy } from '../components/Trophy';
-
+import { revealStagger } from './bracket-timing';
 
 interface Props {
   t: TournamentState;
@@ -13,57 +12,98 @@ interface Props {
   you: string;
   /** The round whose results are being revealed now (they appear with the animation), if any. */
   animating: number | null;
+  /** Watch the replay of a decided match (round, match). */
+  onReplay?: (round: number, match: number) => void;
 }
 
 /**
- * The whole bracket, left to right: 16 pairs, the quarterfinals, semifinals, final and the champion. Results show
+ * The whole bracket on two sides meeting in the middle: the top half of the draw on the left, the bottom half on the
+ * right, each narrowing round by round to its finalist, and the final and the champions in the center. Results show
  * for the rounds already revealed (t.shown) and, animated, for the round being revealed: each match in turn, the
- * winners glow and move on to the next column while the losers fade.
+ * winners glow and move on while the losers fade. A decided match can be clicked to watch its replay.
  */
-export function Bracket({ t, you, animating }: Props) {
+export function Bracket({ t, you, animating, onReplay }: Props) {
+  const rounds = roundsOf(t);
   const visible = (round: number) => round < t.shown || round === animating;
+  // Who stands in each slot of a round: the draw in round 1, then the previous round's winners once shown.
+  const slotEntrant = (round: number, slot: number): number | null => (round === 0 ? slot : visible(round - 1) ? t.results[round - 1][slot] : null);
   const nextMatch = t.status === 'ready' && t.shown >= t.round ? playerMatch(t, t.round) : null;
-  const entrantAt = (column: number, slot: number): number | null =>
-    column === 0 ? slot : visible(column - 1) ? t.results[column - 1][slot] : null;
+  const replayable = (round: number, match: number) =>
+    !!onReplay && round < t.shown && round !== animating && t.results[round][match] !== null && !!t.logs?.[round]?.[match];
 
-  const columns: ReactNode[] = [];
-  for (let c = 0; c <= TOURNAMENT_ROUNDS; c++) {
-    const champion = c === TOURNAMENT_ROUNDS;
-    const slots = TOURNAMENT_SIZE >> c;
-    const matches: ReactNode[] = [];
-    for (let m = 0; m < (champion ? 1 : slots / 2); m++) {
-      const cards = (champion ? [0] : [2 * m, 2 * m + 1]).map(slot => {
-        const index = entrantAt(c, slot);
-        // Arriving from the round being revealed: it slides in when its match is decided.
-        const arriving = c > 0 && animating === c - 1;
-        const winner = !champion && visible(c) ? t.results[c][m] : null;
-        const revealing = !champion && animating === c;
-        const state = index === null ? 'empty'
-          : winner === null ? '' : winner === index ? (revealing ? 'reveal-win' : 'won') : (revealing ? 'reveal-lose' : 'out');
-        const order = arriving ? slot : m;
-        return (
-          <Entrant
-            key={slot}
-            entrant={index === null ? null : t.entrants[index]}
-            t={t}
-            you={you}
-            className={`${state}${arriving && index !== null ? ' reveal-in' : ''}${!champion && nextMatch === m && c === t.round ? ' next' : ''}${champion && index !== null ? ' champion' : ''}`}
-            order={order}
-          />
-        );
-      });
-      matches.push(<div key={m} className={`b-match${champion ? ' b-final-slot' : ''}`}>{cards}</div>);
-    }
-    columns.push(
-      <div key={c} className={`b-column${champion ? ' b-champion' : ''}`}>
-        <h4 className="b-title">{champion ? 'Champions' : ROUND_NAMES[c]}</h4>
-        <div className="b-matches">{matches}</div>
-      </div>,
+  const card = (round: number, slot: number, extra = '') => {
+    const index = slotEntrant(round, slot);
+    const match = slot >> 1;
+    const winner = visible(round) ? t.results[round][match] : null;
+    const revealing = animating === round;
+    // Arriving from the round being revealed: it slides in when its match is decided.
+    const arriving = round > 0 && animating === round - 1 && index !== null;
+    const state = index === null ? 'empty'
+      : winner === null ? '' : winner === index ? (revealing ? 'reveal-win' : 'won') : (revealing ? 'reveal-lose' : 'out');
+    const next = nextMatch === match && round === t.round && index !== null ? ' next' : '';
+    return <Entrant key={slot} entrant={index === null ? null : t.entrants[index]} t={t} you={you} className={`${state}${arriving ? ' reveal-in' : ''}${next} ${extra}`} order={arriving ? slot : match} />;
+  };
+
+  const matchBox = (round: number, match: number, children: ReactNode, className = '') => {
+    const canReplay = replayable(round, match);
+    return (
+      <div
+        key={match}
+        className={`b-match ${className}${canReplay ? ' replayable' : ''}`}
+        onClick={canReplay ? () => onReplay!(round, match) : undefined}
+        title={canReplay ? 'Watch the replay' : undefined}
+      >
+        {children}
+        {canReplay && (
+          <button type="button" className="b-replay" aria-label={`Watch the replay: ${roundName(round, rounds)}, match ${match + 1}`}
+            onClick={e => { e.stopPropagation(); onReplay!(round, match); }}>▶</button>
+        )}
+      </div>
     );
-  }
+  };
+
+  // One side: rounds 1 to the semifinals, matches of the top half (left) or the bottom half (right).
+  const side = (which: 'left' | 'right') => {
+    const columns = Array.from({ length: rounds - 1 }, (_, round) => {
+      const half = matchCount(round, rounds) / 2;
+      const from = which === 'left' ? 0 : half;
+      return (
+        <div key={`${which}-${round}`} className={`b-column b-${which}`}>
+          <h4 className="b-title">{roundName(round, rounds)}</h4>
+          <div className="b-matches">
+            {Array.from({ length: half }, (_, k) => matchBox(round, from + k, [card(round, 2 * (from + k)), card(round, 2 * (from + k) + 1)]))}
+          </div>
+        </div>
+      );
+    });
+    return which === 'left' ? columns : columns.reverse();
+  };
+
+  const final = rounds - 1;
+  const championIndex = visible(final) ? t.results[final][0] : null;
+  const crowning = animating === final;
   return (
     <div className="bracket-scroll">
-      <div className="bracket" style={{ '--stagger': `${REVEAL_STAGGER_MS}ms` } as CSSProperties}>{columns}</div>
+      <div
+        className="bracket"
+        style={{ '--stagger': `${revealStagger(animating ?? 0, rounds)}ms`, '--side-cols': rounds - 1, '--rows': t.entrants.length / 2 } as CSSProperties}
+      >
+        {side('left')}
+        <div className="b-column b-center">
+          <h4 className="b-title">{roundName(final, rounds)}</h4>
+          <div className="b-matches">
+            <div className="b-champion-slot">
+              <Trophy size={48} className={`b-big-trophy${championIndex !== null ? ' won' : ''}`} />
+              <span className="b-title">Champions</span>
+              {championIndex === null
+                ? <div className="b-entrant champion-empty"><span className="b-names muted">?</span></div>
+                : <Entrant entrant={t.entrants[championIndex]} t={t} you={you} className={`champion${crowning ? ' reveal-in' : ''}`} order={0} />}
+            </div>
+            {matchBox(final, 0, [card(final, 0, 'finalist left'), <span key="vs" className="b-vs">VS</span>, card(final, 1, 'finalist right')], 'b-final')}
+          </div>
+        </div>
+        {side('right')}
+      </div>
     </div>
   );
 }
@@ -72,15 +112,16 @@ function Entrant({ entrant, t, you, className, order }: { entrant: TournamentEnt
   if (!entrant) return <div className={`b-entrant ${className}`}><span className="b-names muted">—</span></div>;
   const partner = TRAINERS[t.partner.trainerId];
   const names = entrant.kind === 'player' ? `${you} & ${partner.name}` : entrant.trainers.map(p => TRAINERS[p.trainerId].name).join(' & ');
+  const big = className.includes('champion') || className.includes('finalist');
+  const size = className.includes('champion') ? 44 : big ? 34 : 24;
   return (
     <div className={`b-entrant${entrant.kind === 'player' ? ' you' : ''} ${className}`} style={{ '--m': order } as CSSProperties} title={names}>
       <span className="b-sprites">
         {entrant.kind === 'player'
-          ? <><PlayerSprite size={30} label={you} /><TrainerSprite trainer={partner} size={30} /></>
-          : entrant.trainers.map(p => <TrainerSprite key={p.trainerId} trainer={TRAINERS[p.trainerId]} size={30} />)}
+          ? <><PlayerSprite size={size} label={you} /><TrainerSprite trainer={partner} size={size} /></>
+          : entrant.trainers.map(p => <TrainerSprite key={p.trainerId} trainer={TRAINERS[p.trainerId]} size={size} />)}
       </span>
       <span className="b-names">{names}</span>
-      {className.includes('champion') && <Trophy size={22} className="b-trophy" />}
     </div>
   );
 }

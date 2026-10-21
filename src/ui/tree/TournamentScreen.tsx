@@ -1,8 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
+import { TRAINERS, trainerQuotes, type Trainer } from '../../data/battle-tree';
 import { battleName } from '../../online/trainer-name';
 import {
-  champion, matchKey, nextOpponent, ROUND_NAMES, roundPhrase, TOURNAMENT_ROUNDS, tournamentBp, tournamentDecided, type TournamentState,
+  champion, matchKey, nextOpponent, roundName, roundPhrase, roundsOf, tournamentBp, tournamentDecided, type TournamentState,
 } from '../../run/tournament';
 import type { TournamentController } from '../../run/tournament-controller';
 import { bpBalance } from '../../run/types';
@@ -22,6 +22,8 @@ interface Props {
   onBattle: () => void;
   onLeave: () => void;
   onNew: () => void;
+  /** Watch the replay of a decided match. */
+  onReplay: (round: number, match: number) => void;
 }
 
 const complete = (t: TournamentState, round: number) => t.results[round].every(r => r !== null);
@@ -31,7 +33,7 @@ const complete = (t: TournamentState, round: number) => t.results[round].every(r
  * of your matches the rest of the round is fought (by the engine) and revealed on the bracket; knocked out, the
  * remaining rounds play out one after another until the champions are crowned. Win it, and you celebrate.
  */
-export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props) {
+export function TournamentScreen({ controller, onBattle, onLeave, onNew, onReplay }: Props) {
   const snap = useTournament(controller);
   const t = snap.tournament;
   const { animationSpeed, trainerName, showDebugTools } = useAppSettings();
@@ -41,11 +43,12 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
   const [skipping, setSkipping] = useState(false);
 
   const out = t?.status === 'lost' || t?.status === 'retired';
+  const rounds = t ? roundsOf(t) : 0;
   // The first round still missing results that the bracket needs now: before your current round while you're in;
   // knocked out, the next round to play out.
-  const limit = !t ? -1 : out ? Math.max(t.round, t.shown) : t.status === 'won' ? TOURNAMENT_ROUNDS - 1 : t.round - 1;
+  const limit = !t ? -1 : out ? Math.max(t.round, t.shown) : t.status === 'won' ? rounds - 1 : t.round - 1;
   let needRound: number | null = null;
-  if (t) for (let r = 0; r <= Math.min(limit, TOURNAMENT_ROUNDS - 1); r++) if (!complete(t, r)) { needRound = r; break; }
+  if (t) for (let r = 0; r <= Math.min(limit, rounds - 1); r++) if (!complete(t, r)) { needRound = r; break; }
   const simulating = needRound !== null && snap.simulating.includes(needRound);
   const failed = !!snap.error;
   const playingOut = out && needRound !== null && needRound > (t?.round ?? 0);
@@ -58,18 +61,18 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
   }, [controller, needRound, simulating, failed, playingOut, speed]);
 
   // A round whose results are all in but not shown yet is revealed on the bracket (animated), then marked shown.
-  const revealing = t && t.shown < TOURNAMENT_ROUNDS && complete(t, t.shown) ? t.shown : null;
+  const revealing = t && t.shown < rounds && complete(t, t.shown) ? t.shown : null;
   useEffect(() => {
     if (revealing === null) return;
-    const timer = setTimeout(() => controller.markShown(revealing + 1), revealDuration(revealing) * speed);
+    const timer = setTimeout(() => controller.markShown(revealing + 1), revealDuration(revealing, rounds) * speed);
     return () => clearTimeout(timer);
-  }, [controller, revealing, speed]);
+  }, [controller, revealing, rounds, speed]);
 
   if (!t) return <section className="panel"><p>No tournament in progress.</p><button onClick={onLeave}>Back</button></section>;
 
   const partner = TRAINERS[t.partner.trainerId];
   const foes = nextOpponent(t);
-  const finished = tournamentDecided(t) && t.shown >= TOURNAMENT_ROUNDS;
+  const finished = tournamentDecided(t) && t.shown >= rounds;
   const winnerIndex = champion(t);
   const winner = winnerIndex === null ? null : t.entrants[winnerIndex];
   const interrupted = controller.isInterrupted();
@@ -79,8 +82,8 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
   const skipToEnd = async () => {
     setSkipping(true);
     try {
-      for (let r = controller.tournament?.shown ?? 0; r < TOURNAMENT_ROUNDS; r++) await controller.resolveRound(r);
-      controller.markShown(TOURNAMENT_ROUNDS);
+      for (let r = controller.tournament?.shown ?? 0; r < rounds; r++) await controller.resolveRound(r);
+      controller.markShown(rounds);
     } finally {
       setSkipping(false);
     }
@@ -91,19 +94,20 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
       <header className="run-head">
         <h2>All Star Duo Tournament <span className="tag">unrated</span>{t.debug && <span className="tag">practice</span>}</h2>
         <dl className="run-stats">
-          <div><dt>{t.status === 'won' ? 'Result' : out ? 'Out in' : 'Next'}</dt><dd>{t.status === 'won' ? 'Champions' : ROUND_NAMES[t.round]}</dd></div>
+          <div><dt>{t.status === 'won' ? 'Result' : out ? 'Out in' : 'Next'}</dt><dd>{t.status === 'won' ? 'Champions' : roundName(t.round, rounds)}</dd></div>
           <div><dt>BP this tournament</dt><dd>{t.bp}</dd></div>
           <div><dt>BP to spend</dt><dd>{bpBalance(snap.profile)}</dd></div>
         </dl>
       </header>
 
-      <Bracket t={t} you={you} animating={speed > 0 ? revealing : null} />
+      <Bracket t={t} you={you} animating={speed > 0 ? revealing : null} onReplay={onReplay} />
+      {t.logs && t.shown > 0 && <p className="muted small bracket-hint">Click a finished match to watch its replay.</p>}
 
       <div className="tournament-status" role="status">
-        {simulating && <p className="muted small">{playingOut ? `Playing out the ${ROUND_NAMES[needRound!].toLowerCase()}…` : 'Deciding the other matches…'}</p>}
+        {simulating && <p className="muted small">{playingOut ? `Playing out ${roundPhrase(needRound!, rounds)}…` : 'Deciding the other matches…'}</p>}
         {revealing !== null && speed > 0 && (
           <p className="muted small">
-            {ROUND_NAMES[revealing]} results… <button className="link-button small" onClick={() => controller.markShown(revealing + 1)}>Skip</button>
+            {roundName(revealing, rounds)} results… <button className="link-button small" onClick={() => controller.markShown(revealing + 1)}>Skip</button>
           </p>
         )}
         {snap.error && (
@@ -111,7 +115,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
         )}
         {out && !finished && (
           <p className="small">
-            {t.status === 'retired' ? `You retired in ${roundPhrase(t.round)}` : `You went out in ${roundPhrase(t.round)}`}: watch the rest of the tournament play out.{' '}
+            {t.status === 'retired' ? `You retired in ${roundPhrase(t.round, rounds)}` : `You went out in ${roundPhrase(t.round, rounds)}`}: watch the rest of the tournament play out.{' '}
             <button className="link-button small" disabled={skipping} onClick={() => void skipToEnd()}>Skip to the winner</button>
           </p>
         )}
@@ -132,7 +136,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
       {interrupted ? (
         <div className="panel inset">
           <h3>Match interrupted</h3>
-          <p className="small">Your match in {roundPhrase(t.round)} didn't finish (the app was closed or reloaded). Count it as a loss, as the Battle Tree does, or play it again from the start.</p>
+          <p className="small">Your match in {roundPhrase(t.round, rounds)} didn't finish (the app was closed or reloaded). Count it as a loss, as the Battle Tree does, or play it again from the start.</p>
           <div className="row-actions">
             <button className="danger" onClick={() => controller.forfeitInterrupted()}>Count as a loss</button>
             <button className="primary" onClick={() => controller.restartInterrupted()}>Replay the match</button>
@@ -144,7 +148,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
             <OpponentCard
               trainers={foes.trainers.map(p => TRAINERS[p.trainerId])}
               greetings={foes.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], matchKey(t), foes.trainers.map(o => TRAINERS[o.trainerId]))?.greeting ?? null)}
-              detail={`${ROUND_NAMES[t.round]} · win for ${t.debug ? 0 : tournamentBp(t.round)} BP${t.debug ? ' (practice)' : ''}`}
+              detail={`${roundName(t.round, rounds)} · win for ${t.debug ? 0 : tournamentBp(t.round, rounds)} BP${t.debug ? ' (practice)' : ''}`}
               battleKey={`${t.id}:${t.round}`}
             />
           )}
@@ -178,7 +182,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
           <ol>
             {t.history.map(h => (
               <li key={h.battle}>
-                {ROUND_NAMES[h.battle - 1]}: {h.opponent} — <span className={h.result === 'win' ? 'win-text' : 'error-text'}>{h.result === 'win' ? `won (+${h.bp} BP)` : 'lost'}</span>
+                {roundName(h.battle - 1, rounds)}: {h.opponent} — <span className={h.result === 'win' ? 'win-text' : 'error-text'}>{h.result === 'win' ? `won (+${h.bp} BP)` : 'lost'}</span>
                 <span className="muted small"> · {h.turns} turns{showDebugTools && <> · seed <code>{h.seedText}</code></>}</span>
               </li>
             ))}
@@ -186,7 +190,18 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew }: Props
         </details>
       )}
 
-      {finished && t.status === 'won' && !celebrated && <Celebration you={you} partner={partner} bp={t.bp} onClose={() => setCelebrated(true)} />}
+      {finished && !celebrated && winner && (
+        <Celebration
+          champions={winner.kind === 'player' ? { kind: 'player', you, partner } : {
+            kind: 'duo',
+            trainers: winner.trainers.map(p => TRAINERS[p.trainerId]) as [Trainer, Trainer],
+            // Their lines for winning together (pair lines), as at the end of a battle.
+            quotes: winner.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], `${t.seedText}|champions`, winner.trainers.map(o => TRAINERS[o.trainerId]))?.trainerWins ?? null) as [string | null, string | null],
+          }}
+          bp={t.bp}
+          onClose={() => setCelebrated(true)}
+        />
+      )}
     </section>
   );
 }

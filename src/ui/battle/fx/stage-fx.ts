@@ -16,10 +16,13 @@ export const actsAt = (anim: BattleAnimation | null, side: Side, slot = 0) => !!
 /**
  * The immune Pokémon's part in a type-chart immunity, by the type that blocks the move (immuneSpec): a Ghost turns
  * see-through, a Normal type shrugs, a Ground type grounds the charge, a Flying type rises clear, a Dark type's aura
- * flares, Steel gleams, a Fairy glows pink.
+ * flares, Steel gleams, a Fairy glows pink. Also a type's other immunities (statusImmunity), by the same type.
  */
 const IMMUNE_CLASS: Record<string, string> = {
   ghost: 'fx-intangible', normal: 'fx-unfazed', ground: 'fx-grounded', flying: 'fx-hover', dark: 'fx-dark-guard', steel: 'fx-metal-glint', fairy: 'fx-fairy-glow',
+  // A type's other immunities (Leech Seed on Grass, Thunder Wave on Electric...): it shakes the seeds or spores off,
+  // crackles with its own electricity, flares up, gives off a poisonous glow, or frosts over.
+  grass: 'fx-shake-off', electric: 'fx-static', fire: 'fx-flare-up', poison: 'fx-toxic-glow', ice: 'fx-frost-guard',
 };
 
 /**

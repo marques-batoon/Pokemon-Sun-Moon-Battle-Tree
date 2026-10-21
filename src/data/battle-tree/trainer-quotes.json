@@ -5459,7 +5459,7 @@
   ]
  },
  "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
- "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake; and Mallow with every one of the younger female Gym Leaders, added 2026-10-19 on request). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake; and Mallow with every one of the younger female Gym Leaders, added 2026-10-19 on request). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type. Courtney only teams up with female trainers (on request, 2026-10-19), so her pair lines with male characters were removed.",
  "pairs": {
   "Brock & Misty": {
    "Brock": {
@@ -15889,18 +15889,6 @@
     "trainerLoses": "The ocean stays, and we wipe out!"
    }
   },
-  "Maxie (RSE) & Courtney": {
-   "Maxie (RSE)": {
-    "greeting": "Courtney. Analyze them quickly. I have no patience today.",
-    "trainerWins": "Analysis paid off.",
-    "trainerLoses": "Analysis failed."
-   },
-   "Courtney": {
-    "greeting": "...Leader Maxie... analysis... already complete. Ahaha.",
-    "trainerWins": "...Analysis... confirmed... victory. Ahaha.",
-    "trainerLoses": "...Analysis... wrong... Ahaha..."
-   }
-  },
   "Maxie (RSE) & Drake": {
    "Maxie (RSE)": {
     "greeting": "The Elite Four's old sailor. You love the sea. I love the land. Today, we love winning.",
@@ -16139,18 +16127,6 @@
     "greeting": "Whoa, Maxie! You're kinda chill now! Let's ride!",
     "trainerWins": "Chill Maxie wins!",
     "trainerLoses": "Chill Maxie lost, dude."
-   }
-  },
-  "Maxie (ORAS) & Courtney": {
-   "Maxie (ORAS)": {
-    "greeting": "Courtney. Analyze them. I trust your judgment.",
-    "trainerWins": "Your judgment proved sound.",
-    "trainerLoses": "Even sound judgment errs."
-   },
-   "Courtney": {
-    "greeting": "...Leader Maxie... trusts me... Ahahaha... analysis... starting...",
-    "trainerWins": "...Trusted... and victorious... Ahahaha!",
-    "trainerLoses": "...Trusted... and failed... Ahaha..."
    }
   },
   "Maxie (ORAS) & Drake": {
@@ -16393,18 +16369,6 @@
     "trainerLoses": "You messed with my waves, dude!"
    }
   },
-  "Tabitha & Courtney": {
-   "Tabitha": {
-    "greeting": "Courtney! Fellow admin! Let's make Leader Maxie proud!",
-    "trainerWins": "Hehehe! Leader Maxie will be so proud!",
-    "trainerLoses": "Hehehe... don't tell Leader Maxie!"
-   },
-   "Courtney": {
-    "greeting": "...Tabitha... too loud... but... Ahahaha... okay.",
-    "trainerWins": "...Proud... Ahahaha... yes...",
-    "trainerLoses": "...Not proud... Ahaha..."
-   }
-  },
   "Tabitha & Drake": {
    "Tabitha": {
     "greeting": "Hehehe! An old sailor! I get seasick, so let's keep this on land!",
@@ -16585,30 +16549,6 @@
     "trainerLoses": "Civil, yet grounded."
    }
   },
-  "Courtney & Archie (RSE)": {
-   "Courtney": {
-    "greeting": "...Archie... Target... ally. Temporary. Ahaha.",
-    "trainerWins": "...Temporary ally... victory... Ahaha.",
-    "trainerLoses": "...Temporary ally... failure... Ahaha."
-   },
-   "Archie (RSE)": {
-    "greeting": "Magma's creepy admin! Fine, just don't stare at me like that!",
-    "trainerWins": "Won! Now stop staring!",
-    "trainerLoses": "Lost! And you're still staring!"
-   }
-  },
-  "Courtney & Archie (ORAS)": {
-   "Courtney": {
-    "greeting": "...Archie... the sea man... Ahaha... let's play.",
-    "trainerWins": "...Played... won... Ahaha.",
-    "trainerLoses": "...Played... lost... Ahaha."
-   },
-   "Archie (ORAS)": {
-    "greeting": "Bwahahaha! Courtney! Still creepy as ever! Let's sail!",
-    "trainerWins": "Bwahahaha! Sailed to victory, creepy!",
-    "trainerLoses": "Bwahahaha! Sank with the creepy admin!"
-   }
-  },
   "Courtney & Anabel": {
    "Courtney": {
     "greeting": "...Salon Maiden... you feel... me? Ahaha... what do you feel?",
@@ -16619,30 +16559,6 @@
     "greeting": "Courtney. I feel... curiosity. Let's battle.",
     "trainerWins": "I feel satisfaction.",
     "trainerLoses": "I feel disappointment."
-   }
-  },
-  "Courtney & Brawly": {
-   "Courtney": {
-    "greeting": "...Surfer... waves... unnecessary. Ahaha.",
-    "trainerWins": "...Waves... unnecessary... still won. Ahaha.",
-    "trainerLoses": "...Waves... unnecessary... we lost."
-   },
-   "Brawly": {
-    "greeting": "Whoa, Courtney! You're intense! Let's ride!",
-    "trainerWins": "Rode it out with the intense one!",
-    "trainerLoses": "Intense loss, dude!"
-   }
-  },
-  "Courtney & Drake": {
-   "Courtney": {
-    "greeting": "...Old sailor... dragons... fascinating. Ahaha.",
-    "trainerWins": "...Dragons... fascinating... victory.",
-    "trainerLoses": "...Dragons... failed... Ahaha."
-   },
-   "Drake": {
-    "greeting": "Gwahaha! Courtney! You're an odd one! Let's go!",
-    "trainerWins": "Gwahaha! Odd one wins!",
-    "trainerLoses": "Gwahaha! Odd one sinks!"
    }
   },
   "Courtney & Flannery": {
@@ -16667,42 +16583,6 @@
     "greeting": "Courtney. You're rather unsettling. Let's begin.",
     "trainerWins": "Unsettling, but effective.",
     "trainerLoses": "Unsettling, and ineffective."
-   }
-  },
-  "Courtney & Juan": {
-   "Courtney": {
-    "greeting": "...Sootopolis... water... art? Ahaha.",
-    "trainerWins": "...Art... victory... Ahaha.",
-    "trainerLoses": "...Art... failed... Ahaha."
-   },
-   "Juan": {
-    "greeting": "Courtney. You are an enigma. Let us battle.",
-    "trainerWins": "An enigma with a winning answer.",
-    "trainerLoses": "An enigma without an answer."
-   }
-  },
-  "Courtney & Matt (Team Aqua)": {
-   "Courtney": {
-    "greeting": "...Aqua admin... muscles... loud... Ahaha.",
-    "trainerWins": "...Muscles... useful... Ahaha.",
-    "trainerLoses": "...Muscles... useless... Ahaha."
-   },
-   "Matt (Team Aqua)": {
-    "greeting": "BWAHAHA! Courtney! You're creepy! Let's go!",
-    "trainerWins": "BWAHAHA! Creepy but strong!",
-    "trainerLoses": "BWAHAHA! Creepy and beaten!"
-   }
-  },
-  "Courtney & Norman": {
-   "Courtney": {
-    "greeting": "...Petalburg... father... Ahaha.",
-    "trainerWins": "...Father... strong... Ahaha.",
-    "trainerLoses": "...Father... beaten... Ahaha."
-   },
-   "Norman": {
-    "greeting": "Courtney. You're unsettling, but my child faced worse. Let's win.",
-    "trainerWins": "Unsettling, but we won.",
-    "trainerLoses": "My child would've handled that better."
    }
   },
   "Courtney & Phoebe": {
@@ -16739,66 +16619,6 @@
     "greeting": "Ahahaha! Courtney! You're so weird! Let's go!",
     "trainerWins": "Ahahaha! Weird wins!",
     "trainerLoses": "Ahahaha! Weird loses!"
-   }
-  },
-  "Courtney & Sidney": {
-   "Courtney": {
-    "greeting": "...Punk... dark... interesting. Ahaha.",
-    "trainerWins": "...Punk... interesting... won. Ahaha.",
-    "trainerLoses": "...Punk... interesting... lost."
-   },
-   "Sidney": {
-    "greeting": "Hey hey, Courtney! You're spooky! Let's rock!",
-    "trainerWins": "Spooky win, Courtney!",
-    "trainerLoses": "Spooky loss, Courtney!"
-   }
-  },
-  "Courtney & Steven": {
-   "Courtney": {
-    "greeting": "...Champion... target... ally... Ahaha.",
-    "trainerWins": "...Opponent... analyzed... victory.",
-    "trainerLoses": "...Opponent... misread... Ahaha."
-   },
-   "Steven": {
-    "greeting": "Courtney. Keep your analysis on the opponent, please. Not on me.",
-    "trainerWins": "Thank you for looking at them, not me.",
-    "trainerLoses": "We lost. At least you looked the right way."
-   }
-  },
-  "Courtney & Wallace": {
-   "Courtney": {
-    "greeting": "...Elegant man... beautiful... Ahaha.",
-    "trainerWins": "...Beautiful... victory... Ahaha.",
-    "trainerLoses": "...Beautiful... defeat... Ahaha."
-   },
-   "Wallace": {
-    "greeting": "Courtney. Thank you. You're... unique.",
-    "trainerWins": "Unique, and victorious.",
-    "trainerLoses": "Unique, yet defeated."
-   }
-  },
-  "Courtney & Wally": {
-   "Courtney": {
-    "greeting": "...Boy... grew strong... Ahaha.",
-    "trainerWins": "...Strong boy... won... Ahaha.",
-    "trainerLoses": "...Strong boy... lost... Ahaha."
-   },
-   "Wally": {
-    "greeting": "Courtney! You're scary! But let's battle!",
-    "trainerWins": "Scary, but we won!",
-    "trainerLoses": "Scary... and we lost!"
-   }
-  },
-  "Courtney & Wattson": {
-   "Courtney": {
-    "greeting": "...Old man... loud... Ahaha.",
-    "trainerWins": "...Loud... but victory... Ahaha.",
-    "trainerLoses": "...Loud... and defeat..."
-   },
-   "Wattson": {
-    "greeting": "Wahahahah! Courtney! You're quiet! Let's liven up!",
-    "trainerWins": "Wahahahah! Livened up AND won!",
-    "trainerLoses": "Wahahahah! Livened up, but lost!"
    }
   },
   "Courtney & Winona": {

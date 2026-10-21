@@ -1,4 +1,4 @@
-import { Dex, Teams, TeamValidator, type PokemonSet } from '@pkmn/sim';
+import { BattleStreams, Dex, Teams, TeamValidator, type PokemonSet } from '@pkmn/sim';
 import { createAI } from '../ai';
 import { FORMAT_IDS, IGNORED_VALIDATOR_PROBLEMS, registerBattleTreeFormats, type BattleTreeFormat } from './format';
 import { testOpponentTeam } from './fixtures';
@@ -42,10 +42,11 @@ function parseTeam(input: TeamInput): PokemonSet[] {
 
 /**
  * Fights Multi Battles with AIs on all four sides (tournament matches the player isn't in), one after another, and
- * returns which side won each (0: the first duo). A tie (rare) is settled by a coin flip seeded like the battle.
+ * returns which side won each (0: the first duo) with the battle's input log. A tie (rare) is settled by a coin flip
+ * seeded like the battle.
  */
-export async function simulateMatches(matches: readonly SimMatch[], ai: AIKind): Promise<(0 | 1)[]> {
-  const winners: (0 | 1)[] = [];
+export async function simulateMatches(matches: readonly SimMatch[], ai: AIKind): Promise<{ winner: 0 | 1; inputLog: string[] }[]> {
+  const done: { winner: 0 | 1; inputLog: string[] }[] = [];
   for (const match of matches) {
     const [a, b] = match.sides;
     const session = new BattleSession({
@@ -58,10 +59,50 @@ export async function simulateMatches(matches: readonly SimMatch[], ai: AIKind):
       p4: { ...b.trainers[1], ai: createAI(ai) },
     });
     session.start();
-    const { winner } = await session.done;
-    winners.push(winner === 'p1' ? 0 : winner === 'p2' ? 1 : (new Rng(`${match.seedText}|tie`).next() < 0.5 ? 0 : 1));
+    const { winner, inputLog } = await session.done;
+    done.push({ winner: winner === 'p1' ? 0 : winner === 'p2' ? 1 : (new Rng(`${match.seedText}|tie`).next() < 0.5 ? 0 : 1), inputLog });
   }
-  return winners;
+  return done;
+}
+
+/**
+ * Plays a finished battle again from its simulator input log (its seed, teams and every choice: the same battle,
+ * turn for turn) and returns what p1 saw, chunk by chunk, with p1's team. As in a live battle, each side's choices
+ * are sent one at a time, as that side's requests come (an invalid one gets the next recorded choice, as the AI's
+ * "default" did); the battle's dice only depend on its seed and the choices (BattleSession keeps the AI off them).
+ */
+export async function replayBattle(inputLog: readonly string[]): Promise<{ chunks: string[]; team: PokemonSet[] }> {
+  registerBattleTreeFormats();
+  const p1 = inputLog.find(line => line.startsWith('>player p1 '));
+  if (!inputLog[0]?.startsWith('>start ') || !p1) throw new Error('Not a battle input log.');
+  const team = Teams.unpack((JSON.parse(p1.slice('>player p1 '.length)) as { team: string }).team) ?? [];
+  const sides = ['p1', 'p2', 'p3', 'p4'] as const;
+  const queues: Record<(typeof sides)[number], string[]> = { p1: [], p2: [], p3: [], p4: [] };
+  for (const line of inputLog) {
+    const m = /^>(p[1-4]) (.*)$/.exec(line);
+    if (m) queues[m[1] as (typeof sides)[number]].push(m[2]);
+  }
+  const battleStream = new BattleStreams.BattleStream();
+  const streams = BattleStreams.getPlayerStreams(battleStream);
+  const chunks: string[] = [];
+  const present = sides.filter(side => inputLog.some(line => line.startsWith(`>player ${side} `)));
+  let ending = false;
+  const pumps = present.map(async side => {
+    for await (const chunk of streams[side]) {
+      if (side === 'p1') chunks.push(chunk);
+      for (const line of chunk.split('\n')) {
+        const waiting = line.startsWith('|request|') && !(JSON.parse(line.slice('|request|'.length)) as { wait?: boolean }).wait;
+        if ((waiting || line.startsWith('|error|')) && queues[side].length) void streams[side].write(queues[side].shift()!);
+      }
+      if (battleStream.battle?.ended && !ending) {
+        ending = true;
+        void streams.omniscient.writeEnd();
+      }
+    }
+  });
+  await streams.omniscient.write(inputLog.filter(line => line.startsWith('>start ') || line.startsWith('>player ')).join('\n'));
+  await Promise.all(pumps);
+  return { chunks, team };
 }
 
 /**
@@ -91,8 +132,14 @@ export class EngineHost {
           return;
         case 'simulate':
           void simulateMatches(msg.matches, msg.ai).then(
-            winners => this.emit({ type: 'simulated', requestId: msg.requestId, winners }),
+            done => this.emit({ type: 'simulated', requestId: msg.requestId, winners: done.map(d => d.winner), inputLogs: done.map(d => d.inputLog) }),
             err => this.emit({ type: 'simulated', requestId: msg.requestId, error: err instanceof Error ? err.message : String(err) }),
+          );
+          return;
+        case 'replay':
+          void replayBattle(msg.inputLog).then(
+            ({ chunks, team }) => this.emit({ type: 'replayed', requestId: msg.requestId, chunks, team }),
+            err => this.emit({ type: 'replayed', requestId: msg.requestId, error: err instanceof Error ? err.message : String(err) }),
           );
           return;
       }
@@ -100,6 +147,7 @@ export class EngineHost {
       const message = err instanceof Error ? err.message : String(err);
       if (msg.type === 'validate') this.emit({ type: 'validation', requestId: msg.requestId, result: { team: [`Validator error: ${message}`], sets: msg.sets.map(() => []) } });
       else if (msg.type === 'simulate') this.emit({ type: 'simulated', requestId: msg.requestId, error: message });
+      else if (msg.type === 'replay') this.emit({ type: 'replayed', requestId: msg.requestId, error: message });
       else this.emit({ type: 'error', battleId: msg.battleId, message });
     }
   }

@@ -37,6 +37,20 @@ export const trainerKey = (t: Pick<Trainer, 'name' | 'key'>) => t.key ?? t.name;
 /** Whether two trainers are the same character (two versions of Archie or Maxie, or the very same trainer). */
 export const samePerson = (a: Trainer, b: Trainer) => a.id === b.id || (a.person ?? trainerKey(a)) === (b.person ?? trainerKey(b));
 
+/** The game's own special trainers have no class gender in its data (the custom ones do): theirs, by name. */
+const SPECIAL_GENDER: Record<string, 'M' | 'F'> = {
+  Grimsley: 'M', Anabel: 'F', Wally: 'M', Colress: 'M', Cynthia: 'F', Plumeria: 'F', Guzma: 'M', Kiawe: 'M', Mallow: 'F', Sina: 'F', Dexio: 'M',
+};
+/** A trainer's gender, when known. */
+export const trainerGender = (t: Trainer): 'M' | 'F' | null => t.classGender ?? SPECIAL_GENDER[trainerKey(t)] ?? null;
+/** Trainers who only ever team up with female trainers as opponents in Multi Battles (on request, 2026-10-19). */
+const FEMALE_TEAMMATES_ONLY = new Set(['Courtney']);
+/** Whether two trainers may battle side by side as opponents (Courtney only alongside female trainers). */
+export function canTeamUp(a: Trainer, b: Trainer): boolean {
+  const ok = (x: Trainer, y: Trainer) => !FEMALE_TEAMMATES_ONLY.has(trainerKey(x)) || trainerGender(y) === 'F';
+  return ok(a, b) && ok(b, a);
+}
+
 /**
  * Custom special trainers (see DATA_NOTES.md "Custom additions"), appended after the sets and
  * trainers before them so ids stay array indices: the Gym Leaders (weight 7, like the game's
@@ -277,6 +291,26 @@ for (const [a, b] of [
   ...Object.values(BATTLE_50_BOSSES).filter(b => b.partnerTrainerId !== undefined).map(b => [b.trainerId, b.partnerTrainerId!] as [number, number]),
 ]) {
   for (const [x, y] of [[a, b], [b, a]]) DUO_PARTNERS.set(x, (DUO_PARTNERS.get(x) ?? new Set()).add(y));
+}
+
+/** Trainers who always battle together (Tate and Liza, the battle-50 duos), first (left) trainer first. */
+const FIXED_ORDER: [number, number][] = [
+  ...TRAINER_PAIRS.map(p => p.trainerIds as [number, number]),
+  ...Object.values(BATTLE_50_BOSSES).filter(b => b.partnerTrainerId !== undefined).map(b => [b.trainerId, b.partnerTrainerId!] as [number, number]),
+];
+
+/**
+ * Whether `a` should stand first (left) when battling beside `b` as opponents in a Multi Battle. Lines written for the
+ * two of them together (pair lines, team-up lines) are read in order: the first named speaks first and the other
+ * answers, on the opponent card, in the entrance and in the closing remarks. So they're lined up that way, and
+ * trainers who always battle together keep their usual order (Tate before Liza, Tai first). Others: as they are.
+ */
+export function speaksFirst(a: Trainer, b: Trainer): boolean {
+  const key = pairKey(trainerKey(a), trainerKey(b));
+  const entry = PAIR_QUOTES.get(key) ?? DUO_QUOTES.get(key);
+  if (entry) return Object.keys(entry)[0] !== trainerKey(b);
+  const fixed = FIXED_ORDER.find(([x, y]) => (x === a.id && y === b.id) || (x === b.id && y === a.id));
+  return !fixed || fixed[0] === a.id;
 }
 
 /** Special trainers who have pair lines with this one (TRAINER_PAIR_QUOTES), by id. */

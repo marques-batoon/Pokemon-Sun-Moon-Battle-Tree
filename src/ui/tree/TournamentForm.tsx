@@ -38,8 +38,8 @@ export function TournamentForm({ controller, teams, onStarted, onCancel }: { con
     <section className="panel new-run">
       <h2>New All Star Duo Tournament</h2>
       <p className="muted small">
-        16 pairs, single elimination: you and your partner against 15 duos of special trainers who team up together.
-        Rounds 1–3 pay 2 BP a win and the final pays 50 BP. Unrated (no records); anyone you beat comes into the partner shop as in All Star Mode.
+        32 pairs, single elimination: you and your partner against 31 duos of special trainers who team up together.
+        Rounds 1–4 pay 2 BP a win and the final pays 50 BP. Unrated (no records); anyone you beat comes into the partner shop as in All Star Mode.
       </p>
       <fieldset className="partner-pick">
         <legend>Partner</legend>

@@ -304,9 +304,10 @@ describe('Focus Sash, Air Balloon coming in, Tailwind', () => {
   });
 });
 
-describe('type-chart immunities', () => {
+describe('type immunities', () => {
   it('has a different animation for each pair, with the attack in it', () => {
-    const pairs = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy'];
+    const pairs = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy',
+      'leechseed-grass', 'powder-grass', 'par-electric', 'brn-fire', 'psn-poison', 'sheercold-ice', 'prankster-dark'];
     expect(Object.keys(IMMUNE_FX).sort()).toEqual([...pairs].sort());
     expect(new Set(pairs.map(p => key(immuneSpec(p)))).size).toBe(pairs.length);
     // Normal and Fighting attacks go straight through a Ghost.

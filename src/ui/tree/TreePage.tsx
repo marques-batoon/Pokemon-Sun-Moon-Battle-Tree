@@ -18,7 +18,10 @@ import { useScrollToTopOn } from '../useScrollToTop';
 import type { TournamentController } from '../../run/tournament-controller';
 import { TournamentScreen } from './TournamentScreen';
 import { TournamentForm } from './TournamentForm';
-import { matchKey, nextOpponent, ROUND_NAMES, roundPhrase } from '../../run/tournament';
+import { matchKey, nextOpponent, roundName, roundPhrase, roundsOf } from '../../run/tournament';
+import { ReplayScreen } from './ReplayScreen';
+import { battleName } from '../../online/trainer-name';
+import { useAppSettings } from '../useAppSettings';
 
 type View =
   | { kind: 'home' }
@@ -29,7 +32,9 @@ type View =
   /** The All Star Duo Tournament: starting one, its bracket between matches, and one of your matches. */
   | { kind: 'tournament-new' }
   | { kind: 'tournament' }
-  | { kind: 'tournament-battle'; round: number; trainerIds: number[]; battleKey: string };
+  | { kind: 'tournament-battle'; round: number; trainerIds: number[]; battleKey: string }
+  /** The replay of a finished tournament match. */
+  | { kind: 'tournament-replay'; round: number; match: number };
 
 const battleView = (run: RunState): View => ({
   kind: 'battle',
@@ -43,6 +48,7 @@ const battleView = (run: RunState): View => ({
 export function TreePage({ controller, tournaments, teamStore }: { controller: RunController; tournaments: TournamentController; teamStore: TeamStore }) {
   const state = useRunState(controller);
   const tournament = useTournament(tournaments);
+  const { trainerName } = useAppSettings();
   const teams = useTeams(teamStore);
   const [view, setView] = useState<View>(() => {
     const run = state.active && state.runs[state.active.key];
@@ -51,7 +57,20 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
   const { profile } = state;
   // Each screen (choosing a challenge, the next opponents, a battle, the results) opens at the top of the page.
   useScrollToTopOn(view.kind === 'battle' ? `battle:${view.key}:${view.battle}` : view.kind === 'tournament-battle' ? `${view.kind}:${view.round}`
-    : 'key' in view ? `${view.kind}:${view.key}` : view.kind);
+    : view.kind === 'tournament-replay' ? `${view.kind}:${view.round}:${view.match}` : 'key' in view ? `${view.kind}:${view.key}` : view.kind);
+
+  if (view.kind === 'tournament-replay') {
+    const t = tournament.tournament;
+    if (!t) return <TreeHomeFallback onHome={() => setView({ kind: 'home' })} />;
+    return (
+      <ReplayScreen
+        key={`${view.round}:${view.match}`}
+        t={t} round={view.round} match={view.match}
+        you={trainerName ? battleName(trainerName) : 'You'}
+        onBack={() => setView({ kind: 'tournament' })}
+      />
+    );
+  }
 
   if (view.kind === 'tournament-new') {
     return <TournamentForm controller={tournaments} teams={teams} onStarted={() => setView({ kind: 'tournament' })} onCancel={() => setView({ kind: 'home' })} />;
@@ -72,6 +91,7 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
         }}
         onLeave={() => setView({ kind: 'home' })}
         onNew={() => setView({ kind: 'tournament-new' })}
+        onReplay={(round, match) => setView({ kind: 'tournament-replay', round, match })}
       />
     );
   }
@@ -81,7 +101,7 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
       <>
         <div className="battle-banner">
           {view.trainerIds.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
-          <span>All Star Duo Tournament · {ROUND_NAMES[view.round]} · vs {view.trainerIds.map(id => TRAINERS[id].name).join(' & ')}</span>
+          <span>All Star Duo Tournament · {roundName(view.round, tournament.tournament ? roundsOf(tournament.tournament) : undefined)} · vs {view.trainerIds.map(id => TRAINERS[id].name).join(' & ')}</span>
         </div>
         <BattleScreen
           client={tournaments.battleClient}
@@ -264,8 +284,8 @@ function TournamentCard({ snapshot, unlocked, onOpen }: { snapshot: ReturnType<t
     <article className="panel course-card tournament-card">
       <h3>All Star Duo Tournament</h3>
       <p className="muted small">
-        A 16-pair bracket, single elimination: you and a partner against 15 duos of special trainers who team up together.
-        Rounds 1–3 pay 2 BP a win; winning the final pays 50 BP. Lose, and you watch the rest play out.
+        A 32-pair bracket, single elimination: you and a partner against 31 duos of special trainers who team up together.
+        Every round before the final pays 2 BP a win; winning the final pays 50 BP. Lose, and you watch the rest play out. Every match can be watched again.
       </p>
       <p className="small"><span className="tag">All Star Mode</span> <span className="tag">unrated</span></p>
       <dl className="run-stats">
@@ -275,7 +295,7 @@ function TournamentCard({ snapshot, unlocked, onOpen }: { snapshot: ReturnType<t
       {t && (
         <p className="saved-run">
           {t.status === 'in-battle' && !snapshot.inBattle ? 'Match interrupted'
-            : t.status === 'won' ? 'Finished: you won!' : finished ? `Finished: out in ${roundPhrase(t.round)}` : `Saved tournament: ${ROUND_NAMES[t.round]} next`}
+            : t.status === 'won' ? 'Finished: you won!' : finished ? `Finished: out in ${roundPhrase(t.round, roundsOf(t))}` : `Saved tournament: ${roundName(t.round, roundsOf(t))} next`}
         </p>
       )}
       <div className="row-actions">

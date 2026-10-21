@@ -1,19 +1,29 @@
-// All Star Duo Tournament (app mode, designed by the user 2026-10-19): a 16-pair single-elimination bracket. You and
+// All Star Duo Tournament (app mode, designed by the user 2026-10-19): a 32-pair single-elimination bracket (16 pairs
+// until later that day, when the user asked for 32 and a two-sided bracket). You and
 // a partner you own face special-trainer duos who have lines for battling together; the matches you're not in are
 // fought by the Battle Tree AI behind the scenes.
-import { multiPartners, pairedTrainer, pairGreetingPartners, TRAINERS } from '../data/battle-tree';
+import { canTeamUp, multiPartners, pairedTrainer, pairGreetingPartners, speaksFirst, TRAINERS } from '../data/battle-tree';
 import type { RunTeam } from './controller';
 import { Rng } from './rng';
 import { bpForWin, planTrainer, samePersonIds, specialPool } from './selection';
 import type { BattleRecord, PlannedTrainer, RunPartner, RunSettings } from './types';
 
-/** Pairs in the bracket (you and your partner are one of them). */
-export const TOURNAMENT_SIZE = 16;
-/** Rounds to win it: 16 pairs, then 8, 4 and 2. */
-export const TOURNAMENT_ROUNDS = 4;
-export const ROUND_NAMES = ['Round 1', 'Quarterfinals', 'Semifinals', 'Final'] as const;
+/** Pairs in a new bracket (you and your partner are one of them). */
+export const TOURNAMENT_SIZE = 32;
+/** Rounds of a bracket of `size` pairs: 32 pairs, then 16, 8, 4 and 2. */
+export const roundsFor = (size: number) => Math.round(Math.log2(size));
+/** Rounds to win a new tournament. A tournament saved with 16 pairs (before 2026-10-19's change) keeps its 4: every helper takes the bracket's own size. */
+export const TOURNAMENT_ROUNDS = roundsFor(TOURNAMENT_SIZE);
+/** How many rounds a tournament has (from its results). */
+export const roundsOf = (t: Pick<TournamentState, 'results'>) => t.results.length;
+/** "Round 1", "Round 2", then "Quarterfinals", "Semifinals", "Final" (counted back from the final). */
+export function roundName(round: number, rounds = TOURNAMENT_ROUNDS): string {
+  const fromEnd = rounds - 1 - round;
+  return fromEnd === 0 ? 'Final' : fromEnd === 1 ? 'Semifinals' : fromEnd === 2 ? 'Quarterfinals' : `Round ${round + 1}`;
+}
 /** A round in a sentence: "Round 1", "the quarterfinals", "the final". */
-export const roundPhrase = (round: number) => (round === 0 ? ROUND_NAMES[0] : `the ${ROUND_NAMES[round].toLowerCase()}`);
+export const roundPhrase = (round: number, rounds = TOURNAMENT_ROUNDS) =>
+  (rounds - 1 - round >= 3 ? roundName(round, rounds) : `the ${roundName(round, rounds).toLowerCase()}`);
 
 /** You and your partner, or a duo of special trainers (left trainer first) with the 2 Pokémon each brings. */
 export type TournamentEntrant =
@@ -43,6 +53,12 @@ export interface TournamentState {
   entrants: TournamentEntrant[];
   /** results[r][m]: the entrant (index) who won match m of round r, or null until it's decided. */
   results: (number | null)[][];
+  /**
+   * logs[r][m]: the simulator input log of match m of round r (seed, teams and every choice: replaying it shows the
+   * battle again), once it's been fought; null for a match that wasn't (you retired). Tournaments saved before replays
+   * (2026-10-19) have none.
+   */
+  logs?: (string[] | null)[][];
   /** Rounds whose results have been shown on the bracket (its animation played). */
   shown: number;
   /** Your current round (0-based), or the one you went out in. */
@@ -57,8 +73,8 @@ export interface TournamentState {
   updatedAt: number;
 }
 
-/** How many matches round r has (8, 4, 2, 1). */
-export const matchCount = (round: number) => TOURNAMENT_SIZE >> (round + 1);
+/** How many matches round r has (16, 8, 4, 2, 1 in a 32-pair bracket). */
+export const matchCount = (round: number, rounds = TOURNAMENT_ROUNDS) => 1 << (rounds - 1 - round);
 
 /** The two entrants of match m in round r, or null while one of them isn't known yet. */
 export function matchEntrants(t: Pick<TournamentState, 'results'>, round: number, match: number): [number, number] | null {
@@ -82,16 +98,16 @@ export function nextOpponent(t: TournamentState): Extract<TournamentEntrant, { k
 }
 
 /** The tournament winner (an entrant index), once the final is decided. */
-export const champion = (t: Pick<TournamentState, 'results'>) => t.results[TOURNAMENT_ROUNDS - 1][0];
+export const champion = (t: Pick<TournamentState, 'results'>) => t.results[roundsOf(t) - 1][0];
 
 /** Whether every match has been decided. */
 export const tournamentDecided = (t: Pick<TournamentState, 'results'>) => champion(t) !== null;
 
 /**
- * BP for winning a match: the Super Multi rate for rounds 1-3 (battles 1-10: 2 BP), and the final pays like beating
- * a Battle Legend (battle 50: 50 BP). User's choice, 2026-10-19.
+ * BP for winning a match: the Super Multi rate for every round before the final (battles 1-10: 2 BP), and the final
+ * pays like beating a Battle Legend (battle 50: 50 BP). User's choice, 2026-10-19.
  */
-export const tournamentBp = (round: number) => (round === TOURNAMENT_ROUNDS - 1 ? bpForWin('super', 50) : bpForWin('super', round + 1));
+export const tournamentBp = (round: number, rounds = TOURNAMENT_ROUNDS) => (round === rounds - 1 ? bpForWin('super', 50) : bpForWin('super', round + 1));
 
 /** Which of their lines the duo you face uses this round (the same on the card and in battle). */
 export const matchKey = (t: Pick<TournamentState, 'seedText' | 'round'>) => `${t.seedText}|round-${t.round + 1}`;
@@ -100,13 +116,14 @@ export const matchKey = (t: Pick<TournamentState, 'seedText' | 'round'>) => `${t
 export const matchSeedText = (seedText: string, round: number, match: number) => `${seedText}|round-${round + 1}|match-${match + 1}`;
 
 /**
- * The 15 duos facing you, each two special trainers with lines for battling together (they greet you about each
+ * The 31 duos facing you (`count`), each two special trainers with lines for battling together (they greet you about each
  * other), drawn as in Super Multi: the first by the special trainer weights, their teammate among those they have
- * pair greetings with, by weight (Tate and Liza always together; Izzy with Colress or Cheren, who goes first). Every
+ * pair greetings with, by weight (Tate and Liza always together; Izzy with Colress or Cheren, who goes first; Courtney
+ * only with a female trainer). Every
  * trainer appears once at most, and never your partner (or another version of them, or their twin). Trainers whose
  * only Multi partners are Battle Legends (Rika, Kaito) can't enter. Each brings 2 Pokémon for the whole tournament.
  */
-export function drawDuos(seedText: string, partnerId?: number): [PlannedTrainer, PlannedTrainer][] {
+export function drawDuos(seedText: string, partnerId?: number, count = TOURNAMENT_SIZE - 1): [PlannedTrainer, PlannedTrainer][] {
   const rng = new Rng(`${seedText}|duos`);
   const pool = specialPool();
   const weight = new Map(pool.map(p => [p.trainer.id, p.weight]));
@@ -119,7 +136,7 @@ export function drawDuos(seedText: string, partnerId?: number): [PlannedTrainer,
   if (partnerId !== undefined) take(partnerId);
   const cannotLead = new Set<number>();
   const duos: [PlannedTrainer, PlannedTrainer][] = [];
-  while (duos.length < TOURNAMENT_SIZE - 1) {
+  while (duos.length < count) {
     const leads = pool.filter(p => !used.has(p.trainer.id) && !cannotLead.has(p.trainer.id));
     if (!leads.length) throw new Error('Not enough special trainers left for a tournament.');
     const first = rng.weighted(leads, p => p.weight).trainer;
@@ -138,7 +155,8 @@ export function drawDuos(seedText: string, partnerId?: number): [PlannedTrainer,
       const mates = partners.filter(id => TRAINERS[id].kind === 'special' && !used.has(id));
       if (mates.length) duo = [planTrainer({ trainer: TRAINERS[rng.pick(mates)] }, 'multi', rng), planTrainer({ trainer: first }, 'multi', rng)];
     } else {
-      const friends = pairGreetingPartners(first.id).filter(id => weight.has(id) && !used.has(id) && !multiPartners(id).length && !pairedTrainer(id));
+      const friends = pairGreetingPartners(first.id)
+        .filter(id => weight.has(id) && !used.has(id) && !multiPartners(id).length && !pairedTrainer(id) && canTeamUp(first, TRAINERS[id]));
       if (friends.length) {
         const mate = rng.weighted(friends, id => weight.get(id)!);
         duo = [planTrainer({ trainer: first }, 'multi', rng), planTrainer({ trainer: TRAINERS[mate] }, 'multi', rng)];
@@ -146,14 +164,15 @@ export function drawDuos(seedText: string, partnerId?: number): [PlannedTrainer,
     }
     if (!duo) { cannotLead.add(first.id); continue; }
     for (const t of duo) take(t.trainerId);
-    duos.push(duo);
+    // Lined up so their lines together read in order (the one who speaks first stands first).
+    duos.push(speaksFirst(TRAINERS[duo[0].trainerId], TRAINERS[duo[1].trainerId]) ? duo : [duo[1], duo[0]]);
   }
   return duos;
 }
 
-/** A new bracket: the 15 duos and you, at seeded random places. */
-export function drawBracket(seedText: string, partnerId?: number): TournamentEntrant[] {
-  const duos: TournamentEntrant[] = drawDuos(seedText, partnerId).map(trainers => ({ kind: 'duo', trainers }));
+/** A new bracket: the 31 duos and you, at seeded random places. */
+export function drawBracket(seedText: string, partnerId?: number, size = TOURNAMENT_SIZE): TournamentEntrant[] {
+  const duos: TournamentEntrant[] = drawDuos(seedText, partnerId, size - 1).map(trainers => ({ kind: 'duo', trainers }));
   const rng = new Rng(`${seedText}|bracket`);
   const order = [...duos];
   // Shuffle (Fisher-Yates), then put you in at a random place.
@@ -161,12 +180,13 @@ export function drawBracket(seedText: string, partnerId?: number): TournamentEnt
     const j = rng.int(i + 1);
     [order[i], order[j]] = [order[j], order[i]];
   }
-  order.splice(rng.int(TOURNAMENT_SIZE), 0, { kind: 'player' });
+  order.splice(rng.int(size), 0, { kind: 'player' });
   return order;
 }
 
-/** No results yet: one null per match of each round. */
-export const emptyResults = (): (number | null)[][] => Array.from({ length: TOURNAMENT_ROUNDS }, (_, r) => Array<number | null>(matchCount(r)).fill(null));
+/** No results (or logs) yet: one null per match of each round. */
+export const emptyResults = <T = number>(rounds = TOURNAMENT_ROUNDS): (T | null)[][] =>
+  Array.from({ length: rounds }, (_, r) => Array<T | null>(matchCount(r, rounds)).fill(null));
 
 /** Entrant names for history and messages: "Gym Leader Brock & Gym Leader Misty", or "you and Sina". */
 export function entrantLabel(e: TournamentEntrant, partnerName?: string): string {

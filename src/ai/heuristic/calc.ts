@@ -159,6 +159,8 @@ export function estimateDamage(
   const move = battle.dex.moves.get(moveId);
   const hp = defender.hp;
   if (!move.exists || hp <= 0 || move.category === 'Status') return NO_DAMAGE;
+  // Burn Up fails once its user has lost its Fire type (after using it).
+  if (move.id === 'burnup' && !attacker.hasType('Fire')) return NO_DAMAGE;
 
   if (move.ohko) {
     const immuneType = move.id === 'sheercold' ? defender.hasType('Ice') : !defender.runImmunity(move.type);

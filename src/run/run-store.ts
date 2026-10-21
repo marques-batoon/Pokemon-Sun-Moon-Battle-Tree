@@ -1,6 +1,8 @@
 import type { KeyValueStore } from '../storage/kv';
 import { defaultPartnerBook, rollOffer, withDigimon } from './partners';
 import { Rng } from './rng';
+import { speaksFirst, TRAINERS } from '../data/battle-tree';
+import { inSpeakingOrder } from './selection';
 import type { TournamentState } from './tournament';
 import { DEFAULT_SETTINGS, RUN_KEYS, type PartnerBook, type RunKey, type RunState, type TreeProfile } from './types';
 
@@ -70,10 +72,18 @@ function withoutAnabelSetting(settings: RunState['settings']): RunState['setting
  * of opponents can't be told apart: such a run counts as an ordinary All Star run.)
  */
 function migrateRun(saved: RunState): RunState {
-  const run = { ...saved, settings: withoutAnabelSetting(saved.settings) };
+  // A Multi Battle planned before opponents were lined up in speaking order (2026-10-20): line them up.
+  const run = { ...saved, settings: withoutAnabelSetting(saved.settings), next: inSpeakingOrder(saved.next) };
   if (run.course !== 'allstar' || !run.debug) return run;
   const firstBattle = run.history[0]?.battle ?? run.battle;
   return { ...run, debug: (run.settings?.ai ?? 'heuristic') !== 'heuristic' || firstBattle > 1 };
+}
+
+/** A tournament drawn before duos were lined up in speaking order (2026-10-20): line them up (their teams stay). */
+function migrateTournament(t: TournamentState): TournamentState {
+  const entrants = t.entrants.map(e => (e.kind === 'duo' && !speaksFirst(TRAINERS[e.trainers[0].trainerId], TRAINERS[e.trainers[1].trainerId])
+    ? { ...e, trainers: [e.trainers[1], e.trainers[0]] as typeof e.trainers } : e));
+  return { ...t, entrants };
 }
 
 /**
@@ -141,7 +151,7 @@ export class RunStore {
           tournaments: { ...base.tournaments, ...file.profile.tournaments },
         },
         runs,
-        tournament: file.tournament ?? null,
+        tournament: file.tournament ? migrateTournament(file.tournament) : null,
       };
     } catch (err) {
       console.error('Battle Tree progress is unreadable; keeping a backup and starting fresh.', err);

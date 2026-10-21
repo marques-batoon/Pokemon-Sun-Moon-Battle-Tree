@@ -421,7 +421,8 @@ describe('Debug: choosing the next opponents', () => {
     expect([next.team.length, next.second!.team.length]).toEqual([2, 2]);
     controller.debugChooseOpponent('multi-super', [id('Liza')]);
     next = controller.run('multi-super')!.next;
-    expect([next.displayName, next.second!.displayName]).toEqual(['Gym Leader Liza', 'Gym Leader Tate']);
+    // Choosing Liza brings Tate, who stands first (their lines together are written Tate first).
+    expect([next.displayName, next.second!.displayName]).toEqual(['Gym Leader Tate', 'Gym Leader Liza']);
     expect(() => controller.debugChooseOpponent('multi-super', [id('Brock'), id('Tate')])).toThrow(/only battles alongside Liza/);
     expect(() => controller.debugChooseOpponent('multi-super', [id('Brock')])).toThrow(/two different/);
     expect(() => controller.debugChooseOpponent('multi-super', [id('Sina'), id('Brock')])).toThrow(/partner/);

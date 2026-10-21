@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { BattleClient, BattleSnapshot, StartOptions } from '../client/battle-client';
 import { multiPartners, pairedTrainer, pairGreeting, samePerson, trainerKey, TRAINERS } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
-import { simulateMatches } from '../engine/host';
+import { replayBattle, simulateMatches } from '../engine/host';
+import { splitTurns } from '../client/replay-player';
 import type { SimMatch } from '../engine/protocol';
 import { memoryStore } from '../storage/kv';
 import { importShowdownText } from '../team/showdown-text';
@@ -10,7 +11,7 @@ import type { RunTeam } from './controller';
 import { partnerTrainer } from './partners';
 import { RunStore } from './run-store';
 import {
-  champion, drawBracket, drawDuos, matchCount, matchEntrants, nextOpponent, playerIndex, playerMatch, tournamentBp, TOURNAMENT_ROUNDS,
+  champion, drawBracket, drawDuos, matchCount, matchEntrants, nextOpponent, playerIndex, playerMatch, roundName, roundPhrase, tournamentBp, TOURNAMENT_ROUNDS,
   type TournamentState,
 } from './tournament';
 import { TournamentController, type Simulate } from './tournament-controller';
@@ -20,12 +21,12 @@ const TEAM: RunTeam = { sourceTeamId: null, name: 'Test team', sets: importShowd
 const SINA = partnerTrainer('Sina');
 
 describe('the draw', () => {
-  it('brings 15 duos of special trainers who have lines together, each trainer once, never your partner', () => {
-    for (const seed of ['a', 'b', 'c', 'd', 'e']) {
+  it('brings 31 duos of special trainers who have lines together, each trainer once, never your partner', () => {
+    for (const seed of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
       const duos = drawDuos(seed, SINA.id);
-      expect(duos).toHaveLength(15);
+      expect(duos).toHaveLength(31);
       const ids = duos.flat().map(p => p.trainerId);
-      expect(new Set(ids).size).toBe(30);
+      expect(new Set(ids).size).toBe(62);
       for (const id of ids) {
         expect(TRAINERS[id].kind).toBe('special');
         expect(samePerson(TRAINERS[id], SINA)).toBe(false);
@@ -47,37 +48,43 @@ describe('the draw', () => {
   it('is the same for the same seed, and leaves out trainers whose only partners are Battle Legends (Rika, Kaito)', () => {
     expect(drawDuos('same', SINA.id)).toEqual(drawDuos('same', SINA.id));
     expect(drawDuos('one')).not.toEqual(drawDuos('two'));
-    const seen = new Set(Array.from({ length: 40 }, (_, i) => drawDuos(`many-${i}`)).flat(2).map(p => trainerKey(TRAINERS[p.trainerId])));
+    const seen = new Set(Array.from({ length: 30 }, (_, i) => drawDuos(`many-${i}`)).flat(2).map(p => trainerKey(TRAINERS[p.trainerId])));
     expect(seen.has('Rika')).toBe(false);
     expect(seen.has('Kaito')).toBe(false);
   });
 
   it('draws trainers by their special trainer weight, as in Super Multi (Anabel, weight 1, is rarer than weight-7 trainers)', () => {
     const counts = new Map<string, number>();
-    for (let i = 0; i < 120; i++) for (const p of drawDuos(`weights-${i}`).flat()) counts.set(trainerKey(TRAINERS[p.trainerId]), (counts.get(trainerKey(TRAINERS[p.trainerId])) ?? 0) + 1);
+    for (let i = 0; i < 60; i++) for (const p of drawDuos(`weights-${i}`).flat()) counts.set(trainerKey(TRAINERS[p.trainerId]), (counts.get(trainerKey(TRAINERS[p.trainerId])) ?? 0) + 1);
     expect(counts.get('Anabel') ?? 0).toBeLessThan(counts.get('Brock') ?? 0);
     expect(counts.get('Anabel') ?? 0).toBeLessThan(counts.get('Cynthia') ?? 0);
   });
 
-  it('puts you and the 15 duos in a 16-pair bracket', () => {
+  it('puts you and the 31 duos in a 32-pair bracket', () => {
     const bracket = drawBracket('bracket', SINA.id);
-    expect(bracket).toHaveLength(16);
+    expect(bracket).toHaveLength(32);
     expect(bracket.filter(e => e.kind === 'player')).toHaveLength(1);
     const places = new Set(Array.from({ length: 30 }, (_, i) => playerIndex({ entrants: drawBracket(`place-${i}`) })));
-    expect(places.size).toBeGreaterThan(6);
+    expect(places.size).toBeGreaterThan(10);
   });
 });
 
 describe('bracket helpers and BP', () => {
-  it('pairs winners into the next round and pays the Super Multi rate, the final like a Battle Legend', () => {
-    expect([0, 1, 2, 3].map(matchCount)).toEqual([8, 4, 2, 1]);
+  it('pairs winners into the next round, names the rounds and pays the Super Multi rate, the final like a Battle Legend', () => {
+    expect(TOURNAMENT_ROUNDS).toBe(5);
+    expect([0, 1, 2, 3, 4].map(r => matchCount(r))).toEqual([16, 8, 4, 2, 1]);
+    expect([0, 1, 2, 3, 4].map(r => roundName(r))).toEqual(['Round 1', 'Round 2', 'Quarterfinals', 'Semifinals', 'Final']);
+    expect([0, 1, 2, 3, 4].map(r => roundPhrase(r))).toEqual(['Round 1', 'Round 2', 'the quarterfinals', 'the semifinals', 'the final']);
+    expect([0, 1, 2, 3, 4].map(r => tournamentBp(r))).toEqual([2, 2, 2, 2, 50]);
+    // A tournament saved with 16 pairs (4 rounds) keeps working.
+    expect([0, 1, 2, 3].map(r => roundName(r, 4))).toEqual(['Round 1', 'Quarterfinals', 'Semifinals', 'Final']);
+    expect([0, 1, 2, 3].map(r => tournamentBp(r, 4))).toEqual([2, 2, 2, 50]);
     const results = [[0, 3, 4, 7, 8, 11, 12, 15], [0, null, 8, 12], [null, null], [null]];
     expect(matchEntrants({ results }, 0, 2)).toEqual([4, 5]);
     expect(matchEntrants({ results }, 1, 1)).toEqual([4, 7]);
     expect(matchEntrants({ results }, 2, 0)).toBeNull();
     expect(matchEntrants({ results }, 2, 1)).toEqual([8, 12]);
     expect(playerMatch({ entrants: Array.from({ length: 16 }, (_, i) => (i === 13 ? { kind: 'player' as const } : { kind: 'duo' as const, trainers: [] as never })) }, 2)).toBe(1);
-    expect([0, 1, 2, 3].map(tournamentBp)).toEqual([2, 2, 2, 50]);
   });
 });
 
@@ -97,13 +104,13 @@ function fakeBattle() {
     },
   };
   const finish = (winner: 'p1' | 'p2') => {
-    snapshot = { ...snapshot, phase: 'ended', result: { winner, turns: 7 } } as BattleSnapshot;
+    snapshot = { ...snapshot, phase: 'ended', result: { winner, turns: 7, inputLog: [`>start ${snapshot.battleId}`] } } as BattleSnapshot;
     listeners.forEach(l => l());
   };
   return { client: client as unknown as BattleClient, started, finish };
 }
 
-function setup(simulate: Simulate = async matches => matches.map((_, i) => (i % 2) as 0 | 1)) {
+function setup(simulate: Simulate = async matches => matches.map((_, i) => ({ winner: (i % 2) as 0 | 1, inputLog: [`>start log-${i}`] }))) {
   const store = new RunStore(memoryStore());
   store.updateProfile(p => ({ ...p, superUnlocked: { singles: true, doubles: true } }));
   const battle = fakeBattle();
@@ -125,7 +132,7 @@ describe('TournamentController', () => {
     expect(() => start(controller)).toThrow(/Super Multi/);
   });
 
-  it('plays your matches, has the rest fought, pays 2 BP a round and 50 for the final, and counts the win', async () => {
+  it('plays your matches, has the rest fought, keeps every match for replays, pays 2 BP a round and 50 for the final, and counts the win', async () => {
     const { controller, battle, sims, store } = setup();
     start(controller);
     expect(store.getState().profile.tournaments).toEqual({ entered: 1, won: 0 });
@@ -147,12 +154,15 @@ describe('TournamentController', () => {
     const t = controller.tournament!;
     expect(t.status).toBe('won');
     expect(champion(t)).toBe(playerIndex(t));
-    expect(t.bp).toBe(2 + 2 + 2 + 50);
-    expect(t.history.map(h => h.result)).toEqual(['win', 'win', 'win', 'win']);
-    // The other matches of rounds 1-3 were simulated: 7, 3 and 1.
-    expect(sims.map(s => s.length)).toEqual([7, 3, 1]);
+    expect(t.bp).toBe(2 + 2 + 2 + 2 + 50);
+    expect(t.history.map(h => h.result)).toEqual(['win', 'win', 'win', 'win', 'win']);
+    // The other matches of rounds 1-4 were simulated: 15, 7, 3 and 1.
+    expect(sims.map(s => s.length)).toEqual([15, 7, 3, 1]);
+    // Every match fought has its input log: yours from the battle, the others' from the simulation.
+    for (let r = 0; r < TOURNAMENT_ROUNDS; r++) expect(t.logs![r].every(l => l !== null && l.length > 0), `round ${r + 1}`).toBe(true);
+    expect(t.logs![0][playerMatch(t, 0)]).toEqual(['>start battle-1']);
     const { profile } = store.getState();
-    expect(profile.bpTotal).toBe(56);
+    expect(profile.bpTotal).toBe(58);
     expect(profile.tournaments).toEqual({ entered: 1, won: 1 });
     // Beaten duos come into the shop at All Star prices.
     const beaten = t.history.length * 2;
@@ -193,7 +203,7 @@ describe('TournamentController', () => {
     start(b.controller);
     b.controller.startBattle();
     // As after a reload: a new controller on the same store sees the match interrupted.
-    const reloaded = new TournamentController(b.store, fakeBattle().client, async m => m.map(() => 0 as const));
+    const reloaded = new TournamentController(b.store, fakeBattle().client, async m => m.map(() => ({ winner: 0 as const, inputLog: [] })));
     expect(reloaded.isInterrupted()).toBe(true);
     reloaded.restartInterrupted();
     expect(reloaded.tournament!.status).toBe('ready');
@@ -229,7 +239,25 @@ describe('simulated matches', () => {
     }));
     const first = await simulateMatches(matches, 'heuristic');
     expect(first).toHaveLength(2);
-    for (const w of first) expect([0, 1]).toContain(w);
-    expect(await simulateMatches(matches, 'heuristic')).toEqual(first);
+    for (const { winner } of first) expect([0, 1]).toContain(winner);
+    expect((await simulateMatches(matches, 'heuristic')).map(o => o.winner)).toEqual(first.map(o => o.winner));
+  }, 30000);
+
+  it('replays a match from its input log, turn for turn, with the same winner', async () => {
+    const duos = drawDuos('replay');
+    const match: SimMatch = { seedText: 'replay|1', sides: [duos[0], duos[1]].map(d => ({ trainers: d.map(p => ({ name: p.displayName, team: p.team })) })) as SimMatch['sides'] };
+    const [{ winner, inputLog }] = await simulateMatches([match], 'heuristic');
+    const { chunks, team } = await replayBattle(inputLog);
+    expect(team.map(s => s.species)).toEqual(duos[0][0].team.map(s => s.species));
+    const lines = chunks.join('\n').split('\n');
+    // The first duo is p1 (with p3): the replay ends with their side's win, or the other one's.
+    const win = lines.find(l => l.startsWith('|win|'))!;
+    expect(win).toContain(winner === 0 ? duos[0][0].displayName : duos[1][0].displayName);
+    // Split into turns: the leads coming out, then one segment per turn, each but the last ending at the next turn.
+    const segments = splitTurns(chunks);
+    const turns = lines.filter(l => l.startsWith('|turn|')).length;
+    expect(segments).toHaveLength(turns + 1);
+    segments.slice(0, -1).forEach((seg, i) => expect(seg.at(-1)).toBe(`|turn|${i + 1}`));
+    expect(segments.flat().some(l => l.startsWith('|request|'))).toBe(false);
   }, 30000);
 });

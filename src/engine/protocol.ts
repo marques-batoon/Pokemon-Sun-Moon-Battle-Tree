@@ -55,7 +55,9 @@ export type ToEngine =
   | { type: 'stop'; battleId: string }
   | { type: 'validate'; requestId: number; format: BattleTreeFormat; sets: PokemonSet[] }
   /** Fights each match to the end with AIs on all four sides, one after another. */
-  | { type: 'simulate'; requestId: number; matches: SimMatch[]; ai: AIKind };
+  | { type: 'simulate'; requestId: number; matches: SimMatch[]; ai: AIKind }
+  /** Plays a finished battle again from its input log (a replay), returning what p1 saw. */
+  | { type: 'replay'; requestId: number; inputLog: string[] };
 
 export type FromEngine =
   | { type: 'started'; battleId: string; seed: string; opponentName: string; playerTeam: PokemonSet[] }
@@ -66,6 +68,12 @@ export type FromEngine =
   | { type: 'warning'; battleId: string; message: string }
   | { type: 'error'; battleId: string; message: string }
   | { type: 'validation'; requestId: number; result: TeamValidation }
-  /** Which side won each simulated match (0: the first duo, 1: the second), in order; or why it failed. */
-  | { type: 'simulated'; requestId: number; winners: (0 | 1)[]; error?: undefined }
-  | { type: 'simulated'; requestId: number; winners?: undefined; error: string };
+  /**
+   * Which side won each simulated match (0: the first duo, 1: the second) and its input log (for replays), in order;
+   * or why it failed.
+   */
+  | { type: 'simulated'; requestId: number; winners: (0 | 1)[]; inputLogs: string[][]; error?: undefined }
+  | { type: 'simulated'; requestId: number; winners?: undefined; inputLogs?: undefined; error: string }
+  /** A replayed battle: p1's protocol chunks and p1's team (for the client's view of it); or why it failed. */
+  | { type: 'replayed'; requestId: number; chunks: string[]; team: PokemonSet[]; error?: undefined }
+  | { type: 'replayed'; requestId: number; chunks?: undefined; team?: undefined; error: string };

@@ -1392,6 +1392,49 @@ export const IMMUNE_FX: Record<string, FxSpec> = {
     { kind: 'particles', at: 'target', shape: 'star', motion: 'rise', color: '#ffffff', color2: '#ffc0dc', count: 8, size: 10, spread: 55, delay: 500, dur: 650 },
     { kind: 'aura', at: 'target', color: '#ff9ccc', size: 170, delay: 480, dur: 500 },
   ] },
+  // Other immunities a type gives (playback statusImmunity), named by what's blocked and the type that blocks it.
+  // Leech Seed lands on the Grass type, but the seeds just roll off without sprouting (fx-shake-off).
+  'leechseed-grass': { layers: [
+    { kind: 'orb', color: '#78c850', color2: '#c8f0a0', size: 14, shape: 'blob', arc: true, count: 3, gap: 80, dur: 480 },
+    { kind: 'particles', at: 'target', shape: 'dot', motion: 'fall', color: '#6a9a3a', color2: '#b8e080', count: 8, size: 9, spread: 50, delay: 500, dur: 550 },
+    { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#78c850', color2: '#d0f0b0', count: 6, size: 13, spread: 60, delay: 520, dur: 550 },
+  ] },
+  // Spores and powder drift onto the Grass type, which shakes them off in a puff of leaves (fx-shake-off).
+  'powder-grass': { layers: [
+    { kind: 'particles', at: 'target', shape: 'dot', motion: 'fall', color: '#e8d870', color2: '#c8a0e0', count: 14, size: 8, spread: 60, dur: 550 },
+    { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#78c850', color2: '#d0f0b0', count: 8, size: 13, spread: 70, delay: 480, dur: 550 },
+    { kind: 'rings', at: 'target', color: '#a8e070', count: 1, size: 160, delay: 500, dur: 450 },
+  ] },
+  // The paralyzing jolt meets the Electric type's own charge and is soaked right up, sparks crackling off it (fx-static).
+  'par-electric': { layers: [
+    { kind: 'orb', color: '#ffe14a', color2: '#fff6b0', size: 20, shape: 'spark', dur: 450 },
+    { kind: 'aura', at: 'target', color: '#ffe14a', size: 170, delay: 420, dur: 550 },
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe14a', color2: '#ffffff', count: 12, size: 11, spread: 75, delay: 450, dur: 500 },
+  ] },
+  // The ghostly flames reach the Fire type and it just burns hotter, swallowing them (fx-flare-up).
+  'brn-fire': { layers: [
+    { kind: 'orb', color: '#5a6af0', color2: '#c0c8ff', size: 18, shape: 'flame', count: 3, gap: 70, dur: 460 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'rise', color: '#f08030', color2: '#ffd040', count: 12, size: 15, spread: 55, delay: 450, dur: 600 },
+    { kind: 'aura', at: 'target', color: '#ff8030', size: 170, delay: 450, dur: 500 },
+  ] },
+  // Poison splashes on the Poison type, which soaks it in and glows a deeper purple (fx-toxic-glow).
+  'psn-poison': { layers: [
+    { kind: 'orb', color: '#a040a0', color2: '#e0a0e0', size: 18, shape: 'drop', arc: true, count: 3, gap: 70, dur: 460 },
+    { kind: 'particles', at: 'target', shape: 'bubble', motion: 'rise', color: '#a040a0', color2: '#e0a0e0', count: 9, size: 12, spread: 45, delay: 480, dur: 600 },
+    { kind: 'aura', at: 'target', color: '#a040a0', size: 160, delay: 470, dur: 500 },
+  ] },
+  // The freezing wave washes over the Ice type, which takes the cold in stride: a glint of frost (fx-frost-guard).
+  'sheercold-ice': { layers: [
+    { kind: 'rings', at: 'path', color: '#98d8d8', count: 3, size: 60, dur: 450 },
+    { kind: 'particles', at: 'target', shape: 'shard', motion: 'swirl', color: '#bff0ff', color2: '#ffffff', count: 10, size: 11, spread: 60, delay: 420, dur: 600 },
+    { kind: 'rays', at: 'target', color: '#e0f8ff', size: 150, delay: 480, dur: 450 },
+  ] },
+  // A Prankster's trick reaches the Dark type, which sees right through it: its dark aura flares (fx-dark-guard).
+  'prankster-dark': { layers: [
+    { kind: 'orb', color: '#f0a0d0', color2: '#ffffff', size: 18, shape: 'star', dur: 450 },
+    { kind: 'aura', at: 'target', color: '#2a1838', size: 200, delay: 380, dur: 600 },
+    { kind: 'particles', at: 'target', shape: 'star', motion: 'burst', color: '#705848', color2: '#c0a0b0', count: 10, size: 11, spread: 75, delay: 430, dur: 500 },
+  ] },
 };
 /** The animation for a type-chart immunity ("psychic-dark"...); any other pair: the attack fading away at the target. */
 export function immuneSpec(pair: string): FxSpec {

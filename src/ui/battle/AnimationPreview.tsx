@@ -61,9 +61,12 @@ const other = (s: Side): Side => (s === 'p1' ? 'p2' : 'p1');
 const PREVIEW_ABILITIES = ['Water Absorb', 'Volt Absorb', 'Dry Skin', 'Motor Drive', 'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Flash Fire', 'Levitate', 'Elevate', 'Air Balloon', 'Soundproof'];
 const HEALING_ABILITIES = new Set(['Water Absorb', 'Volt Absorb', 'Dry Skin']);
 /** Berries for the preview (what each does next: HP, a cure, a stat rise, weakening a hit). */
-/** Type-chart immunities for the preview (the move's type, then the immune Pokémon's). */
-const PREVIEW_IMMUNITIES = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy'];
+/** Type immunities for the preview (the move's type, or what's blocked, then the immune Pokémon's type). */
+const PREVIEW_IMMUNITIES = ['normal-ghost', 'fighting-ghost', 'ghost-normal', 'electric-ground', 'ground-flying', 'psychic-dark', 'poison-steel', 'dragon-fairy',
+  'leechseed-grass', 'powder-grass', 'par-electric', 'brn-fire', 'psn-poison', 'sheercold-ice', 'prankster-dark'];
 const typeName = (id: string) => id.charAt(0).toUpperCase() + id.slice(1);
+/** What a non-type-chart immunity blocks, for the preview's labels. */
+const BLOCKED_NAMES: Record<string, string> = { leechseed: 'Leech Seed', powder: 'Powder', par: 'Paralysis', brn: 'Burn', psn: 'Poison', sheercold: 'Sheer Cold', prankster: 'Prankster' };
 const PREVIEW_BERRIES = ['Sitrus Berry', 'Lum Berry', 'Chesto Berry', 'Liechi Berry', 'Salac Berry', 'Occa Berry', 'Figy Berry', 'Custap Berry', 'Enigma Berry'];
 /** Held items used up, for the preview; those that raise a stat show the rise next. */
 const PREVIEW_ITEMS = ['White Herb', 'Mental Herb', 'Power Herb', 'Weakness Policy', 'Red Card', 'Eject Button', 'Absorb Bulb', 'Cell Battery', 'Snowball', 'Luminous Moss', 'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed', 'Adrenaline Orb'];
@@ -335,7 +338,7 @@ export function AnimationPreview() {
             ]);
           }}>
             <option value="">types…</option>
-            {PREVIEW_IMMUNITIES.map(p => <option key={p} value={p}>{p.split('-').map(typeName).join(' → ')}</option>)}
+            {PREVIEW_IMMUNITIES.map(p => <option key={p} value={p}>{p.split('-').map(id => BLOCKED_NAMES[id] ?? typeName(id)).join(' → ')}</option>)}
           </select>
         </label>
         <label>

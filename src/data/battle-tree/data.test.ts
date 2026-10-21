@@ -304,7 +304,8 @@ describe('trainer-quotes.json', () => {
       seen.add(key);
       for (const q of Object.values(entry)) lines.push(q.greeting, q.trainerWins, q.trainerLoses);
     }
-    expect(seen.size).toBeGreaterThanOrEqual(317 + 486 + 404 + 99);
+    // 317 + 486 + 404 + 99 written by 2026-10-18; since then Mallow's 14 added and Courtney's 15 with male characters removed.
+    expect(seen.size).toBeGreaterThanOrEqual(1300);
     // None of them repeats a trainer's usual lines or team-up lines.
     const usual = [...Object.values(TRAINER_QUOTES), ...Object.values(TRAINER_MULTI_QUOTES), ...Object.values(TRAINER_DUO_QUOTES).flatMap(e => Object.values(e))]
       .flat().flatMap(q => [q.greeting, q.trainerWins, q.trainerLoses]);

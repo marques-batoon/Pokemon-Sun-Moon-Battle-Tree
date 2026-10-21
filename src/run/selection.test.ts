@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { BRACKETS, SETS, TRAINERS, type Course, type Trainer } from '../data/battle-tree';
+import { BRACKETS, SETS, trainerKey, TRAINERS, type Course, type Trainer } from '../data/battle-tree';
+import { isDigimon } from '../data/custom/digimon';
 import { gen7 } from '../team/dex';
 import { pickTeamSets, rollAbility } from './opponent';
 import { Rng } from './rng';
@@ -223,5 +224,35 @@ describe('Battle Points', () => {
     let normalTotal = 0;
     for (let n = 1; n <= 20; n++) normalTotal += bpForWin('normal', n);
     expect(normalTotal).toBe(10 * 1 + 9 * 2 + 20);
+  });
+});
+
+describe('trainers who lead with a Digimon', () => {
+  it('bring a second Pokémon drawn at random from their whole team (each about equally often, in Multi)', () => {
+    const leaders = TRAINERS.filter(t => t.kind !== 'regular' && t.leadSetId !== undefined && isDigimon(SETS[t.leadSetId].species));
+    expect(leaders.map(trainerKey).sort()).toEqual(['Henry (Tamer)', 'Izzy', 'Kaito', 'Matt', 'Rika', 'Tai', 'Takato']);
+    for (const t of leaders) {
+      const others = t.roster.filter(id => id !== t.leadSetId);
+      const counts = new Map(others.map(id => [id, 0]));
+      const n = 1400;
+      for (let i = 0; i < n; i++) {
+        const [lead, second] = pickTeamSets(t, teamSizeFor(t, 'multi'), new Rng(`digimon-second|${trainerKey(t)}|${i}`), SETS[t.leadSetId!]);
+        expect(lead.id).toBe(t.leadSetId);
+        counts.set(second.id, (counts.get(second.id) ?? 0) + 1);
+      }
+      // Every other Pokémon on the team comes up, none favored (chi-square against an even spread).
+      const expected = n / others.length;
+      const chi = [...counts.values()].reduce((sum, c) => sum + (c - expected) ** 2 / expected, 0);
+      expect(chi, `${trainerKey(t)}: ${[...counts].map(([id, c]) => `${SETS[id].species} ${c}`).join(', ')}`).toBeLessThan(chiSquareCritical(others.length - 1));
+    }
+  });
+
+  it("Takato's second Pokémon varies from battle to battle in Super Multi", () => {
+    const seconds = new Set<string>();
+    for (let i = 0; i < 400; i++) {
+      const next = planOpponent(`takato-${i}`, 'multi', 'super', 50);
+      for (const p of [next, next.second!]) if (p.displayName === 'Battle Legend Takato') seconds.add(p.team[1].species);
+    }
+    expect([...seconds].sort()).toEqual(['Aegislash', 'Charizard', 'Gallade', 'Latias', 'Smeargle', 'Togekiss', 'Tyrantrum']);
   });
 });

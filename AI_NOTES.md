@@ -48,7 +48,7 @@ Non-damaging scores are on the same scale (0–1+). Values come from `config.sco
 | Will-O-Wisp | 0.85 vs a physical attacker, 0.3 otherwise | guide: "priorized if your active Pokemon have high Attack" |
 | Toxic / poison | 0.45 / 0.35 | guide: Toxic "does not look like having a particularly high priority" |
 | Fake Out | 1.2 on the first turn out; 0 if the foe is a Ghost type or Psychic Terrain protects it | guide: used the first turn out "unless something prevents it" |
-| Weather / terrain | 0.85 / 0.8 if not already up and no KO is available | guide: "priorizes setting it up if there's no option to OHKO" |
+| Weather / terrain | 0.85 / 0.8 if not already up and no KO is available; with two terrain moves, only the one that suits the matchup best (see app rules) | guide: "priorizes setting it up if there's no option to OHKO" |
 | Tailwind | 0.95 unless Tailwind or Trick Room is up | guide: "nearly always is set anytime is not up and Trick Room is not active" |
 | Trick Room | 0.9 when the foe is faster; 0.27 to undo it when it helps the foe | guide |
 | Speed-lowering attack (Icy Wind etc.) | +0.15 when the foe is faster | guide: Icy Wind "is generally spammed" |
@@ -107,6 +107,8 @@ The same Doubles logic, with one AI per trainer (**approximation**; the Multi AI
 - **No Helping Hand (or other partner-only moves) in a Single Battle**, by either AI.
 - **No Wish or Trick Room twice in a row:** Wish isn't used again the turn after (or while a Wish is pending), and Trick Room isn't used the turn after its own side set it (it would undo it). Using Trick Room to cancel the opponent's is still allowed.
 - **No Power Trick while it's on** (added 2026-10-11, on request): right after using Power Trick (and until it switches out) the AI won't use it again, since a second one swaps Attack and Defense back.
+- **Burn Up once per switch-in** (added 2026-10-21, on request): not used once its user has lost its Fire type (Burn Up removes it until it switches out, and fails without it).
+- **No terrain over its own, and the terrain that fits** (added 2026-10-21, on request): a terrain move isn't used while a terrain its own side set is up (an opponent flipped between Grassy and Misty Terrain every turn). Replacing the foe's terrain is still allowed. Knowing more than one terrain move, it sets the one that helps it most against this foe, less what it does for the foe (grounded Pokémon only): Electric/Grassy/Psychic power up its own attacks of that type, Grassy heals and weakens Earthquake, Misty halves the foe's Dragon attacks and blocks its status moves, Electric blocks sleep, Psychic blocks priority.
 - **No Future Sight (or Doom Desire) again until it hits** (added 2026-10-09): not aimed at a spot one is already headed for, so after using it the AI waits until it lands (two turns later) before using it there again. In Doubles it can still aim one at the other foe.
 - These score below a move that just fails (`RULED_OUT`), so they lose even when every option scores 0.
 

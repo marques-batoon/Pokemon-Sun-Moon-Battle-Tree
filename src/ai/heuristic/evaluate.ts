@@ -99,6 +99,35 @@ function ownTrickRoomSetLastTurn({ battle, me }: Situation): boolean {
   return room.source.side === me.side || room.source.side === me.side.allySide;
 }
 
+/** The terrain on the field was set by our side (or our Multi ally). */
+function ownTerrainUp({ battle, me }: Situation): boolean {
+  const source = battle.field.terrainState.source as Pokemon | undefined;
+  return !!battle.field.terrain && !!source && (source.side === me.side || source.side === me.side.allySide);
+}
+
+/** Damaging moves a Pokémon knows of this type. */
+const hasAttackOfType = (battle: Battle, p: Pokemon, type: string) =>
+  p.moveSlots.some(m => { const move = battle.dex.moves.get(m.id); return move.category !== 'Status' && move.type === type; });
+
+/**
+ * How much a terrain helps `user` against `other` (each only while grounded): Electric, Grassy and Psychic power up
+ * its own type's attacks (Grassy also heals); Misty halves Dragon attacks and blocks status, Psychic blocks priority.
+ */
+function terrainGain(battle: Battle, user: Pokemon, other: Pokemon, terrain: string): number {
+  if (!user.isGrounded()) return 0;
+  const otherHas = (pred: (m: DexMove) => boolean) => other.moveSlots.some(m => pred(battle.dex.moves.get(m.id)));
+  switch (terrain) {
+    case 'electricterrain': return (hasAttackOfType(battle, user, 'Electric') ? 1 : 0) + (otherHas(m => m.status === 'slp' || m.id === 'yawn') ? 0.5 : 0);
+    case 'grassyterrain': return (hasAttackOfType(battle, user, 'Grass') ? 1 : 0) + 0.3 + (otherHas(m => ['earthquake', 'bulldoze', 'magnitude'].includes(m.id)) ? 0.5 : 0);
+    case 'mistyterrain': return (hasAttackOfType(battle, other, 'Dragon') ? 1 : 0) + (otherHas(m => !!m.status || m.volatileStatus === 'confusion') ? 0.5 : 0);
+    case 'psychicterrain': return (hasAttackOfType(battle, user, 'Psychic') ? 1 : 0) + (otherHas(m => m.category !== 'Status' && m.priority > 0) ? 0.5 : 0);
+    default: return 0;
+  }
+}
+
+/** How well a terrain suits this matchup: what it does for us, less what it does for the foe. */
+const terrainFit = ({ battle, me, foe }: Situation, terrain: string) => terrainGain(battle, me, foe, terrain) - terrainGain(battle, foe, me, terrain);
+
 const positiveBoosts = (p: Pokemon) => Object.values(p.boosts).reduce((s, v) => s + Math.max(0, v), 0);
 const isPhysical = (p: Pokemon) => p.getStat('atk', false, true) >= p.getStat('spa', false, true);
 const aliveBench = (side: Side) => side.pokemon.filter(p => !p.isActive && p.hp > 0).length;
@@ -114,6 +143,11 @@ export function scoreDamaging(s: Situation, moveId: string, useZ: boolean): Scor
   // (the game makes it fail then anyway). Below 0, like the other ruled-out moves.
   if (FUTURE_MOVES.has(move.id) && !useZ && foe.side.slotConditions[foe.position]?.futuremove) {
     return { score: RULED_OUT, ko: false, first: false, reason: 'future attack already coming', est: NO_DAMAGE };
+  }
+  // App rule: Burn Up only while the user is still Fire type (it loses the type until it switches out, and the
+  // move fails without it), so once per switch-in.
+  if (move.id === 'burnup' && !me.hasType('Fire')) {
+    return { score: RULED_OUT, ko: false, first: false, reason: 'not Fire type: Burn Up fails', est: NO_DAMAGE };
   }
   const est = estimateDamage(battle, me, foe, moveId, { useZ, attackerForme: s.myForme });
   const first = actsFirst(battle, me, movePriority(me, move), foe, s.threat.moveId ? battle.dex.moves.get(s.threat.moveId).priority : 0);
@@ -189,8 +223,19 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
     return koAvailable ? out(0.02, 'KO available') : out(sc.weather, 'set weather');
   }
   if (move.terrain) {
-    if (battle.field.terrain === toId(move.terrain)) return out(0, 'terrain already up');
-    return koAvailable ? out(0.02, 'KO available') : out(sc.terrain, 'set terrain');
+    const terrain = toId(move.terrain);
+    if (battle.field.terrain === terrain) return out(0, 'terrain already up');
+    // App rule: never replace our own terrain (no flipping between Grassy and Misty Terrain every turn).
+    if (ownTerrainUp(s)) return out(RULED_OUT, 'our terrain already up');
+    if (koAvailable) return out(0.02, 'KO available');
+    // Knowing more than one terrain move, only the one that suits the matchup best is set.
+    const fit = terrainFit(s, terrain);
+    const better = me.moveSlots.some(m => {
+      const other = battle.dex.moves.get(m.id).terrain;
+      return !!other && toId(other) !== terrain && terrainFit(s, toId(other)) > fit;
+    });
+    if (better) return out(0.02, 'another terrain suits better');
+    return fit < 0 ? out(0.03, 'terrain helps the foe more') : out(sc.terrain, 'set terrain');
   }
   if (move.pseudoWeather === 'trickroom') {
     const foeFaster = foe.getActionSpeed() > me.getActionSpeed();

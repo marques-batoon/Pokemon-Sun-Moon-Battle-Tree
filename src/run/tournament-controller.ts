@@ -1,18 +1,19 @@
 import type { BattleClient, BattleSnapshot } from '../client/battle-client';
 import type { AIKind, SimMatch } from '../engine/protocol';
+import type { SimOutcome } from '../client/simulation-client';
 import { TRAINERS } from '../data/battle-tree';
 import { checkBring, withBeaten, type RunTeam } from './controller';
 import { partnerTeam, runPartner } from './partners';
 import type { RunStore } from './run-store';
 import { displayName } from './selection';
 import {
-  drawBracket, emptyResults, entrantLabel, matchCount, matchEntrants, matchSeedText, nextOpponent, playerIndex, playerMatch, tournamentBp,
-  TOURNAMENT_ROUNDS, type TournamentEntrant, type TournamentState,
+  drawBracket, emptyResults, entrantLabel, matchCount, matchEntrants, matchSeedText, nextOpponent, playerIndex, playerMatch, roundsOf, tournamentBp,
+  type TournamentEntrant, type TournamentState,
 } from './tournament';
 import { DEFAULT_SETTINGS, isSuperUnlocked, type RunSettings, type TreeProfile } from './types';
 
-/** Fights matches with AIs on every side and says which duo won each (SimulationClient.simulate). */
-export type Simulate = (matches: SimMatch[], ai: AIKind) => Promise<(0 | 1)[]>;
+/** Fights matches with AIs on every side and says which duo won each, with its input log (SimulationClient.simulate). */
+export type Simulate = (matches: SimMatch[], ai: AIKind) => Promise<SimOutcome[]>;
 
 export interface StartTournamentOptions {
   team: RunTeam;
@@ -98,6 +99,7 @@ export class TournamentController {
       partner,
       entrants: drawBracket(seedText, partner.trainerId),
       results: emptyResults(),
+      logs: emptyResults<string[]>(),
       shown: 0,
       round: 0,
       status: 'ready',
@@ -159,7 +161,7 @@ export class TournamentController {
   /** The bracket has shown this many rounds' results (after their animation). */
   markShown(rounds: number): void {
     const t = this.tournament;
-    if (t && rounds > t.shown) this.save({ ...t, shown: Math.min(rounds, TOURNAMENT_ROUNDS) });
+    if (t && rounds > t.shown) this.save({ ...t, shown: Math.min(rounds, roundsOf(t)) });
   }
 
   /**
@@ -170,11 +172,11 @@ export class TournamentController {
     const running = this.inFlight.get(round);
     if (running) return running;
     const t = this.tournament;
-    if (!t || round < 0 || round >= TOURNAMENT_ROUNDS) return Promise.resolve();
+    if (!t || round < 0 || round >= roundsOf(t)) return Promise.resolve();
     const out = t.status === 'lost' || t.status === 'retired' || t.status === 'won';
     const mine = out ? -1 : playerMatch(t, round);
     const todo: { match: number; pair: [number, number] }[] = [];
-    for (let m = 0; m < matchCount(round); m++) {
+    for (let m = 0; m < matchCount(round, roundsOf(t)); m++) {
       if (t.results[round][m] !== null || m === mine) continue;
       const pair = matchEntrants(t, round, m);
       if (pair && pair.every(i => t.entrants[i].kind === 'duo')) todo.push({ match: m, pair });
@@ -186,12 +188,16 @@ export class TournamentController {
     }));
     const id = t.id;
     const job = this.simulate(matches, t.settings.ai).then(
-      winners => {
+      outcomes => {
         const now = this.tournament;
         if (!now || now.id !== id) return;
         const results = now.results.map(r => [...r]);
-        todo.forEach(({ match, pair }, k) => { results[round][match] = pair[winners[k]]; });
-        this.save({ ...now, results });
+        const logs = withLogs(now);
+        todo.forEach(({ match, pair }, k) => {
+          results[round][match] = pair[outcomes[k].winner];
+          logs[round][match] = outcomes[k].inputLog;
+        });
+        this.save({ ...now, results, logs });
       },
       err => { this.error = `Couldn't simulate the other matches: ${err instanceof Error ? err.message : String(err)}`; },
     ).finally(() => { this.inFlight.delete(round); this.refresh(); });
@@ -212,8 +218,8 @@ export class TournamentController {
     if (!t || t.status !== 'in-battle') return;
     if (s.phase === 'ended' && s.result) {
       this.activeBattle = null;
-      if (s.result.winner === 'p1') this.recordWin(t, s.result.turns);
-      else this.recordLoss(t, s.result.turns, 'lost');
+      if (s.result.winner === 'p1') this.recordWin(t, s.result.turns, s.result.inputLog);
+      else this.recordLoss(t, s.result.turns, 'lost', s.result.inputLog);
     } else if (s.phase === 'invalid-team' || s.phase === 'error') {
       this.activeBattle = null;
       this.error = s.phase === 'invalid-team' ? `Team rejected: ${s.problems.join(' ')}` : `Engine error: ${s.error}`;
@@ -221,12 +227,15 @@ export class TournamentController {
     }
   }
 
-  private recordWin(t: TournamentState, turns: number) {
+  private recordWin(t: TournamentState, turns: number, inputLog: string[]) {
     const foes = nextOpponent(t)!;
-    const bp = t.debug ? 0 : tournamentBp(t.round);
+    const rounds = roundsOf(t);
+    const bp = t.debug ? 0 : tournamentBp(t.round, rounds);
     const results = t.results.map(r => [...r]);
     results[t.round][playerMatch(t, t.round)] = playerIndex(t);
-    const final = t.round === TOURNAMENT_ROUNDS - 1;
+    const logs = withLogs(t);
+    logs[t.round][playerMatch(t, t.round)] = inputLog;
+    const final = t.round === rounds - 1;
     if (!t.debug) {
       this.store.updateProfile(p => ({
         ...p,
@@ -237,18 +246,21 @@ export class TournamentController {
       }));
     }
     const history = [...t.history, this.record(t, foes, 'win', bp, turns)];
-    this.save({ ...t, results, bp: t.bp + bp, history, ...(final ? { status: 'won' as const } : { status: 'ready' as const, round: t.round + 1 }) });
+    this.save({ ...t, results, logs, bp: t.bp + bp, history, ...(final ? { status: 'won' as const } : { status: 'ready' as const, round: t.round + 1 }) });
     // The rest of this round is fought now, so the bracket can show it and your next opponents.
     if (!final) void this.resolveRound(t.round);
   }
 
-  private recordLoss(t: TournamentState, turns: number, status: 'lost' | 'retired') {
+  /** `inputLog`: the match you lost (none when you retired, or a match counted as lost after an interruption). */
+  private recordLoss(t: TournamentState, turns: number, status: 'lost' | 'retired', inputLog?: string[]) {
     const foes = nextOpponent(t)!;
     const results = t.results.map(r => [...r]);
     const pair = matchEntrants(t, t.round, playerMatch(t, t.round))!;
     results[t.round][playerMatch(t, t.round)] = pair.find(i => t.entrants[i].kind === 'duo')!;
+    const logs = withLogs(t);
+    if (inputLog) logs[t.round][playerMatch(t, t.round)] = inputLog;
     const history = status === 'lost' ? [...t.history, this.record(t, foes, 'loss', 0, turns)] : t.history;
-    this.save({ ...t, results, history, status });
+    this.save({ ...t, results, logs, history, status });
     void this.resolveRound(t.round);
   }
 
@@ -275,6 +287,11 @@ export class TournamentController {
     this.snapshot = this.build();
     this.listeners.forEach(l => l());
   }
+}
+
+/** A copy of the tournament's match logs to change (empty ones for a tournament saved before replays). */
+function withLogs(t: TournamentState): (string[] | null)[][] {
+  return t.logs ? t.logs.map(r => [...r]) : emptyResults<string[]>(roundsOf(t));
 }
 
 /** A duo as the engine fights it: names and teams, left trainer first. */

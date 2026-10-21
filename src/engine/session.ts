@@ -42,7 +42,11 @@ export interface BattleResult {
   winner: SideID | null;
   turns: number;
   seed: PRNGSeed;
-  /** Simulator input log (seed, teams, every choice). Replaying it reproduces the battle. */
+  /**
+   * Simulator input log: the seed and teams (the simulator's own "start" and "player" lines), then every choice each
+   * side sent, as sent. (The simulator's own log drops move targets in Multi Battles, where each player has one Pokémon
+   * out, so a replay of it would pick targets at random.) Replaying it (replayBattle) reproduces the battle.
+   */
   inputLog: string[];
 }
 
@@ -61,6 +65,8 @@ export class BattleSession {
   private readonly ais: Partial<Record<SideID, BattleAI>> = {};
   /** Each side's latest unanswered request, so an AI taking over can answer it. */
   private readonly pending: Partial<Record<SideID, SimRequest>> = {};
+  /** Every choice sent, in order, as input log lines (">p1 move 1 2"). */
+  private readonly choices: string[] = [];
 
   constructor(opts: SessionOptions) {
     this.opts = opts;
@@ -101,7 +107,7 @@ export class BattleSession {
   choose(choice: string, side: 'p1' | 'p3' = 'p1'): void {
     if (this.finished || (side === 'p3' && this.ais.p3)) return;
     delete this.pending[side];
-    void this.streams[side].write(choice);
+    this.send(this.streams[side], side, choice);
   }
 
   /** An AI takes over a side from now on (an online partner left), answering any request they left open. */
@@ -132,7 +138,7 @@ export class BattleSession {
           if (ai) this.answer(stream, side, request);
         } else if (ai && line.startsWith('|error|')) {
           this.opts.onWarning?.(`${ai.name} AI (${side}) made an invalid choice: ${line}`);
-          void stream.write('default');
+          this.send(stream, side, 'default');
         }
       }
       this.checkEnded();
@@ -143,7 +149,23 @@ export class BattleSession {
     const ai = this.ais[side]!;
     const prng = (this.prngs[side] ??= derivedPrng(this.opts.seed, `ai-${side}`));
     delete this.pending[side];
-    void stream.write(ai.choose({ request, battle: this.battle, side, prng }));
+    // The AI reads the live battle, and some of what it reads runs simulator events (terrain, types, immunities), whose
+    // speed ties are broken with the battle's RNG. Put the RNG back as it was: the battle's dice then depend only on its
+    // seed and the choices made, so replaying its input log plays out the same battle.
+    const dice = this.battle.prng.getSeed();
+    let choice: string;
+    try {
+      choice = ai.choose({ request, battle: this.battle, side, prng });
+    } finally {
+      this.battle.prng.setSeed(dice);
+    }
+    this.send(stream, side, choice);
+  }
+
+  /** Sends a side's choice to the simulator, and logs it for the input log. */
+  private send(stream: PlayerStream, side: SideID, choice: string) {
+    this.choices.push(`>${side} ${choice}`);
+    void stream.write(choice);
   }
 
   private checkEnded() {
@@ -157,7 +179,7 @@ export class BattleSession {
       winner,
       turns: battle.turn,
       seed: this.opts.seed,
-      inputLog: [...battle.inputLog],
+      inputLog: [...battle.inputLog.filter(line => line.startsWith('>start ') || line.startsWith('>player ')), ...this.choices],
     });
   }
 }

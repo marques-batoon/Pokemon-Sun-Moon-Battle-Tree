@@ -1052,7 +1052,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes tw-leaf-right { 0% { transform: translateX(-120%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(5200%) rotate(900deg); opacity: 0; } }
 @keyframes tw-leaf-left { 0% { transform: translateX(5200%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(-120%) rotate(-900deg); opacity: 0; } }
 
-/* Type-chart immunities (stage-fx IMMUNE_CLASS): the immune Pokémon's reaction, over the attack's own effect (catalog IMMUNE_FX). */
+/* Type-chart immunities, and a type's other ones (stage-fx IMMUNE_CLASS): the immune Pokémon's reaction, over the attack's own effect (catalog IMMUNE_FX). */
 .fx-orb2.through { animation-timing-function: linear; }
 .fx-intangible { animation: intangible calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes intangible { 0%, 100% { opacity: 1; filter: none; transform: none; } 20%, 70% { opacity: 0.28; filter: blur(1.5px) drop-shadow(0 0 8px #9b7fe0); } 35% { transform: translateX(-3%) skewX(-4deg); } 55% { transform: translateX(3%) skewX(4deg); } }
@@ -1068,6 +1068,17 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes metal-glint { 0%, 40%, 100% { filter: none; } 55% { filter: brightness(1.6) contrast(1.15) drop-shadow(0 0 6px #e8eef8); } 70% { filter: brightness(1.15) drop-shadow(0 0 3px #e8eef8); } }
 .fx-fairy-glow { animation: fairy-glow calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes fairy-glow { 0%, 38%, 100% { filter: none; } 55% { filter: brightness(1.2) drop-shadow(0 0 10px #ff9ccc); } 75% { filter: drop-shadow(0 0 5px #ffc0dc); } }
+/* A type's other immunities (Leech Seed on Grass, Thunder Wave on Electric...). */
+.fx-shake-off { animation: shake-off calc(1100ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }
+@keyframes shake-off { 0%, 42%, 100% { transform: none; filter: none; } 48% { transform: translateX(-4%) rotate(-3deg); filter: drop-shadow(0 0 6px #a8e070); } 56% { transform: translateX(4%) rotate(3deg); } 64% { transform: translateX(-3%) rotate(-2deg); } 72% { transform: translateX(2%) rotate(1deg); filter: drop-shadow(0 0 3px #a8e070); } 82% { transform: none; } }
+.fx-static { animation: static-crackle calc(1100ms * var(--spd, 1)) steps(1, end); }
+@keyframes static-crackle { 0%, 38%, 100% { filter: none; transform: none; } 42%, 58%, 74% { filter: brightness(1.7) drop-shadow(0 0 10px #ffe14a); transform: translateX(1%); } 50%, 66% { filter: brightness(1.2) drop-shadow(0 0 4px #ffe14a); transform: translateX(-1%); } 82% { filter: drop-shadow(0 0 3px #ffe14a); transform: none; } }
+.fx-flare-up { animation: flare-up calc(1100ms * var(--spd, 1)) ease-out; transform-origin: 50% 100%; }
+@keyframes flare-up { 0%, 38%, 100% { transform: none; filter: none; } 52% { transform: scale(1.06); filter: brightness(1.4) saturate(1.3) drop-shadow(0 0 12px #ff8030); } 75% { transform: scale(1.02); filter: drop-shadow(0 0 6px #ffb040); } }
+.fx-toxic-glow { animation: toxic-glow calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes toxic-glow { 0%, 40%, 100% { filter: none; } 55% { filter: saturate(1.4) drop-shadow(0 0 10px #a040a0) drop-shadow(0 0 3px #e0a0e0); } 78% { filter: drop-shadow(0 0 5px #a040a0); } }
+.fx-frost-guard { animation: frost-guard calc(1100ms * var(--spd, 1)) ease-in-out; }
+@keyframes frost-guard { 0%, 38%, 100% { filter: none; } 52% { filter: brightness(1.35) hue-rotate(-10deg) drop-shadow(0 0 8px #bff0ff); } 75% { filter: brightness(1.1) drop-shadow(0 0 4px #e0f8ff); } }
 
 /* Rugged balls (Glacial Guardbreaker's ice): roughly round, with a jagged outline. */
 .fx-gauntlets.rugged .ice { clip-path: polygon(50% 0, 63% 4%, 72% 2%, 83% 12%, 90% 22%, 98% 34%, 95% 47%, 100% 60%, 93% 72%, 88% 84%, 76% 92%, 64% 100%, 50% 95%, 37% 100%, 24% 93%, 13% 84%, 6% 72%, 0 58%, 4% 45%, 0 32%, 9% 20%, 17% 10%, 30% 4%, 40% 7%); }
@@ -1917,38 +1928,73 @@ select { max-width: 100%; text-overflow: ellipsis; }
 .tiny { font-size: 0.68rem; line-height: 1.2; }
 
 /*
- * All Star Duo Tournament: the bracket, left to right (16 pairs → champions). Each column's matches share its height,
- * so a winner's slot in the next column lines up with the middle of its match. Revealing a round: match by match
- * (--m × --stagger), both pairs pulse, the losers fade and get struck through, the winners glow and slide on.
+ * All Star Duo Tournament: the bracket on two sides meeting in the middle. The top half of the draw runs left to
+ * right, the bottom half right to left, into the final and the champions in the center column. Each column's matches
+ * share its height, so a winner's slot in the next round lines up with the middle of its match. Revealing a round:
+ * match by match (--m × --stagger), both pairs pulse, the losers fade and get struck through, the winners glow and
+ * slide on (from their side, --in-x). A decided match can be clicked to watch its replay.
  */
 .tournament-card { border-color: color-mix(in srgb, #e2b13c 60%, var(--border)); }
 .bracket-scroll { overflow-x: auto; padding: 4px 2px 10px; }
-.bracket { --card-h: 40px; --gap-x: 28px; display: grid; grid-template-columns: repeat(5, minmax(150px, 1fr)); column-gap: var(--gap-x); min-width: 860px; }
+.bracket {
+  --card-h: 42px; --gap-x: 16px; --side-w: 96px; --center-w: 230px;
+  display: grid; column-gap: var(--gap-x);
+  grid-template-columns: repeat(var(--side-cols), minmax(var(--side-w), 1fr)) minmax(var(--center-w), 1.5fr) repeat(var(--side-cols), minmax(var(--side-w), 1fr));
+  min-width: calc(var(--side-cols) * 2 * (var(--side-w) + var(--gap-x)) + var(--center-w));
+}
 .b-column { display: flex; flex-direction: column; min-width: 0; }
-.b-title { margin: 0 0 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); text-align: center; }
-.b-matches { display: flex; flex-direction: column; height: calc(16 * (var(--card-h) + 8px)); }
+.b-title { margin: 0 0 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); text-align: center; white-space: nowrap; }
+.b-matches { position: relative; display: flex; flex-direction: column; height: calc(var(--rows) * (var(--card-h) + 6px)); }
 .b-match { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
-.b-match.b-final-slot { justify-content: center; }
-/* The bracket arm joining a match's two pairs, and the line on to the next round. */
-.b-column:not(.b-champion) .b-match::after { content: ''; position: absolute; top: 25%; bottom: 25%; right: calc(var(--gap-x) / -2); width: calc(var(--gap-x) / 2); border: 2px solid var(--border); border-left: 0; border-radius: 0 6px 6px 0; }
-.b-column:not(.b-champion) .b-match::before { content: ''; position: absolute; top: 50%; right: calc(var(--gap-x) * -1); width: calc(var(--gap-x) / 2); border-top: 2px solid var(--border); }
-.b-entrant { position: relative; z-index: 1; height: var(--card-h); display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); min-width: 0; }
-.b-entrant.empty { justify-content: center; background: transparent; border-style: dashed; box-shadow: none; }
-.b-sprites { display: flex; flex-shrink: 0; }
-.b-sprites .trainer-sprite { width: 30px; height: 30px; margin-right: -8px; image-rendering: pixelated; }
-.b-sprites .trainer-sprite.placeholder { --size: 30px; font-size: 0.65rem; }
-.b-names { margin-left: 10px; font-size: 0.76rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Bracket arms: on the left they reach right (to the next round), on the right they reach left. */
+.b-left .b-match::after, .b-right .b-match::after { content: ''; position: absolute; top: 25%; bottom: 25%; width: calc(var(--gap-x) / 2); border: 2px solid var(--border); }
+.b-left .b-match::after { right: calc(var(--gap-x) / -2); border-left: 0; border-radius: 0 6px 6px 0; }
+.b-right .b-match::after { left: calc(var(--gap-x) / -2); border-right: 0; border-radius: 6px 0 0 6px; }
+.b-left .b-match::before, .b-right .b-match::before { content: ''; position: absolute; top: 50%; width: calc(var(--gap-x) / 2); border-top: 2px solid var(--border); }
+.b-left .b-match::before { right: calc(var(--gap-x) * -1); }
+.b-right .b-match::before { left: calc(var(--gap-x) * -1); }
+.b-left { --in-x: calc(var(--gap-x) * -2.2); }
+.b-right { --in-x: calc(var(--gap-x) * 2.2); }
+/* The center: the final (the two finalists, VS) at mid height, the champions above it. */
+.b-center .b-matches { justify-content: center; }
+.b-match.b-final { flex: 0 0 auto; flex-direction: row; align-items: center; gap: 6px; }
+.b-final .b-entrant { flex: 1; }
+.b-vs { flex-shrink: 0; font-size: 0.8rem; font-weight: 900; font-style: italic; color: var(--muted); }
+.b-entrant.finalist.left { --in-x: -40px; }
+.b-entrant.finalist.right { --in-x: 40px; }
+.b-champion-slot { position: absolute; left: 50%; bottom: calc(50% + 46px); width: min(100%, 210px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.b-champion-slot .b-title { margin: 0; }
+.b-big-trophy { opacity: 0.3; filter: grayscale(0.7); }
+.b-big-trophy.won { opacity: 1; filter: drop-shadow(0 0 10px rgb(246 199 60 / 0.75)); animation: trophy-glow 2.2s ease-in-out infinite; }
+/* A pair: their two sprites with their names under them. */
+.b-entrant { position: relative; z-index: 1; height: var(--card-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 2px 4px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); min-width: 0; }
+.b-entrant.empty, .b-entrant.champion-empty { background: transparent; border-style: dashed; box-shadow: none; }
+.b-entrant.champion-empty { width: 100%; height: 64px; }
+.b-sprites { display: flex; justify-content: center; }
+.b-sprites .trainer-sprite { width: 24px; height: 24px; image-rendering: pixelated; }
+.b-sprites .trainer-sprite + .trainer-sprite { margin-left: -4px; }
+.b-sprites .trainer-sprite.placeholder { --size: 24px; font-size: 0.55rem; }
+.b-names { max-width: 100%; font-size: 0.64rem; font-weight: 600; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.b-entrant.finalist { height: 60px; }
+.b-entrant.finalist .b-sprites .trainer-sprite { width: 34px; height: 34px; }
+.b-entrant.finalist .b-names { font-size: 0.74rem; }
 .b-entrant.you { border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
 .b-entrant.next { outline: 2px dashed color-mix(in srgb, var(--accent) 75%, transparent); outline-offset: 2px; }
 .b-entrant.won { border-color: var(--good); box-shadow: 0 0 0 2px color-mix(in srgb, var(--good) 30%, transparent); }
 .b-entrant.out { opacity: 0.45; filter: grayscale(0.9); }
 .b-entrant.out::after, .b-entrant.reveal-lose::after { content: ''; position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: var(--bad); transform-origin: left; }
-.b-entrant.champion { border: 2px solid #e2b13c; background: linear-gradient(135deg, #fff8dc, #f3dc8e); color: #4a3300; box-shadow: 0 0 0 3px rgb(246 199 60 / 0.3), 0 4px 14px rgb(196 138 18 / 0.35); }
-/* The champions: a bigger gold card, names in full, the trophy on top. */
-.b-entrant.champion { height: auto; min-height: 64px; flex-direction: column; justify-content: center; gap: 2px; padding: 8px 6px 6px; margin-top: 18px; text-align: center; }
-.b-entrant.champion .b-sprites .trainer-sprite { width: 40px; height: 40px; }
-.b-entrant.champion .b-names { margin: 0; white-space: normal; font-size: 0.8rem; }
-.b-trophy { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3)); }
+.b-entrant.champion { --in-x: 0px; --in-y: 30px; width: 100%; height: auto; min-height: 72px; padding: 6px; border: 2px solid #e2b13c; background: linear-gradient(135deg, #fff8dc, #f3dc8e); color: #4a3300; box-shadow: 0 0 0 3px rgb(246 199 60 / 0.3), 0 4px 14px rgb(196 138 18 / 0.35); text-align: center; }
+.b-entrant.champion .b-sprites .trainer-sprite { width: 44px; height: 44px; }
+.b-entrant.champion .b-names { font-size: 0.82rem; white-space: normal; }
+/* Replays: a decided match can be clicked (the ▶ sits on its bracket arm). */
+.b-match.replayable { cursor: pointer; }
+.b-match.replayable:hover .b-entrant { border-color: var(--accent); }
+.b-replay { position: absolute; z-index: 2; top: 50%; display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 1px solid var(--accent); border-radius: 50%; background: var(--surface); color: var(--accent); font-size: 0.55rem; line-height: 1; transform: translate(-50%, -50%); cursor: pointer; }
+.b-left .b-replay { left: calc(100% + var(--gap-x) / 2); }
+.b-right .b-replay { left: calc(var(--gap-x) / -2); }
+.b-final .b-replay { left: 50%; top: calc(100% + 14px); }
+.b-replay:hover, .b-replay:focus-visible { background: var(--accent); color: var(--accent-text); }
+.bracket-hint { margin: 0; }
 .b-entrant.reveal-win, .b-entrant.reveal-lose, .b-entrant.reveal-in, .b-entrant.reveal-lose::after {
   animation-duration: calc(1150ms * var(--spd, 1)); animation-delay: calc(var(--m, 0) * var(--stagger, 420ms) * var(--spd, 1)); animation-fill-mode: both;
 }
@@ -1974,12 +2020,12 @@ select { max-width: 100%; text-overflow: ellipsis; }
 }
 @keyframes b-strike { 0%, 50% { transform: scaleX(0); } 70%, 100% { transform: scaleX(1); } }
 @keyframes b-in {
-  0%, 52% { opacity: 0; transform: translateX(calc(var(--gap-x) * -1.6)) scale(0.85); }
+  0%, 52% { opacity: 0; transform: translate(var(--in-x, -32px), var(--in-y, 0px)) scale(0.85); }
   82% { opacity: 1; transform: translateX(4px) scale(1.05); }
   100% { opacity: 1; transform: none; }
 }
 @keyframes b-crown {
-  0%, 52% { opacity: 0; transform: translateX(calc(var(--gap-x) * -1.6)) scale(0.7); }
+  0%, 52% { opacity: 0; transform: translate(var(--in-x, 0px), var(--in-y, 30px)) scale(0.7); }
   78% { opacity: 1; transform: scale(1.18); box-shadow: 0 0 26px 8px rgb(246 199 60 / 0.75); }
   100% { opacity: 1; transform: none; }
 }
@@ -1994,23 +2040,30 @@ select { max-width: 100%; text-overflow: ellipsis; }
 @media (prefers-reduced-motion: reduce) { .b-entrant, .b-entrant::after, .tournament-winner { animation-duration: 1ms !important; animation-delay: 0ms !important; } }
 
 /* You won the tournament: a full-screen celebration. */
-.celebration { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #3a2a7a 0%, #160f36 60%, #07051a 100%); animation: celebrate-in 400ms ease-out both; }
+.celebration { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden auto; background: radial-gradient(ellipse at 50% 40%, #3a2a7a 0%, #160f36 60%, #07051a 100%); animation: celebrate-in 400ms ease-out both; }
 @keyframes celebrate-in { from { opacity: 0; } }
 .celebration-rays { position: absolute; left: 50%; top: 36%; width: 220vmax; height: 220vmax; transform: translate(-50%, -50%); background: repeating-conic-gradient(rgb(255 230 140 / 0.16) 0deg 8deg, transparent 8deg 20deg); -webkit-mask-image: radial-gradient(circle, #000 0 18%, transparent 52%); mask-image: radial-gradient(circle, #000 0 18%, transparent 52%); animation: rays-spin 18s linear infinite; }
 @keyframes rays-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 .celebration-confetti span { position: absolute; top: -24px; left: var(--x); width: var(--w); height: calc(var(--w) * 1.6); border-radius: 2px; background: var(--c); animation: confetti-fall var(--t) linear var(--d) infinite; }
 @keyframes confetti-fall { 0% { transform: translate(0, 0) rotate(0); } 100% { transform: translate(var(--drift), 112vh) rotate(var(--r)); } }
-.celebration-body { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 520px; padding: 16px; color: #fff; text-align: center; }
+.celebration-body { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 760px; padding: 16px; color: #fff; text-align: center; }
+/* Another pair won: the same party, in their own colors. */
+.celebration.others { background: radial-gradient(ellipse at 50% 40%, #1d5a7a 0%, #0c2440 60%, #040b18 100%); }
 .celebration-trophy { filter: drop-shadow(0 0 24px rgb(255 214 90 / 0.8)); animation: trophy-rise 1s cubic-bezier(.2, .9, .3, 1.3) 0.2s both, trophy-glow 2.2s ease-in-out 1.3s infinite; }
 @keyframes trophy-rise { from { opacity: 0; transform: translateY(60px) scale(0.3) rotate(-20deg); } to { opacity: 1; transform: none; } }
 @keyframes trophy-glow { 50% { transform: scale(1.06); filter: drop-shadow(0 0 42px rgb(255 214 90 / 1)); } }
 .celebration-title { margin: 0; font-size: clamp(1.8rem, 7vw, 3rem); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: 0.04em; background: linear-gradient(180deg, #fff6c0, #f6c73c 55%, #d08a10); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.45)); animation: title-slam 700ms cubic-bezier(.2, .9, .3, 1.4) 0.7s both; }
 @keyframes title-slam { from { opacity: 0; transform: scale(2.4); } to { opacity: 1; transform: none; } }
-.celebration-podium { display: flex; align-items: flex-end; gap: 18px; padding: 0 28px 8px; border-bottom: 10px solid #c48a12; border-radius: 4px; background: linear-gradient(transparent 65%, rgb(255 214 90 / 0.25)); animation: podium-in 600ms ease-out 1.1s both; }
+.celebration-podium { display: flex; align-items: flex-end; gap: clamp(12px, 5vw, 48px); padding: 0 28px 8px; border-bottom: 10px solid #c48a12; border-radius: 4px; background: linear-gradient(transparent 65%, rgb(255 214 90 / 0.25)); animation: podium-in 600ms ease-out 1.1s both; }
 @keyframes podium-in { from { opacity: 0; transform: scaleX(0.6); } to { opacity: 1; transform: none; } }
+.celebration-champion { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .celebration-hop { display: block; animation: hop 0.9s ease-in-out 1.4s infinite; }
-.celebration-hop.late { animation-delay: 1.85s; }
-.celebration-hop .trainer-sprite { image-rendering: pixelated; }
+.celebration-champion.late .celebration-hop { animation-delay: 1.85s; }
+.celebration-hop .trainer-sprite { width: min(200px, 36vw); height: min(200px, 36vw); image-rendering: pixelated; }
+/* The winners' victory lines, in speech bubbles over them. */
+.celebration-quote { position: relative; margin: 0; max-width: min(260px, 42vw); padding: 8px 12px; border-radius: 14px; background: #ffffff; color: #1b1d23; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 14px rgb(0 0 0 / 0.35); animation: fade-up 500ms ease-out 1.7s both; }
+.celebration-champion.late .celebration-quote { animation-delay: 2.1s; }
+.celebration-quote::after { content: ''; position: absolute; left: 50%; bottom: -8px; border: 8px solid transparent; border-top-color: #ffffff; border-bottom: 0; transform: translateX(-50%); }
 @keyframes hop { 0%, 70%, 100% { transform: none; } 30% { transform: translateY(-26px) scale(1.04, 0.98); } 55% { transform: scale(1.05, 0.93); } }
 .celebration-names { margin: 0; font-weight: 700; animation: fade-up 500ms ease-out 1.5s both; }
 .celebration-bp { margin: 0; font-size: 1.3rem; font-weight: 900; color: #ffe27a; animation: fade-up 500ms ease-out 1.8s both; }
@@ -2019,4 +2072,16 @@ select { max-width: 100%; text-overflow: ellipsis; }
 @media (prefers-reduced-motion: reduce) {
   .celebration, .celebration * { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; }
   .celebration-confetti { display: none; }
+}
+
+/* A tournament replay: the controls stay at the top while it plays. */
+.replay { display: flex; flex-direction: column; gap: 10px; }
+.replay-bar { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: var(--shadow); }
+.replay-title { font-size: 0.9rem; font-weight: 700; }
+.replay-turn { min-width: 7.5em; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.replay-over { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 640px) {
+  .replay-title { flex-basis: 100%; }
+  .replay-bar .spacer { display: none; }
+  .replay-bar button { padding-inline: 8px; }
 }

@@ -469,9 +469,23 @@ describe('planLine: type-chart immunities', () => {
   it('skips the move\'s own animation (the immunity\'s shows the attack), but not when nothing blocks it by type', () => {
     const dark = immune('Alakazam', 'Psychic', 'Tyranitar', 'Sand Stream');
     expect(dark.find(s => s.kind === 'move' && s.moveName === 'Psychic')).toMatchObject({ still: true });
-    // Will-O-Wisp on a Fire type fails, but not because of the type chart: no immunity animation.
-    const fire = immune('Gengar', 'Will-O-Wisp', 'Arcanine', 'Intimidate');
-    expect(fire.some(s => s.kind === 'immune')).toBe(false);
+    // Splash does nothing, but nothing is immune to it.
+    const splash = immune('Magikarp', 'Splash', 'Snorlax', 'Thick Fat');
+    expect(splash.some(s => s.kind === 'immune')).toBe(false);
+  });
+
+  it('names a type\'s other immunities: what\'s blocked and the type that blocks it', () => {
+    expect(pairOf(immune('Venusaur', 'Leech Seed', 'Sceptile', 'Overgrow'))).toBe('leechseed-grass');
+    expect(pairOf(immune('Jolteon', 'Thunder Wave', 'Raichu', 'Static'))).toBe('par-electric');
+    expect(pairOf(immune('Gengar', 'Will-O-Wisp', 'Arcanine', 'Intimidate'))).toBe('brn-fire');
+    expect(pairOf(immune('Gengar', 'Toxic', 'Muk', 'Stench'))).toBe('psn-poison');
+    // Toxic on a Steel type is the type chart's (Poison on Steel).
+    expect(pairOf(immune('Gengar', 'Toxic', 'Skarmory', 'Sturdy'))).toBe('poison-steel');
+    expect(pairOf(immune('Breloom', 'Spore', 'Venusaur', 'Overgrow'))).toBe('powder-grass');
+    expect(pairOf(immune('Lapras', 'Sheer Cold', 'Glalie', 'Inner Focus'))).toBe('sheercold-ice');
+    expect(pairOf(planWithLookahead(set('Sableye', 'Prankster', ['Thunder Wave']), set('Tyranitar', 'Sand Stream', ['Splash']), [['move 1', 'move 1']]))).toBe('prankster-dark');
+    // The move itself doesn't animate: the immunity's does.
+    expect(immune('Venusaur', 'Leech Seed', 'Sceptile', 'Overgrow').find(s => s.kind === 'move' && s.moveName === 'Leech Seed')).toMatchObject({ still: true });
   });
 });
 

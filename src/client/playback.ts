@@ -240,6 +240,29 @@ export function typeImmunity(battle: ClientBattle, ident: string | undefined, mo
 }
 
 /**
+ * A move a Pokémon's type makes it immune to outside the type chart ("leechseed-grass", "par-electric"...), or null:
+ * Leech Seed and powder moves on a Grass type, a status condition its type can't get (paralysis on Electric, a burn
+ * on Fire, poison on Poison; on Steel it's the type chart's), Sheer Cold on an Ice type, a Prankster status move on a Dark type. The
+ * protocol only says "-immune", so the move (and the Pokémon's current types) tell which.
+ */
+export function statusImmunity(battle: ClientBattle, ident: string | undefined, moveId: string | undefined): string | null {
+  const { side, slot } = at(ident);
+  const mon = side ? battle[side].active[slot] : null;
+  const move = moveId ? gen7.moves.get(moveId) : undefined;
+  if (!mon || !move?.exists) return null;
+  const has = (type: string) => mon.types.includes(type as never);
+  if (move.id === 'leechseed' && has('Grass')) return 'leechseed-grass';
+  if (move.flags.powder && has('Grass')) return 'powder-grass';
+  if (move.id === 'sheercold' && has('Ice')) return 'sheercold-ice';
+  const status = move.status === 'tox' ? 'psn' : move.status;
+  if (status === 'par' && has('Electric')) return 'par-electric';
+  if (status === 'brn' && has('Fire')) return 'brn-fire';
+  if (status === 'psn' && has('Poison')) return 'psn-poison';
+  if (move.category === 'Status' && has('Dark')) return 'prankster-dark';
+  return null;
+}
+
+/**
  * Air Balloon: a Ground-type move doesn't affect its holder. The protocol only says "-immune" (no "[from]"), so
  * the battle state tells: the Pokémon holds an Air Balloon (announced when it came in) and the move is Ground-type.
  */
@@ -265,7 +288,7 @@ export function absorbedByAbility(moveArgs: readonly string[], kwArgs: Record<st
     // (Psychic on Dark...): its own animation, with the attack in it.
     if (m[1] === '-immune' && !/\[from\]/.test(line) && battle) {
       const type = classifyMove(moveArgs[2]).type;
-      if (balloonImmune(battle, target, type) || typeImmunity(battle, target, type)) return true;
+      if (balloonImmune(battle, target, type) || typeImmunity(battle, target, type) || statusImmunity(battle, target, toId(moveArgs[2]))) return true;
     }
     // "-ability|p2a: Raichu|Lightning Rod|boost" names it plainly; the others say "ability: Water Absorb".
     const name = m[1] === '-ability' ? m[3] : /ability: ([^|]+)/.exec(line)?.[1];
@@ -564,7 +587,9 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // A Ground move doesn't affect a Pokémon floating on its Air Balloon: shown like Levitate.
       if (cmd === '-immune' && !('from' in kwArgs) && balloonImmune(battle, args[1], lastMoveUser.get(battle)?.type)) return [abilityStep(step, battle, args[1], 'Air Balloon')];
       // The type chart: each pair has its own animation (a Psychic attack breaking on Dark, a Normal one passing through a Ghost...).
-      const pair = cmd === '-immune' && !('from' in kwArgs) ? typeImmunity(battle, args[1], lastMoveUser.get(battle)?.type) : null;
+      // Then a type's other immunities (Leech Seed on Grass, Thunder Wave on Electric...), with their own.
+      const last = lastMoveUser.get(battle);
+      const pair = cmd === '-immune' && !('from' in kwArgs) ? typeImmunity(battle, args[1], last?.type) ?? statusImmunity(battle, args[1], last?.id) : null;
       if (pair) {
         const holder = at(args[1]);
         const user = lastMoveUser.get(battle);

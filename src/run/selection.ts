@@ -1,4 +1,4 @@
-import { ALL_STAR_LEGEND_EVERY, BOSSES, BRACKETS, multiPartners, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
+import { ALL_STAR_LEGEND_EVERY, BOSSES, BRACKETS, canTeamUp, multiPartners, speaksFirst, pairedTrainer, pairGreetingPartners, RULES, samePerson, SETS, TRAINER_PAIRS, TRAINERS, type Boss, type Course, type CourseSchedule, type Format, type SpecialTrainer, type Trainer } from '../data/battle-tree';
 import { canField, pickTeamSets, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
 import type { PlannedOpponent, PlannedTrainer } from './types';
@@ -143,6 +143,20 @@ export function planTrainer({ trainer }: TrainerChoice, format: Format, rng: Rng
 export function planOpponent(
   runSeed: string, format: Format, course: Course, battle: number, partnerId?: number,
 ): PlannedOpponent {
+  return inSpeakingOrder(drawOpponent(runSeed, format, course, battle, partnerId));
+}
+
+/**
+ * A Multi Battle's two opponents lined up so their lines together read in order (speaksFirst): the one who speaks
+ * first stands first (left), whoever was drawn first. Their teams don't change.
+ */
+export function inSpeakingOrder(next: PlannedOpponent): PlannedOpponent {
+  if (!next.second || speaksFirst(TRAINERS[next.trainerId], TRAINERS[next.second.trainerId])) return next;
+  const { battle, seedText, second, ...first } = next;
+  return { battle, seedText, ...second, second: first };
+}
+
+function drawOpponent(runSeed: string, format: Format, course: Course, battle: number, partnerId?: number): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|opponent`);
   const multi = format === 'multi';
@@ -179,6 +193,8 @@ export function planOpponent(
   if (!multi) return { battle, ...first, seedText };
 
   for (const id of samePersonIds(first.trainerId)) exclude.add(id);
+  // Courtney only teams up with female trainers (on request, 2026-10-19).
+  for (const t of TRAINERS) if (!canTeamUp(TRAINERS[first.trainerId], t)) exclude.add(t.id);
   // A paired trainer can't be the second opponent without their partner (Tate and Liza; Izzy and Tai).
   for (const p of TRAINER_PAIRS) p.trainerIds.forEach(id => exclude.add(id));
   for (const t of TRAINERS) if (multiPartners(t.id).length) exclude.add(t.id);
@@ -202,6 +218,10 @@ export function planOpponent(
  * or Thomas brings the other, Marques first, and choosing Izzy brings Tai, Tai first.
  */
 export function planChosenOpponent(runSeed: string, format: Format, battle: number, trainerIds: readonly number[]): PlannedOpponent {
+  return inSpeakingOrder(chooseOpponent(runSeed, format, battle, trainerIds));
+}
+
+function chooseOpponent(runSeed: string, format: Format, battle: number, trainerIds: readonly number[]): PlannedOpponent {
   const seedText = battleSeedText(runSeed, battle);
   const rng = new Rng(`${seedText}|chosen|${trainerIds.join(',')}`);
   const choose = (id: number): TrainerChoice => {

@@ -62,6 +62,15 @@ describe('HeuristicAI move choice', () => {
     expect(decide(scenario(`Gengar @ Life Orb\nAbility: Cursed Body\n- Shadow Ball`, AMBIPOM))['move 1'] ?? 0).toBe(0);
   });
 
+  it('uses Burn Up only once per switch-in (it fails once the user has lost its Fire type)', () => {
+    const ARCANINE = `Arcanine @ Life Orb\nAbility: Flash Fire\nEVs: 252 SpA / 252 Spe\nTimid Nature\n- Burn Up\n- Body Slam`;
+    const b = scenario(CHANSEY, ARCANINE);
+    expect(share(decide(b), 'move 1')).toBeGreaterThan(0.85);
+    b.makeChoices('move 1', 'move 1');
+    expect(b.p2.active[0].hasType('Fire')).toBe(false);
+    expect(decide(b)['move 1'] ?? 0).toBe(0);
+  });
+
   it('never uses Helping Hand in a Single Battle', () => {
     const SOLROCK = `Solrock @ Life Orb\nAbility: Levitate\nEVs: 252 HP / 116 Atk / 142 SpD\nAdamant Nature\n- Helping Hand\n- Rock Slide\n- Zen Headbutt\n- Gyro Ball`;
     expect(decide(scenario(CHANSEY, SOLROCK))['move 1'] ?? 0).toBe(0);
@@ -119,6 +128,23 @@ describe('HeuristicAI move choice', () => {
     const PELIPPER = `Pelipper @ Damp Rock\nAbility: Keen Eye\nEVs: 252 HP / 252 Def\nBold Nature\n- Rain Dance\n- Scald\n- Hurricane\n- Roost`;
     expect(share(decide(scenario(CHANSEY, PELIPPER)), 'move 1')).toBeGreaterThan(0.6);
     expect(share(decide(scenario(CHANSEY, PELIPPER, b => b.field.setWeather('raindance', b.p2.active[0]))), 'move 1')).toBeLessThan(0.05);
+  });
+
+  it('picks the terrain that suits the matchup, and never replaces its own', () => {
+    const TAPU = `Tapu Bulu @ Leftovers\nAbility: Grassy Surge\nEVs: 252 HP / 252 SpD\nCalm Nature\n- Grassy Terrain\n- Misty Terrain\n- Horn Leech\n- Protect`;
+    const dragon = `Haxorus @ Life Orb\nAbility: Mold Breaker\nEVs: 252 Atk / 252 Spe\nJolly Nature\n- Dragon Claw\n- Toxic`;
+    // Against Chansey, Grassy Terrain (powers up Horn Leech); against a Dragon type with Toxic, Misty Terrain.
+    const vsChansey = decide(scenario(CHANSEY, TAPU.replace('Grassy Surge', 'Telepathy'), b => b.field.clearTerrain()));
+    expect(vsChansey['move 2'] ?? 0).toBe(0);
+    expect(share(vsChansey, 'move 1')).toBeGreaterThan(0.3);
+    const vsDragon = decide(scenario(dragon, TAPU.replace('Grassy Surge', 'Telepathy'), b => b.field.clearTerrain()));
+    expect(vsDragon['move 1'] ?? 0).toBe(0);
+    expect(share(vsDragon, 'move 2')).toBeGreaterThan(0.3);
+    // Its own Grassy Terrain up (Grassy Surge): no Misty Terrain over it.
+    expect(decide(scenario(dragon, TAPU))['move 2'] ?? 0).toBe(0);
+    // The foe's terrain can still be replaced.
+    const foeTerrain = scenario(dragon, TAPU.replace('Grassy Surge', 'Telepathy'), b => { b.field.clearTerrain(); b.field.setTerrain('electricterrain', b.p1.active[0]); });
+    expect(share(decide(foeTerrain), 'move 2')).toBeGreaterThan(0.3);
   });
 
   it('sets up while safe and stops at the breakpoint', () => {
