@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
@@ -208,6 +208,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'balloon-in': return BALLOON_IN;
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
     case 'item': return anim.label ? itemSpec(anim.label) : null;
+    case 'frisk': return anim.label ? friskSpec(anim.label) : null;
     case 'immune': return immuneSpec(anim.condition ?? '');
     case 'sky-drop': return SKY_DROP;
     case 'sky-dropped': return SKY_DROPPED;

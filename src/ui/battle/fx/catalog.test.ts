@@ -5,7 +5,7 @@ import { gen7 } from '../../../team/dex';
 import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION, SIGNATURE_MOVE_FX } from './signature-moves';
 import {
-  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   futureHitSpec, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -280,6 +280,15 @@ describe('held items used up', () => {
     // Each has its own look (besides its name).
     const look = (id: string) => key(itemSpec(id).layers.filter(l => l.kind !== 'label').map(l => (l.kind === 'item' ? { ...l, item: '' } : l)));
     expect(new Set(ITEM_USE_IDS.map(look)).size).toBe(ITEM_USE_IDS.length);
+  });
+});
+
+describe('Frisk', () => {
+  it('pops the item it finds up beside its holder, named, without using it up', () => {
+    expect(friskSpec('Choice Scarf').layers).toEqual([
+      expect.objectContaining({ kind: 'item', at: 'user', item: 'Choice Scarf', use: 'reveal' }),
+      expect.objectContaining({ kind: 'label', at: 'user', text: 'Choice Scarf' }),
+    ]);
   });
 });
 

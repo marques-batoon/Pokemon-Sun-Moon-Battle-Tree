@@ -52,7 +52,9 @@ export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): 
     }
     if (sets.some(s => s.moves.some(m => gen7.moves.get(m)?.id === 'substitute'))) add([substituteSprite(side).url]);
   }
-  if (sides.some(([, sets]) => sets.some(s => { const item = gen7.items.get(s.item); return !!item && (item.isBerry || ITEM_USE_IDS.includes(item.id)); }))) add([itemSheetUrl()]);
+  // Item icons: someone holds a Berry or an item used up with its own animation, or has Frisk (it shows what it finds).
+  const frisk = sides.some(([, sets]) => sets.some(s => gen7.abilities.get(s.ability)?.id === 'frisk'));
+  if (frisk || sides.some(([, sets]) => sets.some(s => { const item = gen7.items.get(s.item); return !!item && (item.isBerry || ITEM_USE_IDS.includes(item.id)); }))) add([itemSheetUrl()]);
   return [...lists.values()];
 }
 

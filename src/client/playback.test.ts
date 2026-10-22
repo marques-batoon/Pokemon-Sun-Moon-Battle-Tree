@@ -359,6 +359,13 @@ describe('planLine: Berries', () => {
   });
 });
 
+describe('planLine: Frisk', () => {
+  it('shows each item Frisk finds when its Pokémon comes in', () => {
+    const steps = planBattle(set('Gothitelle', 'Frisk', ['Psychic']), set('Snorlax', 'Thick Fat', ['Splash']).replace('Snorlax', 'Snorlax @ Leftovers'), [['move 1', 'move 1']]);
+    expect(steps.find(s => s.kind === 'frisk')).toMatchObject({ side: 'p2', target: 'p1', label: 'Leftovers' });
+  });
+});
+
 describe('planLine: Bonemerang', () => {
   it('throws the bone through the target (first hit), then it comes back and strikes again on its way to the thrower', () => {
     const steps = planBattle(set('Marowak', 'Rock Head', ['Bonemerang']).replace('Marowak', 'Marowak @ Thick Club'), set('Snorlax', 'Thick Fat', ['Splash']), [['move 1', 'move 1']]);
@@ -433,6 +440,13 @@ describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Ba
     expect(plan('|-item|p1a: Snorlax|Air Balloon|[from] move: Trick')).toMatchObject({ kind: 'balloon-in', side: 'p1' });
     expect(plan('|-item|p2a: Heatran|Air Balloon|[from] ability: Frisk|[of] p1a: Gothitelle')?.kind).not.toBe('balloon-in');
     expect(plan('|-item|p2a: Heatran|Leftovers|[from] move: Trick')?.kind).not.toBe('balloon-in');
+  });
+
+  it('shows the item Frisk finds popping up beside the Pokémon holding it (the Air Balloon too, without floating it)', () => {
+    expect(plan('|-item|p2a: Heatran|Leftovers|[from] ability: Frisk|[of] p1a: Gothitelle')).toMatchObject({ kind: 'frisk', side: 'p2', target: 'p1', label: 'Leftovers' });
+    expect(plan('|-item|p1b: Snorlax|Air Balloon|[from] ability: Frisk|[of] p2a: Banette')).toMatchObject({ kind: 'frisk', side: 'p1', slot: 1, target: 'p2', label: 'Air Balloon' });
+    // Another Ability revealing an item isn't Frisk.
+    expect(plan('|-item|p2a: Heatran|Leftovers|[from] ability: Pickpocket|[of] p1a: Weavile')?.kind).not.toBe('frisk');
   });
 
   it('shows the Focus Sash and Focus Band letting the Pokémon hang on', () => {

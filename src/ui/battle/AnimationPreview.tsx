@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, MOVE_RETURN_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, MOVE_RETURN_MS, FRISK_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -375,6 +375,8 @@ export function AnimationPreview() {
             const item = e.target.value;
             e.target.value = '';
             if (!item) return;
+            // "frisk:": your Frisk finds the other Pokémon's item.
+            if (item.startsWith('frisk:')) return play([{ kind: 'frisk', side: other(side), target: side, label: item.slice('frisk:'.length), durationMs: FRISK_MS }]);
             const used: Step = { kind: 'item', side, target: item === 'Red Card' ? other(side) : null, label: item, condition: item.toLowerCase().replace(/[^a-z0-9]/g, ''), durationMs: ITEM_MS };
             // Power Herb: Solar Beam fires on its charging turn.
             if (item === 'Power Herb') {
@@ -385,6 +387,7 @@ export function AnimationPreview() {
           }}>
             <option value="">item…</option>
             {PREVIEW_ITEMS.map(t => <option key={t} value={t}>{t}</option>)}
+            {['Leftovers', 'Choice Scarf', 'Life Orb', 'Air Balloon'].map(t => <option key={`frisk:${t}`} value={`frisk:${t}`}>Frisk finds: {t}</option>)}
           </select>
         </label>
         <label>

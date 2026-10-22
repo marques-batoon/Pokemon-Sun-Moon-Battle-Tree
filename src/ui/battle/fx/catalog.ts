@@ -132,7 +132,7 @@ export type Layer =
   | { kind: 'web'; at: Anchor; color: string; size: number; delay?: number; dur?: number };
 
 /** How a used-up item goes (Layer 'item'). */
-export type ItemUse = 'crumble' | 'burst' | 'absorb' | 'throw' | 'press';
+export type ItemUse = 'crumble' | 'burst' | 'absorb' | 'throw' | 'press' | 'reveal';
 
 export interface FxSpec {
   layers: Layer[];
@@ -1608,6 +1608,17 @@ export function itemSpec(item: string): FxSpec {
     { kind: 'item', at: 'user', item, color: u.color, color2: u.ink, use: u.use, ...(u.use === 'throw' ? { to: 'target' as Anchor } : {}), dur: 1000 },
     ...u.extra,
     { kind: 'label', at: 'user', text: item, color: u.ink, delay: 120, dur: 760 },
+  ] };
+}
+
+/**
+ * Frisk finds a held item: its icon pops up on its badge beside the Pokémon holding it, glints, bobs for a moment and
+ * fades (it isn't used up), with the item's name.
+ */
+export function friskSpec(item: string): FxSpec {
+  return { layers: [
+    { kind: 'item', at: 'user', item, color: '#bfe0ff', color2: '#4a7ad8', use: 'reveal', dur: 950 },
+    { kind: 'label', at: 'user', text: item, color: '#4a7ad8', delay: 80, dur: 800 },
   ] };
 }
 

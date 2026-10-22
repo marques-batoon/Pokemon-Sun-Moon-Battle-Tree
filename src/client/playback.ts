@@ -79,7 +79,12 @@ export type AnimationKind =
    * `target`/`targetSlot`. The hit that follows has the same `condition` and the thrower as its `target`: the bone strikes
    * on its way back to the thrower's hand.
    */
-  | 'move-return';
+  | 'move-return'
+  /**
+   * Frisk reveals a held item: it pops up beside the Pokémon holding it (`side`/`slot`), `label` its name. `target`/
+   * `targetSlot`: the Pokémon with Frisk.
+   */
+  | 'frisk';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -233,6 +238,7 @@ export const SOLAR_CHARGE_MS = 1000;
 export const FUTURE_HIT_MS = 900;
 /** Bonemerang's bone flying back to the target for its second hit. */
 export const MOVE_RETURN_MS = 380;
+export const FRISK_MS = 950;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -617,6 +623,11 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // Floating on an Air Balloon: it came in holding one ("X floats in the air with its Air Balloon!"), or got
       // one (Trick...). Not when an Ability only reveals it (Frisk).
       if (toId(args[2]) === 'airballoon' && !abilityName(kwArgs.from)) return [step({ kind: 'balloon-in', ...at(args[1]), target: null, durationMs: BALLOON_IN_MS })];
+      // Frisk: the item it finds pops up beside the Pokémon holding it ("X frisked its target and found its Y!").
+      if (toId(abilityName(kwArgs.from) ?? '') === 'frisk') {
+        const frisker = typeof kwArgs.of === 'string' ? at(kwArgs.of) : null;
+        return [step({ kind: 'frisk', ...at(args[1]), target: frisker?.side ?? null, targetSlot: frisker?.slot, label: args[2], durationMs: FRISK_MS })];
+      }
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     }
     case '-miss':
