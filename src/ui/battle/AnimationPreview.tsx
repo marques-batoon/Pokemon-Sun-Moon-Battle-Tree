@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, MOVE_RETURN_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -13,6 +13,7 @@ import { useAppSettings } from '../useAppSettings';
 import { useElementSize } from '../useElementSize';
 import { horizonVar } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
+import { SIGNATURE_MOVE_FX } from './fx/signature-moves';
 import { effectAnchors, effectPoints, effectSpec, shakeProps } from './fx/stage-fx';
 import { useSpritePoints } from './fx/useSpritePoints';
 import { FieldLayers } from './FieldLayers';
@@ -45,6 +46,8 @@ const GROUPS: { label: string; moves: string[] }[] = [
       'Menacing Moonraze Maelstrom', 'Light That Burns the Sky', 'Genesis Supernova', 'Omega Wrath', 'Riptide Rocket Rush', 'Glacial Guardian Gauntlet'],
   },
   { label: 'Hitmonchanium Z (custom)', moves: Object.values(HITMONCHANIUM_Z.moves).map(z => z.name) },
+  // Every signature move with its own animation (signature-moves.ts), by name.
+  { label: 'Signature moves', moves: Object.keys(SIGNATURE_MOVE_FX).map(id => gen7.moves.get(id)!.name).sort() },
   { label: 'Signature (Digimon)', moves: ['Gaia Force', 'Cocytus Pulse', 'Pepper Breath', 'Fox Fire', 'Dramon Breaker', 'Dark Gaia Force', 'Dramon Destroyer', 'Super Shocker', 'Giga Blaster', 'Pyro Fang', 'Lightning Joust', 'Shield of Just', 'Petit Twister', 'Burst Shot', 'Giant Missile', 'Diamond Shuriken', 'Amethyst Mandala'] },
 ];
 /** Z-Moves whose category comes from the base move (type Z-Moves and Poliwrath's: power-1 placeholders); signature ones have their own. */
@@ -170,6 +173,11 @@ function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical
       ? { kind: 'sub-hit', side: foe, target: null, crit: crit || undefined, durationMs: SUB_HIT_MS }
       : { kind: 'hit', side: foe, target: null, hpDelta: crit ? -55 : -38, crit: crit || undefined, durationMs: 600 });
     if (gen7.moves.get(name)?.drain) steps.push({ kind: 'absorb', side, target: foe, hpDelta: 19, durationMs: DRAIN_MS });
+    // Bonemerang's second hit: the bone comes back, strikes again and returns to the thrower.
+    if (fx.moveId === 'bonemerang' && !f.sub[foe]) {
+      steps.push({ kind: 'move-return', side, target: foe, condition: 'bonemerang', durationMs: MOVE_RETURN_MS });
+      steps.push({ kind: 'hit', side: foe, target: side, hpDelta: -38, condition: 'bonemerang', durationMs: 600 });
+    }
   }
   return steps;
 }

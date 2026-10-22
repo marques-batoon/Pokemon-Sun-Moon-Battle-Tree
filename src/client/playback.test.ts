@@ -359,6 +359,24 @@ describe('planLine: Berries', () => {
   });
 });
 
+describe('planLine: Bonemerang', () => {
+  it('throws the bone through the target (first hit), then it comes back and strikes again on its way to the thrower', () => {
+    const steps = planBattle(set('Marowak', 'Rock Head', ['Bonemerang']).replace('Marowak', 'Marowak @ Thick Club'), set('Snorlax', 'Thick Fat', ['Splash']), [['move 1', 'move 1']]);
+    const from = steps.findIndex(s => s.kind === 'move' && s.moveName === 'Bonemerang');
+    const after = steps.slice(from, from + 4);
+    expect(after.map(s => s.kind)).toEqual(['move', 'hit', 'move-return', 'hit']);
+    expect(after[1].condition).toBeUndefined();
+    expect(after[2]).toMatchObject({ side: 'p1', target: 'p2', condition: 'bonemerang' });
+    expect(after[3]).toMatchObject({ side: 'p2', target: 'p1', condition: 'bonemerang' });
+  });
+
+  it('leaves other multi-hit moves alone', () => {
+    const steps = planBattle(set('Cloyster', 'Skill Link', ['Icicle Spear']), set('Snorlax', 'Thick Fat', ['Splash']), [['move 1', 'move 1']]);
+    expect(steps.some(s => s.kind === 'move-return')).toBe(false);
+    expect(steps.filter(s => s.kind === 'hit').every(s => s.condition === undefined)).toBe(true);
+  });
+});
+
 describe('planLine: Air Balloon', () => {
   const held = (species: string, item: string, ability: string, moves: string[]) => set(species, ability, moves).replace(species, `${species} @ ${item}`);
 

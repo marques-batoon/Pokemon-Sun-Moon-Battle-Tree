@@ -91,7 +91,9 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
   const count = layer.count ?? 1;
   // Through the target: on past it by two-thirds of the way again. Reverse: from the target back to the user.
   const far = layer.through ? 1.65 : 1;
-  const [from, to] = layer.reverse ? [ctx.target, ctx.user] : [ctx.user, ctx.target];
+  // From beyond: where a throw that went through the target ended up (that same two-thirds further on), back to it.
+  const beyond = { x: ctx.target.x + (ctx.target.x - ctx.user.x) * 0.65, y: ctx.target.y + (ctx.target.y - ctx.user.y) * 0.65 };
+  const [from, to] = layer.fromBeyond ? [beyond, ctx.target] : layer.reverse ? [ctx.target, ctx.user] : [ctx.user, ctx.target];
   const dx = (to.x - from.x) * far, dy = (to.y - from.y) * far;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const shape: Shape = layer.shape ?? 'dot';
@@ -102,7 +104,7 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
         return (
           <span
             key={i}
-            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${shape === 'dot' ? 'glow' : ''}`}
+            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${layer.fromBeyond ? 'from-beyond' : ''} ${layer.spin ? 'spin' : ''} ${shape === 'dot' ? 'glow' : ''}`}
             style={css({
               '--x': px(from.x), '--y': px(from.y + jitter), '--dx': px(dx), '--dy': px(dy), '--lift': px(-Math.min(90, Math.abs(dx) * 0.25)),
               '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--ang': deg(angle),
@@ -434,6 +436,26 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </span>
       );
     }
+    case 'web': {
+      // Radial threads and three rings of thread between them, spun over the spot.
+      const p = anchor(layer.at);
+      const s = layer.size * ctx.k;
+      const spokes = 8;
+      const ring = (r: number) => Array.from({ length: spokes }, (_, k) => {
+        const a = (k / spokes) * Math.PI * 2 + 0.2;
+        return `${50 + Math.cos(a) * r},${50 + Math.sin(a) * r}`;
+      }).join(' ');
+      return (
+        <svg key={i} className="fxl fx-web" viewBox="0 0 100 100" width={s} height={s}
+          style={css({ '--x': px(p.x), '--y': px(p.y), '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 900) })} aria-hidden>
+          {Array.from({ length: spokes }, (_, k) => {
+            const a = (k / spokes) * Math.PI * 2 + 0.2;
+            return <line key={k} x1="50" y1="50" x2={50 + Math.cos(a) * 48} y2={50 + Math.sin(a) * 48} />;
+          })}
+          {[14, 28, 42].map(r => <polygon key={r} points={ring(r)} />)}
+        </svg>
+      );
+    }
     case 'gust': {
       // Streaks start behind the user and sweep past it toward the foe, spread around the line between them; every
       // fourth is a leaf riding the wind.
@@ -536,7 +558,7 @@ function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
     case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
     case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon':
-    case 'fractal': case 'merge': case 'sphere': case 'scan': return l.at === 'target';
+    case 'fractal': case 'merge': case 'sphere': case 'scan': case 'web': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
-import { BIG_MOVE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MS, WARP_MS, WARP_START_MS } from '../../../client/playback';
+import { BIG_MOVE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MOVE_MS, SIGNATURE_MS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import { gen7 } from '../../../team/dex';
 import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
+import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION, SIGNATURE_MOVE_FX } from './signature-moves';
 import {
   abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   futureHitSpec, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
@@ -185,7 +186,7 @@ describe('animation catalog', () => {
       ...conditions.map(statusSpec),
       ...[...conditions, 'flinch', 'attract', 'recharge'].map(cantSpec),
       ...['brn', 'psn', 'tox', 'confusion'].map(c => residualSpec(c)!),
-      ...['Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract'].map(m => moveSpec(classifyMove(m))),
+      ...['Thunder Wave', 'Will-O-Wisp', 'Toxic', 'Spore', 'Confuse Ray', 'Attract', 'Lovely Kiss', 'Dark Void', 'Toxic Thread', 'Spider Web'].map(m => moveSpec(classifyMove(m))),
       CONFUSED, INFATUATED, CURE,
     ];
     for (const spec of specs) {
@@ -411,5 +412,58 @@ describe('Matrix Evolution (Gallantmon)', () => {
     expect(SIGNATURE_MOVES.giantmissile.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'missile' });
     expect(SIGNATURE_MOVES.diamondshuriken.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'gem', count: 6 });
     expect(SIGNATURE_MOVES.amethystmandala.layers.some(l => l.kind === 'particles' && l.shape === 'talisman' && l.at === 'target')).toBe(true);
+  });
+});
+
+describe('signature moves', () => {
+  const ids = Object.keys(SIGNATURE_MOVE_FX);
+
+  it('gives each its own animation (status moves too), a length, and a motion for an attack\'s user', () => {
+    expect(ids.length).toBeGreaterThan(110);
+    for (const id of ids) {
+      const move = gen7.moves.get(id);
+      expect(move?.exists, id).toBe(true);
+      expect(moveSpec(classifyMove(move!.name)), move!.name).toBe(SIGNATURE_MOVE_FX[id]);
+      expect(SIGNATURE_MS[id], id).toBe(SIGNATURE_MOVE_MS[id]);
+      expect(SIGNATURE_MOVE_MS[id], id).toBeGreaterThanOrEqual(900);
+      if (move!.category !== 'Status') expect(SIGNATURE_MOTION[id], `${id} motion`).toBeDefined();
+    }
+    expect(Object.keys(SIGNATURE_MOVE_MS).sort()).toEqual([...ids].sort());
+    for (const id of Object.keys(SIGNATURE_MOTION)) expect(SIGNATURE_MOVE_FX[id], id).toBeDefined();
+    // Each is tailored: no two the same, and none overlaps a move over 100 power's own.
+    expect(new Set(ids.map(id => key(SIGNATURE_MOVE_FX[id]))).size).toBe(ids.length);
+    for (const id of ids) expect(BIG_MOVES[id], id).toBeUndefined();
+  });
+
+  it('covers the classic signature moves, old and new', () => {
+    for (const name of ['Bonemerang', 'Bone Club', 'Shadow Bone', 'Sacred Fire', 'Aeroblast', 'Spore', 'Crabhammer', 'Leaf Blade', 'Spacial Rend',
+      'Judgment', 'Secret Sword', 'Sacred Sword', 'Fusion Flare', 'Fusion Bolt', 'Diamond Storm', 'Thousand Arrows', "King's Shield", 'Spiky Shield',
+      'Spirit Shackle', 'Darkest Lariat', 'Sparkling Aria', 'Sunsteel Strike', 'Moongeist Beam', 'Photon Geyser', 'Psyblade', 'Thunderclap']) {
+      expect(SIGNATURE_MOVE_FX[classifyMove(name).moveId], name).toBeDefined();
+    }
+  });
+
+  it('times every layer to start before the animation ends, the hits well within it', () => {
+    for (const [id, spec] of Object.entries(SIGNATURE_MOVE_FX)) {
+      for (const l of spec.layers) expect((l.delay ?? 0), `${id} ${l.kind}`).toBeLessThan(SIGNATURE_MOVE_MS[id] - 300);
+      for (const l of spec.layers.filter(l => l.kind === 'impact')) expect((l.delay ?? 0), id).toBeLessThanOrEqual(SIGNATURE_MOVE_MS[id] - 400);
+    }
+  });
+
+  it('draws them as they are: thrown bones that spin (one comes back), webs, sacred flame, a sleep-spore cloud', () => {
+    const orbs = (id: string) => SIGNATURE_MOVE_FX[id].layers.filter(l => l.kind === 'orb');
+    // Bonemerang: thrown straight through the target (first hit); its return comes from beyond it, then on to the thrower.
+    expect(orbs('bonemerang')).toEqual([expect.objectContaining({ shape: 'bone', spin: true, through: true })]);
+    expect(BONEMERANG_RETURN.layers).toEqual([expect.objectContaining({ kind: 'orb', shape: 'bone', fromBeyond: true })]);
+    expect(BONEMERANG_CATCH.layers.find(l => l.kind === 'impact')).toMatchObject({ at: 'user', delay: 0 });
+    expect(BONEMERANG_CATCH.layers.find(l => l.kind === 'orb')).toMatchObject({ shape: 'bone', spin: true });
+    expect(orbs('shadowbone')[0]).toMatchObject({ shape: 'bone', spin: true });
+    expect(orbs('boneclub')[0]).toMatchObject({ shape: 'bone' });
+    for (const id of ['spiderweb', 'toxicthread']) expect(SIGNATURE_MOVE_FX[id].layers.some(l => l.kind === 'web'), id).toBe(true);
+    expect(SIGNATURE_MOVE_FX.sacredfire.layers.some(l => l.kind === 'column')).toBe(true);
+    expect(SIGNATURE_MOVE_FX.spore.layers.some(l => l.kind === 'particles' && l.motion === 'fall')).toBe(true);
+    for (const id of ['kingsshield', 'spikyshield', 'banefulbunker', 'burningbulwark']) expect(SIGNATURE_MOVE_FX[id].layers[0].kind, id).toBe('shield');
+    expect(orbs('chatter')[0]).toMatchObject({ shape: 'note' });
+    expect(orbs('present')[0]).toMatchObject({ shape: 'present' });
   });
 });

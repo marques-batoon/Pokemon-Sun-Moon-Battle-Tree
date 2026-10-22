@@ -6,6 +6,10 @@ import {
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
+import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION } from './signature-moves';
+
+/** How the user of a big or signature attack moves (BIG_MOVE_MOTION, SIGNATURE_MOTION). */
+const MOVE_MOTION: Record<string, string> = { ...BIG_MOVE_MOTION, ...SIGNATURE_MOTION };
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
 import { isDarkWarp, isMatrix } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
@@ -43,7 +47,7 @@ const SIGNATURE_SPRITES: Record<string, { user?: string; target?: string }> = {
  * target (else it casts the move from where it stands), or explodes. By side, as it moves toward the other side.
  */
 function bigMoveClass(id: string, side: Side, atFoe: boolean): string | null {
-  const motion = BIG_MOVE_MOTION[id];
+  const motion = MOVE_MOTION[id];
   if (!motion) return null;
   const toward = motion === 'charge' || motion === 'leap' || motion === 'dive' || motion === 'rampage';
   return `fx-sig-${toward && !atFoe ? 'cast' : motion}-${side}`;
@@ -71,7 +75,7 @@ export function spriteVars(side: Side, slot: number, anim: BattleAnimation | nul
     return layer.kind === 'item' ? ({ '--item': layer.color } as CSSProperties) : undefined;
   }
   if (anim?.kind !== 'move' || !anim.fx || anim.still || anim.fx.kind !== 'attack' || !actsAt(anim, side, slot)) return undefined;
-  const motion = BIG_MOVE_MOTION[anim.fx.moveId];
+  const motion = MOVE_MOTION[anim.fx.moveId];
   if (!motion || motion === 'rampage') return undefined;
   const { layers } = moveSpec(anim.fx);
   const hit = motion === 'explode'
@@ -209,7 +213,9 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'sky-dropped': return SKY_DROPPED;
     case 'solar-charge': return SOLAR_CHARGE;
     case 'future-hit': return futureHitSpec(anim.condition ?? 'futuresight');
-    case 'hit': return anim.crit ? CRIT : null;
+    // Bonemerang's second hit: the bone strikes on its way back to the thrower (and "CRIT" if it was one).
+    case 'hit': return anim.condition === 'bonemerang' ? (anim.crit ? { layers: [...BONEMERANG_CATCH.layers, ...CRIT.layers] } : BONEMERANG_CATCH) : anim.crit ? CRIT : null;
+    case 'move-return': return anim.condition === 'bonemerang' ? BONEMERANG_RETURN : null;
     case 'residual': return residualSpec(anim.condition);
     case 'field-start':
     case 'field-end': return anim.condition ? fieldSpec(anim.condition, anim.kind === 'field-end') : null;

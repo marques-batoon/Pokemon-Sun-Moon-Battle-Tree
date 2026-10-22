@@ -897,6 +897,29 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .fx-orb2 .sh-missile { transform: translate(-50%, -50%) rotate(var(--ang)); }
 /* A paper talisman (ofuda): a strip of cream paper with a border and a swirl mark in ink (--c). */
 .sh-talisman { width: calc(var(--s) * 0.62); border-radius: 2px; border: calc(var(--s) * 0.06) solid var(--c); background: radial-gradient(circle at 50% 45%, var(--c) 0 13%, transparent 14% 22%, var(--c) 23% 29%, transparent 30%), #fffaf0; box-shadow: 0 0 calc(var(--s) * 0.18) rgb(255 220 120 / 0.8); }
+/* A bone: a shaft with two round knobs at each end. */
+.sh-bone { height: calc(var(--s) * 0.42); background:
+  radial-gradient(circle at 12% 26%, var(--c) 0 calc(var(--s) * 0.1), transparent calc(var(--s) * 0.105)),
+  radial-gradient(circle at 12% 74%, var(--c) 0 calc(var(--s) * 0.1), transparent calc(var(--s) * 0.105)),
+  radial-gradient(circle at 88% 26%, var(--c) 0 calc(var(--s) * 0.1), transparent calc(var(--s) * 0.105)),
+  radial-gradient(circle at 88% 74%, var(--c) 0 calc(var(--s) * 0.1), transparent calc(var(--s) * 0.105)),
+  linear-gradient(var(--c), var(--c)) center / 76% 34% no-repeat;
+  filter: drop-shadow(0 0 calc(var(--s) * 0.06) color-mix(in srgb, var(--c2, #ffffff) 70%, transparent)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.35)); }
+/* A music note (♪), in its color with a soft glow. */
+.sh-note { position: relative; }
+.sh-note::before { content: '\266A'; position: absolute; inset: 0; display: grid; place-items: center; color: var(--c); font-size: var(--s); line-height: 1; font-weight: 700; text-shadow: 0 0 calc(var(--s) * 0.2) var(--c), 0 1px 1px rgb(0 0 0 / 0.4); }
+/* A gift box: the box, a ribbon cross and a bow on top. */
+.sh-present { border-radius: 12%; background:
+  linear-gradient(90deg, transparent 42%, var(--c2, #e8484a) 42% 58%, transparent 58%),
+  linear-gradient(0deg, transparent 42%, var(--c2, #e8484a) 42% 58%, transparent 58%), var(--c);
+  box-shadow: inset 0 calc(var(--s) * -0.1) 0 rgb(0 0 0 / 0.18), 0 calc(var(--s) * -0.12) 0 calc(var(--s) * -0.06) var(--c2, #e8484a); }
+/* Thrown things that spin as they fly (a bone, a shuriken). */
+.fx-orb2.spin .shape { animation: orb-spin calc(300ms * var(--spd, 1)) linear infinite; }
+@keyframes orb-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+/* A spider web unfurling over a spot, then fading. */
+.fx-web { transform: translate(-50%, -50%); overflow: visible; animation-name: web-spin; animation-timing-function: ease-out; filter: drop-shadow(0 0 2px var(--c)); }
+.fx-web line, .fx-web polygon { fill: none; stroke: var(--c); stroke-width: 1.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+@keyframes web-spin { 0% { transform: translate(-50%, -50%) scale(0.2) rotate(-60deg); opacity: 0; } 30% { transform: translate(-50%, -50%) scale(1.05) rotate(0); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
 @keyframes orb-fly { 0% { transform: translate(0, 0) scale(0.5); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
 @keyframes orb-arc { 0% { transform: translate(0, 0) scale(0.6); opacity: 0; } 10% { opacity: 1; } 50% { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5 + var(--lift))) scale(1); } 90% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
 
@@ -1053,7 +1076,7 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 @keyframes tw-leaf-left { 0% { transform: translateX(5200%) rotate(0); opacity: 0; } 15%, 85% { opacity: 0.9; } 100% { transform: translateX(-120%) rotate(-900deg); opacity: 0; } }
 
 /* Type-chart immunities, and a type's other ones (stage-fx IMMUNE_CLASS): the immune Pokémon's reaction, over the attack's own effect (catalog IMMUNE_FX). */
-.fx-orb2.through { animation-timing-function: linear; }
+.fx-orb2.through, .fx-orb2.from-beyond { animation-timing-function: linear; }
 .fx-intangible { animation: intangible calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes intangible { 0%, 100% { opacity: 1; filter: none; transform: none; } 20%, 70% { opacity: 0.28; filter: blur(1.5px) drop-shadow(0 0 8px #9b7fe0); } 35% { transform: translateX(-3%) skewX(-4deg); } 55% { transform: translateX(3%) skewX(4deg); } }
 .fx-unfazed { animation: unfazed calc(1100ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }

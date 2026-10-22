@@ -6,6 +6,7 @@ import type { MoveFx } from '../../../client/move-class';
 import { isDarkWarp, isMatrix, WARP_DIGIMON } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
 import { BIG_MOVES, FUTURE_HIT } from './big-moves';
+import { SIGNATURE_MOVE_FX } from './signature-moves';
 
 export type Anchor = 'user' | 'target';
 export type Shape =
@@ -14,7 +15,13 @@ export type Shape =
   /** A missile (`color` its body, `color2` its nose), pointed the way it flies when thrown as an orb. */
   | 'missile'
   /** A paper talisman (ofuda) of cream paper, `color` its ink (Sakuyamon). */
-  | 'talisman';
+  | 'talisman'
+  /** A bone (Bonemerang, Bone Club, Shadow Bone), `color` its color. */
+  | 'bone'
+  /** A music note (Relic Song, Chatter, Sparkling Aria). */
+  | 'note'
+  /** A wrapped gift box, `color` the box and `color2` the ribbon (Present). */
+  | 'present';
 export type Motion = 'burst' | 'rise' | 'fall' | 'swirl' | 'converge' | 'spray';
 
 export type Layer =
@@ -23,7 +30,11 @@ export type Layer =
     /** It goes straight through the target and out the other side (a Normal or Fighting move on a Ghost). */
     through?: boolean;
     /** It flies the other way, from the target back to the user (drained life energy). */
-    reverse?: boolean }
+    reverse?: boolean;
+    /** The shape spins as it flies (a thrown bone, a shuriken). */
+    spin?: boolean;
+    /** It comes from beyond the target (where a throw that went through it ended up) back to the target (Bonemerang's return). */
+    fromBeyond?: boolean }
   /** Beam stretching from user to target. */
   | { kind: 'beam'; color: string; color2?: string; width: number; wavy?: boolean; delay?: number; dur?: number }
   /** Lightning from the sky onto the target. */
@@ -116,7 +127,9 @@ export type Layer =
   /** A sphere of light forming around the Pokémon, swirling inside (`color2`), glowing brighter until it's white. */
   | { kind: 'sphere'; at: Anchor; color: string; color2?: string; size: number; delay?: number; dur?: number }
   /** A glowing scan line sweeping down over the Pokémon (Matrix Evolution: its skin peeling away into data). */
-  | { kind: 'scan'; at: Anchor; color: string; delay?: number; dur?: number };
+  | { kind: 'scan'; at: Anchor; color: string; delay?: number; dur?: number }
+  /** A spider web spun over a spot: radial threads and rings, unfurling then fading (String Shot, Spider Web). */
+  | { kind: 'web'; at: Anchor; color: string; size: number; delay?: number; dur?: number };
 
 /** How a used-up item goes (Layer 'item'). */
 export type ItemUse = 'crumble' | 'burst' | 'absorb' | 'throw' | 'press';
@@ -1015,6 +1028,8 @@ export const SIGNATURE_Z_MOVES = Object.keys(Z_SIGNATURE);
  */
 export const SIGNATURE_MOVES: Record<string, FxSpec> = {
   ...BIG_MOVES,
+  // Signature moves (Bonemerang, Shadow Bone, Sacred Fire, Spore...): signature-moves.ts.
+  ...SIGNATURE_MOVE_FX,
   // Solar Beam (on request): light gathers at the user, then a thick beam of sunlight, white at its core, blasts the
   // target, rings of light riding along it, and bursts on the target in light, sparkles and leaves. Its charging
   // turn ("absorbed light") is SOLAR_CHARGE.
@@ -1873,6 +1888,8 @@ const FIELD_TINT: Record<string, string> = {
 
 /** Animation for a move, by what it does. */
 export function moveSpec(fx: MoveFx): FxSpec {
+  // A move with its own animation (a big move, a signature move, status ones included); Z-Moves have theirs below.
+  if (fx.kind !== 'z' && SIGNATURE_MOVES[fx.moveId]) return SIGNATURE_MOVES[fx.moveId];
   const t = asType(fx.type);
   const c = typeColor(t).bg;
   switch (fx.kind) {

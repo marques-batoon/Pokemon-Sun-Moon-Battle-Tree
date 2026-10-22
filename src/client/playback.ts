@@ -73,7 +73,13 @@ export type AnimationKind =
   /** Solar Beam's (or Solar Blade's) charging turn: the user absorbs sunlight. */
   | 'solar-charge'
   /** Future Sight or Doom Desire (`condition`) lands on the Pokémon (`side`/`slot`) two turns after it was used. */
-  | 'future-hit';
+  | 'future-hit'
+  /**
+   * A thrown move comes back for its second hit (`condition`: the move, Bonemerang): `side`/`slot` threw it, at
+   * `target`/`targetSlot`. The hit that follows has the same `condition` and the thrower as its `target`: the bone strikes
+   * on its way back to the thrower's hand.
+   */
+  | 'move-return';
 
 export type { MoveFx, MoveFxKind } from './move-class';
 
@@ -174,9 +180,28 @@ export const BIG_MOVE_MS: Record<string, number> = {
   volttackle: 1300, woodhammer: 1300, zapcannon: 1500, blizzard: 1300, clangingscales: 1500, fireblast: 1300, hurricane: 1300,
   hydropump: 1300, originpulse: 1300, poltergeist: 1400, steameruption: 1100, thunder: 1100,
 };
+/**
+ * Signature moves (one Pokémon's own when they came out: Bonemerang, Shadow Bone, Sacred Fire, Spore...) with their own
+ * animation (catalog signature-moves.ts): how long each plays.
+ */
+export const SIGNATURE_MOVE_MS: Record<string, number> = {
+  bonemerang: 1100, boneclub: 1050, crabhammer: 1100, clamp: 1200, hyperfang: 1050, aeroblast: 1250, sacredfire: 1350, octazooka: 1250, triplekick: 1150,
+  present: 1350, armthrust: 1100, blazekick: 1050, leafblade: 1100, lusterpurge: 1350, mistball: 1450, muddywater: 1200, needlearm: 1050, poisontail: 1150,
+  weatherball: 1350, meteormash: 1250, attackorder: 1200, defendorder: 1050, healorder: 1200, chatter: 1100, crushgrip: 1150, darkvoid: 1100, heartswap: 1200,
+  judgment: 1350, lunardance: 1200, magmastorm: 1300, spacialrend: 1250, fierydance: 1350, geargrind: 1150, heatcrash: 1150, hornleech: 1600, nightdaze: 1250,
+  psystrike: 1300, relicsong: 1250, searingshot: 1300, secretsword: 1050, sacredsword: 1050, glaciate: 1400, fusionflare: 1500, fusionbolt: 1100, aromaticmist: 1050,
+  craftyshield: 900, diamondstorm: 1450, electrify: 900, fairylock: 900, forestscurse: 950, geomancy: 1250, hyperspacefury: 1350, hyperspacehole: 1200, landswrath: 1100,
+  thousandarrows: 1350, thousandwaves: 1100, kingsshield: 900, matblock: 900, nobleroar: 1100, oblivionwing: 1600, partingshot: 1050, powder: 1000, topsyturvy: 1150,
+  trickortreat: 950, spikyshield: 900, watershuriken: 1100, flyingpress: 1100, accelerock: 900, anchorshot: 1250, banefulbunker: 900, beakblast: 1050, coreenforcer: 1350,
+  darkestlariat: 1050, firelash: 1200, icehammer: 1200, multiattack: 1150, photongeyser: 1300, plasmafists: 1200, pollenpuff: 1200, revelationdance: 1250, shadowbone: 1050,
+  sparklingaria: 1350, spectralthief: 1300, spiritshackle: 1200, tropkick: 1200, zingzap: 950, sunsteelstrike: 1200, moongeistbeam: 1400, firstimpression: 1000, naturesmadness: 1150,
+  mortalspin: 1150, psyblade: 1050, mightycleave: 1100, tachyoncutter: 1050, thunderclap: 900, hydrosteam: 1300, lovelykiss: 1250, softboiled: 1300, transform: 900,
+  splash: 900, kinesis: 1100, spore: 1200, milkdrink: 1200, sketch: 950, spiderweb: 1250, camouflage: 900, slackoff: 1150, tailglow: 1050,
+  floralhealing: 900, instruct: 900, purify: 1300, shoreup: 1350, toxicthread: 1300, spicyextract: 1250, noretreat: 1050, burningbulwark: 900,
+};
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
 export const SIGNATURE_MS: Record<string, number> = {
-  ...BIG_MOVE_MS, solarbeam: 1500, gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500,
+  ...BIG_MOVE_MS, ...SIGNATURE_MOVE_MS, solarbeam: 1500, gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500,
   pyrofang: 1000, lightningjoust: 1100, shieldofjust: 1300, petittwister: 1200, burstshot: 1400, giantmissile: 1500,
   diamondshuriken: 1000, amethystmandala: 1500,
 };
@@ -206,6 +231,8 @@ export const SKY_DROP_MS = 900;
 export const SKY_DROPPED_MS = 900;
 export const SOLAR_CHARGE_MS = 1000;
 export const FUTURE_HIT_MS = 900;
+/** Bonemerang's bone flying back to the target for its second hit. */
+export const MOVE_RETURN_MS = 380;
 
 /**
  * Abilities that absorb a move of some type: it fails, and the Pokémon heals, gets a stat boost or powers up
@@ -218,6 +245,10 @@ const isAbsorb = (id: string) => (ABSORB_ABILITIES as readonly string[]).include
 const abilityName = (tag: unknown) => (typeof tag === 'string' ? /^ability: (.+)$/i.exec(tag)?.[1] ?? null : null);
 /** Who used the last move (and its type), so an Ability's animation can show the attack being taken in. */
 const lastMoveUser = new WeakMap<ClientBattle, { side: 'p1' | 'p2' | null; slot: number; type?: string; id?: string }>();
+/** Hits (damage not from an effect) since the last move, by battle: a multi-hit move's second one is its return (Bonemerang). */
+const hitsSinceMove = new WeakMap<ClientBattle, number>();
+/** Moves whose second hit is the throw coming back (its own animation). */
+const RETURNING_MOVES = new Set(['bonemerang']);
 /** Pokémon a critical hit was just announced for ("-crit" comes before the damage), by side and slot. */
 const pendingCrits = new WeakMap<ClientBattle, Set<string>>();
 const critKey = (ident: string | undefined) => { const { side, slot } = at(ident); return `${side}${slot}`; };
@@ -385,6 +416,7 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
       zCategories.delete(battle);
       lastMoveUser.set(battle, { side, slot, type: fx.type, id: toId(args[2]) });
+      hitsSinceMove.set(battle, 0);
       pendingCrits.delete(battle);
       // [still]: the move didn't animate in the game either (e.g. charging turn, or it missed). Taken in by an
       // Ability (Water Absorb...): the Ability's own animation shows it instead.
@@ -417,6 +449,15 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // Residual damage remembers its cause (burn, poison, confusion, weather...) for its animation.
       const crit = kind === 'hit' && takeCrit(battle, args[1]);
       const hit = step({ kind, side, slot, target: null, hpDelta, condition: from || undefined, ...(crit ? { crit } : {}), durationMs: base });
+      // Bonemerang's second hit: the bone flies back to the target, then strikes it on its way to the thrower.
+      const thrower = lastMoveUser.get(battle);
+      if (kind === 'hit') hitsSinceMove.set(battle, (hitsSinceMove.get(battle) ?? 0) + 1);
+      if (kind === 'hit' && thrower?.side && thrower.id && RETURNING_MOVES.has(thrower.id) && hitsSinceMove.get(battle) === 2) {
+        return [
+          { animation: { kind: 'move-return', side: thrower.side, slot: thrower.slot, target: side, targetSlot: slot, condition: thrower.id, durationMs: MOVE_RETURN_MS }, applyLine: false },
+          step({ ...hit.animation!, condition: thrower.id, target: thrower.side, targetSlot: thrower.slot }),
+        ];
+      }
       // Sky Drop's attack lands on the Pokémon it carried: first it's dropped from the sky and slams into the ground.
       if (kind === 'hit' && lastMoveUser.get(battle)?.id === 'skydrop' && mon && CARRIED in mon.volatiles) {
         return [{ animation: { kind: 'sky-dropped', side, slot, target: null, durationMs: SKY_DROPPED_MS }, applyLine: false }, hit];
