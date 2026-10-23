@@ -1,5 +1,6 @@
 import { useState, useSyncExternalStore } from 'react';
 import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
+import { opponentSpriteIds } from '../sprites';
 import type { OnlineReward, OnlineRoom } from '../../online/link-room';
 import { RELAY_URL } from '../../online/relay-client';
 import { newRoomCode, ROOM_CODE } from '../../online/relay-protocol';
@@ -137,10 +138,13 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
 
   if (snap.battleId && battle.phase !== 'idle') {
     const failed = battle.phase === 'invalid-team' || battle.phase === 'error';
+    // Decided like the lines, so both players see the same (a Pokémon Masters sprite or not).
+    const battleKey = snap.battleQuotePick ?? battle.seedText ?? snap.battleId;
+    const battleSprites = opponentSpriteIds(battleFoes.map(id => TRAINERS[id]), battleKey);
     return (
       <>
         <div className="battle-banner">
-          {battleFoes.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
+          {battleFoes.map((id, i) => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} spriteId={battleSprites[i]} />)}
           <span>Online {lobby.course === 'allstar' ? 'All Star ' : ''}Multi · Battle {lobby.battle} · with {partnerName ?? 'your partner'}</span>
           <span className="spacer" />
           {host && lobby.inBattle && !snap.aiPartner && partnerName && (
@@ -154,7 +158,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
         </div>
         <BattleScreen
           client={room.client}
-          opponent={{ trainers: battleFoes.map(id => TRAINERS[id]), battleKey: snap.battleQuotePick ?? battle.seedText ?? snap.battleId }}
+          opponent={{ trainers: battleFoes.map(id => TRAINERS[id]), battleKey, spriteIds: battleSprites }}
           onContinue={battle.phase === 'ended' ? () => room.leaveBattleScreen() : undefined}
           continueLabel="Back to the room"
           debugTools={hostDebug}
@@ -198,7 +202,7 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
 
       {lobby.next.length > 0 && (
         <OpponentCard
-          trainers={nextFoes} greetings={greetings} battleKey={nextKey}
+          trainers={nextFoes} greetings={greetings} battleKey={nextKey} spriteIds={opponentSpriteIds(nextFoes, lobby.quotePick)}
           detail={`${lobby.course === 'allstar' ? 'All Star Mode · ' : ''}Battle ${lobby.battle} · streak ${lobby.streak}${lobby.rewards ? ` · win for ${bpForWin('allstar', lobby.battle)} BP each` : ''}`}
         />
       )}

@@ -5386,6 +5386,23 @@
     "trainerWins": "Balance and patience. That's all it takes.",
     "trainerLoses": "Patience lost to passion today. I'll think about that."
    }
+  ],
+  "Wren": [
+   {
+    "greeting": "I chased legends across a frozen tundra and back through time itself. You climbed this far, so show me you're one too.",
+    "trainerWins": "Legends don't fall to the merely persistent. Climb again, and bring more than stubbornness next time.",
+    "trainerLoses": "So you are a legend in the making. I've only ever lost to those. Keep climbing."
+   },
+   {
+    "greeting": "They call me a veteran. I call it a lifetime spent listening to the wind of a cold, wild land. Ready?",
+    "trainerWins": "The wind picked my side today. Out here, it usually does.",
+    "trainerLoses": "A gale I never saw coming. It's been years since anyone blew me off course like that."
+   },
+   {
+    "greeting": "Some of my partners are older than any history book. They've waited ages for a worthy fight. Don't make them wait more.",
+    "trainerWins": "Patient as stone and twice as old. Come back when you can outlast that.",
+    "trainerLoses": "Ancient, and still they fell. Remember today; few trainers ever get one like it."
+   }
   ]
  },
  "multi": {

@@ -6,13 +6,14 @@ import { useAppSettings } from '../useAppSettings';
 /**
  * Trainer portrait (Showdown trainer sprite), with an initials placeholder if
  * missing or turned off. `size` is the default box; CSS may scale it (the
- * opponent card enlarges it with crisp pixels).
+ * opponent card enlarges it with crisp pixels). `spriteId`: another sprite of
+ * theirs for this battle (a Pokémon Masters one); the usual one if it fails to load.
  */
-export function TrainerSprite({ trainer, size = 96, className = '' }: { trainer: Trainer; size?: number; className?: string }) {
+export function TrainerSprite({ trainer, size = 96, className = '', spriteId = null }: { trainer: Trainer; size?: number; className?: string; spriteId?: string | null }) {
   const { sprites } = useAppSettings();
-  const [failed, setFailed] = useState(false);
-  const url = trainerSpriteUrl(trainer);
-  if (!sprites || !url || failed) {
+  const [failed, setFailed] = useState<string[]>([]);
+  const url = [trainerSpriteUrl(trainer, spriteId), trainerSpriteUrl(trainer)].find(u => u && !failed.includes(u)) ?? null;
+  if (!sprites || !url) {
     const initials = trainer.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2);
     return <div className={`trainer-sprite placeholder ${className}`} style={{ '--size': `${size}px` } as CSSProperties} aria-label={`${trainer.class} ${trainer.name}`}>{initials}</div>;
   }
@@ -24,7 +25,7 @@ export function TrainerSprite({ trainer, size = 96, className = '' }: { trainer:
       width={size}
       height={size}
       draggable={false}
-      onError={() => setFailed(true)}
+      onError={() => setFailed(f => [...f, url])}
     />
   );
 }

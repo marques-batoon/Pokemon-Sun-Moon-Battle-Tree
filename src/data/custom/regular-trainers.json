@@ -1,0 +1,198 @@
+{
+ "source": "Designed for the user (2026-10-22, on request): data-sources/custom/regular-trainers.txt (teams) and regular-trainers.json (who, sprite, from which battle); built by scripts/build-custom-trainers.mjs. Not from any game.",
+ "notes": [
+  "Regular trainers who join the regular trainers' pool (battles 51 and up) from battle `fromBattle` on, in Super Singles, Super Doubles and Super Multi, with the same chance as everyone else in it.",
+  "`spriteId`: their Pokémon Showdown trainer sprite. IV 31 like every regular trainer from battle 51; IV lines are ignored."
+ ],
+ "trainers": [
+  {
+   "name": "Wren",
+   "class": "Veteran",
+   "classGender": "F",
+   "spriteId": "veteranf-gen6",
+   "fromBattle": 100,
+   "sets": [
+    {
+     "species": "Articuno-Galar",
+     "item": "Leftovers",
+     "ability": "Competitive",
+     "nature": "Timid",
+     "evs": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Calm Mind",
+      "Freezing Glare",
+      "Hurricane",
+      "Recover"
+     ]
+    },
+    {
+     "species": "Articuno-Galar",
+     "item": "Choice Specs",
+     "ability": "Competitive",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Freezing Glare",
+      "Hurricane",
+      "Shadow Ball",
+      "U-turn"
+     ]
+    },
+    {
+     "species": "Zapdos-Galar",
+     "item": "Choice Band",
+     "ability": "Defiant",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Thunderous Kick",
+      "Brave Bird",
+      "U-turn",
+      "Throat Chop"
+     ]
+    },
+    {
+     "species": "Zapdos-Galar",
+     "item": "Fightinium Z",
+     "ability": "Defiant",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Bulk Up",
+      "Thunderous Kick",
+      "Brave Bird",
+      "Stomping Tantrum"
+     ]
+    },
+    {
+     "species": "Moltres-Galar",
+     "item": "Life Orb",
+     "ability": "Berserk",
+     "nature": "Timid",
+     "evs": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Nasty Plot",
+      "Fiery Wrath",
+      "Hurricane",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Moltres-Galar",
+     "item": "Sitrus Berry",
+     "ability": "Berserk",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Agility",
+      "Fiery Wrath",
+      "Air Slash",
+      "Shadow Ball"
+     ]
+    },
+    {
+     "species": "Entei",
+     "item": "Paradoxorb-A",
+     "ability": "Inner Focus",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 4,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Flare Blitz",
+      "Dragon Claw",
+      "Burning Bulwark"
+     ]
+    },
+    {
+     "species": "Raikou",
+     "item": "Paradoxorb-A",
+     "ability": "Inner Focus",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Calm Mind",
+      "Thunderclap",
+      "Thunderbolt",
+      "Dragon Pulse"
+     ]
+    },
+    {
+     "species": "Suicune",
+     "item": "Paradoxorb-A",
+     "ability": "Inner Focus",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Hydro Steam",
+      "Draco Meteor",
+      "Flamethrower",
+      "Protect"
+     ]
+    }
+   ]
+  }
+ ]
+}

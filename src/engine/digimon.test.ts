@@ -360,11 +360,11 @@ describe('Guilmon and Gallantmon (Matrix Evolution)', () => {
     ]);
     expect(Object.values(g.baseStats).reduce((x, y) => x + y, 0)).toBe(309);
     const m = dex.species.get('Gallantmon');
-    expect([m.baseSpecies, m.battleOnly, m.requiredItem, m.types, m.abilities, m.weightkg]).toEqual(['Guilmon', 'Guilmon', 'Gallantite', ['Steel', 'Fairy'], { 0: 'Dauntless Shield' }, 110]);
+    expect([m.baseSpecies, m.battleOnly, m.requiredItem, m.types, m.abilities, m.weightkg]).toEqual(['Guilmon', 'Guilmon', 'Gallantite', ['Steel', 'Fairy'], { 0: 'Mirror Armor' }, 110]);
     expect(m.baseStats).toEqual({ hp: 85, atk: 145, def: 120, spa: 75, spd: 125, spe: 84 });
     expect(Object.values(m.baseStats).reduce((x, y) => x + y, 0)).toBe(634);
     expect(dex.items.get('Gallantite').megaStone).toEqual({ Guilmon: 'Gallantmon' });
-    expect(dex.abilities.get('Dauntless Shield').isNonstandard).toBeNull();
+    expect(dex.abilities.get('Mirror Armor').isNonstandard).toBeNull();
     const pyro = dex.moves.get('Pyro Fang');
     expect([pyro.type, pyro.category, pyro.basePower, pyro.accuracy, pyro.pp, pyro.priority, pyro.target, pyro.flags.contact, pyro.flags.bite]).toEqual(['Fire', 'Physical', 70, 100, 15, 0, 'normal', 1, 1]);
     expect(pyro.secondary).toEqual({ chance: 20, status: 'brn' });
@@ -387,22 +387,19 @@ describe('Guilmon and Gallantmon (Matrix Evolution)', () => {
     expect(validate(team(mon('Charizard', 'Gallantite', 'Blaze', ['Flamethrower'], 'EVs: 252 SpA\n'))).join(' ')).toMatch(/can't hold Gallantite: only Guilmon can Matrix Evolve with it/);
   });
 
-  it('Matrix Evolves into Gallantmon like a Warp Digivolution, with its own messages, and Dauntless Shield raises its Defense once', () => {
-    const b = singles([guilmon()], [target]);
+  it('Matrix Evolves into Gallantmon like a Warp Digivolution, with its own messages, and Mirror Armor reflects stat drops back', () => {
+    const b = singles([guilmon()], [mon('Snorlax', 'Leftovers', 'Thick Fat', ['Growl'], 'EVs: 252 HP / 252 Def\n')]);
     expect(b.p1.active[0].canMegaEvo).toBe('Gallantmon');
     b.makeChoices('move 1 mega', 'move 1');
     const p = b.p1.active[0];
     expect(p.species.name).toBe('Gallantmon');
-    expect(p.ability).toBe('dauntlessshield');
-    expect(p.boosts.def).toBe(1);
+    expect(p.ability).toBe('mirrorarmor');
     const log = b.log.join('\n');
     expect(log).toMatch(/\|message\|Guilmon matrix-evolve to\.\.\.\n[^]*?\|detailschange\|p1a: Guilmon\|Gallantmon[^]*?\|message\|Gallantmon!/);
-    expect(log).toMatch(/\|message\|Gallantmon!\n\|-ability\|p1a: Guilmon\|Dauntless Shield\|boost\n\|-boost\|p1a: Guilmon\|def\|1/);
-    // As in Gen 9, only once a battle: not again when it comes back in.
-    b.makeChoices('switch 2', 'move 1');
-    b.makeChoices('switch 2', 'move 1');
-    expect(b.p1.active[0].species.name).toBe('Gallantmon');
-    expect(b.p1.active[0].boosts.def).toBe(0);
+    // The foe's Growl comes back at it: Gallantmon's Attack stays, Snorlax's drops.
+    expect(log).toMatch(/\|-ability\|p1a: Guilmon\|Mirror Armor\n\|-unboost\|p2a: Snorlax\|atk\|1/);
+    expect(p.boosts.atk).toBe(0);
+    expect(b.p2.active[0].boosts.atk).toBe(-1);
   });
 
   it('boosts Pyro Fang with Strong Jaw (70 -> 105)', () => {

@@ -261,18 +261,6 @@ function addDigimonLogic(data: Record<string, Record<string, Entry>>, parent: { 
       },
     });
   }
-  Object.assign(data.Abilities.dauntlessshield, {
-    onStart(this: Battle, pokemon: Pokemon) {
-      // Matrix Evolving: it takes effect after the call ("Gallantmon!"), not in the middle of the change (warpDigivolve).
-      if (pokemon.m.warping) {
-        pokemon.m.abilityHeld = true;
-        return;
-      }
-      if (pokemon.m.shieldBoost) return;
-      pokemon.m.shieldBoost = true;
-      this.boost({ def: 1 }, pokemon);
-    },
-  });
 }
 
 /**
@@ -366,18 +354,11 @@ function warpDigivolve(battle: Battle, pokemon: Pokemon, form: string) {
   // The anime's call, split around the warp animation: "Agumon warp-digivolve to..." ... "WarGreymon!"
   // (BlackWarGreymon: "Agumon dark warp-digivolve to..."; Gallantmon: "Guilmon matrix-evolve to...").
   battle.add('message', `${who} ${warpNames(form).call} to...`);
-  pokemon.m.warping = true;
   pokemon.formeChange(form, battle.dex.conditions.get('warpdigivolution'), true);
-  pokemon.m.warping = false;
   // As for Mega Evolution: it counts as an action for Truant, and there's no going back.
   pokemon.moveThisTurnResult = true;
   pokemon.formeRegression = true;
   battle.add('message', `${form}!`);
-  // An Ability that acts as it starts (Gallantmon's Dauntless Shield) waited for the call: now it does.
-  if (pokemon.m.abilityHeld) {
-    pokemon.m.abilityHeld = false;
-    battle.singleEvent('Start', pokemon.getAbility(), pokemon.abilityState, pokemon);
-  }
 }
 
 type Actions = Battle['actions'];

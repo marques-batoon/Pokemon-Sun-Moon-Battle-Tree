@@ -11,7 +11,7 @@ import { gen7 } from '../team/dex';
 import type { SpriteStyle } from '../settings/settings-store';
 import spriteData from '../data/battle-tree/trainer-sprites.json';
 import artData from '../data/battle-tree/trainer-art.json';
-import { trainerKey, type Trainer } from '../data/battle-tree';
+import { QUOTE_PICKS, quotePick, trainerKey, type Trainer } from '../data/battle-tree';
 
 export type SpriteSide = 'p1' | 'p2';
 
@@ -216,17 +216,42 @@ export function iconStyle(species: string): CSSProperties {
 const classes = spriteData.classes as Record<string, string>;
 const named = spriteData.named as Record<string, string>;
 
-/** Showdown trainer sprite id for a Battle Tree trainer (see trainer-sprites.json). */
+/** Showdown trainer sprite id for a Battle Tree trainer (see trainer-sprites.json; a custom trainer may name its own). */
 export function trainerSpriteId(trainer: Trainer): string | null {
+  if (trainer.spriteId) return trainer.spriteId;
   if (trainer.kind !== 'regular') return named[trainerKey(trainer)] ?? null;
   return classes[`${trainer.class}|${trainer.classGender}`] ?? classes[trainer.class] ?? null;
 }
 
-export function trainerSpriteUrl(trainer: Trainer): string | null {
+/** A trainer's usual sprite, or (`spriteId`) another Showdown trainer sprite of theirs: a Pokémon Masters one. */
+export function trainerSpriteUrl(trainer: Trainer, spriteId?: string | null): string | null {
+  if (spriteId) return Sprites.getAvatar(spriteId);
   // Custom trainers bring their own sprite, served from public/ with the app.
   if (trainer.sprite) return `${import.meta.env.BASE_URL}${trainer.sprite.replace(/^\//, '')}`;
   const id = trainerSpriteId(trainer);
   return id ? Sprites.getAvatar(id) : null;
+}
+
+const masters = spriteData.masters as Record<string, string[]>;
+/** How often a special trainer who has Pokémon Masters sprites shows one in a battle (on request, 2026-10-22). */
+export const MASTERS_CHANCE = 0.3;
+/** A special trainer's Pokémon Masters sprites on Showdown (kyledove's; some have several outfits), if any. */
+export const mastersSpriteIds = (trainer: Trainer): readonly string[] => (trainer.kind === 'special' ? masters[trainerKey(trainer)] ?? [] : []);
+
+/**
+ * The sprite each opposing trainer shows in a battle: for a special trainer with Pokémon Masters sprites, one of those
+ * 30% of the time (each outfit equally likely), else null (their usual sprite and artwork). In a Multi Battle, if one
+ * of them shows theirs, both do (if both have one). Decided by `key` (the battle's seed text or quote pick; a
+ * tournament's own key for its duos), so a battle always looks the same; null: no Masters sprites.
+ */
+export function opponentSpriteIds(trainers: readonly Trainer[], key: string | number | null): (string | null)[] {
+  if (key === null) return trainers.map(() => null);
+  const roll = (t: Trainer, what: string) => quotePick(`${key}|masters|${what}|${trainerKey(t)}`);
+  const shown = trainers.some(t => mastersSpriteIds(t).length && roll(t, 'chance') < MASTERS_CHANCE * QUOTE_PICKS);
+  return trainers.map(t => {
+    const ids = mastersSpriteIds(t);
+    return shown && ids.length ? ids[roll(t, 'outfit') % ids.length] : null;
+  });
 }
 
 /**

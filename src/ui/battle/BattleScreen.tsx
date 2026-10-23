@@ -1,6 +1,7 @@
 import type { BattleClient } from '../../client/battle-client';
-import { trainerQuotes, type Trainer } from '../../data/battle-tree';
+import { closingsOf, greetingsOf, type Trainer } from '../../data/battle-tree';
 import { TrainerSprite } from '../components/TrainerSprite';
+import { opponentSpriteIds } from '../sprites';
 import { isTeamPreview } from '../../engine/sim-types';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { useAppSettings } from '../useAppSettings';
@@ -21,7 +22,8 @@ interface Props {
   continueLabel?: string;
   /** The trainer(s) being fought (two in Multi) and this battle's key (seed text): they say a closing remark when it ends. */
   /** `battleKey`: the battle's seed text, or its quote pick (online), choosing the closing remark that goes with its greeting. */
-  opponent?: { trainers: Trainer[]; battleKey: string | number };
+  /** `spriteIds`: their sprites for this battle (Pokémon Masters ones); default: decided by `battleKey`. */
+  opponent?: { trainers: Trainer[]; battleKey: string | number; spriteIds?: (string | null)[] };
   /** Show debug info (seed, input log). Default: the debug tools setting. Online partners never get it. */
   debugTools?: boolean;
 }
@@ -49,6 +51,10 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
 
   const inPreview = request && isTeamPreview(request) && !s.awaiting;
   const foe = battle.p2.active[0];
+  // The opponents' closing remarks, once the battle has played out (none on a tie).
+  const winner = s.phase === 'ended' && !s.playing ? s.result?.winner : null;
+  const closings = opponent && (winner === 'p1' || winner === 'p2') ? closingsOf(opponent.trainers, opponent.battleKey, winner === 'p2') : [];
+  const spriteIds = opponent ? opponent.spriteIds ?? opponentSpriteIds(opponent.trainers, opponent.battleKey) : [];
 
   return (
     <div className={`battle-layout${settings.showBattleLog ? '' : ' no-log'}`}>
@@ -72,7 +78,7 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
               </div>
             ) : s.phase === 'ended' && s.result ? (
               <div className={`notice result ${s.result.winner === 'p1' ? 'win' : 'loss'}`}>
-                {opponent?.trainers.map(t => <ClosingRemark key={t.id} trainer={t} alongside={opponent.trainers} battleKey={opponent.battleKey} winner={s.result!.winner} />)}
+                {closings.map(c => <ClosingRemark key={c.trainer.id} trainer={c.trainer} line={c.line} spriteId={spriteIds[opponent!.trainers.indexOf(c.trainer)]} />)}
                 <strong>{s.result.winner === 'p1' ? 'You won!' : s.result.winner === 'p2' ? 'You lost.' : 'Tie.'}</strong>
                 <span className="muted small">{s.result.turns} turns</span>
                 {showDebug && (
@@ -101,19 +107,16 @@ export function BattleScreen({ client, onContinue, continueLabel = 'Continue', o
         )}
         {!settings.showBattleLog && <button className="link-button small log-toggle" onClick={() => getSettingsStore().update({ showBattleLog: true })}>Show battle log</button>}
       </div>
-      {settings.showBattleLog && <BattleLog entries={s.log} onHide={() => getSettingsStore().update({ showBattleLog: false })} />}
+      {settings.showBattleLog && <BattleLog entries={s.log} greetings={opponent && greetingsOf(opponent.trainers, opponent.battleKey)} closings={closings} onHide={() => getSettingsStore().update({ showBattleLog: false })} />}
     </div>
   );
 }
 
-/** The opponent's last word: the closing remark (win or loss) that goes with this battle's greeting; none on a tie. */
-function ClosingRemark({ trainer, alongside, battleKey, winner }: { trainer: Trainer; alongside: readonly Trainer[]; battleKey: string | number; winner: string | null | undefined }) {
-  const quotes = trainerQuotes(trainer, battleKey, alongside);
-  const line = winner === 'p2' ? quotes?.trainerWins : winner === 'p1' ? quotes?.trainerLoses : null;
-  if (!line) return null;
+/** The opponent's last word: the closing remark (win or loss) that goes with this battle's greeting. */
+function ClosingRemark({ trainer, line, spriteId }: { trainer: Trainer; line: string; spriteId?: string | null }) {
   return (
     <div className="closing-remark">
-      <TrainerSprite trainer={trainer} size={48} />
+      <TrainerSprite trainer={trainer} size={48} spriteId={spriteId} />
       <div className="closing-remark-text">
         <span className="muted small">{trainer.class} {trainer.name}</span>
         <q>{line}</q>

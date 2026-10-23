@@ -2,12 +2,13 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { TRAINERS, trainerQuotes, type Trainer } from '../../data/battle-tree';
 import { battleName } from '../../online/trainer-name';
 import {
-  champion, matchKey, nextOpponent, roundName, roundPhrase, roundsOf, tournamentBp, tournamentDecided, type TournamentState,
+  champion, duoSpriteKey, matchKey, nextOpponent, roundName, roundPhrase, roundsOf, tournamentBp, tournamentDecided, type TournamentState,
 } from '../../run/tournament';
 import type { TournamentController } from '../../run/tournament-controller';
 import { bpBalance } from '../../run/types';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { OpponentCard } from '../components/OpponentCard';
+import { opponentSpriteIds } from '../sprites';
 import { PokemonIcon } from '../components/PokemonSprite';
 import { Trophy } from '../components/Trophy';
 import { useAppSettings } from '../useAppSettings';
@@ -150,6 +151,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
               greetings={foes.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], matchKey(t), foes.trainers.map(o => TRAINERS[o.trainerId]))?.greeting ?? null)}
               detail={`${roundName(t.round, rounds)} · win for ${t.debug ? 0 : tournamentBp(t.round, rounds)} BP${t.debug ? ' (practice)' : ''}`}
               battleKey={`${t.id}:${t.round}`}
+              spriteIds={opponentSpriteIds(foes.trainers.map(p => TRAINERS[p.trainerId]), duoSpriteKey(t))}
             />
           )}
           <div className="row-actions">
@@ -197,6 +199,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
             trainers: winner.trainers.map(p => TRAINERS[p.trainerId]) as [Trainer, Trainer],
             // Their lines for winning together (pair lines), as at the end of a battle.
             quotes: winner.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], `${t.seedText}|champions`, winner.trainers.map(o => TRAINERS[o.trainerId]))?.trainerWins ?? null) as [string | null, string | null],
+            spriteIds: opponentSpriteIds(winner.trainers.map(p => TRAINERS[p.trainerId]), duoSpriteKey(t)),
           }}
           bp={t.bp}
           onClose={() => setCelebrated(true)}

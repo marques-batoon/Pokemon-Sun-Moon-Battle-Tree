@@ -47,15 +47,19 @@ interface TrainerBase {
   custom?: boolean;
   /** Custom trainers' own sprite (a path under public/), instead of a Showdown one. */
   sprite?: string;
+  /** Custom trainers: their Pokémon Showdown sprite, instead of their class's (Veteran Wren: veteranf-gen6). */
+  spriteId?: string;
   /** Custom trainers: the set (id) that always leads their team (Tai's Agumon, Matt's Gabumon). */
   leadSetId?: number;
 }
 
 export interface RegularTrainer extends TrainerBase {
   kind: 'regular';
-  /** Bulbapedia's 1-based trainer number (001-190). */
-  number: number;
+  /** Bulbapedia's 1-based trainer number (001-190); null for custom ones. */
+  number: number | null;
   bulbapediaBrackets: string[];
+  /** Custom: in the regular trainers' pool from this battle on (Veteran Wren: 100). */
+  fromBattle?: number;
 }
 
 export interface SpecialTrainer extends TrainerBase {

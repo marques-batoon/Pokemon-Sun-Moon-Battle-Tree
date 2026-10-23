@@ -1,7 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { TRAINERS } from '../../data/battle-tree';
+import { closingsOf, greetingsOf, TRAINERS, type TrainerLine } from '../../data/battle-tree';
 import { ReplayPlayer } from '../../client/replay-player';
-import { matchEntrants, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
+import { matchEntrants, matchKey, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { BattleLog } from '../battle/BattleLog';
 import { BattleStage } from '../battle/BattleStage';
@@ -55,6 +55,14 @@ export function ReplayScreen({ t, round, match, you, onBack }: Props) {
   const name = (i: number | null) => (i === null ? '?' : entrantName(t.entrants[i], t, you));
   const winner = t.results[round][match];
   const title = `${roundName(round, rounds)}: ${name(bottom)} vs ${name(top)}`;
+  // The lines of the duo you faced, or of both duos in a match you weren't in: greetings, and closing remarks for the end.
+  const duos = [bottom, top].flatMap(i => {
+    const e = i === null ? null : t.entrants[i];
+    return e?.kind === 'duo' ? [{ i, trainers: e.trainers.map(p => TRAINERS[p.trainerId]) }] : [];
+  });
+  const key = matchKey({ seedText: t.seedText, round });
+  const greetings = duos.flatMap(d => greetingsOf(d.trainers, key));
+  const closings = winner === null ? [] : duos.flatMap(d => closingsOf(d.trainers, key, d.i === winner));
 
   if (!log) {
     return (
@@ -74,10 +82,10 @@ export function ReplayScreen({ t, round, match, you, onBack }: Props) {
       </section>
     );
   }
-  return <ReplayView player={player} title={title} winner={winner === null ? null : name(winner)} onBack={onBack} />;
+  return <ReplayView player={player} title={title} winner={winner === null ? null : name(winner)} greetings={greetings} closings={closings} onBack={onBack} />;
 }
 
-function ReplayView({ player, title, winner, onBack }: { player: ReplayPlayer; title: string; winner: string | null; onBack: () => void }) {
+function ReplayView({ player, title, winner, greetings, closings, onBack }: { player: ReplayPlayer; title: string; winner: string | null; greetings: TrainerLine[]; closings: TrainerLine[]; onBack: () => void }) {
   const state = useSyncExternalStore(player.subscribe, player.getState);
   const s = useBattleSnapshot(state.client);
   const settings = useAppSettings();
@@ -129,7 +137,7 @@ function ReplayView({ player, title, winner, onBack }: { player: ReplayPlayer; t
               </div>
             )}
           </div>
-          {settings.showBattleLog && <BattleLog entries={s.log} onHide={() => getSettingsStore().update({ showBattleLog: false })} />}
+          {settings.showBattleLog && <BattleLog entries={s.log} greetings={greetings} closings={over ? closings : undefined} onHide={() => getSettingsStore().update({ showBattleLog: false })} />}
         </div>
       )}
     </section>

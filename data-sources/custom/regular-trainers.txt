@@ -1,0 +1,82 @@
+=== [gen7] Wren ===
+
+Articuno-Galar @ Leftovers
+Ability: Competitive
+EVs: 4 SpD / 252 SpA / 252 Spe
+Timid Nature
+- Calm Mind
+- Freezing Glare
+- Hurricane
+- Recover
+
+Articuno-Galar @ Choice Specs
+Ability: Competitive
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Freezing Glare
+- Hurricane
+- Shadow Ball
+- U-turn
+
+Zapdos-Galar @ Choice Band
+Ability: Defiant
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
+- Thunderous Kick
+- Brave Bird
+- U-turn
+- Throat Chop
+
+Zapdos-Galar @ Fightinium Z
+Ability: Defiant
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Bulk Up
+- Thunderous Kick
+- Brave Bird
+- Stomping Tantrum
+
+Moltres-Galar @ Life Orb
+Ability: Berserk
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+- Nasty Plot
+- Fiery Wrath
+- Hurricane
+- Protect
+
+Moltres-Galar @ Sitrus Berry
+Ability: Berserk
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Agility
+- Fiery Wrath
+- Air Slash
+- Shadow Ball
+
+Entei @ Paradoxorb-A
+Ability: Inner Focus
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Flare Blitz
+- Dragon Claw
+- Burning Bulwark
+
+Raikou @ Paradoxorb-A
+Ability: Inner Focus
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Calm Mind
+- Thunderclap
+- Thunderbolt
+- Dragon Pulse
+
+Suicune @ Paradoxorb-A
+Ability: Inner Focus
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Steam
+- Draco Meteor
+- Flamethrower
+- Protect

@@ -1,0 +1,6 @@
+{
+  "note": "Custom regular trainers: they join the regular trainers' pool from battle `fromBattle` on (Super Singles, Super Doubles and Super Multi), drawn with the same chance as everyone else in it. `spriteId`: a Pokémon Showdown trainer sprite (https://play.pokemonshowdown.com/sprites/trainers/<id>.png).",
+  "trainers": {
+    "Wren": { "class": "Veteran", "gender": "F", "spriteId": "veteranf-gen6", "fromBattle": 100 }
+  }
+}

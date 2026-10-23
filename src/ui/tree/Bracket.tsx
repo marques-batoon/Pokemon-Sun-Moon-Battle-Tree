@@ -1,9 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { TRAINERS } from '../../data/battle-tree';
-import { matchCount, playerMatch, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
+import { TRAINERS, type Trainer } from '../../data/battle-tree';
+import { duoSpriteKey, matchCount, playerMatch, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { Trophy } from '../components/Trophy';
+import { opponentSpriteIds } from '../sprites';
 import { revealStagger } from './bracket-timing';
 
 interface Props {
@@ -119,9 +120,15 @@ function Entrant({ entrant, t, you, className, order }: { entrant: TournamentEnt
       <span className="b-sprites">
         {entrant.kind === 'player'
           ? <><PlayerSprite size={size} label={you} /><TrainerSprite trainer={partner} size={size} /></>
-          : entrant.trainers.map(p => <TrainerSprite key={p.trainerId} trainer={TRAINERS[p.trainerId]} size={size} />)}
+          : duoSprites(entrant.trainers.map(p => TRAINERS[p.trainerId]), t, size)}
       </span>
       <span className="b-names">{names}</span>
     </div>
   );
+}
+
+/** A duo's sprites on the bracket: their Pokémon Masters sprites when they have them this tournament (as in their matches). */
+function duoSprites(trainers: Trainer[], t: TournamentState, size: number): ReactNode {
+  const spriteIds = opponentSpriteIds(trainers, duoSpriteKey(t));
+  return trainers.map((trainer, i) => <TrainerSprite key={trainer.id} trainer={trainer} size={size} spriteId={spriteIds[i]} />);
 }

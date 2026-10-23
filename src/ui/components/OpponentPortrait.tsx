@@ -11,22 +11,26 @@ interface Props {
   intro?: string | null;
   /** Name and greeting under each trainer during the intro. */
   captions?: IntroCaption[];
+  /** Each trainer's sprite for this battle when it isn't their usual one (a Pokémon Masters sprite), else null. */
+  spriteIds?: (string | null)[];
 }
 
 /**
  * The big centred trainer picture on the opponent card: official artwork for
  * special trainers and Battle Legends that have it, otherwise the Showdown
  * sprite scaled up with crisp pixels (in a Multi Battle, both show sprites
- * unless both have artwork). Battles keep the small sprite.
+ * unless both have artwork; a trainer showing a Pokémon Masters sprite shows
+ * that instead of artwork). Battles keep the small sprite.
  * `intro` (special battles): a key for the full-screen entrance, played once
  * per key, with `captions` (names and greetings) under the trainers. Remount
  * per battle (key) so state doesn't carry over.
  */
-export function OpponentPortrait({ trainers, intro = null, captions }: Props) {
+export function OpponentPortrait({ trainers, intro = null, captions, spriteIds = [] }: Props) {
   const { sprites } = useAppSettings();
   // Trainers whose artwork failed to load (they fall back to the sprite).
   const [artFailed, setArtFailed] = useState<number[]>([]);
-  const ownArt = (t: Trainer) => (sprites && !artFailed.includes(t.id) ? trainerArt(t) : null);
+  const spriteOf = (t: Trainer) => spriteIds[trainers.indexOf(t)] ?? null;
+  const ownArt = (t: Trainer) => (sprites && !artFailed.includes(t.id) && !spriteOf(t) ? trainerArt(t) : null);
   // Two trainers (Multi) match: artwork only if both have it, otherwise both show their sprite.
   const allArt = trainers.every(ownArt);
   const artOf = (t: Trainer) => (allArt ? ownArt(t) : null);
@@ -34,7 +38,7 @@ export function OpponentPortrait({ trainers, intro = null, captions }: Props) {
   const [withIntro] = useState(() => !!intro && !introPlayed(intro) && !prefersReducedMotion());
   const box = useRef<HTMLDivElement>(null);
   const captionKey = JSON.stringify(captions ?? []);
-  const artKey = trainers.map(t => artOf(t)?.url ?? t.id).join('|');
+  const artKey = trainers.map(t => artOf(t)?.url ?? spriteOf(t) ?? t.id).join('|');
 
   useEffect(() => {
     const imgs = [...(box.current?.querySelectorAll('img') ?? [])];
@@ -69,7 +73,7 @@ export function OpponentPortrait({ trainers, intro = null, captions }: Props) {
             onError={() => setArtFailed(f => [...f, trainer.id])}
           />
         ) : (
-          <TrainerSprite key={trainer.id} trainer={trainer} size={80} className="opponent-sprite" />
+          <TrainerSprite key={trainer.id} trainer={trainer} size={80} className="opponent-sprite" spriteId={spriteOf(trainer)} />
         );
       })}
     </div>

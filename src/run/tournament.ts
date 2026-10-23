@@ -112,6 +112,9 @@ export const tournamentBp = (round: number, rounds = TOURNAMENT_ROUNDS) => (roun
 /** Which of their lines the duo you face uses this round (the same on the card and in battle). */
 export const matchKey = (t: Pick<TournamentState, 'seedText' | 'round'>) => `${t.seedText}|round-${t.round + 1}`;
 
+/** Decides the duos' looks (a Pokémon Masters sprite or not) for the whole tournament: the same on the bracket and in every match. */
+export const duoSpriteKey = (t: Pick<TournamentState, 'seedText'>) => `${t.seedText}|duos`;
+
 /** Seed text of round r's matches (yours, or a simulated one). */
 export const matchSeedText = (seedText: string, round: number, match: number) => `${seedText}|round-${round + 1}|match-${match + 1}`;
 

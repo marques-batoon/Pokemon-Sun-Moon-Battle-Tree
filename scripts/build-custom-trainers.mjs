@@ -11,6 +11,8 @@
 //  - digidestined.txt + digidestined.json -> src/data/custom/digidestined.json (the DigiDestined and
 //    other Digimon Tamers as special trainers: own sprite, a Pokémon that always leads, fixed Multi
 //    Battle partners).
+//  - regular-trainers.txt + regular-trainers.json -> src/data/custom/regular-trainers.json (regular trainers who
+//    join the regular trainers' pool from a given battle on: Veteran Wren, from battle 100).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
 //  - Abilities, items, natures, EVs, moves and genders come from the export;
 //    IVs don't: like every Battle Tree trainer they use the trainer's IV
@@ -239,6 +241,18 @@ for (const t of digidestinedTrainers) {
   if ([...gymLeaders, ...eliteFour].some(o => o.name === t.name) || evilTeams.some(o => (o.key ?? o.name) === t.name)) problems.push(`${t.name}: already a special trainer`);
 }
 
+// --- Regular trainers (custom): in the regular trainers' pool from a given battle on ---
+const regular = JSON.parse(readFileSync(new URL('regular-trainers.json', dir), 'utf8'));
+const regularTrainers = parseExports('regular-trainers.txt', name => {
+  const info = regular.trainers[name];
+  if (!info) { problems.push(`regular-trainers.json: no entry for ${name}`); return {}; }
+  return { class: info.class, classGender: info.gender, spriteId: info.spriteId, fromBattle: info.fromBattle };
+});
+for (const t of regularTrainers) {
+  if (!(t.fromBattle > 50)) problems.push(`regular-trainers.json: ${t.name}'s fromBattle must be over 50 (the pool for battles 51 and up)`);
+  if (GAME_TRAINERS.some(o => o.name === t.name)) problems.push(`${t.name}: the game has a trainer with that name`);
+}
+
 if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
@@ -290,4 +304,12 @@ save('battle-50.json', {
   ],
   trainers: battle50Trainers,
   battles: battle50.battles,
+});
+save('regular-trainers.json', {
+  source: 'Designed for the user (2026-10-22, on request): data-sources/custom/regular-trainers.txt (teams) and regular-trainers.json (who, sprite, from which battle); built by scripts/build-custom-trainers.mjs. Not from any game.',
+  notes: [
+    'Regular trainers who join the regular trainers\' pool (battles 51 and up) from battle `fromBattle` on, in Super Singles, Super Doubles and Super Multi, with the same chance as everyone else in it.',
+    '`spriteId`: their Pokémon Showdown trainer sprite. IV 31 like every regular trainer from battle 51; IV lines are ignored.',
+  ],
+  trainers: regularTrainers,
 });

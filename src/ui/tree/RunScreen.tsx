@@ -9,6 +9,7 @@ import { courseLabel } from './hooks';
 import { UnrankedTag } from './UnrankedTag';
 import { TeamSetup } from './TeamSetup';
 import { OpponentCard } from '../components/OpponentCard';
+import { opponentSpriteIds } from '../sprites';
 import { PokemonIcon } from '../components/PokemonSprite';
 import { PartnerCard } from './PartnerCard';
 import { DebugOpponentPicker } from './DebugOpponentPicker';
@@ -60,6 +61,7 @@ export function RunScreen({ controller, run, teams, bp, error, onBattle, onLeave
         greetings={foes.map(f => f.greeting)}
         detail={`Battle ${run.battle}${run.course === 'allstar' ? ' · All Star Mode' : ''} · win for ${bpForWin(run.course, run.battle)} BP${run.debug ? ' (not counted: unranked)' : ''}`}
         battleKey={`${run.id}:${run.battle}`}
+        spriteIds={opponentSpriteIds(foes.map(f => f.trainer), run.next.seedText)}
       />
 
       {/* Right under the trainer card in every mode (above your partner in Multi). */}

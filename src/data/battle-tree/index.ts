@@ -9,7 +9,8 @@ import battle50Json from '../custom/battle-50.json';
 import eliteFourJson from '../custom/elite-four.json';
 import evilTeamsJson from '../custom/evil-teams.json';
 import digidestinedJson from '../custom/digidestined.json';
-import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
+import regularTrainersJson from '../custom/regular-trainers.json';
+import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RegularTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
 
 export * from './types';
 
@@ -162,8 +163,35 @@ const DIGIDESTINED = {
   trainers: DIGIDESTINED_TRAINERS.trainers.map((t, i): Trainer => (DIGIDESTINED_LIST[i].legend ? asBattleLegend(t) : t)),
 };
 
-export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets];
-export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers];
+/**
+ * Custom regular trainers (Veteran Wren), after the DigiDestined (earlier ids don't move): they join the regular
+ * trainers' pool from their `fromBattle` on (REGULAR_FROM), with their own Showdown sprite. IV 31, as every regular
+ * trainer from battle 51.
+ */
+function customRegularTrainers(firstSet: number, firstTrainer: number) {
+  const sets: TreeSet[] = [];
+  const list = regularTrainersJson.trainers as (Omit<CustomTrainer, 'region'> & { spriteId: string; fromBattle: number })[];
+  const trainers: RegularTrainer[] = list.map((t, i) => {
+    const roster = t.sets.map((s, j) => {
+      const id = firstSet + sets.length;
+      sets.push({ id, label: `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
+      return id;
+    });
+    return {
+      id: firstTrainer + i, name: t.name, class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'regular', number: null,
+      bulbapediaBrackets: [], custom: true, spriteId: t.spriteId, fromBattle: t.fromBattle,
+      source: { sets: 'custom: data-sources/custom/regular-trainers.txt (designed for the user)' },
+    };
+  });
+  return { sets, trainers };
+}
+const REGULAR = customRegularTrainers(
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length,
+  GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length + DIGIDESTINED.trainers.length,
+);
+
+export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets, ...REGULAR.sets];
+export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers, ...REGULAR.trainers];
 
 /**
  * Trainers who, as opponents in a Multi Battle, always battle alongside one of their partners (Izzy: Tai, Colress or Cheren), who
@@ -195,6 +223,27 @@ const GAME_BRACKETS = bracketsJson as unknown as BracketsFile;
 function recurringLegends(schedule: CourseSchedule): CourseSchedule {
   return { ...schedule, schedule: schedule.schedule.map(r => ('boss' in r && 'battles' in r && r.battles[0] === 50 ? { everyNth: 50, boss: r.boss } : r)) };
 }
+
+/** The game's pool for battles 51 and up, which custom regular trainers join from their `fromBattle` on. */
+const LATE_POOL = 'b51+';
+/** The battles from which the late pool grows (100: Veteran Wren), each with its own pool ("b100+"). */
+const REGULAR_FROM = [...new Set(REGULAR.trainers.map(t => t.fromBattle!))].sort((a, b) => a - b);
+const latePoolKey = (from: number) => `b${from}+`;
+/** The late pool from battle `from` on: the game's 100 trainers, and every custom regular trainer who's joined by then. */
+function latePool(from: number): BracketsFile['pools'][string] {
+  const pool = GAME_BRACKETS.pools[LATE_POOL];
+  return {
+    label: `Battles ${from}+`, bulbapediaNumbers: pool.bulbapediaNumbers,
+    trainerIds: [...pool.trainerIds, ...REGULAR.trainers.filter(t => t.fromBattle! <= from).map(t => t.id)],
+  };
+}
+/** Super schedules: from each `fromBattle` on, the late pool with those custom regular trainers in it (rules just before the game's 51+ rule; the latest first). */
+function withLatePools(schedule: CourseSchedule): CourseSchedule {
+  const rules = schedule.schedule.flatMap(r => ('pool' in r && r.pool === LATE_POOL
+    ? [...[...REGULAR_FROM].reverse().map(from => ({ battles: [from, null] as [number, null], pool: latePoolKey(from) })), r]
+    : [r]));
+  return { ...schedule, schedule: rules };
+}
 /** The Super course's battle-50 boss key (its draw includes everyone who shares that slot). */
 const superBossKey = (schedule: CourseSchedule) => {
   const rule = schedule.schedule.find(r => 'boss' in r);
@@ -211,15 +260,17 @@ function allStar(superSchedule: CourseSchedule): CourseSchedule {
   };
 }
 const withModes = <T extends Partial<Record<Course, CourseSchedule>>>(courses: T): T & Record<'super' | 'allstar', CourseSchedule> => ({
-  ...courses, super: recurringLegends(courses.super!), allstar: allStar(courses.super!),
+  ...courses, super: withLatePools(recurringLegends(courses.super!)), allstar: allStar(courses.super!),
 });
 
 /**
  * brackets.json, with the Gym Leaders, the Elite Four and Champions and the evil teams in the special-trainer pool
- * (Super Singles, Doubles and Multi), the Battle Legends every 50 battles of Super, and All Star Mode.
+ * (Super Singles, Doubles and Multi), the Battle Legends every 50 battles of Super, All Star Mode, and the custom
+ * regular trainers in the regular pool from their battle on (Veteran Wren: 100).
  */
 export const BRACKETS: BracketsFile = {
   ...GAME_BRACKETS,
+  pools: { ...GAME_BRACKETS.pools, ...Object.fromEntries(REGULAR_FROM.map(from => [latePoolKey(from), latePool(from)])) },
   singles: withModes(GAME_BRACKETS.singles),
   doubles: withModes(GAME_BRACKETS.doubles),
   multi: withModes(GAME_BRACKETS.multi),
@@ -374,3 +425,20 @@ export function trainerQuotes(trainer: Trainer, battleKey: string | number, alon
   const other = alongside.find(t => t.id !== trainer.id && t.kind === 'special');
   return (other && pairQuotes(trainer, other)) || lines;
 }
+
+/** A trainer's line, said in the battle log. */
+export interface TrainerLine { trainer: Trainer; line: string }
+
+const linesOf = (trainers: readonly Trainer[], battleKey: string | number, pick: (q: TrainerQuotes) => string): TrainerLine[] =>
+  trainers.flatMap(trainer => {
+    const quotes = trainerQuotes(trainer, battleKey, trainers);
+    const line = quotes && pick(quotes);
+    return line ? [{ trainer, line }] : [];
+  });
+
+/** What the opposing trainers say as the battle begins, in the order they speak (trainers without lines are left out). */
+export const greetingsOf = (trainers: readonly Trainer[], battleKey: string | number): TrainerLine[] => linesOf(trainers, battleKey, q => q.greeting);
+
+/** Their closing remarks, which go with those greetings: `won` is whether these trainers won the battle. */
+export const closingsOf = (trainers: readonly Trainer[], battleKey: string | number, won: boolean): TrainerLine[] =>
+  linesOf(trainers, battleKey, q => (won ? q.trainerWins : q.trainerLoses));

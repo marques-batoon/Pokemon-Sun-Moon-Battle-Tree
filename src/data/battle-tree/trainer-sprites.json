@@ -1,12 +1,13 @@
 {
-  "source": "Pokémon Showdown trainer sprites (https://play.pokemonshowdown.com/sprites/trainers/), file list retrieved 2026-10-03. Images are loaded from Showdown's server at runtime, not bundled; © Nintendo / Creatures / GAME FREAK. Sun & Moon ('-gen7') art is used where Showdown has it. Verified to exist with scripts/check-trainer-sprites.mjs.",
+  "source": "Pokémon Showdown trainer sprites (https://play.pokemonshowdown.com/sprites/trainers/), file list retrieved 2026-10-03. Images are loaded from Showdown's server at runtime, not bundled; © Nintendo / Creatures / GAME FREAK. Sun & Moon ('-gen7') art is used where Showdown has it. Verified to exist with scripts/check-trainer-sprites.mjs. Pokémon Masters sprites ('-masters', by kyledove on Showdown; list retrieved 2026-10-22) are in 'masters'.",
   "approximations": [
     "Golfer: Showdown has a single 'golfer' sprite; it is used for both male and female Golfers.",
     "Backpacker: all Battle Tree Backpackers are female (Tree-Sets data); Showdown's 'backpackerf' sprite is not Sun & Moon art.",
     "Office Worker, Rising Star, Sightseer, Youth Athlete, Bellhop, Firefighter, Aether Foundation, Pokémon Center Lady, Wally, Plumeria, Guzma, Kiawe, Mallow, Sina, Dexio: Showdown's default sprite for the class/character (no '-gen7' variant exists).",
     "Gym Leaders (custom): the sprite from their most recent main-series game with 2D sprites, other than Let's Go: Black 2 and White 2 (Pokémon World Tournament designs; '-gen5bw2' / '-pwt' where Showdown keeps Black and White ones as the default), or Omega Ruby and Alpha Sapphire-style '-gen6' sprites for Hoenn where Showdown has them. Brilliant Diamond and Shining Pearl, Ultra Sun and Ultra Moon and Omega Ruby and Alpha Sapphire are 3D, so Showdown has no sprite from them.",
-    "Elite Four and Champions (custom, 2026-10-10): the same rule as the Gym Leaders. Their most recent game with 2D sprites other than Let's Go: FireRed and LeafGreen for Lorelei and Agatha ('-gen3'; Showdown's other sprites are Gen 1 or Let's Go), HeartGold and SoulSilver for Bruno, Lance, Will, Koga and Karen, Omega Ruby and Alpha Sapphire-style '-gen6' sprites where Showdown has them (Phoebe, Steven, Wallace; Drake only has his Gen 3 one), Platinum for Sinnoh, Black 2 and White 2 for Unova (Iris as Champion: '-gen5bw2'), and Showdown's sprites for the X and Y and Sun and Moon characters (no '-gen7' variants exist; Pokémon Masters sprites are never used).",
-    "Evil team leaders and admins (custom, 2026-10-11): keyed by their data key where two share a name ('Archie (RSE)', 'Matt (Team Aqua)'). The Ruby / Sapphire / Emerald Archie and Maxie use '-gen3', their Omega Ruby and Alpha Sapphire versions '-gen6'; HeartGold and SoulSilver for the Rocket Executives, Platinum for Team Galactic, Black 2 and White 2 for N and Ghetsis, and Showdown's default for the X and Y and Sun and Moon characters."
+    "Elite Four and Champions (custom, 2026-10-10): the same rule as the Gym Leaders. Their most recent game with 2D sprites other than Let's Go: FireRed and LeafGreen for Lorelei and Agatha ('-gen3'; Showdown's other sprites are Gen 1 or Let's Go), HeartGold and SoulSilver for Bruno, Lance, Will, Koga and Karen, Omega Ruby and Alpha Sapphire-style '-gen6' sprites where Showdown has them (Phoebe, Steven, Wallace; Drake only has his Gen 3 one), Platinum for Sinnoh, Black 2 and White 2 for Unova (Iris as Champion: '-gen5bw2'), and Showdown's sprites for the X and Y and Sun and Moon characters (no '-gen7' variants exist; Pokémon Masters sprites are never their usual sprite; see 'masters').",
+    "Evil team leaders and admins (custom, 2026-10-11): keyed by their data key where two share a name ('Archie (RSE)', 'Matt (Team Aqua)'). The Ruby / Sapphire / Emerald Archie and Maxie use '-gen3', their Omega Ruby and Alpha Sapphire versions '-gen6'; HeartGold and SoulSilver for the Rocket Executives, Platinum for Team Galactic, Black 2 and White 2 for N and Ghetsis, and Showdown's default for the X and Y and Sun and Moon characters.",
+    "Pokémon Masters sprites (on request, 2026-10-22): a special trainer with any ('masters') shows one in 30% of battles, each of their outfits ('-masters', '-masters2'...) equally likely; in a Multi Battle, if either opponent shows theirs, both do. Matched by name: Showdown's 'rika-masters' is Paldea's Rika, not the Digimon Tamer, so she has none; Battle Legends (Red, Blue) aren't special trainers and keep theirs."
   ],
   "classes": {
     "Youngster": "youngster-gen7",
@@ -169,5 +170,156 @@
     "Mable": "mable",
     "Lusamine": "lusamine",
     "Faba": "faba"
+  },
+  "masters": {
+    "Grimsley": [
+      "grimsley-masters"
+    ],
+    "Wally": [
+      "wally-masters"
+    ],
+    "Cynthia": [
+      "cynthia-masters",
+      "cynthia-masters2",
+      "cynthia-masters3",
+      "cynthia-masters4",
+      "cynthia-masters5"
+    ],
+    "Guzma": [
+      "guzma-masters"
+    ],
+    "Mallow": [
+      "mallow-masters"
+    ],
+    "Brock": [
+      "brock-masters"
+    ],
+    "Misty": [
+      "misty-masters"
+    ],
+    "Erika": [
+      "erika-masters",
+      "erika-masters2",
+      "erika-masters3"
+    ],
+    "Sabrina": [
+      "sabrina-masters"
+    ],
+    "Giovanni": [
+      "giovanni-masters",
+      "giovanni-masters2"
+    ],
+    "Bugsy": [
+      "bugsy-masters"
+    ],
+    "Whitney": [
+      "whitney-masters"
+    ],
+    "Morty": [
+      "morty-masters",
+      "morty-masters2",
+      "morty-masters3"
+    ],
+    "Jasmine": [
+      "jasmine-masters",
+      "jasmine-masters2",
+      "jasmine-masters3"
+    ],
+    "Clair": [
+      "clair-masters"
+    ],
+    "Roxanne": [
+      "roxanne-masters"
+    ],
+    "Tate": [
+      "tate-masters"
+    ],
+    "Liza": [
+      "liza-masters"
+    ],
+    "Gardenia": [
+      "gardenia-masters"
+    ],
+    "Candice": [
+      "candice-masters"
+    ],
+    "Volkner": [
+      "volkner-masters"
+    ],
+    "Cheren": [
+      "cheren-masters"
+    ],
+    "Roxie": [
+      "roxie-masters"
+    ],
+    "Burgh": [
+      "burgh-masters"
+    ],
+    "Elesa": [
+      "elesa-masters",
+      "elesa-masters2",
+      "elesa-masters3"
+    ],
+    "Skyla": [
+      "skyla-masters",
+      "skyla-masters2",
+      "skyla-masters3"
+    ],
+    "Bianca": [
+      "bianca-masters"
+    ],
+    "Lance": [
+      "lance-masters",
+      "lance-masters2"
+    ],
+    "Phoebe": [
+      "phoebe-masters"
+    ],
+    "Steven": [
+      "steven-masters",
+      "steven-masters2",
+      "steven-masters3",
+      "steven-masters4",
+      "steven-masters5"
+    ],
+    "Wallace": [
+      "wallace-masters"
+    ],
+    "Shauntal": [
+      "shauntal-masters"
+    ],
+    "Caitlin": [
+      "caitlin-masters"
+    ],
+    "Iris": [
+      "iris-masters",
+      "iris-masters2"
+    ],
+    "Siebold": [
+      "siebold-masters"
+    ],
+    "Diantha": [
+      "diantha-masters",
+      "diantha-masters2"
+    ],
+    "Acerola": [
+      "acerola-masters",
+      "acerola-masters2",
+      "acerola-masters3"
+    ],
+    "Cyrus": [
+      "cyrus-masters"
+    ],
+    "N": [
+      "n-masters",
+      "n-masters2",
+      "n-masters3"
+    ],
+    "Lysandre": [
+      "lysandre-masters"
+    ],
+    "Lusamine": [
+      "lusamine-masters"
+    ]
   }
 }

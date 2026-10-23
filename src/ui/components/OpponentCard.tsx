@@ -14,6 +14,8 @@ interface Props {
   detail: ReactNode;
   /** Identifies this battle: the special-battle entrance plays once per key. */
   battleKey: string;
+  /** Each trainer's sprite for this battle when it isn't their usual one (opponentSpriteIds: a Pokémon Masters sprite). */
+  spriteIds?: (string | null)[];
 }
 
 /**
@@ -21,7 +23,7 @@ interface Props {
  * special trainers and Battle Legends, and their greetings. Special battles open with the
  * full-screen entrance. Used by the Battle Tree challenge and the online room.
  */
-export function OpponentCard({ trainers, greetings, detail, battleKey }: Props) {
+export function OpponentCard({ trainers, greetings, detail, battleKey, spriteIds }: Props) {
   const multi = trainers.length > 1;
   const kind = trainers.some(t => t.kind === 'legend') ? 'legend' : trainers.some(t => t.kind === 'special') ? 'special' : 'regular';
   return (
@@ -31,6 +33,7 @@ export function OpponentCard({ trainers, greetings, detail, battleKey }: Props) 
           key={battleKey}
           trainers={trainers}
           intro={kind !== 'regular' ? battleKey : null}
+          spriteIds={spriteIds}
           captions={trainers.map((t, i) => ({ name: displayName(t), quote: greetings[i] ?? null }))}
         />
       </div>

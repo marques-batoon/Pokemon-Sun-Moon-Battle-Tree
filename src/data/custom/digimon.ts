@@ -255,7 +255,7 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   warp: {
     name: 'Gallantmon', types: ['Steel', 'Fairy'], color: 'Red',
     baseStats: { hp: 85, atk: 145, def: 120, spa: 75, spd: 125, spe: 84 },
-    abilities: { 0: 'Dauntless Shield' }, weightkg: 110,
+    abilities: { 0: 'Mirror Armor' }, weightkg: 110,
   },
   item: 'Gallantite',
   itemDesc: 'If held by a Guilmon, this item allows it to Matrix Evolve into Gallantmon in battle.',
@@ -564,11 +564,12 @@ export function digimonOverrides(): Record<string, Record<string, object>> {
     };
   }
   const conditions = { warpdigivolution: { name: 'Warp Digivolution' } };
-  // Gen 8-9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis, Gallantmon's Dauntless Shield): made
-  // usable in Gen 7; the engine gives them their Gen 9 behaviour (src/engine/custom.ts).
+  // Gen 8-9 Abilities the warp forms use (HerculesKabuterimon's Electromorphosis, Gallantmon's Mirror Armor): made
+  // usable in Gen 7; the engine gives Electromorphosis its Gen 9 behaviour (src/engine/custom.ts), and Mirror Armor works
+  // as it is.
   const abilities: Record<string, object> = {
     electromorphosis: { inherit: true, gen: 7, isNonstandard: null },
-    dauntlessshield: { inherit: true, gen: 7, isNonstandard: null },
+    mirrorarmor: { inherit: true, gen: 7, isNonstandard: null },
   };
   // The user's own Abilities (MegaGargomon's Elevate).
   let abilityNum = 10130;

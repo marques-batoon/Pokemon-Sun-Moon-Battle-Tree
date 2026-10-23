@@ -79,6 +79,17 @@ team, ...).
   `EVIL_TEAMS`. `npm test` checks every set.
 - **Lines and pair greetings:** `trainer-quotes.json`, under the same key.
 
+## Regular trainers (Veteran Wren)
+
+- **Teams:** `regular-trainers.txt`, same format, one section per trainer.
+- **Who and from when:** `regular-trainers.json`: class ("Veteran"), gender, `spriteId` (a Pokémon Showdown
+  trainer sprite, e.g. `veteranf-gen6`: see https://play.pokemonshowdown.com/sprites/trainers/) and
+  `fromBattle`: from that battle on (over 50), they're in the regular trainers' pool of Super Singles,
+  Super Doubles and Super Multi, as likely as everyone else in it. IV 31 (IV lines are ignored).
+- **Opponents' teams** follow Species Clause and Item Clause, so Pokémon holding the same item never
+  battle together (Wren's three Paradoxorb-A beasts: at most one per battle).
+- **Lines:** `trainer-quotes.json` under `"quotes"` → their name, three entries. `npm test` checks them.
+
 ## Gym Leaders
 
 - **Teams:** `gym-leaders.txt`, same format; "Brock 1" and "Brock 2" are both Brock.

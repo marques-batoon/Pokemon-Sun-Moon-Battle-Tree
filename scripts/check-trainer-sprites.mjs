@@ -38,7 +38,16 @@ if (missing.length) {
   process.exitCode = 1;
 }
 
-const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named)])];
+// Custom regular trainers name their own sprite (Veteran Wren); special trainers' Pokémon Masters sprites ('masters').
+const regularCustom = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'regular-trainers.json'), 'utf8')).trainers;
+const unknownMasters = Object.keys(sprites.masters).filter(k => !trainers.some(t => t.kind === 'special' && keyOf(t) === k));
+if (unknownMasters.length) {
+  console.error('masters: not a special trainer:', unknownMasters.join(', '));
+  process.exitCode = 1;
+}
+const ids = [...new Set([
+  ...Object.values(sprites.classes), ...Object.values(sprites.named), ...regularCustom.map(t => t.spriteId), ...Object.values(sprites.masters).flat(),
+])];
 const results = await Promise.all(ids.map(async id => {
   const res = await fetch(`https://play.pokemonshowdown.com/sprites/trainers/${id}.png`, { method: 'HEAD' });
   return [id, res.status];

@@ -4,6 +4,7 @@ import { AURA_GUARD, CHAMPIONS_MOD, championsOverrides, NEW_LEARNSET_IDS, NEW_MO
 import { canHoldCustomItem, customOverrides, HITMONCHANIUM_Z, isCustomLearn, mergeModData } from '../data/custom';
 import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem, warpNames } from '../data/custom/digimon';
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
+import { galarBirdCanLearn, galarBirdsOverrides, GALAR_BIRD_NEW_MOVE_IDS } from '../data/galar-birds';
 import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_POKEMON, CUSTOM_SIDE } from './custom';
 import { USUM_ONLY_SPECIES } from './format-constants';
 
@@ -32,12 +33,12 @@ let registered = false;
 /**
  * Gen 7 plus the Pokémon Champions Megas (see DATA_NOTES.md): their stones, the
  * Pokémon, moves and Abilities they need, Champions' Mega data, and Aura Guard;
- * plus the custom additions (Mega Politoed, Poliwrathium Z, Hitmonchanium Z) and duration tags
+ * the Galarian legendary birds and their Gen 8 moves; plus the custom additions (Mega Politoed, Poliwrathium Z, Hitmonchanium Z) and duration tags
  * on field-effect start messages.
  */
 function registerChampionsMod(): void {
   const gen7 = Dex.mod('gen7').data;
-  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false }), digimonOverrides()) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
+  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false }), digimonOverrides(), galarBirdsOverrides()) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
   addCustomBattleLogic(data as never, { Conditions: gen7.Conditions as never, Moves: gen7.Moves as never });
   Object.assign(data.Abilities[AURA_GUARD.id], {
     onSourceModifyDamage(this: Battle, _damage: number, source: Pokemon, target: Pokemon, move: ActiveMove) {
@@ -56,6 +57,7 @@ function registerChampionsMod(): void {
  * from their newest learnsets; everyone else uses the Gen 7 rules, plus the
  * app's custom extra moves (CUSTOM_LEARNS). A Pokémon holding a Paradoxorb
  * learns its Paradox form's moves instead (newest learnset, no restrictions).
+ * The Galarian birds learn what they learn in Sword and Shield (their Gen 8 moves are theirs only).
  * The Digimon learn exactly their own lists (which depend on the held warp item), and only they get their signature moves.
  */
 // Problems start with a space: the validator puts the Pokémon's name in front.
@@ -68,12 +70,14 @@ function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSou
   }
   const digimon = digimonCanLearn(id, move.id, set.item);
   if (digimon !== null) return digimon ? null : ` can't learn ${move.name}.`;
+  const bird = galarBirdCanLearn(id, move.id);
+  if (bird !== null) return bird ? null : ` can't learn ${move.name} (not in Sword and Shield).`;
   if (isCustomLearn(id, move.id)) return null;
   if (NEW_LEARNSET_IDS.has(id)) {
     const learnset = Dex.species.getLearnsetData(id).learnset ?? {};
     return move.id in learnset ? null : ` can't learn ${move.name}.`;
   }
-  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id) || DIGIMON_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
+  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id) || DIGIMON_MOVE_IDS.has(move.id) || GALAR_BIRD_NEW_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
   return this.checkCanLearn(move, species, setSources, set);
 }
 

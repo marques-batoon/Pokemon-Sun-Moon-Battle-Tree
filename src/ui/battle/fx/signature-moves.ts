@@ -1,6 +1,7 @@
 // Signature moves have their own animation (on request, 2026-10-21): every move that was one Pokémon's (or one
 // evolution line's) own when it came out, still is or not (Bonemerang, Shadow Bone, Sacred Fire, Spore...), that the
-// battles can use and that had no animation of its own yet (the moves over 100 power have theirs in big-moves.ts).
+// battles can use and that had no animation of its own yet (the moves over 100 power have theirs in big-moves.ts), and
+// the Galarian legendary birds' (2026-10-22).
 // Each is tailored to the move: what it is in the games, drawn with the stage's shapes (approximations, not the
 // games' animations). How long each plays: SIGNATURE_MOVE_MS in client/playback.ts. How the user of an attack moves:
 // SIGNATURE_MOTION (as BIG_MOVE_MOTION: a user that charges in makes contact at about 43% of the move's length; a move
@@ -832,6 +833,32 @@ const GEN_7: Record<string, FxSpec> = {
     pt('target', 'wisp', 'rise', '#ffffff', '#cfe9ff', 16, 26, 100, 660, 500),
     pt('target', 'drop', 'burst', '#4d90d5', '#cfe9ff', 10, 12, 90, 660, 400),
   ] },
+  // Freezing Glare (Galarian Articuno): its eyes flash and it shoots a psychic glare that can freeze the target.
+  freezingglare: { shake: 'light', layers: [
+    aura('user', 0, '#f366b9', 150, 400),
+    { kind: 'beam', color: '#f366b9', color2: '#e8f8ff', width: 30, delay: 380, dur: 450 },
+    ring('path', 400, '#bfe8ff', 3, 70, 450),
+    hit(650, '#e8f8ff', 230),
+    pt('target', 'shard', 'burst', '#bfe8ff', '#f366b9', 14, 13, 100, 660, 450),
+  ] },
+  // Thunderous Kick (Galarian Zapdos): a lightning-fast rush, then a kick that crackles like thunder.
+  thunderouskick: { shake: 'strong', layers: [
+    speed(200, '#ffd870', 280),
+    pt('user', 'spark', 'burst', '#ffe066', '#ffffff', 8, 12, 70, 100, 300),
+    slash(410, '#ff9a3a', 1, 30, 18),
+    hit(430, '#ffe9b0', 240),
+    { kind: 'bolt', color: '#f4d23c', delay: 440 },
+    pt('target', 'spark', 'burst', '#ffe066', '#ff9a3a', 14, 12, 110, 450, 400),
+  ] },
+  // Fiery Wrath (Galarian Moltres): its wrath becomes a fire-like aura of dark flames that engulfs the foes.
+  fierywrath: { shake: 'light', layers: [
+    dim(0, 1100, '#0a0010'),
+    aura('user', 0, '#6a2a8a', 210, 500),
+    pt('user', 'flame', 'rise', '#7a3aa8', '#c060ff', 12, 18, 90, 100, 450),
+    { kind: 'column', color: '#5a1a7a', color2: '#d080ff', delay: 600 },
+    hit(650, '#e0b0ff', 250),
+    pt('target', 'flame', 'rise', '#5a2a7a', '#c060ff', 14, 18, 110, 660, 450),
+  ] },
 };
 
 const GEN_6_TO_9_STATUS: Record<string, FxSpec> = {
@@ -908,7 +935,8 @@ export const SIGNATURE_MOTION: Record<string, 'charge' | 'cast' | 'leap' | 'dive
   diamondstorm: 'cast', hyperspacehole: 'cast', landswrath: 'cast', thousandarrows: 'cast', thousandwaves: 'cast', oblivionwing: 'cast',
   watershuriken: 'cast', anchorshot: 'cast', coreenforcer: 'cast', photongeyser: 'cast', pollenpuff: 'cast', revelationdance: 'cast',
   sparklingaria: 'cast', spiritshackle: 'cast', moongeistbeam: 'cast', naturesmadness: 'cast', mortalspin: 'cast', tachyoncutter: 'cast',
-  thunderclap: 'cast', hydrosteam: 'cast',
+  thunderclap: 'cast', hydrosteam: 'cast', freezingglare: 'cast', fierywrath: 'cast',
+  thunderouskick: 'charge',
 };
 
 /**

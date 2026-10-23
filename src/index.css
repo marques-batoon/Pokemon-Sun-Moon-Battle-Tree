@@ -179,6 +179,10 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; }
 .log-turn { font-weight: 700; margin-top: 8px; border-top: 1px solid var(--border); padding-top: 4px; }
 .log-error { color: var(--bad); }
 .log-info { color: var(--muted); font-style: italic; }
+.log-said { display: flex; flex-direction: column; gap: 4px; }
+.log-said q { font-style: italic; }
+.log-greetings { padding-bottom: 6px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
+.log-closings { padding-top: 6px; margin-top: 6px; border-top: 1px solid var(--border); }
 
 /* ---------- Shared controls ---------- */
 button.danger { color: var(--bad); }

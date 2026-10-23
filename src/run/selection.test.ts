@@ -38,9 +38,10 @@ describe('schedule', () => {
     expect(() => scheduleSlot('singles', 'normal', 21)).toThrow();
   });
 
-  it('follows the documented Super course: specials every 10th, the Battle Legends at 50 (and, an app change, every 50 after), 51+ forever', () => {
+  it('follows the documented Super course: specials every 10th, the Battle Legends at 50 (and, an app change, every 50 after), 51+ forever (with Veteran Wren from 100)', () => {
     const expected: [number, string][] = [
-      [1, 'b01-10'], [9, 'b01-10'], [11, 'b11-19'], [21, 'b21-29'], [31, 'b31-39'], [41, 'b41-49'], [49, 'b41-49'], [51, 'b51+'], [999, 'b51+'],
+      [1, 'b01-10'], [9, 'b01-10'], [11, 'b11-19'], [21, 'b21-29'], [31, 'b31-39'], [41, 'b41-49'], [49, 'b41-49'], [51, 'b51+'], [99, 'b51+'],
+      [101, 'b100+'], [999, 'b100+'],
     ];
     for (const [n, pool] of expected) expect(scheduleSlot('singles', 'super', n), `battle ${n}`).toEqual({ type: 'pool', poolKey: pool });
     for (const n of [10, 20, 30, 40, 60, 70, 90, 110, 140, 160]) expect(scheduleSlot('singles', 'super', n).type, `battle ${n}`).toBe('special');
@@ -60,9 +61,9 @@ describe('schedule', () => {
     }
   });
 
-  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100)', () => {
+  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100, and 101 from battle 100 with Veteran Wren)', () => {
     const sizes = Object.fromEntries(Object.entries(BRACKETS.pools).map(([k, p]) => [k, p.trainerIds.length]));
-    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100 });
+    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100, 'b100+': 101 });
   });
 });
 

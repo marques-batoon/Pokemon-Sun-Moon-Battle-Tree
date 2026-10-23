@@ -13,12 +13,13 @@ import { partnersForSale } from '../../run/partners';
 import { RunScreen } from './RunScreen';
 import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
+import { opponentSpriteIds } from '../sprites';
 import { TRAINERS } from '../../data/battle-tree';
 import { useScrollToTopOn } from '../useScrollToTop';
 import type { TournamentController } from '../../run/tournament-controller';
 import { TournamentScreen } from './TournamentScreen';
 import { TournamentForm } from './TournamentForm';
-import { matchKey, nextOpponent, roundName, roundPhrase, roundsOf } from '../../run/tournament';
+import { duoSpriteKey, matchKey, nextOpponent, roundName, roundPhrase, roundsOf } from '../../run/tournament';
 import { ReplayScreen } from './ReplayScreen';
 import { battleName } from '../../online/trainer-name';
 import { useAppSettings } from '../useAppSettings';
@@ -97,15 +98,18 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
   }
 
   if (view.kind === 'tournament-battle') {
+    const foes = view.trainerIds.map(id => TRAINERS[id]);
+    // The duo looks the same all tournament (a Pokémon Masters sprite or not), as on the bracket.
+    const spriteIds = opponentSpriteIds(foes, tournament.tournament ? duoSpriteKey(tournament.tournament) : null);
     return (
       <>
         <div className="battle-banner">
-          {view.trainerIds.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
+          {foes.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={44} spriteId={spriteIds[i]} />)}
           <span>All Star Duo Tournament · {roundName(view.round, tournament.tournament ? roundsOf(tournament.tournament) : undefined)} · vs {view.trainerIds.map(id => TRAINERS[id].name).join(' & ')}</span>
         </div>
         <BattleScreen
           client={tournaments.battleClient}
-          opponent={{ trainers: view.trainerIds.map(id => TRAINERS[id]), battleKey: view.battleKey }}
+          opponent={{ trainers: foes, battleKey: view.battleKey, spriteIds }}
           onContinue={tournament.inBattle ? undefined : () => setView({ kind: 'tournament' })}
           continueLabel="Back to the bracket"
         />
@@ -114,15 +118,17 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
   }
 
   if (view.kind === 'battle') {
+    const foes = view.trainerIds.map(id => TRAINERS[id]);
+    const spriteIds = opponentSpriteIds(foes, view.seedText);
     return (
       <>
         <div className="battle-banner">
-          {view.trainerIds.map(id => <TrainerSprite key={id} trainer={TRAINERS[id]} size={44} />)}
+          {foes.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={44} spriteId={spriteIds[i]} />)}
           <span>{keyLabel(view.key)} · Battle {view.battle} · vs {view.opponent}</span>
         </div>
         <BattleScreen
           client={controller.battleClient}
-          opponent={{ trainers: view.trainerIds.map(id => TRAINERS[id]), battleKey: view.seedText }}
+          opponent={{ trainers: foes, battleKey: view.seedText, spriteIds }}
           onContinue={state.active ? undefined : () => setView({ kind: 'run', key: view.key })}
         />
       </>

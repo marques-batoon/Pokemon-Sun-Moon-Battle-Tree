@@ -10,10 +10,13 @@ const rand = (i: number, salt: number) => { const s = Math.sin(i * 12.9898 + sal
 /** How big the champions stand on the podium (CSS scales them down on narrow screens). */
 const SPRITE = 200;
 
-/** Who won: you and your partner, or a duo of special trainers (each with their victory line, if they have one). */
+/**
+ * Who won: you and your partner, or a duo of special trainers (each with their victory line, if they have one, and
+ * their sprite for the tournament when it isn't their usual one: a Pokémon Masters sprite).
+ */
 export type Champions =
   | { kind: 'player'; you: string; partner: Trainer }
-  | { kind: 'duo'; trainers: [Trainer, Trainer]; quotes: [string | null, string | null] };
+  | { kind: 'duo'; trainers: [Trainer, Trainer]; quotes: [string | null, string | null]; spriteIds?: (string | null)[] };
 
 /**
  * The tournament's champions celebrate: light rays, confetti, the trophy rising, and the winning pair jumping for joy
@@ -30,7 +33,7 @@ export function Celebration({ champions, bp = 0, onClose }: { champions: Champio
   const names = you ? `${champions.you} & ${champions.partner.name}` : champions.trainers.map(t => t.name).join(' & ');
   const podium: ReactNode[] = you
     ? [<PlayerSprite key="you" size={SPRITE} label={champions.you} />, <TrainerSprite key="partner" trainer={champions.partner} size={SPRITE} />]
-    : champions.trainers.map(t => <TrainerSprite key={t.id} trainer={t} size={SPRITE} />);
+    : champions.trainers.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={SPRITE} spriteId={champions.spriteIds?.[i]} />);
   return (
     <div className={`celebration${you ? '' : ' others'}`} role="dialog" aria-modal="true" aria-label={`${names}: tournament champions`}>
       <div className="celebration-rays" aria-hidden />
