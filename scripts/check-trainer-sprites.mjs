@@ -38,16 +38,19 @@ if (missing.length) {
   process.exitCode = 1;
 }
 
-// Custom regular trainers name their own sprite (Veteran Wren); special trainers' Pokémon Masters sprites ('masters').
+// Custom regular trainers name their own sprite (Veteran Wren).
 const regularCustom = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'regular-trainers.json'), 'utf8')).trainers;
-const unknownMasters = Object.keys(sprites.masters).filter(k => !trainers.some(t => t.kind === 'special' && keyOf(t) === k));
-if (unknownMasters.length) {
-  console.error('masters: not a special trainer:', unknownMasters.join(', '));
+// Pokémon Masters sprites ('masters': special trainers, Red and Blue) are bundled in public/trainers/masters/.
+const mastersIds = Object.values(sprites.masters).flat();
+const unknownMasters = Object.keys(sprites.masters).filter(k => !trainers.some(t => t.kind !== 'regular' && keyOf(t) === k));
+const missingMasters = mastersIds.filter(id => !existsSync(join(PUBLIC, 'trainers', 'masters', `${id}.png`)));
+const badPairs = sprites.mastersPairs.flat().filter(id => !mastersIds.includes(id));
+if (unknownMasters.length || missingMasters.length || badPairs.length) {
+  console.error('masters: not a special trainer or Battle Legend:', unknownMasters, '/ not in public/trainers/masters/:', missingMasters, '/ pairs naming unknown sprites:', badPairs);
   process.exitCode = 1;
 }
-const ids = [...new Set([
-  ...Object.values(sprites.classes), ...Object.values(sprites.named), ...regularCustom.map(t => t.spriteId), ...Object.values(sprites.masters).flat(),
-])];
+console.log(`${mastersIds.length - missingMasters.length}/${mastersIds.length} Pokémon Masters sprites bundled`);
+const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named), ...regularCustom.map(t => t.spriteId)])];
 const results = await Promise.all(ids.map(async id => {
   const res = await fetch(`https://play.pokemonshowdown.com/sprites/trainers/${id}.png`, { method: 'HEAD' });
   return [id, res.status];

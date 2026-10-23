@@ -223,9 +223,9 @@ export function trainerSpriteId(trainer: Trainer): string | null {
   return classes[`${trainer.class}|${trainer.classGender}`] ?? classes[trainer.class] ?? null;
 }
 
-/** A trainer's usual sprite, or (`spriteId`) another Showdown trainer sprite of theirs: a Pokémon Masters one. */
+/** A trainer's usual sprite, or (`spriteId`) another sprite of theirs: a Pokémon Masters one (bundled with the app). */
 export function trainerSpriteUrl(trainer: Trainer, spriteId?: string | null): string | null {
-  if (spriteId) return Sprites.getAvatar(spriteId);
+  if (spriteId) return mastersSpriteUrl(spriteId);
   // Custom trainers bring their own sprite, served from public/ with the app.
   if (trainer.sprite) return `${import.meta.env.BASE_URL}${trainer.sprite.replace(/^\//, '')}`;
   const id = trainerSpriteId(trainer);
@@ -233,21 +233,37 @@ export function trainerSpriteUrl(trainer: Trainer, spriteId?: string | null): st
 }
 
 const masters = spriteData.masters as Record<string, string[]>;
-/** How often a special trainer who has Pokémon Masters sprites shows one in a battle (on request, 2026-10-22). */
+/** Outfits that match (Red and Blue's Sygna Suits, their Champion outfits): worn together, or not at all. */
+const mastersPairs = spriteData.mastersPairs as [string, string][];
+/** How often a trainer who has Pokémon Masters sprites shows one in a battle (on request, 2026-10-22). */
 export const MASTERS_CHANCE = 0.3;
-/** A special trainer's Pokémon Masters sprites on Showdown (kyledove's; some have several outfits), if any. */
-export const mastersSpriteIds = (trainer: Trainer): readonly string[] => (trainer.kind === 'special' ? masters[trainerKey(trainer)] ?? [] : []);
+/**
+ * The Pokémon Masters sprites (kyledove's, from Showdown; some trainers have several outfits) of a special trainer or of
+ * Battle Legend Red or Blue, if any. Regular trainers have none.
+ */
+export const mastersSpriteIds = (trainer: Trainer): readonly string[] => (trainer.kind === 'regular' ? [] : masters[trainerKey(trainer)] ?? []);
+/** A Pokémon Masters sprite: bundled with the app (public/trainers/masters/), downloaded from Showdown. */
+const mastersSpriteUrl = (id: string) => `${import.meta.env.BASE_URL}trainers/masters/${id}.png`;
+
+/** Two trainers' matching outfits (first trainer's, second's): Red and Blue's. */
+function matchingOutfits(a: Trainer, b: Trainer): [string, string][] {
+  const [ofA, ofB] = [new Set(mastersSpriteIds(a)), new Set(mastersSpriteIds(b))];
+  return mastersPairs.flatMap(([x, y]): [string, string][] => (ofA.has(x) && ofB.has(y) ? [[x, y]] : ofA.has(y) && ofB.has(x) ? [[y, x]] : []));
+}
 
 /**
- * The sprite each opposing trainer shows in a battle: for a special trainer with Pokémon Masters sprites, one of those
- * 30% of the time (each outfit equally likely), else null (their usual sprite and artwork). In a Multi Battle, if one
- * of them shows theirs, both do (if both have one). Decided by `key` (the battle's seed text or quote pick; a
- * tournament's own key for its duos), so a battle always looks the same; null: no Masters sprites.
+ * The sprite each opposing trainer shows in a battle: for a trainer with Pokémon Masters sprites, one of those 30% of
+ * the time (each outfit equally likely), else null (their usual sprite and artwork). In a Multi Battle, if one of them
+ * shows theirs, both do (if both have one); two who have matching outfits (Red and Blue) wear a matching pair, or
+ * neither shows one. Decided by `key` (the battle's seed text or quote pick; a tournament's own key for its duos), so a
+ * battle always looks the same; null: no Masters sprites.
  */
 export function opponentSpriteIds(trainers: readonly Trainer[], key: string | number | null): (string | null)[] {
   if (key === null) return trainers.map(() => null);
   const roll = (t: Trainer, what: string) => quotePick(`${key}|masters|${what}|${trainerKey(t)}`);
   const shown = trainers.some(t => mastersSpriteIds(t).length && roll(t, 'chance') < MASTERS_CHANCE * QUOTE_PICKS);
+  const pairs = trainers.length === 2 ? matchingOutfits(trainers[0], trainers[1]) : [];
+  if (pairs.length) return shown ? pairs[roll(trainers[0], 'pair') % pairs.length] : [null, null];
   return trainers.map(t => {
     const ids = mastersSpriteIds(t);
     return shown && ids.length ? ids[roll(t, 'outfit') % ids.length] : null;
