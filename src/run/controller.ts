@@ -37,7 +37,7 @@ export interface StartRunOptions {
    */
   checkpoint?: number;
   /**
-   * Start again from the last multiple of 10 before the battle just lost (retryOffer): offered for
+   * Start again from the last multiple of 10 won before the battle just lost (retryOffer): offered for
    * this session only, right after a loss. Counts like a checkpoint start (unranked if the lost run was).
    */
   retry?: number;
@@ -49,7 +49,7 @@ export interface RetryOffer { battle: number; lostAt: number; debug: boolean }
 export interface ControllerSnapshot extends TreeState {
   /** Battle currently being played in this session. */
   active: { key: RunKey; battleId: string } | null;
-  /** Courses lost this session at battle 10 or later: a new challenge can start again from the last multiple of 10. */
+  /** Courses lost this session after battle 10: a new challenge can start again from the last multiple of 10 won. */
   retries: Partial<Record<RunKey, RetryOffer>>;
   /** Last problem starting a battle (e.g. the engine rejected the team). */
   error: string | null;
@@ -162,7 +162,7 @@ export class RunController {
     return this.requireRun(key);
   }
 
-  /** Right after a loss at battle 10 or later (this session): start again from the last multiple of 10, same team, settings and partner. */
+  /** Right after a loss after battle 10 (this session): start again from the last multiple of 10 won, same team, settings and partner. */
   retryFromOffer(key: RunKey): RunState {
     const offer = this.retries[key];
     const lost = this.run(key);

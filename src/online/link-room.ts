@@ -41,7 +41,7 @@ export interface RoomSnapshot {
   startFrom: number;
   /** Host: no battle won yet since this streak started, so where it starts can still change. */
   fresh: boolean;
-  /** Host: just lost at battle 10 or later, so the next streak can also start from the last multiple of 10. */
+  /** Host: just lost after battle 10, so the next streak can also start from the last multiple of 10 won. */
   retryFrom: number | null;
   /** What your last win gave you (All Star Mode: BP and partner progress, in your own app), until the next battle. */
   lastReward: OnlineReward | null;
@@ -199,7 +199,7 @@ export class OnlineRoom {
   /**
    * Host: start the streak from this battle instead, with the wins before it counted, as when a
    * local challenge starts at a later battle: 1 or 20 (a lost streak starts again from that one too),
-   * or right after a loss at battle 10 or later, the last multiple of 10 before it (that time only).
+   * or right after a loss after battle 10, the last multiple of 10 won before it (that time only).
    * Only before the streak's first win.
    */
   setStartBattle(battle: number): void {
@@ -367,7 +367,7 @@ export class OnlineRoom {
         const { startFrom } = this.snapshot;
         if (won) this.reward();
         // A lost streak starts over (at the chosen starting battle) against new opponents; after a loss
-        // at battle 10 or later, the host can also start again from the last multiple of 10.
+        // after battle 10, the host can also start again from the last multiple of 10 won (retryStart).
         if (!won) {
           this.seedText = newSeed();
           this.streakCounts = startFrom === 1;

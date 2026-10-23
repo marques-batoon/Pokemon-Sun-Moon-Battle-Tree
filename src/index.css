@@ -1568,18 +1568,18 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 /*
  * Elevate (MegaGargomon): rocket jets fire under its feet (StageSpot's RocketThrust); it squats, blasts off, hovers
  * with a slight bob over the quake, then sets down on its jets. The jets sit behind the sprite (isolation keeps
- * them inside it) and grow, flicker and shrink in step with the lift; ELEVATE_MS is 1500. --rise: how high it goes
+ * them inside it) and grow, flicker and shrink in step with the lift; ELEVATE_MS is 1100. --rise: how high it goes
  * (less for the opponent, drawn near the top of the stage).
  */
 .fx-rocket-lift-a, .fx-rocket-lift-b { isolation: isolate; --rise: -30%; }
 .spot-p2 .fx-rocket-lift-a, .spot-p2 .fx-rocket-lift-b { --rise: -20%; }
-.fx-rocket-lift-a { animation: rocket-lift-a calc(1500ms * var(--spd, 1)) ease-in-out both; }
-.fx-rocket-lift-b { animation: rocket-lift-b calc(1500ms * var(--spd, 1)) ease-in-out both; }
+.fx-rocket-lift-a { animation: rocket-lift-a calc(1100ms * var(--spd, 1)) ease-in-out both; }
+.fx-rocket-lift-b { animation: rocket-lift-b calc(1100ms * var(--spd, 1)) ease-in-out both; }
 @keyframes rocket-lift-a { 0%, 100% { transform: none; } 9% { transform: translateY(2%) scaleY(0.94); } 30% { transform: translateY(var(--rise)); } 44% { transform: translateY(calc(var(--rise) * 0.86)); } 58% { transform: translateY(calc(var(--rise) * 0.97)); } 70% { transform: translateY(calc(var(--rise) * 0.9)); } 93% { transform: translateY(calc(var(--rise) * 0.04)); } 96% { transform: translateY(1%) scaleY(0.97); } }
 @keyframes rocket-lift-b { 0%, 100% { transform: none; } 9% { transform: translateY(2%) scaleY(0.94); } 30% { transform: translateY(var(--rise)); } 44% { transform: translateY(calc(var(--rise) * 0.86)); } 58% { transform: translateY(calc(var(--rise) * 0.97)); } 70% { transform: translateY(calc(var(--rise) * 0.9)); } 93% { transform: translateY(calc(var(--rise) * 0.04)); } 96% { transform: translateY(1%) scaleY(0.97); } }
 /* The image is drawn square at the bottom middle of its box (object-fit: contain), so the jets are placed in that square. */
 .rocket-thrust { position: absolute; bottom: 0; left: 50%; height: 100%; aspect-ratio: 1; max-width: 100%; transform: translateX(-50%); pointer-events: none; z-index: -1; }
-.rocket-thrust .jet { position: absolute; left: var(--fx); top: calc(var(--fy) - 2%); width: 21%; height: 46%; transform: translateX(-50%) scaleY(0); transform-origin: 50% 0; animation: jet-burn calc(1500ms * var(--spd, 1)) ease-out both; }
+.rocket-thrust .jet { position: absolute; left: var(--fx); top: calc(var(--fy) - 2%); width: 21%; height: 46%; transform: translateX(-50%) scaleY(0); transform-origin: 50% 0; animation: jet-burn calc(1100ms * var(--spd, 1)) ease-out both; }
 .rocket-thrust .jet::before, .rocket-thrust .jet::after { content: ''; position: absolute; top: 0; border-radius: 42% 42% 50% 50% / 12% 12% 88% 88%; animation: jet-flicker 70ms linear infinite alternate; }
 .rocket-thrust .jet::before { left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 50% 100% at 50% 0%, #fffdf0 0 16%, #ffe680 28%, #ffa21f 50%, rgb(255 80 0 / 0.9) 70%, rgb(255 40 0 / 0.35) 86%, transparent 96%); filter: drop-shadow(0 0 8px #ff8a1f) drop-shadow(0 0 3px #ffd166); }
 .rocket-thrust .jet::after { left: 25%; right: 25%; height: 62%; background: linear-gradient(#ffffff 0 20%, #d2f7ff 40%, rgb(90 200 255 / 0.85) 70%, transparent); filter: drop-shadow(0 0 5px #9be7ff); }

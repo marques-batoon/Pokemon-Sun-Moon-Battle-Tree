@@ -385,7 +385,7 @@ function Interrupted({ controller, run, onBack }: { controller: RunController; r
 
 function RunResult({ run, best, superUnlocked, retryFrom, onRetry, onDone }: {
   run: RunState; best: number; superUnlocked: boolean;
-  /** Just lost at battle 10 or later: start again from this battle (last multiple of 10). */
+  /** Just lost after battle 10: start again from this battle (the last multiple of 10 won). */
   retryFrom: number | null; onRetry: () => void; onDone: () => void;
 }) {
   const last = run.history.at(-1);

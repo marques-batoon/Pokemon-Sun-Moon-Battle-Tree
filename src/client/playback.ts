@@ -237,8 +237,8 @@ export const CANT_MS = 750;
 export const CONFUSED_MS = 750;
 export const BLOCKED_MS = 550;
 export const ABILITY_MS = 1100;
-/** Elevate: MegaGargomon lifts off on its rocket jets, hovers over the attack and sets down. */
-export const ELEVATE_MS = 1500;
+/** Elevate: MegaGargomon lifts off on its rocket jets, hovers over the attack and sets down (1.5 s until 2026-10-23). */
+export const ELEVATE_MS = 1100;
 /** How long an Ability's animation takes (by its id). */
 export const abilityDuration = (id: string) => (id === 'elevate' ? ELEVATE_MS : ABILITY_MS);
 export const CHARGED_MS = 750;

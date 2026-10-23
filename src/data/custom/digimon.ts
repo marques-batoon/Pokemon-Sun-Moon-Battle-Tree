@@ -254,7 +254,8 @@ export const WARP_DIGIMON: WarpDigimon[] = [{
   },
   warp: {
     name: 'Gallantmon', types: ['Steel', 'Fairy'], color: 'Red',
-    baseStats: { hp: 85, atk: 145, def: 120, spa: 75, spd: 125, spe: 84 },
+    // As first designed (2026-10-18); 85 / 145 / 120 / 75 / 125 / 84 from later that day until 2026-10-23 (both on request).
+    baseStats: { hp: 95, atk: 145, def: 130, spa: 65, spd: 125, spe: 74 },
     abilities: { 0: 'Mirror Armor' }, weightkg: 110,
   },
   item: 'Gallantite',

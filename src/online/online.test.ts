@@ -253,14 +253,14 @@ describe('online Multi Battle (host engine, guest partner)', () => {
     host.setStartBattle(1);
     await waitFor(() => guest.getSnapshot().lobby.battle === 1);
     expect(guest.getSnapshot().lobby.streak).toBe(0);
-    // No retry offer until a loss at battle 10 or later.
+    // No retry offer until a loss after battle 10.
     expect(host.startOptions()).toEqual([1, 20]);
     expect(() => host.setStartBattle(30)).toThrow(/battle 1 or 20/);
     host.dispose();
     guest.dispose();
   });
 
-  it('after a loss at battle 10 or later, lets the host start again from the last multiple of 10', async () => {
+  it('after a loss after battle 10, lets the host start again from the last multiple of 10 won', async () => {
     // A stand-in engine: the test decides each battle's result.
     const handlers = new Set<(msg: FromEngine) => void>();
     const engine: EngineTransport = { send: () => {}, listen: h => { handlers.add(h); return () => { handlers.delete(h); }; }, dispose: () => {} };

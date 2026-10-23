@@ -1389,9 +1389,9 @@ export const ABILITY_FX: Record<string, FxSpec> = {
   // (StageSpot's RocketThrust) and it blasts off in a cloud of exhaust, hovers as the ground quakes beneath it, then
   // sets down on them in a smaller cloud (sprite class fx-rocket-lift; ELEVATE_MS).
   elevate: { layers: [
-    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 14, size: 52, spread: 130, delay: 140, dur: 950 },
-    { kind: 'ground', color: '#a07a4a', delay: 420, dur: 650 },
-    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 8, size: 38, spread: 85, delay: 1120, dur: 380 },
+    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 14, size: 52, spread: 130, delay: 100, dur: 700 },
+    { kind: 'ground', color: '#a07a4a', delay: 310, dur: 480 },
+    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 8, size: 38, spread: 85, delay: 680, dur: 240 },
   ] },
 };
 const ABILITY_COLORS: Record<string, string> = {

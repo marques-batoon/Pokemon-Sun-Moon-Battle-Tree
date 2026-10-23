@@ -45,7 +45,7 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
   const length = courseSchedule(format, course).length;
   // Later starting battles unlocked by this course's best streak (battle 30 after winning 50, 50 after 100).
   const checkpoints = checkpointsFor(profile.records[key]);
-  // Just lost this course at battle 10 or later (this session): it can start again from the last multiple of 10.
+  // Just lost this course after battle 10 (this session): it can start again from the last multiple of 10 won.
   const retry = useRunState(controller).retries[key] ?? null;
   const starts = [...new Set([1, ...checkpoints, ...(retry ? [retry.battle] : [])])].sort((a, b) => a - b);
   const [checkpointChoice, setCheckpoint] = useState(1);

@@ -9,7 +9,7 @@ import { importShowdownText } from '../team/showdown-text';
 import { RunController, type RunTeam } from './controller';
 import { RunStore } from './run-store';
 import { bpForWin, planOpponent } from './selection';
-import { DEFAULT_SETTINGS, type RunKey, type RunState } from './types';
+import { DEFAULT_SETTINGS, retryStart, type RunKey, type RunState } from './types';
 
 const TEAM: RunTeam = {
   sourceTeamId: null,
@@ -135,7 +135,7 @@ describe('RunController', () => {
     expect(third.controller.run('singles-normal')!.history.at(-1)!.result).toBe('loss');
   });
 
-  it('right after a loss at battle 10+, offers (this session only) a new run from the last multiple of 10', () => {
+  it('right after a loss after battle 10, offers (this session only) a new run from the last multiple of 10 won', () => {
     const key = 'singles-normal';
     /** A run lost at `battle` (its battle cut off by a reload, then counted as a loss), in a new session. */
     const lostAt = (battle: number, opts: { startBattle?: number } = {}) => {
@@ -161,11 +161,15 @@ describe('RunController', () => {
     expect(() => session.controller.retryFromOffer(key)).toThrow();
     expect(setup(kv).controller.getSnapshot().retries).toEqual({});
 
-    // Losing before battle 10: nothing to offer. Losing a debug run: the retry is unranked too.
+    // Losing at battle 10 or before: no multiple of 10 won, nothing to offer. Losing a debug run: the retry is unranked too.
     expect(lostAt(7).session.controller.getSnapshot().retries[key]).toBeUndefined();
-    const debug = lostAt(20, { startBattle: 15 }).session.controller;
-    expect(debug.getSnapshot().retries[key]).toEqual({ battle: 20, lostAt: 20, debug: true });
+    expect(lostAt(10).session.controller.getSnapshot().retries[key]).toBeUndefined();
+    const debug = lostAt(23, { startBattle: 15 }).session.controller;
+    expect(debug.getSnapshot().retries[key]).toEqual({ battle: 20, lostAt: 23, debug: true });
     expect(debug.retryFromOffer(key).debug).toBe(true);
+    // Losing a battle that's a multiple of 10: back to the one before, the last won (on request, 2026-10-23).
+    expect(lostAt(20).session.controller.getSnapshot().retries[key]).toEqual({ battle: 10, lostAt: 20, debug: false });
+    expect([11, 20, 21, 30, 50, 100, 101].map(retryStart)).toEqual([10, 10, 20, 20, 40, 90, 100]);
   });
 
   it('game rule: battles start with the brought 3, lead first, no Team Preview', async () => {

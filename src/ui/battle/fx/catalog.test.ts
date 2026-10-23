@@ -473,6 +473,8 @@ describe('Matrix Evolution (Gallantmon)', () => {
     const smoke = spec.layers.filter(l => l.kind === 'smoke');
     expect(smoke.map(l => l.delay! < ELEVATE_MS / 2)).toEqual([true, false]);
     expect(Math.max(...spec.layers.map(l => (l.delay ?? 0) + ('dur' in l ? l.dur ?? 0 : 0)))).toBeLessThanOrEqual(ELEVATE_MS);
+    // Each puff starts up to 120 ms late and lasts up to 1.2x the layer's length (MoveEffects): all done in time.
+    for (const l of smoke) expect(l.delay! + 120 + l.dur! * 1.2).toBeLessThanOrEqual(ELEVATE_MS);
     expect(spec.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Elevate' });
     expect(key(spec)).not.toBe(key(abilitySpec('levitate', 'Elevate')));
   });
