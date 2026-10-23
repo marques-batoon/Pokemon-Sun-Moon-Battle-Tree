@@ -433,7 +433,13 @@ export const DIGIMON_ABILITIES: { name: string; shortDesc: string; desc: string;
  * Digimon alone, cropped, for menus. `stageScale`: how much larger a warp form may be drawn on the battle
  * stage (Megas: 1.2x); with these pictures it only lets a warp form go a little past the usual size limit.
  */
-export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon: string; w: number; h: number; stageScale?: number }> = {
+/**
+ * Where the soles of a Digimon's feet are in its sprites, as fractions of the image (x from the left, y from the top),
+ * for effects that come out of them: MegaGargomon's rocket thrusters (Elevate). Measured from the images.
+ */
+export interface SpriteFeet { front: [number, number][]; back: [number, number][] }
+
+export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon: string; w: number; h: number; stageScale?: number; feet?: SpriteFeet }> = {
   Agumon: { file: 'pokemon/agumon.png', back: 'pokemon/back/agumon.png', icon: 'pokemon/icons/agumon.png', w: 96, h: 96 },
   WarGreymon: { file: 'pokemon/wargreymon.png', back: 'pokemon/back/wargreymon.png', icon: 'pokemon/icons/wargreymon.png', w: 96, h: 96, stageScale: 1.5 },
   Gabumon: { file: 'pokemon/gabumon.png', back: 'pokemon/back/gabumon.png', icon: 'pokemon/icons/gabumon.png', w: 96, h: 96 },
@@ -442,7 +448,10 @@ export const DIGIMON_SPRITES: Record<string, { file: string; back?: string; icon
   Tentomon: { file: 'pokemon/tentomon.png', back: 'pokemon/back/tentomon.png', icon: 'pokemon/icons/tentomon.png', w: 96, h: 96 },
   HerculesKabuterimon: { file: 'pokemon/herculeskabuterimon.png', back: 'pokemon/back/herculeskabuterimon.png', icon: 'pokemon/icons/herculeskabuterimon.png', w: 96, h: 96, stageScale: 1.5 },
   Terriermon: { file: 'pokemon/terriermon.png', back: 'pokemon/back/terriermon.png', icon: 'pokemon/icons/terriermon.png', w: 96, h: 96 },
-  MegaGargomon: { file: 'pokemon/megagargomon.png', back: 'pokemon/back/megagargomon.png', icon: 'pokemon/icons/megagargomon.png', w: 96, h: 96, stageScale: 1.5 },
+  MegaGargomon: {
+    file: 'pokemon/megagargomon.png', back: 'pokemon/back/megagargomon.png', icon: 'pokemon/icons/megagargomon.png', w: 96, h: 96, stageScale: 1.5,
+    feet: { front: [[0.22, 0.85], [0.73, 0.925]], back: [[0.22, 0.87], [0.73, 0.915]] },
+  },
   Renamon: { file: 'pokemon/renamon.png', back: 'pokemon/back/renamon.png', icon: 'pokemon/icons/renamon.png', w: 96, h: 96 },
   Sakuyamon: { file: 'pokemon/sakuyamon.png', back: 'pokemon/back/sakuyamon.png', icon: 'pokemon/icons/sakuyamon.png', w: 96, h: 96, stageScale: 1.5 },
   Guilmon: { file: 'pokemon/guilmon.png', back: 'pokemon/back/guilmon.png', icon: 'pokemon/icons/guilmon.png', w: 96, h: 96 },

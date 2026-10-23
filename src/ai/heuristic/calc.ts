@@ -5,6 +5,8 @@ import { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } from '../../data/champions';
 import { CUSTOM_SPECIES, HITMONCHANIUM_Z } from '../../data/custom';
 import { DIGIMON_MOVES } from '../../data/custom/digimon';
 import { PARADOX_FORMS } from '../../data/custom/paradox';
+import { GALAR_BIRDS } from '../../data/galar-birds';
+import { NEW_STARTERS } from '../../data/starters';
 
 const gen = Generations.get(7);
 
@@ -38,7 +40,7 @@ export function calcSpeciesName(name: string, baseSpecies: string, baseForme: st
   return baseSpecies;
 }
 
-const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...PARADOX_FORMS.map(f => f.form)]);
+const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...PARADOX_FORMS.map(f => f.form), ...GALAR_BIRDS, ...NEW_STARTERS]);
 
 /** The calc's Gen 7 data predates the Champions Megas and Gen 8-9 Pokémon; describe them from the simulator's data. */
 function speciesOverrides(species: Pokemon['species'], calcName: string) {
@@ -126,6 +128,8 @@ function moveOverrides(move: ReturnType<Battle['dex']['moves']['get']>) {
   return {
     name: move.name, basePower: move.basePower, type: move.type, category: move.category, target: move.target,
     priority: move.priority, flags: { ...move.flags }, multihit: move.multihit, drain: move.drain, recoil: move.recoil,
+    // Flower Trick always lands a critical hit.
+    willCrit: move.willCrit || undefined,
     // Sheer Force (WarGreymon) boosts moves with secondary effects.
     secondaries: move.secondaries ? true : undefined,
   };

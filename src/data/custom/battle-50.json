@@ -71,6 +71,111 @@
       "Focus Blast",
       "Dazzling Gleam"
      ]
+    },
+    {
+     "species": "Charizard",
+     "item": "Charizardite X",
+     "ability": "Blaze",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Flare Blitz",
+      "Outrage",
+      "Earthquake"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Porygon2",
+     "item": "Eviolite",
+     "ability": "Download",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Toxic",
+      "Thunderbolt",
+      "Ice Beam",
+      "Recover"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Espeon",
+     "item": "Light Clay",
+     "ability": "Magic Bounce",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Psychic",
+      "Dazzling Gleam",
+      "Reflect",
+      "Light Screen"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Greninja",
+     "item": "Life Orb",
+     "ability": "Protean",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Hydro Pump",
+      "Ice Beam",
+      "Dark Pulse",
+      "Grass Knot"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Hitmonchan",
+     "item": "Hitmonchanium Z",
+     "ability": "Iron Fist",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Sky Uppercut",
+      "Drain Punch",
+      "Ice Punch",
+      "Mach Punch"
+     ],
+     "block": 2
     }
    ]
   },
@@ -139,6 +244,132 @@
       "Fire Blast",
       "Roost"
      ]
+    },
+    {
+     "species": "Typhlosion",
+     "item": "Choice Scarf",
+     "ability": "Flash Fire",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Eruption",
+      "Fire Blast",
+      "Focus Blast",
+      "Extrasensory"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Dragonite",
+     "item": "Weakness Policy",
+     "ability": "Multiscale",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Outrage",
+      "Extreme Speed",
+      "Earthquake"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Primarina",
+     "item": "Assault Vest",
+     "ability": "Liquid Voice",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Hyper Voice",
+      "Moonblast",
+      "Ice Beam",
+      "Psychic"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Umbreon",
+     "item": "Leftovers",
+     "ability": "Synchronize",
+     "nature": "Calm",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 4,
+      "spa": 0,
+      "spd": 252,
+      "spe": 0
+     },
+     "moves": [
+      "Foul Play",
+      "Moonlight",
+      "Toxic",
+      "Protect"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Meowscarada",
+     "item": "Life Orb",
+     "ability": "Protean",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Flower Trick",
+      "Knock Off",
+      "U-turn",
+      "Sucker Punch"
+     ],
+     "block": 2
+    },
+    {
+     "species": "Heracross",
+     "item": "Heracronite",
+     "ability": "Moxie",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 4,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Pin Missile",
+      "Rock Blast",
+      "Close Combat",
+      "Swords Dance"
+     ],
+     "block": 2
     }
    ]
   },

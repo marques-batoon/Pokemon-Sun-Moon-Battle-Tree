@@ -3,7 +3,7 @@ import { useState, type CSSProperties } from 'react';
 import { warpStageScale } from '../../data/custom/digimon';
 import type { BattleAnimation } from '../../client/playback';
 import { PokemonSprite } from '../components/PokemonSprite';
-import { animatedSpriteBoost, substituteSprite } from '../sprites';
+import { animatedSpriteBoost, spriteFeet, substituteSprite } from '../sprites';
 import { useAppSettings } from '../useAppSettings';
 import { SHIELDS } from './fx/catalog';
 import { posKey } from './fx/geometry';
@@ -112,6 +112,18 @@ function ChargeAura() {
   );
 }
 
+/**
+ * Elevate: a rocket jet blasts down from under each foot (`feet`: where they are in the sprite, spriteFeet) as the
+ * Pokémon lifts off, hovers and sets down again (sprite class fx-rocket-lift). Inside the sprite, so it rises with it.
+ */
+function RocketThrust({ feet }: { feet: [number, number][] }) {
+  return (
+    <span className="rocket-thrust" aria-hidden>
+      {feet.map(([x, y], i) => <span key={i} className="jet" style={{ '--fx': `${x * 100}%`, '--fy': `${y * 100}%` } as CSSProperties} />)}
+    </span>
+  );
+}
+
 /** Leech Seed: seeds with sprouts stuck to the Pokémon. */
 function SeedMarks() {
   return (
@@ -201,6 +213,7 @@ export function StageSpot({ side, slot = 0, pokemon, anim, substitute = false, s
               flipFront={flipFront}
             />
             {charged && <ChargeAura />}
+            {mine?.kind === 'ability' && mine.condition === 'elevate' && <RocketThrust key={mine.id} feet={spriteFeet(pokemon.species, side, flipFront)} />}
             {seeded && <SeedMarks />}
             <StatusMarks status={status} confused={confused} infatuated={infatuated} />
           </div>

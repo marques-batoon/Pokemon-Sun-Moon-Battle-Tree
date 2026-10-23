@@ -93,8 +93,8 @@ describe('Multi: planning opponents', () => {
     near(pairs.get('Pokémon Trainer Marques & Pokémon Trainer Thomas')!, 1 / 18.5);
     // Their teams come from their own sets, with their own moves.
     const plan = [...Array(600).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
-    expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam'].includes(s.species))).toBe(true);
-    expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa'].includes(s.species))).toBe(true);
+    expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam', 'Charizard', 'Porygon2', 'Espeon', 'Greninja', 'Hitmonchan'].includes(s.species))).toBe(true);
+    expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa', 'Typhlosion', 'Dragonite', 'Primarina', 'Umbreon', 'Meowscarada', 'Heracross'].includes(s.species))).toBe(true);
     const venusaur = SETS.find(s => s.label === 'Venusaur (Marques 1)')!;
     expect(venusaur.moves).toContain('Hidden Power Fire');
   });
@@ -437,11 +437,13 @@ describe('Debug: choosing the next opponents', () => {
     expect(() => controller.debugChooseOpponent('multi-super', [190, legend('Marques')])).toThrow(/only battles alongside Thomas/);
   });
 
-  it('only offers trainers who can field a team in that format (Marques has 3 Pokémon: no Doubles)', () => {
+  it('only offers trainers who can field a team in that format (3 Pokémon: no Doubles)', () => {
     const marques = TRAINERS.find(t => t.kind === 'legend' && t.name === 'Marques')!;
     expect([teamSizeFor(marques, 'singles'), teamSizeFor(marques, 'doubles'), teamSizeFor(marques, 'multi')]).toEqual([3, 4, 2]);
-    expect([canField(marques, 3), canField(marques, 4)]).toEqual([true, false]);
-    expect(() => planChosenOpponent('x', 'doubles', 1, [marques.id])).toThrow(/can't field 4/);
+    // Marques had 3 Pokémon until 2026-10-23; with 8 he can field 4.
+    const firstThree = { ...marques, roster: marques.roster.slice(0, 3) };
+    expect([canField(firstThree, 3), canField(firstThree, 4), canField(marques, 4)]).toEqual([true, false, true]);
+    expect(planChosenOpponent('x', 'doubles', 1, [marques.id]).team).toHaveLength(4);
     // Red's Normal team (3 in Singles) brings 4 in Doubles.
     expect(planChosenOpponent('x', 'doubles', 1, [203]).team).toHaveLength(4);
   });

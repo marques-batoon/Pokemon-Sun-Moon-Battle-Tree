@@ -126,14 +126,18 @@ const problems = [];
 /**
  * Showdown exports ("=== [format] Brock 1 ===" headers) as trainers: sections that differ
  * only by a trailing number are one trainer. IVs are left out (the trainer's IV applies);
- * a "Hidden Power [Fire]" keeps its type through the move's name.
+ * a "Hidden Power [Fire]" keeps its type through the move's name. With `blocks`, a section
+ * titled "Thomas 3 (block 2)" holds Pokémon added to the trainer later: their sets get
+ * `block: 2` (the app puts them after every other set, so no set's id moves).
  */
-function parseExports(file, describe) {
+function parseExports(file, describe, { blocks: allowBlocks = false } = {}) {
   const text = readFileSync(new URL(file, dir), 'utf8');
   const blocks = [...text.matchAll(/^=== \[[^\]]+\] (.+?) ===\s*$([\s\S]*?)(?=^=== |(?![\s\S]))/gm)];
   const trainers = new Map();
   for (const [, title, body] of blocks) {
-    const name = title.replace(/ \d+$/, '').trim();
+    const block = Number(/ \(block (\d+)\)$/.exec(title)?.[1] ?? 1);
+    if (block !== 1 && !allowBlocks) problems.push(`${file} ${title}: "(block N)" is only for battle-50-trainers.txt`);
+    const name = title.replace(/ \(block \d+\)$/, '').replace(/ \d+$/, '').trim();
     const sets = Teams.import(body.trim());
     if (!sets?.length) { problems.push(`${file} ${title}: no Pokémon`); continue; }
     const trainer = trainers.get(name) ?? { name, ...describe(name), sets: [] };
@@ -150,6 +154,7 @@ function parseExports(file, describe) {
         evs: Object.fromEntries(STATS.map(st => [st, s.evs?.[st] ?? 0])),
         moves: s.moves.map(m => customName(m) ?? (Dex.moves.get(m).name || m)),
         ...(s.gender ? { gender: s.gender } : {}),
+        ...(block !== 1 ? { block } : {}),
       });
     }
     trainers.set(name, trainer);
@@ -199,9 +204,11 @@ const battle50Trainers = parseExports('battle-50-trainers.txt', name => {
   const info = battle50.trainers[name];
   if (!info) { problems.push(`battle-50-trainers.json: no entry for ${name}`); return {}; }
   return { class: info.class, classGender: info.gender, sprite: info.sprite, ...(info.lead ? { lead: info.lead } : {}) };
-});
+}, { blocks: true });
 for (const t of battle50Trainers) {
-  if (t.lead && !t.sets.some(s => s.species === t.lead)) problems.push(`battle-50-trainers.json: ${t.name}'s lead ${t.lead} isn't on their team`);
+  if (t.lead && !t.sets.some(s => s.species === t.lead && !s.block)) problems.push(`battle-50-trainers.json: ${t.name}'s lead ${t.lead} isn't on their team (in a section without "(block N)")`);
+  const firstLater = t.sets.findIndex(s => s.block);
+  if (firstLater >= 0 && t.sets.slice(firstLater).some(s => !s.block)) problems.push(`battle-50-trainers.txt: ${t.name}'s "(block 2)" sections must come after their other sections`);
 }
 /** The game's Battle Legends (their Super teams), which battle-50 entries can also name. */
 const GAME_TRAINERS = JSON.parse(readFileSync(new URL('../src/data/battle-tree/trainers.json', import.meta.url), 'utf8')).trainers;

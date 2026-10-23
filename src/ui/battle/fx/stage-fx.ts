@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, STURDY, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, STURDY, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, BOOST_STATS, PARADOX_BURST, PARADOX_START, paradoxBoostSpec, residualSpec, SEEDED, statusSpec,
   SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, WINDUP_THROW, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
@@ -68,6 +68,11 @@ export function spriteVars(side: Side, slot: number, anim: BattleAnimation | nul
   if ((anim?.kind === 'warp-start' || anim?.kind === 'warp') && isMatrix(anim.condition) && actsAt(anim, side, slot)) {
     const t = matrixTheme(anim.condition);
     return { '--matrix': t.tamer, '--matrix-light': t.light } as CSSProperties;
+  }
+  // Protosynthesis / Quark Drive: the Pokémon glows in the colour of the stat it heightens.
+  if (anim?.kind === 'paradox-boost' && actsAt(anim, side, slot)) {
+    const stat = BOOST_STATS[anim.condition as keyof typeof BOOST_STATS] ?? BOOST_STATS.atk;
+    return { '--boost': stat.color, '--boost-light': stat.light } as CSSProperties;
   }
   // A held item used up: its holder glows in the item's colour as it takes effect.
   if (anim?.kind === 'item' && anim.label && actsAt(anim, side, slot)) {
@@ -146,14 +151,16 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'balloon-in': return 'fx-balloon-float';
     case 'sash': case 'sturdy': return `fx-brace-${v}`;
+    case 'paradox-boost': return `fx-paradox-boost-${v}`;
     case 'item': return `fx-item-use-${v}`;
     case 'sky-dropped': return `fx-dropped-${side}`;
     case 'solar-charge': return 'fx-solar-charge';
     case 'immune': return IMMUNE_CLASS[(anim.condition ?? '').split('-')[1] ?? ''] ?? 'fx-unfazed';
     case 'ability': {
-      // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate, Elevate).
+      // The Pokémon with the Ability: it glows as it heals, powers up for a boost, or floats (Levitate; Elevate on rocket jets).
       const id = anim.condition ?? '';
-      if (id === 'levitate' || id === 'elevate') return 'fx-levitate';
+      if (id === 'levitate') return 'fx-levitate';
+      if (id === 'elevate') return `fx-rocket-lift-${v}`;
       if (id === 'airballoon') return 'fx-balloon-float';
       if (['waterabsorb', 'voltabsorb', 'dryskin'].includes(id)) return `fx-absorb-${v}`;
       if ((ABSORB_ABILITIES as readonly string[]).includes(id)) return `fx-powerup-${v}`;
@@ -212,6 +219,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'balloon-in': return BALLOON_IN;
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
     case 'sturdy': return STURDY;
+    case 'paradox-boost': return paradoxBoostSpec(anim.condition ?? 'atk', anim.label);
     case 'item': return anim.label ? itemSpec(anim.label) : null;
     case 'frisk': return anim.label ? friskSpec(anim.label) : null;
     case 'immune': return immuneSpec(anim.condition ?? '');

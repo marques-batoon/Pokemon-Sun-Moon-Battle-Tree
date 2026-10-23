@@ -19,9 +19,15 @@ team, ...).
 
 - **Teams:** `battle-50-trainers.txt`, in Showdown's export format (Team Builder →
   Export, or Pokémon Showdown's teambuilder). Each `=== [format] Name ===` section
-  adds Pokémon to that trainer; "Thomas 2" and "Thomas 3" are both Thomas, so you
-  can add a new section or add Pokémon under an existing one. A trainer needs at
+  adds Pokémon to that trainer; "Thomas 2" and "Thomas 3" are both Thomas. A trainer needs at
   least 2 Pokémon with different items and species (they bring 2 in a Multi Battle).
+  **Adding Pokémon to a trainer who already has a team:** put them in a new section whose
+  name ends in "(block N)", after that trainer's other sections, e.g.
+  `=== [gen7battlespotsingles] Thomas 4 (block 3) ===`. Don't add them under an existing
+  section: every set has an id, and saved runs and partners refer to sets by id, so new
+  sets must come after everyone else's. Block 2 is taken (Marques's and Thomas's
+  additions, 2026-10-23), so the next additions are block 3, then 4, and so on. A
+  brand-new trainer's first team needs no block.
   IV lines are ignored (they battle at 31); EVs, natures, Abilities, items, moves and
   genders are used as written.
 - **Who, where, how often:** `battle-50-trainers.json`. `trainers` sets each one's

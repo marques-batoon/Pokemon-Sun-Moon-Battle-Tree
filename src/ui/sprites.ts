@@ -61,6 +61,18 @@ function localSprite(species: string, side: SpriteSide): SpriteInfo | null {
   return { ...base, url: localSpriteUrl(species)!, ...(side === 'p1' ? { mirrored: true } : {}) };
 }
 
+/**
+ * Where the Pokémon's feet are in the sprite it's shown with (fractions of the image: x from the left, y from the top),
+ * mirrored when the sprite is: measured for the Digimon that have them (MegaGargomon), else two spots at the bottom.
+ */
+export function spriteFeet(species: string, side: SpriteSide, flipFront = false): [number, number][] {
+  const s = DIGIMON_SPRITES[species];
+  if (!s?.feet) return [[0.38, 0.97], [0.62, 0.97]];
+  if (side === 'p2') return s.feet.front;
+  if (!flipFront && s.back) return s.feet.back;
+  return s.feet.front.map(([x, y]) => [1 - x, y]);
+}
+
 /** URL of a sprite shipped with the app, or null if the species has none. */
 export function localSpriteUrl(species: string): string | null {
   const s = DIGIMON_SPRITES[species];

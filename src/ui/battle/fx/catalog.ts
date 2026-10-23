@@ -134,7 +134,12 @@ export type Layer =
   /** A glowing scan line sweeping down over the Pokémon (Matrix Evolution: its skin peeling away into data). */
   | { kind: 'scan'; at: Anchor; color: string; delay?: number; dur?: number }
   /** A spider web spun over a spot: radial threads and rings, unfurling then fading (String Shot, Spider Web). */
-  | { kind: 'web'; at: Anchor; color: string; size: number; delay?: number; dur?: number };
+  | { kind: 'web'; at: Anchor; color: string; size: number; delay?: number; dur?: number }
+  /**
+   * Exhaust smoke billowing out along the ground at the Pokémon's feet, both ways (`color`, `color2` its puffs), over a
+   * glow of heat (`glow`) where the jets hit the ground.
+   */
+  | { kind: 'smoke'; at: Anchor; color: string; color2?: string; glow?: string; count: number; size: number; spread: number; delay?: number; dur?: number };
 
 /** How a used-up item goes (Layer 'item'). */
 export type ItemUse = 'crumble' | 'burst' | 'absorb' | 'throw' | 'press' | 'reveal';
@@ -1380,12 +1385,13 @@ export const ABILITY_FX: Record<string, FxSpec> = {
     { kind: 'rings', at: 'target', color: '#c9a7ff', count: 2, size: 120, delay: 150, dur: 700 },
     { kind: 'particles', at: 'target', shape: 'dot', motion: 'rise', color: '#d9c6ff', color2: '#ffffff', count: 8, size: 8, spread: 50, delay: 250, dur: 700 },
   ] },
-  // Elevate (MegaGargomon) floats it over the ground as Levitate does: the ground quakes, and it hovers above it,
-  // crackling with electricity in green rings (sprite class fx-levitate).
+  // Elevate (MegaGargomon) floats it over the ground as Levitate does, on rocket jets: they fire up under its feet
+  // (StageSpot's RocketThrust) and it blasts off in a cloud of exhaust, hovers as the ground quakes beneath it, then
+  // sets down on them in a smaller cloud (sprite class fx-rocket-lift; ELEVATE_MS).
   elevate: { layers: [
-    { kind: 'ground', color: '#a07a4a', dur: 600 },
-    { kind: 'rings', at: 'target', color: '#9ad86a', count: 2, size: 130, delay: 150, dur: 700 },
-    { kind: 'particles', at: 'target', shape: 'spark', motion: 'rise', color: '#ffe14a', color2: '#ffffff', count: 8, size: 9, spread: 50, delay: 250, dur: 700 },
+    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 14, size: 52, spread: 130, delay: 140, dur: 950 },
+    { kind: 'ground', color: '#a07a4a', delay: 420, dur: 650 },
+    { kind: 'smoke', at: 'target', color: '#dcd6cc', color2: '#9a9082', glow: '#ff9a2e', count: 8, size: 38, spread: 85, delay: 1120, dur: 380 },
   ] },
 };
 const ABILITY_COLORS: Record<string, string> = {
@@ -1784,6 +1790,52 @@ export const PARADOX_BURST: Record<'ancient' | 'future', FxSpec> = {
     { kind: 'rings', at: 'user', color: '#7ff6ff', count: 2, size: 230 },
   ] },
 };
+
+export type BoostStat = 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+/**
+ * Each stat's colour when Protosynthesis or Quark Drive heightens it (Bulbapedia's stat colours, deepened), and how
+ * the stat's label reads (with the boost: x1.3, or x1.5 for Speed).
+ */
+export const BOOST_STATS: Record<BoostStat, { color: string; light: string; label: string }> = {
+  atk: { color: '#ff5a36', light: '#ffc4ad', label: 'Attack ×1.3' },
+  def: { color: '#f0b416', light: '#fff0a6', label: 'Defense ×1.3' },
+  spa: { color: '#4a7dff', light: '#c6d7ff', label: 'Sp. Atk ×1.3' },
+  spd: { color: '#2fc45e', light: '#c2f4cf', label: 'Sp. Def ×1.3' },
+  spe: { color: '#ff4f9e', light: '#ffd0e6', label: 'Speed ×1.5' },
+};
+/** A flourish of each stat's own: power bursts out, a shield goes up, mystic stars swirl, a barrier forms, the air rushes past. */
+const boostFlourish = (stat: BoostStat, c: { color: string; light: string }): Layer[] => {
+  switch (stat) {
+    case 'atk': return [{ kind: 'rays', at: 'user', color: c.color, size: 230, delay: 450, dur: 650 }];
+    case 'def': return [{ kind: 'shield', color: c.color, delay: 450 }];
+    case 'spa': return [{ kind: 'particles', at: 'user', shape: 'star', motion: 'swirl', color: c.color, color2: c.light, count: 10, size: 12, spread: 85, delay: 450, dur: 700 }];
+    case 'spd': return [{ kind: 'sphere', at: 'user', color: c.color, color2: c.light, size: 170, delay: 450, dur: 700 }];
+    case 'spe': return [{ kind: 'speedlines', at: 'user', color: c.light, delay: 450, dur: 650 }];
+  }
+};
+
+/**
+ * Protosynthesis (ancient: stone shards) or Quark Drive (future: circuit sparks) heightens a stat: the stage dims, its
+ * pieces gather into the Pokémon in the stat's colour, which flares up around it with up-arrows and the stat's own
+ * flourish; the Ability's name pops up, then the stat's (with its boost). Every colour is the stat's (BOOST_STATS).
+ */
+export function paradoxBoostSpec(stat: string, ability = 'Protosynthesis'): FxSpec {
+  const key: BoostStat = stat in BOOST_STATS ? (stat as BoostStat) : 'atk';
+  const c = BOOST_STATS[key];
+  const future = ability === 'Quark Drive';
+  return { layers: [
+    { kind: 'screen', color: future ? '#020814' : '#1f1205', mode: 'dim', dur: 1250 },
+    { kind: 'particles', at: 'user', shape: future ? 'spark' : 'rock', motion: 'converge', color: c.color, color2: c.light, count: future ? 18 : 14, size: future ? 10 : 14, spread: 150, dur: 550 },
+    { kind: 'screen', color: c.color, mode: 'tint', delay: 350, dur: 600 },
+    { kind: 'aura', at: 'user', color: c.color, size: 190, delay: 350, dur: 800 },
+    { kind: 'rings', at: 'user', color: c.light, count: future ? 3 : 2, size: 190, delay: 400, dur: 550 },
+    { kind: 'arrows', at: 'user', dir: 'up', color: c.color, delay: 450 },
+    { kind: 'particles', at: 'user', shape: future ? 'gem' : 'shard', motion: 'rise', color: c.light, color2: c.color, count: 10, size: 11, spread: 80, delay: 500, dur: 700 },
+    ...boostFlourish(key, c),
+    { kind: 'label', at: 'user', text: ability, color: c.color, delay: 60, dur: 600 },
+    { kind: 'label', at: 'user', text: c.label, color: c.color, delay: 680, dur: 600 },
+  ] };
+}
 
 /**
  * Warp Digivolution (the Digimon anime's sequence, in this app's style): the stage drops into a

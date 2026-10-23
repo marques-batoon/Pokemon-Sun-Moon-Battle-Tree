@@ -265,11 +265,15 @@ describe('calc bridge', () => {
     const names = new Set([...SETS.map(s => s.species), ...eligibleSpecies().map(s => s.name)]);
     // Mega formes the AI evaluates when Mega Evolving.
     for (const s of Dex.forGen(7).species.all()) if (s.isMega && s.exists && s.gen <= 7 && !s.isNonstandard) names.add(s.name);
-    // Pokémon Champions Megas, Gen 8-9 Pokémon and the custom species (Digimon) aren't in the calc's Gen 7 data:
-    // calcPokemon passes their stats.
+    // Pokémon Champions Megas, Gen 8-9 Pokémon (the Galarian birds, the new starters) and the custom species (Digimon)
+    // aren't in the calc's Gen 7 data: calcPokemon passes their stats.
     const { CHAMPIONS_MEGAS, NEW_BASE_SPECIES } = await import('../../data/champions');
     const { CUSTOM_SPECIES } = await import('../../data/custom');
-    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES]);
+    const { GALAR_BIRDS } = await import('../../data/galar-birds');
+    const { NEW_STARTERS } = await import('../../data/starters');
+    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...GALAR_BIRDS, ...NEW_STARTERS]);
+    // Galarian Articuno is described as itself (Psychic / Flying), not as Articuno.
+    expect(calcSpeciesName('Articuno-Galar', 'Articuno', 'Galar')).toBe('Articuno-Galar');
     const missing = [...names].filter(n => {
       if (described.has(n)) return false;
       const s = Dex.forGen(7).species.get(n);

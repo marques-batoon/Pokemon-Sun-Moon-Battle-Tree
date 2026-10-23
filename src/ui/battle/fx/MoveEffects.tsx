@@ -465,6 +465,31 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
         </svg>
       );
     }
+    case 'smoke': {
+      // At the Pokémon's feet (its ground line): puffs roll out both ways along the ground, swelling and thinning out,
+      // from either side of the jets so they stay in sight.
+      const p = anchor(layer.at);
+      const y = p.ground ?? p.y + 55 * ctx.k;
+      const spread = layer.spread * ctx.k;
+      const dur = layer.dur ?? 900;
+      return (
+        <Fragment key={i}>
+          {layer.glow && <span className="fxl fx-heat" style={css({ '--x': px(p.x), '--y': px(y), '--s': px(spread * 1.1), '--c': layer.glow, '--delay': delay, '--dur': ms(dur * 0.6) })} />}
+          {Array.from({ length: layer.count }, (_, k) => {
+            const r1 = rand(ctx.seed, k, 11), r2 = rand(ctx.seed, k, 12), r3 = rand(ctx.seed, k, 13);
+            const dir = k % 2 ? 1 : -1;
+            return (
+              <span key={k} className="fxl fx-smoke" style={css({
+                '--x': px(p.x + dir * (0.15 + r1 * 0.2) * spread), '--y': px(y - r3 * 8 * ctx.k),
+                '--tx': px(dir * spread * (0.45 + r2 * 0.55)), '--ty': px(-spread * (0.05 + r3 * 0.25)),
+                '--s': px(layer.size * ctx.k * (0.7 + r3 * 0.6)), '--c': layer.color2 && k % 3 === 2 ? layer.color2 : layer.color,
+                '--delay': ms((layer.delay ?? 0) + r1 * 120), '--dur': ms(dur * (0.8 + r2 * 0.4)),
+              })} />
+            );
+          })}
+        </Fragment>
+      );
+    }
     case 'gust': {
       // Streaks start behind the user and sweep past it toward the foe, spread around the line between them; every
       // fourth is a leaf riding the wind.
@@ -568,7 +593,7 @@ function aimsAtTarget(l: Layer): boolean {
     case 'bolt': case 'column': return l.at !== 'user';
     case 'orb': case 'beam': case 'slash': case 'jaws': case 'crack': case 'meteor': case 'gauntlets': return true;
     case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon':
-    case 'fractal': case 'merge': case 'sphere': case 'scan': case 'web': return l.at === 'target';
+    case 'fractal': case 'merge': case 'sphere': case 'scan': case 'web': case 'smoke': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';
     case 'particles': case 'aura': case 'arrows': return l.at === 'target';
     case 'rings': return l.at !== 'user';

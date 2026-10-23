@@ -513,6 +513,17 @@ export const BIG_MOVES: Record<string, FxSpec> = {
     pt('target', 'flame', 'burst', '#ff5a1a', '#ffd23f', 26, 20, 230, 540, 550),
     { kind: 'impact', at: 'user', color: '#ff8c3a', size: 150, delay: 800 },
   ] },
+  // Pyro Ball (Cinderace): it kicks up a pebble, sets it ablaze with its burning feet and kicks the fireball, spinning,
+  // at the target, where it bursts into flame.
+  pyroball: { shake: 'strong', layers: [
+    pt('user', 'rock', 'rise', '#8a6d47', '#c9a35a', 4, 12, 40, 0, 350),
+    pt('user', 'flame', 'converge', '#ff5a1a', '#ffd23f', 16, 14, 90, 150, 400),
+    { kind: 'aura', at: 'user', color: '#ff7a1a', size: 170, delay: 250, dur: 400 },
+    { kind: 'orb', color: '#ff5a1a', color2: '#ffe066', size: 48, shape: 'flame', spin: true, arc: true, delay: 560, dur: 300 },
+    hit(860, '#fff6c0', 380),
+    pt('target', 'flame', 'burst', '#ff5a1a', '#ffd23f', 24, 20, 200, 870, 500),
+    ring('target', 880, '#ff9a3a', 3, 300, 450),
+  ] },
   // Focus Blast: the user gathers its focus into a ball of energy and hurls it.
   focusblast: { shake: 'strong', layers: [
     pt('user', 'dot', 'converge', '#ffb08a', '#ffffff', 22, 12, 150, 0, 500),
@@ -763,6 +774,18 @@ export const BIG_MOVES: Record<string, FxSpec> = {
     pt('target', 'feather', 'swirl', '#ffffff', '#cfd8ff', 12, 14, 140, 400, 700),
     hit(800, '#ffffff', 360),
   ] },
+  // Wave Crash (Quaquaval): cloaked in a surging wave, the user crashes into the target; the wave breaks over it, and the
+  // user is hurt too.
+  wavecrash: { shake: 'strong', layers: [
+    { kind: 'aura', at: 'user', color: '#3b7cff', size: 260, dur: 500 },
+    pt('user', 'drop', 'swirl', '#3b7cff', '#cfe8ff', 18, 14, 110, 0, 500),
+    { kind: 'gust', color: '#5aa2ff', count: 14, delay: 400, dur: 220, leaves: false },
+    hit(560, '#e8f4ff', 420),
+    { kind: 'column', color: '#2a6ae0', color2: '#cfe8ff', delay: 570 },
+    pt('target', 'drop', 'spray', '#3b7cff', '#ffffff', 30, 16, 240, 580, 550),
+    ring('target', 590, '#9ac8ff', 3, 360),
+    { kind: 'impact', at: 'user', color: '#5aa2ff', size: 140, delay: 820 },
+  ] },
   // Hydro Pump: a huge volume of water blasted at the target under great pressure.
   hydropump: { shake: 'light', layers: [
     pt('user', 'drop', 'converge', '#3b7cff', '#cfe8ff', 18, 12, 140, 0, 450),
@@ -825,7 +848,7 @@ export const BIG_MOVE_MOTION: Record<string, 'charge' | 'cast' | 'explode' | 'le
   vcreate: 'charge', gigaimpact: 'charge', headsmash: 'charge', focuspunch: 'charge', boltstrike: 'charge', skullbash: 'charge',
   steelroller: 'charge', solarblade: 'charge', closecombat: 'charge', doubleedge: 'charge', flareblitz: 'charge', glaiverush: 'charge',
   headcharge: 'charge', headlongrush: 'charge', megakick: 'charge', megahorn: 'charge', superpower: 'charge', volttackle: 'charge',
-  woodhammer: 'charge', freezeshock: 'charge', lastresort: 'charge', powerwhip: 'charge',
+  woodhammer: 'charge', freezeshock: 'charge', lastresort: 'charge', powerwhip: 'charge', wavecrash: 'charge',
   highjumpkick: 'leap',
   skyattack: 'dive', bravebird: 'dive', dragonascent: 'dive',
   outrage: 'rampage', thrash: 'rampage', petaldance: 'rampage', ragingfury: 'rampage',
@@ -835,7 +858,7 @@ export const BIG_MOVE_MOTION: Record<string, 'charge' | 'cast' | 'explode' | 'le
   leafstorm: 'cast', overheat: 'cast', belch: 'cast', focusblast: 'cast', futuresight: 'cast', gunkshot: 'cast', meteorbeam: 'cast',
   precipiceblades: 'cast', seedflare: 'cast', shadowforce: 'charge', synchronoise: 'cast', technoblast: 'cast', zapcannon: 'cast',
   blizzard: 'cast', clangingscales: 'cast', fireblast: 'cast', hurricane: 'cast', hydropump: 'cast', originpulse: 'cast', poltergeist: 'cast',
-  steameruption: 'cast', thunder: 'cast',
+  steameruption: 'cast', thunder: 'cast', pyroball: 'cast',
 };
 
 /** Future Sight and Doom Desire landing two turns later: the attack falls from above onto the target. */

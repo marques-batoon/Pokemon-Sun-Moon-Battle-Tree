@@ -22,11 +22,22 @@ const GAME_SETS = setsJson.sets as TreeSet[];
  * Anabel 3.5 (2026-10-11; the game: 1, a seventh of the others').
  */
 const WEIGHT_CHANGES: Record<string, number> = { Anabel: 3.5 };
-const GAME_TRAINERS = (trainersJson.trainers as Trainer[]).map(t => (t.kind === 'special' && t.name in WEIGHT_CHANGES ? { ...t, weight: WEIGHT_CHANGES[t.name] } : t));
+/**
+ * App changes to the game's trainers' names, on request, by trainer id (the game's own stay in trainers.json):
+ * Youth Athlete Hilario (#153, female) is Hilary (2026-10-23).
+ */
+const NAME_CHANGES: Record<number, string> = { 152: 'Hilary' };
+const GAME_TRAINERS = (trainersJson.trainers as Trainer[])
+  .map(t => (t.kind === 'special' && t.name in WEIGHT_CHANGES ? { ...t, weight: WEIGHT_CHANGES[t.name] } : t))
+  .map(t => (NAME_CHANGES[t.id] ? { ...t, name: NAME_CHANGES[t.id] } : t));
 /** The game's Super Battle Legends (Red, Blue), by name: battle-50 entries can name them too. */
 const gameLegend = (name: string) => GAME_TRAINERS.find(t => t.kind === 'legend' && t.course === 'super' && t.name === name);
 
-interface CustomSet { species: string; item: string; ability: string; nature: string; evs: StatTable; moves: string[]; gender?: 'M' | 'F' }
+interface CustomSet {
+  species: string; item: string; ability: string; nature: string; evs: StatTable; moves: string[]; gender?: 'M' | 'F';
+  /** A battle-50 trainer's Pokémon added later ("(block 2)" in battle-50-trainers.txt): its set comes after everyone else's. */
+  block?: number;
+}
 interface CustomTrainer {
   name: string; key?: string; person?: string; class: string; classGender: 'M' | 'F'; region: string; sets: CustomSet[];
   /** The DigiDestined: own sprite, the species that always leads, own weight, fixed Multi Battle partners (by name). */
@@ -90,19 +101,24 @@ interface Battle50Entry { format: Format; course: Course; battle: number; traine
  * A trainer can be in several entries (Tai: Super Singles, Super Doubles, and Super Multi
  * with Matt or Takato), and can have a Pokémon that always leads (`lead`). The bosses are
  * made once every trainer exists (battle50Bosses): an entry can also name a Digimon Tamer
- * (Takato), a special trainer who comes later.
+ * (Takato), a special trainer who comes later. Pokémon added to a trainer's team later (`block` 2: Thomas's and
+ * Marques's, 2026-10-23) get their sets after everyone else's (laterSets), so no other set's id moves.
  */
 function battle50Trainers(firstSet: number, firstTrainer: number) {
   const sets: TreeSet[] = [];
+  const later: { block: number; roster: number[]; label: string; setNumber: number; set: Omit<CustomSet, 'block'> }[] = [];
   const list = battle50Json.trainers as (CustomTrainer & { sprite?: string; lead?: string })[];
   const entries = battle50Json.battles as Battle50Entry[];
   const bossKey = (e: Battle50Entry) => `${e.trainers.map(n => n.toLowerCase()).join('-')}-${e.format}-${e.course}`;
   const trainers: LegendTrainer[] = list.map((t, i) => {
     const entry = entries.find(e => e.trainers.includes(t.name))!;
-    const roster = t.sets.map((s, j) => {
+    const roster: number[] = [];
+    t.sets.forEach(({ block, ...s }, j) => {
+      const label = `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`;
+      if ((block ?? 1) !== 1) return void later.push({ block: block!, roster, label, setNumber: j + 1, set: s });
       const id = firstSet + sets.length;
-      sets.push({ id, label: `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
-      return id;
+      sets.push({ id, label, setNumber: j + 1, ...s });
+      roster.push(id);
     });
     const lead = t.lead ? roster.find(id => sets[id - firstSet].species === t.lead) : undefined;
     return {
@@ -112,7 +128,15 @@ function battle50Trainers(firstSet: number, firstTrainer: number) {
       source: { sets: 'custom: data-sources/custom/battle-50-trainers.txt (designed by the user)' },
     };
   });
-  return { sets, trainers, entries, bossKey };
+  /**
+   * The later sets, with ids from `first` on, each joining its trainer's roster: by block (a block 3 added some day
+   * comes after every block 2 set), then in trainer order.
+   */
+  const laterSets = (first: number): TreeSet[] => [...later].sort((a, b) => a.block - b.block).map(({ roster, label, setNumber, set }, k) => {
+    roster.push(first + k);
+    return { id: first + k, label, setNumber, ...set };
+  });
+  return { sets, trainers, entries, bossKey, laterSets };
 }
 /**
  * The battle-50 bosses: custom trainers, the game's Battle Legends in another slot (Red at battle 50 of Super
@@ -214,9 +238,14 @@ const REGULAR_LATER = customRegularTrainers(
 );
 /** Every custom regular trainer (both blocks): the late pools take them all. */
 const CUSTOM_REGULAR = [...REGULAR.trainers, ...REGULAR_LATER.trainers];
+/** Pokémon added to the battle-50 trainers' teams later (Thomas's and Marques's, 2026-10-23), after every other set. */
+const BATTLE_50_LATER = BATTLE_50.laterSets(
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length + REGULAR.sets.length + MORE_SPECIALS.sets.length + REGULAR_LATER.sets.length,
+);
 
 export const SETS: TreeSet[] = [
   ...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets, ...REGULAR.sets, ...MORE_SPECIALS.sets, ...REGULAR_LATER.sets,
+  ...BATTLE_50_LATER,
 ];
 export const TRAINERS: Trainer[] = [
   ...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers, ...REGULAR.trainers,

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
 import { DEFAULT_APP_SETTINGS } from '../settings/settings-store';
-import { animatedSprite, animatedSpriteBoost, artworkSprite, hasBackSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, staticSprite, WING_FLAPPERS } from './sprites';
+import { animatedSprite, animatedSpriteBoost, artworkSprite, hasBackSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, spriteFeet, staticSprite, WING_FLAPPERS } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -44,6 +44,17 @@ describe('Digimon sprites', () => {
       expect(staticSprite(name, 'p1').mirrored, name).toBeUndefined();
       expect(animatedSprite(name, 'p2'), name).toMatchObject({ url: `/pokemon/${file}.png` });
     }
+  });
+
+  it('knows where MegaGargomon\'s feet are in the sprite it is shown with, for its rocket jets (Elevate)', () => {
+    const front = spriteFeet('MegaGargomon', 'p2');
+    expect(front).toHaveLength(2);
+    expect(spriteFeet('MegaGargomon', 'p1')).not.toEqual(front);
+    // Your side with front sprites: the front one flipped, so are its feet.
+    expect(spriteFeet('MegaGargomon', 'p1', true)).toEqual(front.map(([x, y]) => [1 - x, y]));
+    for (const [x, y] of front) expect(x > 0 && x < 1 && y > 0.8 && y < 1).toBe(true);
+    // Anything else (Elevate by Skill Swap): two spots at the bottom of the sprite.
+    expect(spriteFeet('Pikachu', 'p2')).toEqual([[0.38, 0.97], [0.62, 0.97]]);
   });
 
   it('draws each warp form at its own size on the stage', () => {

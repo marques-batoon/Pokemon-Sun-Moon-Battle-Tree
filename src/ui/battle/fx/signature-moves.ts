@@ -1,7 +1,7 @@
 // Signature moves have their own animation (on request, 2026-10-21): every move that was one Pokémon's (or one
 // evolution line's) own when it came out, still is or not (Bonemerang, Shadow Bone, Sacred Fire, Spore...), that the
-// battles can use and that had no animation of its own yet (the moves over 100 power have theirs in big-moves.ts), and
-// the Galarian legendary birds' (2026-10-22).
+// battles can use and that had no animation of its own yet (the moves over 100 power have theirs in big-moves.ts), the
+// Galarian legendary birds' (2026-10-22) and the Generation 8 and 9 starters' (2026-10-23; Pyro Ball is over 100 power).
 // Each is tailored to the move: what it is in the games, drawn with the stage's shapes (approximations, not the
 // games' animations). How long each plays: SIGNATURE_MOVE_MS in client/playback.ts. How the user of an attack moves:
 // SIGNATURE_MOTION (as BIG_MOVE_MOTION: a user that charges in makes contact at about 43% of the move's length; a move
@@ -859,6 +859,55 @@ const GEN_7: Record<string, FxSpec> = {
     hit(650, '#e0b0ff', 250),
     pt('target', 'flame', 'rise', '#5a2a7a', '#c060ff', 14, 18, 110, 660, 450),
   ] },
+  // Drum Beating (Rillaboom): it pounds its drum, and the beat sends the drum's roots bursting up under the target,
+  // which slows down.
+  drumbeating: { shake: 'light', layers: [
+    ring('user', 0, '#8a6d47', 2, 160, 300), ring('user', 220, '#7cd05a', 2, 180, 300),
+    pt('user', 'leaf', 'burst', '#3f9a2a', '#7cd05a', 10, 12, 90, 100, 400),
+    { kind: 'ground', color: '#6b4a2b', delay: 350, dur: 450 },
+    { kind: 'column', color: '#5a3a1a', color2: '#7cd05a', delay: 620 },
+    hit(650, '#c8f0a0', 220),
+    down('target', 750),
+  ] },
+  // Snipe Shot (Inteleon): it takes aim (a red reticle closes in on the target) and fires a single bullet of water from
+  // its fingertip.
+  snipeshot: { layers: [
+    ring('target', 0, '#ff4a4a', 2, 140, 380),
+    pt('user', 'drop', 'converge', '#5aa2ff', '#ffffff', 8, 8, 60, 100, 300),
+    { kind: 'beam', color: '#3b7cff', color2: '#ffffff', width: 8, delay: 470, dur: 160 },
+    orb(470, '#5aa2ff', 14, 'drop', 140, { color2: '#ffffff' }),
+    hit(610, '#ffffff', 200),
+    pt('target', 'drop', 'burst', '#3b7cff', '#cfe8ff', 12, 12, 90, 620, 350),
+  ] },
+  // Flower Trick (Meowscarada): it tosses a rigged bouquet at the target, and the flowers burst open in a blast of petals
+  // (it always lands a critical hit).
+  flowertrick: { shake: 'light', layers: [
+    pt('user', 'leaf', 'swirl', '#ff6ab0', '#7cd05a', 10, 12, 70, 0, 400),
+    orb(400, '#ff6ab0', 28, 'leaf', 280, { arc: true, spin: true, color2: '#7cd05a' }),
+    hit(680, '#ffd0e8', 260),
+    { kind: 'impact', color: '#ff6ab0', size: 160, star: true, delay: 700 },
+    pt('target', 'leaf', 'burst', '#ff6ab0', '#ffd0e8', 22, 14, 150, 690, 500),
+    pt('target', 'leaf', 'burst', '#7cd05a', '#3f9a2a', 10, 12, 110, 720, 450),
+  ] },
+  // Torch Song (Skeledirge): it sings, and its song comes out as a blast of flame carrying burning notes; its Sp. Atk rises.
+  torchsong: { shake: 'light', layers: [
+    pt('user', 'note', 'rise', '#ff7a1a', '#ffd23f', 8, 14, 70, 0, 450),
+    ring('user', 100, '#ff9a3a', 2, 170, 350),
+    { kind: 'beam', color: '#ff5a1a', color2: '#ffd23f', width: 34, wavy: true, delay: 420, dur: 450 },
+    orb(430, '#ffb347', 18, 'note', 380, { count: 3, gap: 70, color2: '#fff0a0' }),
+    hit(720, '#fff0c0', 240),
+    pt('target', 'flame', 'burst', '#ff5a1a', '#ffd23f', 16, 16, 120, 730, 400),
+    up('user', 850, '#ff7a1a'),
+  ] },
+  // Aqua Step (Quaquaval): light, fluid dance steps on a trail of water, then a kick; its Speed rises.
+  aquastep: { shake: 'light', layers: [
+    pt('user', 'drop', 'swirl', '#5aa2ff', '#cfe8ff', 12, 10, 80, 0, 400),
+    speed(220, '#9ac8ff', 260),
+    slash(450, '#5aa2ff', 2, 20, 12),
+    hit(470, '#e8f4ff', 220),
+    pt('target', 'drop', 'spray', '#3b7cff', '#ffffff', 14, 12, 110, 480, 400),
+    up('user', 700, '#5aa2ff'),
+  ] },
 };
 
 const GEN_6_TO_9_STATUS: Record<string, FxSpec> = {
@@ -935,8 +984,9 @@ export const SIGNATURE_MOTION: Record<string, 'charge' | 'cast' | 'leap' | 'dive
   diamondstorm: 'cast', hyperspacehole: 'cast', landswrath: 'cast', thousandarrows: 'cast', thousandwaves: 'cast', oblivionwing: 'cast',
   watershuriken: 'cast', anchorshot: 'cast', coreenforcer: 'cast', photongeyser: 'cast', pollenpuff: 'cast', revelationdance: 'cast',
   sparklingaria: 'cast', spiritshackle: 'cast', moongeistbeam: 'cast', naturesmadness: 'cast', mortalspin: 'cast', tachyoncutter: 'cast',
-  thunderclap: 'cast', hydrosteam: 'cast', freezingglare: 'cast', fierywrath: 'cast',
-  thunderouskick: 'charge',
+  thunderclap: 'cast', hydrosteam: 'cast', freezingglare: 'cast', fierywrath: 'cast', drumbeating: 'cast', snipeshot: 'cast', flowertrick: 'cast',
+  torchsong: 'cast',
+  thunderouskick: 'charge', aquastep: 'charge',
 };
 
 /**

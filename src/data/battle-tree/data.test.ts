@@ -31,14 +31,26 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets, 40 Digimon Tamer sets (Izzy, Kaito, Takato, Henry, Rika) Veteran Mildred\'s 9, the 17 Paradox trainers\' 8 each Lillie, Hau, Lana and Marley\'s 8 each and the 12 Ace Trainers and Beauties\' 8 each, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 40 + 9 + 17 * 8 + 4 * 8 + 12 * 8);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets, 40 Digimon Tamer sets (Izzy, Kaito, Takato, Henry, Rika) Veteran Mildred\'s 9, the 17 Paradox trainers\' 8 each Lillie, Hau, Lana and Marley\'s 8 each, the 12 Ace Trainers and Beauties\' 8 each and Marques and Thomas\'s 11 added later, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 40 + 9 + 17 * 8 + 4 * 8 + 12 * 8 + 11);
     // Labels name the trainer by key, so the two Archies' sets stay apart.
     expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
     // Only custom sets fix their Ability (the game rolls it).
     expect(SETS.slice(0, 996).some(s => s.ability)).toBe(false);
     expect(SETS.slice(996).every(s => s.ability)).toBe(true);
+  });
+
+  it('puts the Pokémon added to Marques\'s and Thomas\'s teams later after every other set, so no earlier id moves', () => {
+    expect(SETS.slice(-11).map(s => s.label)).toEqual([
+      'Charizard (Marques 4)', 'Porygon2 (Marques 5)', 'Espeon (Marques 6)', 'Greninja (Marques 7)', 'Hitmonchan (Marques 8)',
+      'Typhlosion (Thomas 4)', 'Dragonite (Thomas 5)', 'Primarina (Thomas 6)', 'Umbreon (Thomas 7)', 'Meowscarada (Thomas 8)', 'Heracross (Thomas 9)',
+    ]);
+    // The first Elite Four set still comes right after the battle-50 trainers' first 22.
+    expect(SETS[996 + 292 + 22].label).toMatch(/^Lapras \(Lorelei 1\)$/);
+    const roster = (name: string) => TRAINERS.find(t => t.kind === 'legend' && t.name === name)!.roster.map(id => SETS[id].species);
+    expect(roster('Marques')).toEqual(['Venusaur', 'Poliwrath', 'Alakazam', 'Charizard', 'Porygon2', 'Espeon', 'Greninja', 'Hitmonchan']);
+    expect(roster('Thomas')).toEqual(['Ampharos', 'Infernape', 'Drampa', 'Typhlosion', 'Dragonite', 'Primarina', 'Umbreon', 'Meowscarada', 'Heracross']);
   });
 
   it('resolves every species, move, item and nature in Gen 7 (with the app\'s custom additions, like the Digimon)', () => {
@@ -119,8 +131,8 @@ describe('trainers.json', () => {
     // Aliana and Celosia were removed on request.
     expect(TRAINERS.some(t => t.name === 'Aliana' || t.name === 'Celosia')).toBe(false);
     expect(TRAINERS.slice(252, 256).map(t => [t.name, t.class, t.kind, t.custom, t.iv, t.sprite, t.roster.length])).toEqual([
-      ['Marques', 'Pokémon Trainer', 'legend', true, 31, '/trainers/marques.png', 3],
-      ['Thomas', 'Pokémon Trainer', 'legend', true, 31, '/trainers/thomas.png', 3],
+      ['Marques', 'Pokémon Trainer', 'legend', true, 31, '/trainers/marques.png', 8],
+      ['Thomas', 'Pokémon Trainer', 'legend', true, 31, '/trainers/thomas.png', 9],
       ['Tai', 'Battle Legend', 'legend', true, 31, '/trainers/tai.png', 8],
       ['Matt', 'Battle Legend', 'legend', true, 31, '/trainers/matt.png', 8],
     ]);
@@ -155,6 +167,12 @@ describe('trainers.json', () => {
       const need = t.kind === 'legend' && t.format === 'multi' ? 2 : 4;
       expect(maxClauseTeam(t.roster, need), t.name).toBe(need);
     }
+  });
+
+  it('renames Youth Athlete Hilario to Hilary (on request), keeping the game\'s data otherwise', () => {
+    const t = TRAINERS[152];
+    expect([t.name, t.class, t.classGender, t.kind === 'regular' && t.number]).toEqual(['Hilary', 'Youth Athlete', 'F', 153]);
+    expect(TRAINERS.some(x => x.name === 'Hilario')).toBe(false);
   });
 
   it('assigns IVs by trainer tier (19 / 23 / 27 / 31)', () => {

@@ -4,7 +4,7 @@ import { Generations } from '@pkmn/data';
 import { Dex } from '@pkmn/dex';
 import { Protocol } from '@pkmn/protocol';
 import { Battle, Teams, type ID } from '@pkmn/sim';
-import { absorbedByAbility, displayOrder, planLine, type BattleAnimation } from './playback';
+import { ABILITY_MS, absorbedByAbility, displayOrder, ELEVATE_MS, PARADOX_BOOST_MS, planLine, type BattleAnimation } from './playback';
 
 type Planned = Omit<BattleAnimation, 'id'>;
 
@@ -146,8 +146,9 @@ describe('planLine: single lines', () => {
     ['|-fieldstart|move: Psychic Terrain|[from] ability: Psychic Surge|[of] p2a: Tapu Lele', { kind: 'field-start', side: 'p2', condition: 'psychicterrain' }],
     ['|-activate|p1a: Mew|move: Attract|[of] p2a: Gengar', { kind: 'infatuated', side: 'p1' }],
     ['|-damage|p1a: Mew|100/175|[from] confusion', { kind: 'residual', side: 'p1', condition: 'confusion' }],
-    // Elevate floats MegaGargomon like Levitate: its Ability's animation (Levitate's float), named Elevate.
-    ['|-immune|p2a: Terriermon|[from] ability: Elevate', { kind: 'ability', side: 'p2', condition: 'elevate', label: 'Elevate' }],
+    // Elevate floats MegaGargomon like Levitate: its Ability's own animation (lifting off on rocket jets, a little longer), named Elevate.
+    ['|-immune|p2a: Terriermon|[from] ability: Elevate', { kind: 'ability', side: 'p2', condition: 'elevate', label: 'Elevate', durationMs: ELEVATE_MS }],
+    ['|-immune|p2a: Rotom|[from] ability: Levitate', { kind: 'ability', side: 'p2', condition: 'levitate', durationMs: ABILITY_MS }],
   ] as const)('%s', (line, expected) => {
     expect(plan(line)).toMatchObject(expected);
   });
@@ -479,6 +480,14 @@ describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Ba
     expect(displayOrder(lines)).toEqual([lines[0], lines[2], lines[1]]);
     // Another Ability announced before someone's damage stays put.
     expect(displayOrder(['|-ability|p2a: Golem|Rock Head', '|-damage|p2a: Golem|50/100'])).toEqual(['|-ability|p2a: Golem|Rock Head', '|-damage|p2a: Golem|50/100']);
+  });
+
+  it('shows Protosynthesis and Quark Drive heightening a stat, with the stat and the Ability', () => {
+    expect(plan('|-start|p2a: Great Tusk|protosynthesisatk')).toMatchObject({ kind: 'paradox-boost', side: 'p2', condition: 'atk', label: 'Protosynthesis', durationMs: PARADOX_BOOST_MS });
+    expect(plan('|-start|p1b: Iron Bundle|quarkdrivespe')).toMatchObject({ kind: 'paradox-boost', side: 'p1', slot: 1, condition: 'spe', label: 'Quark Drive' });
+    for (const stat of ['def', 'spa', 'spd']) expect(plan(`|-start|p1a: Flutter Mane|protosynthesis${stat}`)).toMatchObject({ kind: 'paradox-boost', condition: stat });
+    // The boost wearing off isn't animated.
+    expect(plan('|-end|p1a: Flutter Mane|Protosynthesis')?.kind).not.toBe('paradox-boost');
   });
 
   it('shows other held items being used up (herbs, Weakness Policy, Red Card thrown at the attacker...)', () => {

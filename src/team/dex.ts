@@ -8,16 +8,17 @@ import { CUSTOM_LEARNS, customOverrides, mergeModData } from '../data/custom';
 import { DIGIMON_MOVE_IDS, digimonMoves, digimonOverrides } from '../data/custom/digimon';
 import { isParadoxForm, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxOverrides } from '../data/custom/paradox';
 import { GALAR_BIRD_MOVES, GALAR_BIRD_NEW_MOVE_IDS, galarBirdsOverrides } from '../data/galar-birds';
+import { STARTER_MOVES, STARTER_NEW_MOVE_IDS, startersOverrides } from '../data/starters';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
 /**
- * Gen 7 plus the Pokémon Champions Megas, the Galarian legendary birds and the custom additions: the same data
+ * Gen 7 plus the Pokémon Champions Megas, the Galarian legendary birds, the Gen 8-9 starters and the custom additions: the same data
  * layer the simulator uses (src/engine/format.ts). Here the Paradox forms are
  * visible too, for their stats, types and sprites (they're never team choices).
  */
 const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, {
   Scripts: { inherit: 'gen7' },
-  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true }), digimonOverrides(), galarBirdsOverrides()),
+  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true }), digimonOverrides(), galarBirdsOverrides(), startersOverrides()),
 } as never);
 
 export const gens = new Generations({ ...Dex, forGen: (gen: number) => (gen === 7 ? championsDex : Dex.forGen(gen)) } as typeof Dex);
@@ -59,12 +60,12 @@ export function allItems(): Item[] {
 
 let moveCache: Move[] | null = null;
 /**
- * Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon, the Paradox forms and the Galarian birds,
+ * Gen 7 moves (the Gen 8-9 moves made available for the Champions Pokémon, the Paradox forms, the Galarian birds and the new starters,
  * and the Digimon's signature moves, aren't for anyone else).
  */
 export function allMoves(): Move[] {
   moveCache ??= [...gen7.moves]
-    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id) && !DIGIMON_MOVE_IDS.has(m.id) && !GALAR_BIRD_NEW_MOVE_IDS.has(m.id))
+    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id) && !DIGIMON_MOVE_IDS.has(m.id) && !GALAR_BIRD_NEW_MOVE_IDS.has(m.id) && !STARTER_NEW_MOVE_IDS.has(m.id))
     .sort((a, b) => a.name.localeCompare(b.name));
   return moveCache;
 }
@@ -91,9 +92,9 @@ export async function learnableMoves(species: string, item?: string): Promise<Mo
   const digimon = digimonMoves(species, item);
   if (digimon) return digimon.map(m => gen7.moves.get(m)).filter((m): m is Move => !!m).sort((a, b) => a.name.localeCompare(b.name));
   const s = gen7.species.get(species);
-  // The Galarian birds learn what they learn in Sword and Shield.
-  const bird = s && GALAR_BIRD_MOVES[s.name];
-  if (bird) return bird.map(m => gen7.moves.get(m)).filter((m): m is Move => !!m).sort((a, b) => a.name.localeCompare(b.name));
+  // The Galarian birds learn what they learn in Sword and Shield, the Gen 8-9 starters what they learn in their debut game.
+  const own = s && (GALAR_BIRD_MOVES[s.name] ?? STARTER_MOVES[s.name]);
+  if (own) return own.map(m => gen7.moves.get(m)).filter((m): m is Move => !!m).sort((a, b) => a.name.localeCompare(b.name));
   // Champions Pokémon that aren't in Sun & Moon learn from their newest (Gen 9) learnsets.
   const learnable = s && NEW_BASE_SPECIES.includes(s.name)
     ? await gen9.learnsets.learnable(s.name)

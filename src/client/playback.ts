@@ -59,6 +59,11 @@ export type AnimationKind =
   /** Sturdy: at full HP, a hit that would have knocked the Pokémon out leaves it with 1 HP ("X endured the hit!"). */
   | 'sturdy'
   /**
+   * Protosynthesis or Quark Drive (`label`: its name) heightens the Pokémon's highest stat (`condition`: atk, def, spa,
+   * spd or spe), in that stat's colour.
+   */
+  | 'paradox-boost'
+  /**
    * Another held item is used up (`label`: its name; `condition`: its id): White Herb, Mental Herb, Power Herb, Weakness
    * Policy, Eject Button, Absorb Bulb, a Seed... For Red Card, `target`/`targetSlot`: the attacker it sends back.
    */
@@ -186,7 +191,7 @@ export const BIG_MOVE_MS: Record<string, number> = {
   megakick: 1300, megahorn: 1200, meteorbeam: 1300, outrage: 1400, petaldance: 1300, powerwhip: 1200, precipiceblades: 1500,
   ragingfury: 1300, seedflare: 1300, shadowforce: 1200, superpower: 1300, synchronoise: 1400, technoblast: 1400, thrash: 1400,
   volttackle: 1300, woodhammer: 1300, zapcannon: 1500, blizzard: 1300, clangingscales: 1500, fireblast: 1300, hurricane: 1300,
-  hydropump: 1300, originpulse: 1300, poltergeist: 1400, steameruption: 1100, thunder: 1100,
+  hydropump: 1300, originpulse: 1300, poltergeist: 1400, steameruption: 1100, thunder: 1100, pyroball: 1400, wavecrash: 1300,
 };
 /**
  * Signature moves (one Pokémon's own when they came out: Bonemerang, Shadow Bone, Sacred Fire, Spore...) with their own
@@ -204,7 +209,7 @@ export const SIGNATURE_MOVE_MS: Record<string, number> = {
   darkestlariat: 1050, firelash: 1200, icehammer: 1200, multiattack: 1150, photongeyser: 1300, plasmafists: 1200, pollenpuff: 1200, revelationdance: 1250, shadowbone: 1050,
   sparklingaria: 1350, spectralthief: 1300, spiritshackle: 1200, tropkick: 1200, zingzap: 950, sunsteelstrike: 1200, moongeistbeam: 1400, firstimpression: 1000, naturesmadness: 1150,
   mortalspin: 1150, psyblade: 1050, mightycleave: 1100, tachyoncutter: 1050, thunderclap: 900, hydrosteam: 1300, lovelykiss: 1250, softboiled: 1300, transform: 900,
-  freezingglare: 1100, thunderouskick: 1000, fierywrath: 1200,
+  freezingglare: 1100, thunderouskick: 1000, fierywrath: 1200, drumbeating: 1150, snipeshot: 1050, flowertrick: 1150, torchsong: 1250, aquastep: 1100,
   splash: 900, kinesis: 1100, spore: 1200, milkdrink: 1200, sketch: 950, spiderweb: 1250, camouflage: 900, slackoff: 1150, tailglow: 1050,
   floralhealing: 900, instruct: 900, purify: 1300, shoreup: 1350, toxicthread: 1300, spicyextract: 1250, noretreat: 1050, burningbulwark: 900,
 };
@@ -232,6 +237,10 @@ export const CANT_MS = 750;
 export const CONFUSED_MS = 750;
 export const BLOCKED_MS = 550;
 export const ABILITY_MS = 1100;
+/** Elevate: MegaGargomon lifts off on its rocket jets, hovers over the attack and sets down. */
+export const ELEVATE_MS = 1500;
+/** How long an Ability's animation takes (by its id). */
+export const abilityDuration = (id: string) => (id === 'elevate' ? ELEVATE_MS : ABILITY_MS);
 export const CHARGED_MS = 750;
 export const BERRY_MS = 1000;
 export const BALLOON_POP_MS = 850;
@@ -239,6 +248,8 @@ export const BALLOON_IN_MS = 1100;
 export const SASH_MS = 900;
 /** Sturdy holding a Pokémon on with 1 HP. */
 export const STURDY_MS = 1000;
+/** Protosynthesis or Quark Drive heightening a stat. */
+export const PARADOX_BOOST_MS = 1300;
 export const ITEM_MS = 1000;
 export const IMMUNE_MS = 1100;
 export const SKY_DROP_MS = 900;
@@ -256,6 +267,8 @@ export const FRISK_MS = 950;
  */
 export const ABSORB_ABILITIES = ['waterabsorb', 'voltabsorb', 'dryskin', 'motordrive', 'lightningrod', 'stormdrain', 'sapsipper', 'flashfire'] as const;
 const isAbsorb = (id: string) => (ABSORB_ABILITIES as readonly string[]).includes(id);
+/** The effect of Protosynthesis or Quark Drive starting: the Ability's id and the stat it heightens. */
+const PARADOX_BOOST = /^(protosynthesis|quarkdrive)(atk|def|spa|spd|spe)$/;
 /** "ability: Water Absorb" (a [from] tag or a -start effect) -> "Water Absorb". */
 const abilityName = (tag: unknown) => (typeof tag === 'string' ? /^ability: (.+)$/i.exec(tag)?.[1] ?? null : null);
 /** Who used the last move (and its type), so an Ability's animation can show the attack being taken in. */
@@ -365,7 +378,7 @@ function abilityStep(step: (a: Omit<BattleAnimation, 'id'> | null) => PlannedSte
   const user = lastMoveUser.get(battle);
   const from = user && user.side && !(user.side === holder.side && user.slot === holder.slot) ? user : null;
   return step({
-    kind: 'ability', ...holder, target: from?.side ?? null, targetSlot: from?.slot, condition: toId(name), label: name, hpDelta, durationMs: ABILITY_MS,
+    kind: 'ability', ...holder, target: from?.side ?? null, targetSlot: from?.slot, condition: toId(name), label: name, hpDelta, durationMs: abilityDuration(toId(name)),
   });
 }
 
@@ -536,6 +549,11 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // Charged up (Charge, or an Ability: Electromorphosis): its next Electric move is doubled.
       if (cmd === '-start' && effect === 'charge') {
         return [step({ kind: 'charged', ...who, target: null, label: abilityName(kwArgs.from) ?? undefined, durationMs: CHARGED_MS })];
+      }
+      // Protosynthesis / Quark Drive heightens the highest stat ("-start|X|protosynthesisatk", "quarkdrivespe").
+      const paradox = cmd === '-start' ? PARADOX_BOOST.exec(effect) : null;
+      if (paradox) {
+        return [step({ kind: 'paradox-boost', ...who, target: null, condition: paradox[2], label: paradox[1] === 'quarkdrive' ? 'Quark Drive' : 'Protosynthesis', durationMs: PARADOX_BOOST_MS })];
       }
       // Flash Fire takes in a Fire move and powers up.
       if (cmd === '-start' && abilityName(args[2]) && isAbsorb(toId(abilityName(args[2])!))) return [abilityStep(step, battle, args[1], abilityName(args[2])!)];

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { classifyMove } from '../../../client/move-class';
-import { BIG_MOVE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MOVE_MS, SIGNATURE_MS, WARP_MS, WARP_START_MS } from '../../../client/playback';
+import { BIG_MOVE_MS, ELEVATE_MS, MEGA_MS, MEGA_START_MS, SHIELD_CONDITIONS, SIGNATURE_MOVE_MS, SIGNATURE_MS, WARP_MS, WARP_START_MS } from '../../../client/playback';
 import { gen7 } from '../../../team/dex';
 import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION, SIGNATURE_MOVE_FX } from './signature-moves';
 import {
-  abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
+  abilitySpec, ATTACKS, BOOST_STATS, paradoxBoostSpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
   CHARGED_MOVES, futureHitSpec, GAIA_FORCE_MS, GAIA_HIT, GIGA_BLASTER_CHARGED_MS, GIGA_BLASTER_MS, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, STURDY, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
@@ -218,6 +218,24 @@ describe('BlackWarGreymon\'s animations', () => {
     const ohko = abilitySpec('sturdy', 'Sturdy');
     expect(ohko.layers.some(l => l.kind === 'particles' && l.shape === 'rock')).toBe(true);
     expect(ohko.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Sturdy' });
+  });
+
+  it('shows a Paradox boost in the colour of the stat it heightens, with ancient or future pieces and the stat\'s own flourish', () => {
+    const colours = new Set<string>();
+    for (const stat of Object.keys(BOOST_STATS) as (keyof typeof BOOST_STATS)[]) {
+      const { color, label } = BOOST_STATS[stat];
+      colours.add(color);
+      const spec = paradoxBoostSpec(stat, 'Quark Drive');
+      expect(spec.layers.find(l => l.kind === 'aura')).toMatchObject({ color });
+      expect(spec.layers.find(l => l.kind === 'arrows')).toMatchObject({ dir: 'up', color });
+      expect(spec.layers.filter(l => l.kind === 'label').map(l => l.kind === 'label' && l.text)).toEqual(['Quark Drive', label]);
+    }
+    expect(colours.size).toBe(5);
+    expect(BOOST_STATS.spe.label).toContain('1.5');
+    expect(paradoxBoostSpec('atk').layers.some(l => l.kind === 'particles' && l.shape === 'rock')).toBe(true);
+    expect(paradoxBoostSpec('atk', 'Quark Drive').layers.some(l => l.kind === 'particles' && l.shape === 'spark')).toBe(true);
+    expect(paradoxBoostSpec('def').layers.some(l => l.kind === 'shield')).toBe(true);
+    expect(paradoxBoostSpec('spe').layers.some(l => l.kind === 'speedlines')).toBe(true);
   });
 
   it('gives Giga Blaster a storm of lightning, a colossal blast and a slow-burning explosion, and an even bigger one when charged', () => {
@@ -448,9 +466,13 @@ describe('Matrix Evolution (Gallantmon)', () => {
     expect(warpBurst('Sakuyamon').layers.some(l => l.kind === 'particles' && l.shape === 'talisman')).toBe(true);
   });
 
-  it('shows Elevate stopping a Ground attack like Levitate: the ground quakes and MegaGargomon hovers, named Elevate', () => {
+  it('shows Elevate stopping a Ground attack like Levitate: MegaGargomon blasts off on rocket jets in a cloud of exhaust and hovers as the ground quakes, named Elevate', () => {
     const spec = abilitySpec('elevate', 'Elevate');
-    expect(spec.layers.map(l => l.kind)).toEqual(expect.arrayContaining(['ground', 'label']));
+    expect(spec.layers.map(l => l.kind)).toEqual(expect.arrayContaining(['smoke', 'ground', 'label']));
+    // Exhaust at lift-off, and a smaller cloud as it sets down.
+    const smoke = spec.layers.filter(l => l.kind === 'smoke');
+    expect(smoke.map(l => l.delay! < ELEVATE_MS / 2)).toEqual([true, false]);
+    expect(Math.max(...spec.layers.map(l => (l.delay ?? 0) + ('dur' in l ? l.dur ?? 0 : 0)))).toBeLessThanOrEqual(ELEVATE_MS);
     expect(spec.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Elevate' });
     expect(key(spec)).not.toBe(key(abilitySpec('levitate', 'Elevate')));
   });

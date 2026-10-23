@@ -4,13 +4,14 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, CHARGED_MOVE_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, STURDY_MS, ITEM_MS, MOVE_RETURN_MS, FRISK_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  abilityDuration, PARADOX_BOOST_MS, CHARGED_MOVE_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, STURDY_MS, ITEM_MS, MOVE_RETURN_MS, FRISK_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
 import { gen7 } from '../../team/dex';
 import { useAppSettings } from '../useAppSettings';
 import { useElementSize } from '../useElementSize';
+import { BOOST_STATS } from './fx/catalog';
 import { horizonVar } from './fx/geometry';
 import { MoveEffects } from './fx/MoveEffects';
 import { SIGNATURE_MOVE_FX } from './fx/signature-moves';
@@ -308,6 +309,18 @@ export function AnimationPreview() {
           { kind: 'warp', side, target: null, condition: warpForm, durationMs: WARP_MS },
         ])}>{warpNames(warpForm).verb}</button>
         <button onClick={() => play([{ kind: 'charged', side, target: null, label: 'Electromorphosis', durationMs: CHARGED_MS }])}>Electromorphosis</button>
+        <select aria-label="Paradox boost" value="" onChange={e => {
+          const [label, stat] = e.target.value.split(':');
+          e.target.value = '';
+          if (stat) play([{ kind: 'paradox-boost', side, target: null, condition: stat, label, durationMs: PARADOX_BOOST_MS }]);
+        }}>
+          <option value="">Paradox boost…</option>
+          {['Protosynthesis', 'Quark Drive'].map(a => (
+            <optgroup key={a} label={a}>
+              {Object.entries(BOOST_STATS).map(([stat, { label }]) => <option key={stat} value={`${a}:${stat}`}>{label}</option>)}
+            </optgroup>
+          ))}
+        </select>
         <button onClick={() => play([
           { kind: 'balloon-pop', side: other(side), target: null, durationMs: BALLOON_POP_MS },
         ])}>{side === 'p1' ? "Opponent's" : 'Your'} Air Balloon pops</button>
@@ -333,7 +346,7 @@ export function AnimationPreview() {
           <select aria-label="Ability takes in the move" value="" onChange={e => {
             const name = e.target.value;
             e.target.value = '';
-            if (name) play([{ kind: 'ability', side: other(side), target: side, condition: name.toLowerCase().replace(/[^a-z0-9]/g, ''), label: name, hpDelta: HEALING_ABILITIES.has(name) ? 25 : undefined, durationMs: ABILITY_MS }]);
+            if (name) play([{ kind: 'ability', side: other(side), target: side, condition: name.toLowerCase().replace(/[^a-z0-9]/g, ''), label: name, hpDelta: HEALING_ABILITIES.has(name) ? 25 : undefined, durationMs: abilityDuration(name.toLowerCase().replace(/[^a-z0-9]/g, '')) }]);
           }}>
             <option value="">Ability…</option>
             {PREVIEW_ABILITIES.map(a => <option key={a} value={a}>{a}</option>)}
