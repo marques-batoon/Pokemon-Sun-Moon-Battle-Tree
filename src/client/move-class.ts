@@ -33,6 +33,8 @@ export interface MoveFx {
   condition?: string;
   /** For 'field': which flavour (weather, terrain, room, screen, hazard, tailwind). */
   field?: 'weather' | 'terrain' | 'room' | 'screen' | 'hazard' | 'tailwind' | 'other';
+  /** Used while its user is charged (Charge, Electromorphosis): CHARGED_MOVES' bigger animation (Giga Blaster). */
+  charged?: boolean;
 }
 
 const PROTECT = new Set(['protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'endure', 'wideguard', 'quickguard', 'matblock', 'craftyshield']);

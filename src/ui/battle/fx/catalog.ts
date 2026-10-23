@@ -34,11 +34,16 @@ export type Layer =
     /** The shape spins as it flies (a thrown bone, a shuriken). */
     spin?: boolean;
     /** It comes from beyond the target (where a throw that went through it ended up) back to the target (Bonemerang's return). */
-    fromBeyond?: boolean }
+    fromBeyond?: boolean;
+    /**
+     * Gaia Force's throw: it grows above the user, is pulled back over its head, then hurled at the target (from
+     * WINDUP_THROW of its length on). WarGreymon's Terra Force in the anime.
+     */
+    windup?: boolean }
   /** Beam stretching from user to target. */
   | { kind: 'beam'; color: string; color2?: string; width: number; wavy?: boolean; delay?: number; dur?: number }
   /** Lightning from the sky onto the target. */
-  | { kind: 'bolt'; color: string; delay?: number }
+  | { kind: 'bolt'; color: string; delay?: number; /** Where it strikes (default the target; the user: power from the sky). */ at?: Anchor }
   | { kind: 'particles'; at: Anchor; shape: Shape; motion: Motion; color: string; color2?: string; count: number; size: number; spread: number; delay?: number; dur?: number }
   /** Expanding rings at a spot, or rings travelling along the user→target path. */
   | { kind: 'rings'; at: Anchor | 'path'; color: string; count: number; size: number; rainbow?: boolean; delay?: number; dur?: number }
@@ -56,7 +61,7 @@ export type Layer =
   /** Fangs closing on the target. */
   | { kind: 'jaws'; color: string; delay?: number }
   /** Pillar erupting from the ground at the target. */
-  | { kind: 'column'; color: string; color2?: string; delay?: number }
+  | { kind: 'column'; color: string; color2?: string; delay?: number; /** Where it rises (default the target). */ at?: Anchor }
   /** Whole-stage flash, dim or tint. */
   | { kind: 'screen'; color: string; mode: 'flash' | 'dim' | 'tint'; delay?: number; dur?: number }
   /** A wave of colour sweeping across the ground (terrains spreading). */
@@ -1019,11 +1024,99 @@ export function signatureZMoveSpec(moveId: string): FxSpec | null {
 /** Ids of the signature Z-Moves that have their own animation. */
 export const SIGNATURE_Z_MOVES = Object.keys(Z_SIGNATURE);
 
+/** When Gaia Force's sun, pulled back over the user, is hurled (a share of its flight's length): the user's lunge. */
+export const WINDUP_THROW = 0.66;
+const GAIA_SUN = { delay: 150, dur: 1300 };
+/** When Gaia Force's sun reaches the target (and explodes). */
+export const GAIA_HIT = GAIA_SUN.delay + GAIA_SUN.dur;
+/** How long Gaia Force (and Dark Gaia Force) plays: the explosion swells, burns and fades for about a second. */
+export const GAIA_FORCE_MS = 2400;
+
+/**
+ * Gaia Force's sequence in a palette: energy gathers at the user and grows into a sun above it, the sun is pulled back
+ * over its head and hurled at the target, and explodes there: a flash, a star-shaped blast, a fireball that swells and
+ * fades, rays, rings and flames, the ground lit up, and smoke rising after.
+ */
+function gaiaForce(c: { dim: string; gather: [string, string]; aura: string; rings: string; sun: [string, string]; blast: string;
+  flames: [string, string]; fireball: string; rays: string; smoke: string; flash: string }): Layer[] {
+  const hit = GAIA_HIT;
+  return [
+    { kind: 'screen', color: c.dim, mode: 'dim', dur: GAIA_FORCE_MS },
+    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: c.gather[0], color2: c.gather[1], count: 22, size: 16, spread: 170, dur: 700 },
+    { kind: 'aura', at: 'user', color: c.aura, size: 280, delay: 100, dur: 1000 },
+    { kind: 'rings', at: 'user', color: c.rings, count: 3, size: 230, delay: 150, dur: 650 },
+    { kind: 'orb', color: c.sun[0], color2: c.sun[1], size: 170, windup: true, ...GAIA_SUN },
+    { kind: 'screen', color: c.flash, mode: 'flash', delay: hit, dur: 450 },
+    { kind: 'impact', color: c.blast, size: 340, star: true, delay: hit },
+    { kind: 'aura', at: 'target', color: c.fireball, size: 360, delay: hit, dur: 900 },
+    { kind: 'rays', at: 'target', color: c.rays, size: 420, delay: hit + 30, dur: 850 },
+    { kind: 'rings', at: 'target', color: c.rings, count: 3, size: 360, delay: hit + 50, dur: 800 },
+    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: c.flames[0], color2: c.flames[1], count: 26, size: 28, spread: 190, delay: hit, dur: 850 },
+    { kind: 'ground', color: c.blast, delay: hit, dur: 850 },
+    { kind: 'particles', at: 'target', shape: 'wisp', motion: 'rise', color: c.smoke, color2: c.flames[1], count: 12, size: 30, spread: 130, delay: hit + 250, dur: 650 },
+  ];
+}
+
+/** How long Giga Blaster plays, and while charged (double power): the bigger one. */
+export const GIGA_BLASTER_MS = 2400;
+export const GIGA_BLASTER_CHARGED_MS = 2800;
+
+/**
+ * Giga Blaster's sequence (HerculesKabuterimon's Giga Blaster): storm darkness; sparks stream into the user and
+ * lightning strikes its horn, a crackling sphere of electricity swelling there; a white flash, then a colossal beam of
+ * electricity (a golden blast, a white core, a crackling outer arc) tears across; at the target a blinding blast, a
+ * swelling ball of lightning, bolts striking down one after another, rays, rings and sparks, the ground lit up, and
+ * sparks still crackling up as it fades. Charged: everything bigger and longer, more lightning, a pillar of lightning
+ * at the target and a second shockwave.
+ */
+function gigaBlaster(charged: boolean): Layer[] {
+  const k = charged ? 1.25 : 1;
+  const beam = charged ? 1150 : 1000;
+  const hit = beam + 250;
+  const end = charged ? GIGA_BLASTER_CHARGED_MS : GIGA_BLASTER_MS;
+  const strikes = charged ? [120, 330, 540, 760, 950] : [250, 520, 800];
+  const blasts = charged ? [hit, hit + 110, hit + 230, hit + 360, hit + 500] : [hit, hit + 130, hit + 270];
+  return [
+    { kind: 'screen', color: charged ? '#020309' : '#05060f', mode: 'dim', dur: end },
+    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe066', color2: '#fff6b0', count: charged ? 34 : 26, size: 14, spread: 180 * k, dur: beam - 250 },
+    { kind: 'aura', at: 'user', color: '#ffd43b', size: 300 * k, delay: 100, dur: beam - 50 },
+    { kind: 'vortex', at: 'user', color: '#ffe066', color2: '#ffffff', size: 210 * k, delay: 300, dur: beam - 300 },
+    { kind: 'rings', at: 'user', color: '#fff6b0', count: 3, size: 240 * k, delay: 200, dur: 700 },
+    ...strikes.map((delay): Layer => ({ kind: 'bolt', at: 'user', color: '#ffe066', delay })),
+    ...(charged ? [{ kind: 'column', at: 'user', color: '#ffd43b', color2: '#ffffff', delay: 700 } as Layer] : []),
+    { kind: 'screen', color: '#fffbe0', mode: 'flash', delay: beam - 50, dur: 250 },
+    { kind: 'beam', color: '#ffd43b', color2: '#ffffff', width: 110 * k, delay: beam, dur: 750 },
+    { kind: 'beam', color: '#ffffff', color2: '#fff6b0', width: 40 * k, delay: beam + 20, dur: 700 },
+    { kind: 'beam', color: '#fff3a0', color2: '#ffffff', width: 74 * k, wavy: true, delay: beam + 40, dur: 680 },
+    { kind: 'rings', at: 'path', color: '#fff3a0', count: charged ? 7 : 5, size: 90 * k, delay: beam + 30, dur: 620 },
+    { kind: 'screen', color: '#fff6b0', mode: 'flash', delay: hit, dur: 450 },
+    { kind: 'impact', color: '#ffd43b', size: 360 * k, star: true, delay: hit },
+    { kind: 'aura', at: 'target', color: '#ffe066', size: 380 * k, delay: hit, dur: 900 },
+    { kind: 'rays', at: 'target', color: '#fff3a0', size: 440 * k, delay: hit + 30, dur: 850 },
+    { kind: 'rings', at: 'target', color: '#ffe066', count: 3, size: 360 * k, delay: hit + 50, dur: 800 },
+    ...blasts.map((delay): Layer => ({ kind: 'bolt', color: '#ffe066', delay })),
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe066', color2: '#ffffff', count: charged ? 36 : 28, size: 22, spread: 190 * k, delay: hit, dur: 850 },
+    { kind: 'ground', color: '#ffd43b', delay: hit, dur: 850 },
+    ...(charged ? [
+      { kind: 'column', color: '#ffd43b', color2: '#ffffff', delay: hit + 80 } as Layer,
+      { kind: 'impact', color: '#fff6b0', size: 520, delay: hit + 220 } as Layer,
+      { kind: 'screen', color: '#fffbe0', mode: 'flash', delay: hit + 300, dur: 350 } as Layer,
+    ] : []),
+    { kind: 'particles', at: 'target', shape: 'spark', motion: 'rise', color: '#fff3a0', color2: '#ffd43b', count: 14, size: 14, spread: 140 * k, delay: hit + 300, dur: end - hit - 350 },
+  ];
+}
+
+/** Moves with a bigger animation while their user is charged (Charge, Electromorphosis): Giga Blaster. */
+export const CHARGED_MOVES: Record<string, FxSpec> = {
+  gigablaster: { shake: 'strong', layers: gigaBlaster(true) },
+};
+
 /**
  * Moves with their own animation: every move over 100 power (BIG_MOVES, in big-moves.ts; Solar Beam here), and the
  * Digimon's signature moves (Guilmon's and Gallantmon's too), after the attacks they're named for.
- * Gaia Force (WarGreymon's Terra Force): energy gathers into a giant sun over the user, which is
- * hurled at the target and explodes in fire. Cocytus Pulse (MetalGarurumon's Cocytus Breath): a
+ * Gaia Force (WarGreymon's Terra Force, reworked on request 2026-10-23): energy gathers into a giant sun above the user,
+ * which pulls it back over its head and hurls it at the target (as in the anime), where it explodes in a fireball that
+ * swells, burns and fades. Cocytus Pulse (MetalGarurumon's Cocytus Breath): a
  * freezing blast of breath that frosts the field and shatters into ice at the target.
  */
 export const SIGNATURE_MOVES: Record<string, FxSpec> = {
@@ -1047,17 +1140,10 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'particles', at: 'target', shape: 'dot', motion: 'burst', color: '#ffe066', color2: '#c8f07a', count: 26, size: 10, spread: 200, delay: 640, dur: 650 },
     { kind: 'particles', at: 'target', shape: 'leaf', motion: 'burst', color: '#7ac74c', color2: '#c8f08a', count: 10, size: 14, spread: 170, delay: 660, dur: 700 },
   ] },
-  gaiaforce: { shake: 'strong', layers: [
-    { kind: 'screen', color: '#1a0800', mode: 'dim', dur: 1500 },
-    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#ff9a1f', color2: '#fff3b0', count: 22, size: 16, spread: 170, dur: 700 },
-    { kind: 'aura', at: 'user', color: '#ffb000', size: 280, delay: 100, dur: 900 },
-    { kind: 'rings', at: 'user', color: '#ffd27f', count: 3, size: 230, delay: 150, dur: 650 },
-    { kind: 'orb', color: '#ff9a1f', color2: '#fff3b0', size: 160, arc: true, delay: 850, dur: 450 },
-    { kind: 'impact', color: '#ff6a00', size: 320, star: true, delay: 1300 },
-    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#ff5a00', color2: '#ffd23f', count: 22, size: 28, spread: 160, delay: 1300 },
-    { kind: 'ground', color: '#ff6a00', delay: 1300, dur: 500 },
-    { kind: 'screen', color: '#ffd27f', mode: 'flash', delay: 1300, dur: 400 },
-  ] },
+  gaiaforce: { shake: 'strong', layers: gaiaForce({
+    dim: '#1a0800', gather: ['#ff9a1f', '#fff3b0'], aura: '#ffb000', rings: '#ffd27f', sun: ['#ff9a1f', '#fff3b0'],
+    blast: '#ff6a00', flames: ['#ff5a00', '#ffd23f'], fireball: '#ff8a1a', rays: '#ffd27f', smoke: '#6b4a3a', flash: '#ffd27f',
+  }) },
   cocytuspulse: { shake: 'light', layers: [
     { kind: 'screen', color: '#bfefff', mode: 'tint', dur: 1300 },
     { kind: 'particles', at: 'user', shape: 'wisp', motion: 'converge', color: '#e6fbff', color2: '#9fe8ff', count: 12, size: 24, spread: 90, dur: 500 },
@@ -1068,32 +1154,16 @@ export const SIGNATURE_MOVES: Record<string, FxSpec> = {
     { kind: 'impact', color: '#c9f6ff', size: 220, delay: 850 },
     { kind: 'screen', color: '#e6fbff', mode: 'flash', delay: 900, dur: 350 },
   ] },
-  // Giga Blaster (Tentomon / HerculesKabuterimon): electricity gathers in its great golden horn, then a huge blast of
-  // it crackles across to the target and bursts in lightning.
-  gigablaster: { shake: 'strong', layers: [
-    { kind: 'screen', color: '#0d0a00', mode: 'dim', dur: 1500 },
-    { kind: 'particles', at: 'user', shape: 'spark', motion: 'converge', color: '#ffe066', color2: '#fff6b0', count: 22, size: 14, spread: 160, dur: 700 },
-    { kind: 'aura', at: 'user', color: '#ffd43b', size: 260, delay: 100, dur: 900 },
-    { kind: 'rings', at: 'user', color: '#fff6b0', count: 3, size: 220, delay: 200, dur: 650 },
-    { kind: 'beam', color: '#ffd43b', color2: '#ffffff', width: 70, delay: 850, dur: 600 },
-    { kind: 'beam', color: '#ffffff', color2: '#fff6b0', width: 26, wavy: true, delay: 880, dur: 560 },
-    { kind: 'bolt', color: '#ffe066', delay: 1250 },
-    { kind: 'impact', color: '#ffd43b', size: 320, star: true, delay: 1300 },
-    { kind: 'particles', at: 'target', shape: 'spark', motion: 'burst', color: '#ffe066', color2: '#ffffff', count: 22, size: 22, spread: 160, delay: 1300 },
-    { kind: 'screen', color: '#fff6b0', mode: 'flash', delay: 1300, dur: 400 },
-  ] },
+  // Giga Blaster (Tentomon / HerculesKabuterimon; reworked on request 2026-10-23, as epic as Gaia Force): the stage goes
+  // dark as a storm, lightning strikes its great golden horn again and again, feeding a crackling sphere there, then a
+  // colossal blast of electricity tears across to the target and explodes in lightning that burns out slowly. Used
+  // while charged (Charge, Electromorphosis: double power), CHARGED_MOVES has an even bigger one.
+  gigablaster: { shake: 'strong', layers: gigaBlaster(false) },
   // Dark Gaia Force (BlackWarGreymon): Gaia Force's sequence exactly, in dark energy and blue flames (on request).
-  darkgaiaforce: { shake: 'strong', layers: [
-    { kind: 'screen', color: '#07000f', mode: 'dim', dur: 1500 },
-    { kind: 'particles', at: 'user', shape: 'flame', motion: 'converge', color: '#7a3cff', color2: '#4d7bff', count: 22, size: 16, spread: 170, dur: 700 },
-    { kind: 'aura', at: 'user', color: '#5a1aa0', size: 280, delay: 100, dur: 900 },
-    { kind: 'rings', at: 'user', color: '#9a6bff', count: 3, size: 230, delay: 150, dur: 650 },
-    { kind: 'orb', color: '#3a0a6e', color2: '#6f8cff', size: 160, arc: true, delay: 850, dur: 450 },
-    { kind: 'impact', color: '#4a0a8a', size: 320, star: true, delay: 1300 },
-    { kind: 'particles', at: 'target', shape: 'flame', motion: 'burst', color: '#3d4bff', color2: '#a06bff', count: 22, size: 28, spread: 160, delay: 1300 },
-    { kind: 'ground', color: '#4a1a8a', delay: 1300, dur: 500 },
-    { kind: 'screen', color: '#8a6bff', mode: 'flash', delay: 1300, dur: 400 },
-  ] },
+  darkgaiaforce: { shake: 'strong', layers: gaiaForce({
+    dim: '#07000f', gather: ['#7a3cff', '#4d7bff'], aura: '#5a1aa0', rings: '#9a6bff', sun: ['#3a0a6e', '#6f8cff'],
+    blast: '#4a0a8a', flames: ['#3d4bff', '#a06bff'], fireball: '#5a2ad0', rays: '#9a6bff', smoke: '#241a3a', flash: '#8a6bff',
+  }) },
   // Dramon Destroyer (BlackWarGreymon): a weak point is marked on the target, then the armoured claws rake it
   // (three claw streaks) in dark crimson, with a critical-hit flash.
   dramondestroyer: { shake: 'strong', layers: [
@@ -1239,7 +1309,28 @@ function takeIn(shape: Shape, color: string, color2: string, extra: Layer[]): La
     ...extra,
   ];
 }
+
+/**
+ * Sturdy (on request, 2026-10-23): rings of stone pulse out from the Pokémon as it braces, a star of light marks the
+ * blow it shrugged off, chips of rock fly from it, and a sandstone glow settles over it.
+ */
+const sturdyLayers = (at: Anchor): Layer[] => [
+  { kind: 'rings', at, color: '#b8a88a', count: 2, size: 150, dur: 450 },
+  { kind: 'aura', at, color: '#c9b991', size: 170, delay: 120, dur: 650 },
+  { kind: 'impact', at, color: '#ffffff', size: 100, star: true, delay: 200 },
+  { kind: 'particles', at, shape: 'rock', motion: 'burst', color: '#a08c6a', color2: '#d8cbb0', count: 10, size: 12, spread: 85, delay: 220, dur: 500 },
+];
+const STURDY_COLOR = '#8a7350';
+/** Sturdy holds a Pokémon on with 1 HP: a stone-grey barrier flashes up around it too, and the Ability's name shows. */
+export const STURDY: FxSpec = { layers: [
+  { kind: 'shield', color: '#cdbf9f' },
+  ...sturdyLayers('user'),
+  { kind: 'label', at: 'user', text: 'Sturdy', color: STURDY_COLOR, delay: 120, dur: 760 },
+] };
+
 export const ABILITY_FX: Record<string, FxSpec> = {
+  // An OHKO move bounces off (Sturdy's other half): the same bracing, without the barrier.
+  sturdy: { layers: sturdyLayers('target') },
   // Water soaked up, then healing.
   waterabsorb: { layers: takeIn('drop', '#4d9cff', '#cfe6ff', [HEAL_SPARKLE]) },
   // Water soaked into the skin, which glistens with bubbles, then healing.
@@ -1299,7 +1390,7 @@ export const ABILITY_FX: Record<string, FxSpec> = {
 };
 const ABILITY_COLORS: Record<string, string> = {
   waterabsorb: '#2f7fe0', dryskin: '#2a93c8', voltabsorb: '#c99400', motordrive: '#c99400', lightningrod: '#c99400',
-  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', flashfire: '#e0601a', levitate: '#8a5cc8', airballoon: '#d0343c', elevate: '#3f8a2a',
+  stormdrain: '#2f6fd0', sapsipper: '#3f9a2a', sturdy: STURDY_COLOR, flashfire: '#e0601a', levitate: '#8a5cc8', airballoon: '#d0343c', elevate: '#3f8a2a',
 };
 /** Any other Ability that stops a move. */
 const ABILITY_BLOCK: FxSpec = { layers: [
@@ -1899,6 +1990,8 @@ const FIELD_TINT: Record<string, string> = {
 
 /** Animation for a move, by what it does. */
 export function moveSpec(fx: MoveFx): FxSpec {
+  // Used while charged (Giga Blaster): its bigger animation.
+  if (fx.charged && CHARGED_MOVES[fx.moveId]) return CHARGED_MOVES[fx.moveId];
   // A move with its own animation (a big move, a signature move, status ones included); Z-Moves have theirs below.
   if (fx.kind !== 'z' && SIGNATURE_MOVES[fx.moveId]) return SIGNATURE_MOVES[fx.moveId];
   const t = asType(fx.type);

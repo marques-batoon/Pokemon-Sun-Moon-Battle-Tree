@@ -1081,6 +1081,19 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 
 /* Type-chart immunities, and a type's other ones (stage-fx IMMUNE_CLASS): the immune Pokémon's reaction, over the attack's own effect (catalog IMMUNE_FX). */
 .fx-orb2.through, .fx-orb2.from-beyond { animation-timing-function: linear; }
+/* Gaia Force's sun: grows above the user (to 35%), is pulled back over its head (to 60%), held a beat, then hurled at
+   the target from 66% (WINDUP_THROW), gaining speed, and bursts there. */
+.fx-orb2.windup { animation-name: orb-windup; animation-timing-function: linear; }
+@keyframes orb-windup {
+  0% { transform: translate(0, var(--rise)) scale(0.15); opacity: 0; animation-timing-function: ease-out; }
+  8% { opacity: 1; }
+  35% { transform: translate(0, var(--rise)) scale(1); animation-timing-function: ease-in-out; }
+  45% { transform: translate(0, calc(var(--rise) * 1.05)) scale(1.06); animation-timing-function: ease-in-out; }
+  60% { transform: translate(var(--bx), calc(var(--rise) + var(--by))) scale(1.1); }
+  66% { transform: translate(var(--bx), calc(var(--rise) + var(--by))) scale(1.12); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6); }
+  97% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.05); opacity: 0; }
+}
 .fx-intangible { animation: intangible calc(1100ms * var(--spd, 1)) ease-in-out; }
 @keyframes intangible { 0%, 100% { opacity: 1; filter: none; transform: none; } 20%, 70% { opacity: 0.28; filter: blur(1.5px) drop-shadow(0 0 8px #9b7fe0); } 35% { transform: translateX(-3%) skewX(-4deg); } 55% { transform: translateX(3%) skewX(4deg); } }
 .fx-unfazed { animation: unfazed calc(1100ms * var(--spd, 1)) ease-in-out; transform-origin: 50% 100%; }
@@ -1262,6 +1275,17 @@ kbd { font: 600 0.68rem ui-monospace, Consolas, monospace; padding: 0 4px; borde
 .fx-sig-dive-p2 { --up: translate(-8%, -150%) scale(0.8); --above: translate(-55%, -90%) scale(0.9); }
 .fx-sig-rampage-p1 { --mid: translate(8%, -5%); }
 .fx-sig-rampage-p2 { --mid: translate(-8%, 5%); }
+/* Gaia Force: the user raises the sun, leans back as it's pulled over its head, then lunges into the throw (--hit). */
+.fx-sig-hurl-p1 { --lean: translate(-7%, 4%) scale(1.06) rotate(-4deg); --lunge: translate(7%, -4%) scale(1.08); }
+.fx-sig-hurl-p2 { --lean: translate(7%, -4%) scale(1.06) rotate(4deg); --lunge: translate(-7%, 4%) scale(1.08); }
+.fx-sig-hurl-p1, .fx-sig-hurl-p2 { animation: sig-hurl calc(var(--hit, 1000ms) * var(--spd, 1)) ease-in-out both, sig-throw calc(800ms * var(--spd, 1)) ease-out calc(var(--hit, 1000ms) * var(--spd, 1)) forwards; }
+@keyframes sig-hurl {
+  0% { transform: none; filter: none; }
+  45% { transform: scale(1.05) translateY(-3%); filter: brightness(1.5) drop-shadow(0 0 14px #fff); }
+  85% { transform: var(--lean); filter: brightness(1.7) drop-shadow(0 0 18px #fff); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  100% { transform: var(--lunge); filter: brightness(1.8) drop-shadow(0 0 20px #fff); }
+}
+@keyframes sig-throw { 0% { transform: var(--lunge); filter: brightness(1.8) drop-shadow(0 0 20px #fff); } 100% { transform: none; filter: none; } }
 .fx-sig-cast-p1 { --recoil: translate(-7%, 5%) scale(0.97); }
 .fx-sig-cast-p2 { --recoil: translate(7%, -5%) scale(0.97); }
 .fx-sig-charge-p1, .fx-sig-charge-p2 { animation: sig-charge calc(var(--hit, 600ms) * var(--spd, 1)) both, sig-return calc(500ms * var(--spd, 1)) ease-out calc(var(--hit, 600ms) * var(--spd, 1)) forwards; }
@@ -2124,3 +2148,39 @@ select { max-width: 100%; text-overflow: ellipsis; }
   .replay-bar .spacer { display: none; }
   .replay-bar button { padding-inline: 8px; }
 }
+
+/* ---------- Tournament versus screen (VersusScreen.tsx) ---------- */
+/* The two teams face off: yours (or the first duo) from the left on blue, the other from the right on red, split on a
+   slant, and "VS" crashing down between them with a flash. */
+.versus { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px 16px; overflow: hidden auto; color: #fff; cursor: pointer; animation: versus-in 250ms ease-out both; }
+@keyframes versus-in { from { opacity: 0; } }
+.versus-backdrop { position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, #13306e 0 49.6%, #f6e7a0 49.6% 50.4%, #6e1320 50.4% 100%); }
+.versus-backdrop::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(105deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 22px); }
+.versus-backdrop::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 46%, rgb(255 255 255 / 0.85), transparent 34%); opacity: 0; animation: versus-flash 700ms ease-out 520ms both; }
+@keyframes versus-flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+.versus-detail { margin: 0; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; animation: versus-in 400ms ease-out 200ms both; }
+.versus-teams { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 12vw, 160px); align-items: center; width: min(1000px, 100%); }
+.versus-side { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
+.versus-side.left { animation: versus-left 520ms cubic-bezier(0.2, 0.9, 0.3, 1.1) both; }
+.versus-side.right { animation: versus-right 520ms cubic-bezier(0.2, 0.9, 0.3, 1.1) 80ms both; }
+@keyframes versus-left { from { transform: translateX(-70vw); } }
+@keyframes versus-right { from { transform: translateX(70vw); } }
+.versus-sprites { display: flex; justify-content: center; filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.45)); }
+/* The other team faces yours: each sprite turned around, in the same order as the title. */
+.versus-side.right .versus-sprite { transform: scaleX(-1); }
+.versus-sprite { width: clamp(96px, 16vw, 160px); height: auto; image-rendering: pixelated; }
+.versus-title { font-size: clamp(1.05rem, 2.6vw, 1.6rem); line-height: 1.2; text-shadow: 0 2px 0 rgb(0 0 0 / 0.45); overflow-wrap: anywhere; }
+.versus-names { font-size: 0.9rem; opacity: 0.85; }
+.versus-vs { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); font-size: clamp(2.6rem, 9vw, 5.5rem); font-weight: 900; font-style: italic; color: #ffe27a; -webkit-text-stroke: 2px #4a2a00; text-shadow: 0 4px 0 #a0400a, 0 0 24px rgb(255 200 80 / 0.8); animation: versus-vs 420ms cubic-bezier(0.3, 1.4, 0.5, 1) 480ms both; pointer-events: none; }
+@keyframes versus-vs { from { transform: translate(-50%, -50%) scale(3.2) rotate(-12deg); opacity: 0; } }
+.versus-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; animation: versus-in 300ms ease-out 900ms both; }
+@media (max-width: 600px) {
+  .versus-teams { grid-template-columns: 1fr; gap: 64px; }
+  .versus-vs { top: 50%; }
+  .versus-backdrop { background: linear-gradient(170deg, #13306e 0 49.6%, #f6e7a0 49.6% 50.4%, #6e1320 50.4% 100%); }
+}
+@media (prefers-reduced-motion: reduce) { .versus, .versus *, .versus-backdrop::after { animation: none !important; } }
+
+/* A duo's team title on its trainer card and in the celebration. */
+.opponent-team-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+.celebration-team { margin: 0; font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 800; color: #ffe27a; text-shadow: 0 2px 0 rgb(0 0 0 / 0.4); }

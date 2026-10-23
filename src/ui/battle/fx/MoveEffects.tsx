@@ -97,6 +97,11 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
   const dx = (to.x - from.x) * far, dy = (to.y - from.y) * far;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const shape: Shape = layer.shape ?? 'dot';
+  // A windup (Gaia Force): grown above the user's head, then pulled back over it, away from the target; kept on the stage.
+  const s = layer.size * ctx.k;
+  const rise = -Math.max(0, Math.min(s * 0.6, from.y - s / 2 - 6));
+  const back = Math.max(s * 0.35 - from.x, Math.min(ctx.w - s * 0.35 - from.x, -dx * 0.12));
+  const lift = -Math.max(0, Math.min(s * 0.15, from.y + rise - s / 2 - 6));
   return (
     <>
       {Array.from({ length: count }, (_, i) => {
@@ -104,9 +109,10 @@ function Orbs({ layer, ctx }: { layer: Extract<Layer, { kind: 'orb' }>; ctx: Ctx
         return (
           <span
             key={i}
-            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${layer.fromBeyond ? 'from-beyond' : ''} ${layer.spin ? 'spin' : ''} ${shape === 'dot' ? 'glow' : ''}`}
+            className={`fxl fx-orb2 ${layer.arc ? 'arc' : ''} ${layer.through ? 'through' : ''} ${layer.fromBeyond ? 'from-beyond' : ''} ${layer.spin ? 'spin' : ''} ${layer.windup ? 'windup' : ''} ${shape === 'dot' ? 'glow' : ''}`}
             style={css({
               '--x': px(from.x), '--y': px(from.y + jitter), '--dx': px(dx), '--dy': px(dy), '--lift': px(-Math.min(90, Math.abs(dx) * 0.25)),
+              ...(layer.windup ? { '--rise': px(rise), '--bx': px(back), '--by': px(lift) } : {}),
               '--s': px(layer.size * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--ang': deg(angle),
               '--delay': ms((layer.delay ?? 0) + i * (layer.gap ?? 80)), '--dur': ms(layer.dur ?? 500),
             })}
@@ -136,16 +142,17 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
       );
     }
     case 'bolt': {
-      // Zigzag from the top of the stage down to the target.
+      // Zigzag from the top of the stage down to the target (or the user).
+      const at = layer.at === 'user' ? user : target;
       const steps = 7;
       const pts: string[] = [];
       for (let s = 0; s <= steps; s++) {
-        const y = (target.y * s) / steps;
+        const y = (at.y * s) / steps;
         const x = s === 0 || s === steps ? 0 : (s % 2 ? 1 : -1) * (10 + rand(ctx.seed, s, 9) * 14);
         pts.push(`${x + 40},${y}`);
       }
       return (
-        <svg key={i} className="fxl fx-bolt" width={80} height={Math.max(1, target.y)} style={css({ '--x': px(target.x), '--y': '0px', '--c': layer.color, '--delay': delay, '--dur': '450ms' })} aria-hidden>
+        <svg key={i} className="fxl fx-bolt" width={80} height={Math.max(1, at.y)} style={css({ '--x': px(at.x), '--y': '0px', '--c': layer.color, '--delay': delay, '--dur': '450ms' })} aria-hidden>
           <polyline className="glow" points={pts.join(' ')} />
           <polyline className="core" points={pts.join(' ')} />
         </svg>
@@ -222,8 +229,10 @@ function renderLayer(layer: Layer, i: number, ctx: Ctx): ReactNode {
           <span className="fang top" /><span className="fang bottom" />
         </span>
       );
-    case 'column':
-      return <span key={i} className="fxl fx-column" style={css({ '--x': px(target.x), '--y': px(target.ground ?? target.y + 50 * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': '650ms' })} />;
+    case 'column': {
+      const at = layer.at === 'user' ? user : target;
+      return <span key={i} className="fxl fx-column" style={css({ '--x': px(at.x), '--y': px(at.ground ?? at.y + 50 * ctx.k), '--c': layer.color, '--c2': layer.color2 ?? '#ffffff', '--delay': delay, '--dur': '650ms' })} />;
+    }
     case 'screen':
       return <span key={i} className={`fxl fx-screen ${layer.mode}`} style={css({ '--c': layer.color, '--delay': delay, '--dur': ms(layer.dur ?? 400) })} />;
     case 'ground':
@@ -556,7 +565,8 @@ interface Props {
 /** Layers drawn at or towards the target (once per target); the rest are drawn once, at the user or on the whole stage. */
 function aimsAtTarget(l: Layer): boolean {
   switch (l.kind) {
-    case 'orb': case 'beam': case 'bolt': case 'slash': case 'jaws': case 'crack': case 'column': case 'meteor': case 'gauntlets': return true;
+    case 'bolt': case 'column': return l.at !== 'user';
+    case 'orb': case 'beam': case 'slash': case 'jaws': case 'crack': case 'meteor': case 'gauntlets': return true;
     case 'vortex': case 'rays': case 'pillar': case 'cocoon': case 'megasymbol': case 'label': case 'balloon':
     case 'fractal': case 'merge': case 'sphere': case 'scan': case 'web': return l.at === 'target';
     case 'impact': return (l.at ?? 'target') === 'target';

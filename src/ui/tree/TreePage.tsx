@@ -14,7 +14,7 @@ import { RunScreen } from './RunScreen';
 import { UnrankedTag } from './UnrankedTag';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { opponentSpriteIds } from '../sprites';
-import { TRAINERS } from '../../data/battle-tree';
+import { duoTitle, TRAINERS } from '../../data/battle-tree';
 import { useScrollToTopOn } from '../useScrollToTop';
 import type { TournamentController } from '../../run/tournament-controller';
 import { TournamentScreen } from './TournamentScreen';
@@ -105,7 +105,7 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
       <>
         <div className="battle-banner">
           {foes.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={44} spriteId={spriteIds[i]} />)}
-          <span>All Star Duo Tournament · {roundName(view.round, tournament.tournament ? roundsOf(tournament.tournament) : undefined)} · vs {view.trainerIds.map(id => TRAINERS[id].name).join(' & ')}</span>
+          <span>All Star Duo Tournament · {roundName(view.round, tournament.tournament ? roundsOf(tournament.tournament) : undefined)} · vs {duoTitle(foes[0], foes[1])} ({foes.map(t => t.name).join(' & ')})</span>
         </div>
         <BattleScreen
           client={tournaments.battleClient}

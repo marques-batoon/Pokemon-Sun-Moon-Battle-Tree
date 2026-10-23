@@ -5387,7 +5387,7 @@
     "trainerLoses": "Patience lost to passion today. I'll think about that."
    }
   ],
-  "Wren": [
+  "Mildred": [
    {
     "greeting": "I chased legends across a frozen tundra and back through time itself. You climbed this far, so show me you're one too.",
     "trainerWins": "Legends don't fall to the merely persistent. Climb again, and bring more than stubbornness next time.",
@@ -5402,6 +5402,567 @@
     "greeting": "Some of my partners are older than any history book. They've waited ages for a worthy fight. Don't make them wait more.",
     "trainerWins": "Patient as stone and twice as old. Come back when you can outlast that.",
     "trainerLoses": "Ancient, and still they fell. Remember today; few trainers ever get one like it."
+   }
+  ],
+  "Ivor": [
+   {
+    "greeting": "I dug something up in a ruin that shouldn't exist. It's been itching for a battle for a few million years.",
+    "trainerWins": "Old bones, old stones, and still the strongest thing here. History wins again!",
+    "trainerLoses": "Beaten by someone younger than my oldest fossil. I'll file this under 'unexpected finds.'"
+   },
+   {
+    "greeting": "Every ruin tells a story. Today's chapter: you, buried under a stampede.",
+    "trainerWins": "Another layer of sediment on your hopes. I'll label you carefully.",
+    "trainerLoses": "Well, that's one dig site I won't be returning to. You've excavated me completely."
+   },
+   {
+    "greeting": "Mind the dust. My team has been waiting since before maps were drawn.",
+    "trainerWins": "Prehistoric might, modern results. Not a bad day in the field.",
+    "trainerLoses": "Even the mightiest tusks crack eventually. Mine just cracked today."
+   }
+  ],
+  "Axel": [
+   {
+    "greeting": "Turn it up! My band's lead singer has a scream that echoes back from the dawn of time!",
+    "trainerWins": "That's a wrap! Encore? Nah, you couldn't handle a second set.",
+    "trainerLoses": "You drowned out my whole band. Respect. That was one heavy solo."
+   },
+   {
+    "greeting": "Check, one, two... This next track is called 'Your Losing Streak.' Hit it!",
+    "trainerWins": "Feedback squealing, crowd roaring, opponent down. Perfect gig!",
+    "trainerLoses": "Broke a string, lost the beat, lost the battle. Rough night on stage."
+   },
+   {
+    "greeting": "Plug your ears or don't, either way you'll be hearing this battle for weeks!",
+    "trainerWins": "Ringing in your ears? That's the sound of my victory lap.",
+    "trainerLoses": "Total silence. Guess the crowd's cheering for you now."
+   }
+  ],
+  "Morella": [
+   {
+    "greeting": "Breathe deep. The forest's oldest spores are drifting your way, and they're hungry.",
+    "trainerWins": "Sweet dreams. My garden thanks you for the nourishment.",
+    "trainerLoses": "You cut through my whole garden. I'll need a season to grow back."
+   },
+   {
+    "greeting": "Do you smell that? Damp earth, wild mushrooms... and a battle you've already lost.",
+    "trainerWins": "Everything in the forest returns to the soil eventually. You included.",
+    "trainerLoses": "Wilted, every last bloom. Your aroma was simply stronger today."
+   },
+   {
+    "greeting": "My flowers are lovely, but some of them bite. Shall we find out which ones?",
+    "trainerWins": "Pretty petals, sharp teeth. Never judge a garden by its colors.",
+    "trainerLoses": "Even a carnivorous garden can starve. I'll replant and come back."
+   }
+  ],
+  "Ophelia": [
+   {
+    "greeting": "Hehe... My partners whisper in voices older than this tree. They've been asking about you.",
+    "trainerWins": "The whispers are satisfied. They'll remember your name... forever.",
+    "trainerLoses": "The spirits went quiet. They respect you now. That's... unsettling."
+   },
+   {
+    "greeting": "I read your fortune before you arrived. It said 'loses at the Battle Tree.' Hehe...",
+    "trainerWins": "The cards are never wrong. Well, almost never.",
+    "trainerLoses": "My fortune was wrong? I need to have a long talk with my crystal ball."
+   },
+   {
+    "greeting": "Something ancient drifts beside me, shrieking softly. Do you hear it too?",
+    "trainerWins": "Shh... Listen to the silence after a curse lands. Lovely, isn't it?",
+    "trainerLoses": "You walked right through my hexes. Something stronger must be haunting you."
+   }
+  ],
+  "Darwin": [
+   {
+    "greeting": "I chased a moth so ancient it predates the evolution charts. Want to see what nature used to be?",
+    "trainerWins": "Survival of the fittest! And today, the fittest has six legs.",
+    "trainerLoses": "Out-evolved! I'll have to update my field notes on you."
+   },
+   {
+    "greeting": "Bugs ruled this world long before us. Let me show you why.",
+    "trainerWins": "Natural selection at work. Write that one in your journal!",
+    "trainerLoses": "My specimens met a bigger predator. Fascinating, really."
+   },
+   {
+    "greeting": "Careful where you step. The tall grass of the past was full of giants.",
+    "trainerWins": "Wings beating, enemies fleeing. What a beautiful ecosystem!",
+    "trainerLoses": "Every species has a natural enemy. Looks like mine is you."
+   }
+  ],
+  "Sandor": [
+   {
+    "greeting": "I hiked across a desert where the sand crackles with lightning. Brought a souvenir, too!",
+    "trainerWins": "Ha! Grit in your face, static in your hair. Classic desert welcome.",
+    "trainerLoses": "Buried in my own sand dune. I'll dig myself out and keep hiking."
+   },
+   {
+    "greeting": "My compass spins wildly around my partner. Must be that old magnetism! Let's rumble!",
+    "trainerWins": "The ground shook and the needle pointed straight to my victory!",
+    "trainerLoses": "Lost my bearings completely. Even my compass is pointing at you now."
+   },
+   {
+    "greeting": "Grit in your teeth, sparks on your skin... welcome to the dunes!",
+    "trainerWins": "A long trek, but the view from the top of this win is worth it!",
+    "trainerLoses": "Shocked and sandblasted. I need a canteen and a long sit."
+   }
+  ],
+  "Ragnar": [
+   {
+    "greeting": "Hear that roar? My dragon still howls at a moon only the ancients ever saw.",
+    "trainerWins": "Dragons bow to no one. And now you know why.",
+    "trainerLoses": "Tamed... by you? My dragons will never let me hear the end of this."
+   },
+   {
+    "greeting": "Dragons are wild, proud and hungry. I'm the only one they listen to. Most days.",
+    "trainerWins": "Raw power, perfect control. That's the life of a tamer.",
+    "trainerLoses": "My dragons roared, but you roared louder. Well fought!"
+   },
+   {
+    "greeting": "Under a crimson moon, the old dragons hunt. Tonight, they hunt you.",
+    "trainerWins": "The hunt is over. My dragons have feasted on victory.",
+    "trainerLoses": "Even dragons fall from the sky sometimes. Today was my day to fall."
+   }
+  ],
+  "Ferris": [
+   {
+    "greeting": "Hard hats on! My partner rolled off an assembly line from the future, and it doesn't do brakes.",
+    "trainerWins": "Job done, site cleared, and you got flattened in the process.",
+    "trainerLoses": "Total breakdown! Somebody call the repair crew."
+   },
+   {
+    "greeting": "This battlefield's due for some demolition. Stand back, I'm bringing the heavy equipment.",
+    "trainerWins": "Built tough, built to last. You were built to lose this one!",
+    "trainerLoses": "My whole crew's off the clock. Guess the job's not getting finished."
+   },
+   {
+    "greeting": "Gears grinding, treads turning... Let's get to work!",
+    "trainerWins": "Another shift, another victory. Time for a lunch break.",
+    "trainerLoses": "Outworked on my own site? I'll be pulling overtime to make up for that."
+   }
+  ],
+  "Neve": [
+   {
+    "greeting": "I swim in freezing water every morning. My partner skims over it at impossible speed!",
+    "trainerWins": "Brr! Hope you brought a towel. That was a cold shower of a loss.",
+    "trainerLoses": "Swept away by the current! The sea isn't on my side today."
+   },
+   {
+    "greeting": "Dive in! The water's freezing and my team is even colder.",
+    "trainerWins": "Frozen solid! Try a warm-up lap next time.",
+    "trainerLoses": "I sank like a stone. Time to train in even colder water."
+   },
+   {
+    "greeting": "Laps in the glacier pool, then battles at the top of the tree. Ready to get chilled?",
+    "trainerWins": "A clean finish and a perfect splash. Gold medal performance!",
+    "trainerLoses": "You outpaced me lap after lap. Even my frosty partner melted."
+   }
+  ],
+  "Takeo": [
+   {
+    "greeting": "Hah! My partner's palms hit like a sumo champion forged of steel! Brace yourself!",
+    "trainerWins": "Oss! Your guard broke, and so did your streak!",
+    "trainerLoses": "My stance crumbled! I must return to the dojo and train harder!"
+   },
+   {
+    "greeting": "A true fighter strikes with the full weight of the body. Allow me to demonstrate!",
+    "trainerWins": "One clean strike and it's over. That's the discipline of the dojo!",
+    "trainerLoses": "Pushed out of the ring! Your strength is the real deal!"
+   },
+   {
+    "greeting": "Ten thousand slaps a day builds an unbreakable will. Show me yours!",
+    "trainerWins": "My training paid off! A thousand more slaps tonight to celebrate!",
+    "trainerLoses": "I bow to you. That was a battle worthy of the dojo walls."
+   }
+  ],
+  "Malcolm": [
+   {
+    "greeting": "My research points to a three-headed machine from the future. Today you'll help me test it.",
+    "trainerWins": "Hypothesis confirmed! Your defeat was entirely predictable.",
+    "trainerLoses": "Unexpected results... I'll need to rerun this experiment a few hundred times."
+   },
+   {
+    "greeting": "Fascinating. Your team would make excellent test subjects. Shall we begin the trial?",
+    "trainerWins": "Data collected, conclusion reached: I win. Thank you for your participation.",
+    "trainerLoses": "My calculations had a flaw. Specifically, they didn't account for you."
+   },
+   {
+    "greeting": "Precision, calibration, overwhelming firepower. That's good science.",
+    "trainerWins": "Peer review complete: my machines are superior.",
+    "trainerLoses": "Failure is just data. Very painful data, in this case."
+   }
+  ],
+  "Blaise": [
+   {
+    "greeting": "Feel that heat? My partner glows like a reactor and sheds toxic sparks! Let's light it up!",
+    "trainerWins": "Up in smoke! That's what happens when you play with fire.",
+    "trainerLoses": "Doused! Somebody hand me a match, my fire went out."
+   },
+   {
+    "greeting": "I've tended bonfires since I was little, but nothing burns like the light of tomorrow!",
+    "trainerWins": "Ashes, ashes, you all fall down! Ha!",
+    "trainerLoses": "Smothered my flames completely. That's a cold way to lose."
+   },
+   {
+    "greeting": "Fumes and flames, the perfect pair! Step closer if you're brave.",
+    "trainerWins": "Burning bright and burning hot. My fire never fades!",
+    "trainerLoses": "Just embers left now. I'll rekindle and come back blazing."
+   }
+  ],
+  "Rex": [
+   {
+    "greeting": "In my long career I've faced monsters. Now I command one, crackling with lightning.",
+    "trainerWins": "Experience and thunder. A combination youth has yet to master.",
+    "trainerLoses": "Hmph. My old bones felt that one. Well battled, young one."
+   },
+   {
+    "greeting": "A wise trainer knows when to strike. And when my monster strikes, everything shakes.",
+    "trainerWins": "Every stone in place, every bolt where it belongs. That is mastery.",
+    "trainerLoses": "I've lost before and I'll lose again. Today, I lost to someone special."
+   },
+   {
+    "greeting": "Mountains crumble and storms fade, but a true expert endures. Begin!",
+    "trainerWins": "The earth trembles, the sky splits. That's how an expert closes a battle.",
+    "trainerLoses": "Even an expert can be humbled. Thank you for the lesson."
+   }
+  ],
+  "Hanzo": [
+   {
+    "greeting": "Fwoosh! You didn't see me coming, and you won't see my partner's blade either!",
+    "trainerWins": "In and out like a shadow. Ninja victory!",
+    "trainerLoses": "My smoke bomb fizzled... You saw right through my tricks!"
+   },
+   {
+    "greeting": "A ninja strikes from the shadows, but my partner strikes like a falling boulder!",
+    "trainerWins": "Swift as the wind, hard as stone. That's the ninja way!",
+    "trainerLoses": "Caught out in the open! I need to practice my vanishing act."
+   },
+   {
+    "greeting": "Ninja rule number one: never fight fair. Rule number two: never lose!",
+    "trainerWins": "Rule number two upheld! Sayonara!",
+    "trainerLoses": "I broke rule number two... My master is going to be so mad."
+   }
+  ],
+  "Gwendolyn": [
+   {
+    "greeting": "En garde! My knight was built for honor, and it never retreats from a duel.",
+    "trainerWins": "A fair duel, a clean victory. Rise, and face me again someday.",
+    "trainerLoses": "My blade is lowered. You fought with real valor today."
+   },
+   {
+    "greeting": "Chivalry isn't dead. It just got an upgrade. Shall we cross blades?",
+    "trainerWins": "Victory with honor! That's the code I live by.",
+    "trainerLoses": "Defeated, but with honor intact. I salute you."
+   },
+   {
+    "greeting": "An Ace Trainer's duty is to protect the weak and topple the strong. You're the strong one, right?",
+    "trainerWins": "The strong have fallen. My oath is fulfilled.",
+    "trainerLoses": "You toppled me fair and square. My knightly pride stings a bit."
+   }
+  ],
+  "Sylvie": [
+   {
+    "greeting": "The forest has its own guardians. Mine wields a blade of leaves from a future you can't imagine.",
+    "trainerWins": "One for all, and all of you defeated! The forest is safe.",
+    "trainerLoses": "My blade dulled before yours did. The forest will grow back stronger."
+   },
+   {
+    "greeting": "A swordswoman of the woods never flinches. Draw your weapon!",
+    "trainerWins": "Clean cuts, every one of them. Swordplay is an art.",
+    "trainerLoses": "Disarmed! Your swordsmanship is beyond mine today."
+   },
+   {
+    "greeting": "Leaves fall, blades flash, and the duel is over before you blink.",
+    "trainerWins": "Did you blink? That's when you lost.",
+    "trainerLoses": "I blinked first. Well fought, truly."
+   }
+  ],
+  "Regina": [
+   {
+    "greeting": "Kneel before the crown! My team rules this tree, and their queen rules them.",
+    "trainerWins": "Long live the queen! You may leave the throne room now.",
+    "trainerLoses": "Dethroned? Unthinkable... but you've earned the crown today."
+   },
+   {
+    "greeting": "Royalty demands respect, and respect is earned in battle. Show me yours.",
+    "trainerWins": "My court is pleased. Your audience with the queen is over.",
+    "trainerLoses": "The crown is heavy, and today it slipped. Well played, challenger."
+   },
+   {
+    "greeting": "A crown of steel, a mind like a blade. Few are worthy to face my court.",
+    "trainerWins": "Unworthy, as expected. Next challenger, please.",
+    "trainerLoses": "Worthy after all. My court will speak your name with respect."
+   }
+  ],
+  "Lillie": [
+   {
+    "greeting": "I made up my mind to be strong. This look is my promise. Please, battle me with everything you have!",
+    "trainerWins": "I did it! I'm not the girl who used to hide behind everyone anymore.",
+    "trainerLoses": "You're amazing, as always. I'll keep training until I can stand beside you."
+   },
+   {
+    "greeting": "Professor Kukui says battles teach you about yourself. I'd like to learn a lot today!",
+    "trainerWins": "That was a good lesson, wasn't it? For both of us, I hope.",
+    "trainerLoses": "I learned plenty. Mostly that I still have a long way to go!"
+   },
+   {
+    "greeting": "I've studied every page of my notebook for this. I won't freeze up. Not this time!",
+    "trainerWins": "My notes were right! I'll have to write this battle down.",
+    "trainerLoses": "Hmm... I'll need a whole new page for everything I got wrong."
+   }
+  ],
+  "Hau": [
+   {
+    "greeting": "Woo! A battle at the top of the tree! Win or lose, we're grabbing malasadas after, right?",
+    "trainerWins": "Yeah! That was awesome! Malasadas are on you, though!",
+    "trainerLoses": "Aw man! You're too good. Malasadas will cheer me up!"
+   },
+   {
+    "greeting": "Tutu always says battles should be fun. So let's have the most fun ever!",
+    "trainerWins": "Ha! Tutu would be proud. I gotta tell him all about it!",
+    "trainerLoses": "You beat me again! I'm not even mad, that was a blast!"
+   },
+   {
+    "greeting": "I'm gonna be a kahuna someday. Beating you would be a good start!",
+    "trainerWins": "One step closer to kahuna! Thanks for the practice!",
+    "trainerLoses": "Guess I've still got a lot to learn before I'm a kahuna. Rematch soon!"
+   }
+  ],
+  "Lana": [
+   {
+    "greeting": "I caught a fish this big once. Okay, maybe not that big. But this battle is no fish story!",
+    "trainerWins": "Reeled in! You were a pretty good catch, though.",
+    "trainerLoses": "The big one got away. That's okay, there's always another cast."
+   },
+   {
+    "greeting": "Shh... The water's calm. That's when the biggest bites happen.",
+    "trainerWins": "Hook, line and sinker. Just like I planned.",
+    "trainerLoses": "You snapped my line clean through. I'll get a stronger one."
+   },
+   {
+    "greeting": "My little sisters are watching, so I can't lose. That's not a tall tale, by the way.",
+    "trainerWins": "I won! My sisters will want me to tell this story a hundred times.",
+    "trainerLoses": "Maybe I'll tell my sisters a slightly different version of this one..."
+   }
+  ],
+  "Marley": [
+   {
+    "greeting": "...You're strong. I can tell. ...Let's battle.",
+    "trainerWins": "...That was nice. ...Thank you.",
+    "trainerLoses": "...I lost. ...But I'm glad it was you."
+   },
+   {
+    "greeting": "...I don't talk much. My team talks for me.",
+    "trainerWins": "...See? They said everything.",
+    "trainerLoses": "...They had nothing left to say. ...Neither do I."
+   },
+   {
+    "greeting": "...Battle Zone. Fight Area. ...This tree is quieter. I like it.",
+    "trainerWins": "...Quiet. And I won. ...Good day.",
+    "trainerLoses": "...Not so quiet now. ...You're loud in battle."
+   }
+  ],
+  "Celeste": [
+   {
+    "greeting": "Speed wins battles. I'll be three moves ahead before you've picked your first.",
+    "trainerWins": "Three moves ahead, like I said. Try to keep up next time.",
+    "trainerLoses": "You outpaced me? That almost never happens. Almost."
+   },
+   {
+    "greeting": "Every Ace Trainer studies the stars of the battle world. Tonight, I'm the brightest one here.",
+    "trainerWins": "Shooting stars fall fast. So did you.",
+    "trainerLoses": "Eclipsed... I'll shine brighter next time."
+   },
+   {
+    "greeting": "You've climbed past battle 100? Impressive... and kind of cute. Win, and maybe I'll give you my number.",
+    "trainerWins": "No number for you today. Train harder, and maybe I'll reconsider.",
+    "trainerLoses": "Fine, you earned it. Don't make me wait too long for that call."
+   }
+  ],
+  "Juliet": [
+   {
+    "greeting": "Slow and steady? No. Slow and devastating. Let me twist the room around.",
+    "trainerWins": "When the room turns, so does the battle. You never stood a chance.",
+    "trainerLoses": "You won even in my twisted room... Remarkable."
+   },
+   {
+    "greeting": "Patience is my weapon. I'll wait for the perfect moment, then strike all at once.",
+    "trainerWins": "Patience rewarded. Thank you for waiting so politely.",
+    "trainerLoses": "I waited too long. Lesson learned."
+   },
+   {
+    "greeting": "Wherefore art thou, my perfect rival? Oh, there you are. Shall we make this a romance or a tragedy?",
+    "trainerWins": "A tragedy, I'm afraid. Parting is such sweet sorrow.",
+    "trainerLoses": "A romance after all! You've swept me off my feet, challenger."
+   }
+  ],
+  "Paige": [
+   {
+    "greeting": "Hear that? Rain on the leaves. When it pours, my team floods the field.",
+    "trainerWins": "Washed away! Grab an umbrella on your way out.",
+    "trainerLoses": "The storm passed you right by. Unbelievable."
+   },
+   {
+    "greeting": "Forecast for this battle: heavy showers and a guaranteed loss for you.",
+    "trainerWins": "Forecast confirmed. I'm never wrong about the weather.",
+    "trainerLoses": "My forecast failed. Clear skies for you, I guess."
+   },
+   {
+    "greeting": "Want to share my umbrella? Only if you can beat me first. Fair warning: I don't lose.",
+    "trainerWins": "Guess you're walking home in the rain. I'd have shared, you know.",
+    "trainerLoses": "Okay, okay, you can share my umbrella. Just stand a little closer."
+   }
+  ],
+  "Aurora": [
+   {
+    "greeting": "Hail, frost and a veil of northern lights. My team was built for the cold, and so was I.",
+    "trainerWins": "Frozen in place. That's the north wind for you.",
+    "trainerLoses": "The ice cracked... and you walked right through it."
+   },
+   {
+    "greeting": "The colder it gets, the sharper I battle. Let's bring the temperature down.",
+    "trainerWins": "Chilled to the bone. Bundle up next time.",
+    "trainerLoses": "You melted my whole strategy. How embarrassing."
+   },
+   {
+    "greeting": "They say I'm cold, but you might just warm me up. Prove it in battle, okay?",
+    "trainerWins": "Still cold. Maybe a rematch will warm things up between us.",
+    "trainerLoses": "Okay, you've definitely warmed me up. My cheeks are burning."
+   }
+  ],
+  "Vivian": [
+   {
+    "greeting": "The sun is shining on my side of the field. You might want sunglasses.",
+    "trainerWins": "Sunburned! Should've brought sunscreen.",
+    "trainerLoses": "Clouds rolled in on my sunny day. Rude, but fair."
+   },
+   {
+    "greeting": "Bright skies, blazing fields, blooming flowers. My team thrives in the light.",
+    "trainerWins": "Everything grows best in the sun. Including my win streak.",
+    "trainerLoses": "My garden wilted under your heat. Impressive."
+   },
+   {
+    "greeting": "Is it the sun, or is it getting warm because you walked in? Let's find out.",
+    "trainerWins": "Must've been the sun after all. Better luck next summer, sweetie.",
+    "trainerLoses": "Definitely you, then. I need a cold drink and a minute to recover."
+   }
+  ],
+  "Seraphina": [
+   {
+    "greeting": "Grace, elegance and a touch of magic. That's how a lady battles.",
+    "trainerWins": "Gracefully done, if I may say so myself.",
+    "trainerLoses": "Oh my, I've broken a nail. And lost. How terribly rude."
+   },
+   {
+    "greeting": "My team sparkles brighter than any jewel in my collection. Shall I show you?",
+    "trainerWins": "Dazzled you, didn't I? They always are.",
+    "trainerLoses": "You outshone me. I didn't think that was possible."
+   },
+   {
+    "greeting": "Oh, aren't you charming? I usually make challengers blush. Let's see if you're the exception.",
+    "trainerWins": "There's that blush. Don't worry, it suits you.",
+    "trainerLoses": "Now I'm the one blushing. Well played, darling."
+   }
+  ],
+  "Delphine": [
+   {
+    "greeting": "The sea is graceful and merciless at once. So is my team.",
+    "trainerWins": "Swept out to sea. Do swim back for a rematch.",
+    "trainerLoses": "The tide turned against me. It happens to the best of us."
+   },
+   {
+    "greeting": "I spend my mornings on the beach and my evenings at the top of this tree. Both are breathtaking.",
+    "trainerWins": "Breathtaking, wasn't it? I do love a good view.",
+    "trainerLoses": "That was the most breathtaking loss I've ever had."
+   },
+   {
+    "greeting": "You have lovely eyes, you know. Shame I'll have to make them water a little.",
+    "trainerWins": "Here, take my handkerchief. You did look lovely trying.",
+    "trainerLoses": "My, my. Skilled and charming. Call me sometime, won't you?"
+   }
+  ],
+  "Esmeralda": [
+   {
+    "greeting": "Beautiful things are often poisonous. Consider yourself warned.",
+    "trainerWins": "I did warn you. Beauty bites.",
+    "trainerLoses": "Immune to my poison? How curious."
+   },
+   {
+    "greeting": "Darkness suits me better than any gown. Let me show you why.",
+    "trainerWins": "Lost in the dark. It happens to everyone eventually.",
+    "trainerLoses": "You found the light in my darkness. Annoying."
+   },
+   {
+    "greeting": "Careful, darling. Get too close and you might fall for me. Many have.",
+    "trainerWins": "Another heart broken. I really should feel worse about it.",
+    "trainerLoses": "You stole the win and maybe something else. Hmph, don't look so smug."
+   }
+  ],
+  "Margaux": [
+   {
+    "greeting": "Refined steel and ancient dragons. My collection is the finest in the Battle Tree.",
+    "trainerWins": "Exquisite, wasn't it? Quality always wins.",
+    "trainerLoses": "You've scratched my finest pieces. Unforgivable... and impressive."
+   },
+   {
+    "greeting": "A true lady never raises her voice. She lets her team do the shouting.",
+    "trainerWins": "There, not a single hair out of place.",
+    "trainerLoses": "I'm raising my voice now. You beat me fair and square!"
+   },
+   {
+    "greeting": "I only accept dates from trainers who beat me. Lucky for me, nobody ever has.",
+    "trainerWins": "Still undefeated, and still single. Perhaps next time?",
+    "trainerLoses": "Well, that's a first. I suppose I owe you dinner now."
+   }
+  ],
+  "Camille": [
+   {
+    "greeting": "I already know how this battle ends. Would you like me to spoil it for you?",
+    "trainerWins": "Exactly as I foresaw. Shall I tell your fortune next?",
+    "trainerLoses": "My visions failed me. You must be something special."
+   },
+   {
+    "greeting": "Spirits whisper to me, and minds open like books. Yours is an easy read.",
+    "trainerWins": "An open book, cover to cover. Thank you for the read.",
+    "trainerLoses": "You hid a chapter from me. Clever."
+   },
+   {
+    "greeting": "I read your mind just now. You were thinking about me, weren't you? Don't deny it.",
+    "trainerWins": "I knew you'd lose. I also know you'll come back to see me.",
+    "trainerLoses": "I didn't see that coming... or the way you smiled. Come back soon."
+   }
+  ],
+  "Isabella": [
+   {
+    "greeting": "Passion burns brightest at the top. Feel the heat of my team!",
+    "trainerWins": "Burned to a crisp! Passion always wins.",
+    "trainerLoses": "You doused my fire. I need to rekindle my spirit."
+   },
+   {
+    "greeting": "Every battle is a dance of fire. Shall we tango?",
+    "trainerWins": "You missed a step, and the flames caught you.",
+    "trainerLoses": "You led the dance beautifully. I'm almost flattered."
+   },
+   {
+    "greeting": "You've got a spark in your eyes. Let's see if it can survive my flames, hot stuff.",
+    "trainerWins": "Too much heat for you, hot stuff? I'll go easier next time. Maybe.",
+    "trainerLoses": "Now I'm the one getting burned. You're trouble, aren't you?"
+   }
+  ],
+  "Odette": [
+   {
+    "greeting": "Like a swan on a still lake, I glide above the battle. Watch closely.",
+    "trainerWins": "A graceful finish. Do clap if you liked the performance.",
+    "trainerLoses": "My wings faltered. Even swans stumble sometimes."
+   },
+   {
+    "greeting": "Ballet taught me balance. My team learned it from me.",
+    "trainerWins": "Perfect balance, perfect victory. Bravo to me.",
+    "trainerLoses": "You knocked me off balance. Impressive footwork."
+   },
+   {
+    "greeting": "Shall we waltz across the battlefield? I'll lead. Try not to step on my feet.",
+    "trainerWins": "You stepped on my feet, darling. But you're cute, so I'll forgive you.",
+    "trainerLoses": "You led after all... and I didn't mind one bit. One more dance?"
    }
   ]
  },
@@ -5476,7 +6037,7 @@
   ]
  },
  "multiNote": "Lines for trainers who always battle together as opponents in a Multi Battle (Tate and Liza; Tai and Matt): the same set index is used for both, so they answer each other. Used only when they battle together.",
- "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake; and Mallow with every one of the younger female Gym Leaders, added 2026-10-19 on request). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type. Courtney only teams up with female trainers (on request, 2026-10-19), so her pair lines with male characters were removed.",
+ "pairsNote": "Greetings for two special trainers drawn together in a Multi Battle who share a region or a type (written for this app). Each entry has one set of lines per trainer: a greeting and both closing remarks, all about battling together (closing remarks added 2026-10-19, on request). To add a pair, add an entry with both trainers' names and a set for each. The Elite Four and Champions (added 2026-10-10) also greet partners they have a relationship with (Koga and Janine, Lance and Clair, Wallace and Juan, Flint and Volkner, Iris and Drayden...), other Champions, and a few kindred spirits (Siebold with the Striaton chefs and Mallow, Diantha with Brycen, Kukui with Crasher Wake; and Mallow with every one of the younger female Gym Leaders, added 2026-10-19 on request). The evil teams' leaders and admins (added 2026-10-11) follow the region rule too, plus Giovanni with his Rocket Executives; trainers with two versions (Archie, Maxie) are listed by their key (\"Archie (ORAS)\") and never paired with themselves. The younger female Gym Leaders (Misty, Erika, Sabrina, Janine, Whitney, Jasmine, Clair, Roxanne, Flannery, Winona, Gardenia, Maylene, Candice, Elesa, Skyla, Roxie; added 2026-10-18, on request) greet each other too, as friends, whatever their region or type. Lillie, Hau, Lana and Marley (added 2026-10-22, on request) follow the region rule (Lana also the Water specialists), and Lillie, Lana and Marley join the young female trainers' circle (the 16 Gym Leaders and Mallow) and greet each other. Courtney only teams up with female trainers (on request, 2026-10-19), so her pair lines with male characters were removed.",
  "pairs": {
   "Brock & Misty": {
    "Brock": {
@@ -21136,6 +21697,1338 @@
     "greeting": "Roxie's music makes me cook twice as fast! Let's rock and roll... and win!",
     "trainerWins": "Rocking victory! Encore dish coming up!",
     "trainerLoses": "Bad show, good food, Roxie!"
+   }
+  },
+  "Lillie & Lusamine": {
+   "Lillie": {
+    "greeting": "Mother, I'm not running away this time. I'm standing right here, battling beside you.",
+    "trainerWins": "We won together, Mother. That's all I ever wanted.",
+    "trainerLoses": "We lost, but we lost side by side. I'll take that over winning apart."
+   },
+   "Lusamine": {
+    "greeting": "My Lillie, so strong and lovely now. Show this challenger how beautifully you've grown.",
+    "trainerWins": "Exquisite. My daughter and I, flawless together. As it should be.",
+    "trainerLoses": "Defeated... and yet, holding my daughter's hand, I find I don't mind."
+   }
+  },
+  "Lillie & Hau": {
+   "Lillie": {
+    "greeting": "Hau and I have known each other since my very first days on Melemele. We make a good team!",
+    "trainerWins": "We did it, Hau! Just like old times on Route 1.",
+    "trainerLoses": "Oh no... Sorry, Hau. I'll do better next time, I promise."
+   },
+   "Hau": {
+    "greeting": "Lillie's gotten so strong! I gotta keep up or she'll leave me behind!",
+    "trainerWins": "Woo! High five, Lillie! Malasadas to celebrate?",
+    "trainerLoses": "Don't worry, Lillie! Losing's way more fun with a friend."
+   }
+  },
+  "Lillie & Kukui": {
+   "Lillie": {
+    "greeting": "Professor, thank you for letting me stay at your lab. Let me repay you with a win!",
+    "trainerWins": "We won, Professor! I couldn't have done it without your lessons.",
+    "trainerLoses": "I'm sorry, Professor. I'll study harder, I promise!"
+   },
+   "Kukui": {
+    "greeting": "Woo! My assistant's all grown up and ready to rumble! Let's show 'em, Lillie!",
+    "trainerWins": "Now that's what I call research in action! Great work, Lillie!",
+    "trainerLoses": "Hey, no need to be sorry. Every loss is just another data point, yeah?"
+   }
+  },
+  "Lillie & Hala": {
+   "Lillie": {
+    "greeting": "Kahuna Hala was so kind to me when I first came to Melemele. I'll battle my best for him!",
+    "trainerWins": "We did it, Kahuna Hala! Did you see?",
+    "trainerLoses": "I'm sorry we couldn't win, Kahuna Hala."
+   },
+   "Hala": {
+    "greeting": "Ho ho! Little Lillie, standing tall in battle! Melemele's spirit is strong in you.",
+    "trainerWins": "Hoo hah! Splendid! Hau will be so jealous he missed this!",
+    "trainerLoses": "Ho ho, don't fret! Even a mighty wave falls back to the sea."
+   }
+  },
+  "Lillie & Kiawe": {
+   "Lillie": {
+    "greeting": "Kiawe's dance is as fierce as Wela Volcano. It's an honor to battle beside him!",
+    "trainerWins": "We won! Your fire is amazing, Kiawe!",
+    "trainerLoses": "Even fire goes out sometimes, I suppose..."
+   },
+   "Kiawe": {
+    "greeting": "Lillie has a fire in her eyes I didn't see before. Let's dance this battle together!",
+    "trainerWins": "Our passion burned brighter! A fine performance, Lillie.",
+    "trainerLoses": "We'll stoke the flames and come back hotter. Chin up, Lillie."
+   }
+  },
+  "Lillie & Mallow": {
+   "Lillie": {
+    "greeting": "Mallow taught me that a good meal can make anyone brave. I feel very brave today!",
+    "trainerWins": "We won, Mallow! Can we have a celebration lunch?",
+    "trainerLoses": "Oh... I think we left this battle in the oven too long."
+   },
+   "Mallow": {
+    "greeting": "Lillie, you look so confident! Let's serve up a battle hotter than my kitchen!",
+    "trainerWins": "Victory is the best seasoning! Lunch is on me, Lillie!",
+    "trainerLoses": "Overcooked! It happens to the best chefs. We'll try a new recipe!"
+   }
+  },
+  "Lillie & Lana": {
+   "Lillie": {
+    "greeting": "Lana says she once caught something bigger than a boat. I believe her! Mostly.",
+    "trainerWins": "We won! Was that one of your tall tales, Lana, or did it really happen?",
+    "trainerLoses": "We lost... Please don't make up a story where I cried."
+   },
+   "Lana": {
+    "greeting": "Lillie believes all my stories. That's why she's my favorite. Let's battle.",
+    "trainerWins": "It really happened. Tell everyone it was a hundred times bigger, though.",
+    "trainerLoses": "In my version of this story, we won. Nobody has to know."
+   }
+  },
+  "Lillie & Acerola": {
+   "Lillie": {
+    "greeting": "Acerola showed me the abandoned Megamart. I'm still a little scared of it... but not of you!",
+    "trainerWins": "We won! I wasn't scared at all. Well, maybe a tiny bit.",
+    "trainerLoses": "Oh dear. I think I'd rather face the abandoned Megamart again."
+   },
+   "Acerola": {
+    "greeting": "Lillie got spooked by my ghostly friends once. Now she's the one spooking challengers!",
+    "trainerWins": "Ehehe! Boo! You've been beaten by the spooky duo!",
+    "trainerLoses": "Aww... Even my ghosts are sad now. Come back and play again!"
+   }
+  },
+  "Lillie & Olivia": {
+   "Lillie": {
+    "greeting": "Kahuna Olivia gave me tips on picking out jewelry. Today she's giving me battle tips!",
+    "trainerWins": "We won! I feel as sparkly as one of your stones, Olivia!",
+    "trainerLoses": "We lost... Maybe I'm still a little rough around the edges."
+   },
+   "Olivia": {
+    "greeting": "Lillie's not a gem in the rough anymore. Let's see how brightly she shines!",
+    "trainerWins": "Polished to perfection! That's how a true gem battles.",
+    "trainerLoses": "Even diamonds get scratched. We'll buff this one out, sweetie."
+   }
+  },
+  "Lillie & Kahili": {
+   "Lillie": {
+    "greeting": "Kahili once tried teaching me golf. I wasn't very good, so let's hope I'm better at battles!",
+    "trainerWins": "We won! That was even better than a hole in one!",
+    "trainerLoses": "We ended up in the sand trap, didn't we?"
+   },
+   "Kahili": {
+    "greeting": "Lillie's swing needs work, but her battling is a hole in one. Fore!",
+    "trainerWins": "Right down the fairway and into the cup. Lovely teamwork.",
+    "trainerLoses": "A double bogey. We'll play the next round better."
+   }
+  },
+  "Lillie & Molayne": {
+   "Lillie": {
+    "greeting": "Molayne showed me the stars from Hokulani Observatory. I want to battle as brightly as they shine!",
+    "trainerWins": "We won! It feels like reaching for the stars and catching one.",
+    "trainerLoses": "We fell short of the stars today..."
+   },
+   "Molayne": {
+    "greeting": "Lillie asks the best questions about the stars. Let's see if she has answers in battle too.",
+    "trainerWins": "Precise calculations, perfect results. Nicely done, Lillie.",
+    "trainerLoses": "Even stars dim sometimes. We'll recalculate."
+   }
+  },
+  "Lillie & Plumeria": {
+   "Lillie": {
+    "greeting": "Plumeria helped rescue me from Aether Paradise. Team Skull or not, I trust her.",
+    "trainerWins": "We won, Plumeria! Thank you for watching out for me.",
+    "trainerLoses": "We lost... Are you angry, Plumeria?"
+   },
+   "Plumeria": {
+    "greeting": "Princess here grew some backbone. Fine, I'll fight beside her. Don't make it weird.",
+    "trainerWins": "Not bad, princess. Not bad at all.",
+    "trainerLoses": "Angry? Nah. Just don't tell the grunts I was being nice."
+   }
+  },
+  "Lillie & Guzma": {
+   "Lillie": {
+    "greeting": "Guzma used to work with my mother... I'm still not sure what to make of him.",
+    "trainerWins": "We won! You're actually not so scary, Guzma.",
+    "trainerLoses": "That was... chaotic. Is it always like this with you?"
+   },
+   "Guzma": {
+    "greeting": "The Aether kid, huh? Fine. Stick with me and we'll smash 'em to pieces.",
+    "trainerWins": "Hah! Destruction in a pretty dress! I kinda like it.",
+    "trainerLoses": "Guzma! What is wrong with you?! ...Sorry, kid. Habit."
+   }
+  },
+  "Lillie & Faba": {
+   "Lillie": {
+    "greeting": "Faba was cruel to me at Aether Paradise. I'm only battling beside him because I've grown stronger.",
+    "trainerWins": "We won. Maybe you can learn to be kinder now, Faba.",
+    "trainerLoses": "We lost. I think some of that was your fault, Faba."
+   },
+   "Faba": {
+    "greeting": "The president's daughter, my partner? Hmph. Try not to embarrass the Foundation.",
+    "trainerWins": "A flawless victory! Naturally, thanks to my genius.",
+    "trainerLoses": "Impossible! The daughter clearly dragged down my calculations!"
+   }
+  },
+  "Hau & Hala": {
+   "Hau": {
+    "greeting": "Me and Tutu, battling together! This is gonna be the best day ever!",
+    "trainerWins": "We did it, Tutu! Can we get malasadas now?",
+    "trainerLoses": "Aw, sorry Tutu! I'll train harder, promise!"
+   },
+   "Hala": {
+    "greeting": "Ho ho! My grandson and I, side by side! Show them the strength of Melemele, Hau!",
+    "trainerWins": "Hoo hah! My boy has grown! Malasadas for everyone!",
+    "trainerLoses": "Ho ho, a loss shared with family is no loss at all, Hau!"
+   }
+  },
+  "Hau & Kukui": {
+   "Hau": {
+    "greeting": "Professor Kukui! Let's show 'em the moves that've got Alola buzzing!",
+    "trainerWins": "Woo! We crushed it, Professor!",
+    "trainerLoses": "Aw man! At least we went out with style!"
+   },
+   "Kukui": {
+    "greeting": "Hau's got that spark, yeah! Let's give 'em a battle they'll never forget!",
+    "trainerWins": "That's my kind of battle! Woo!",
+    "trainerLoses": "Win or lose, we gave it everything, cousin! Woo!"
+   }
+  },
+  "Hau & Guzma": {
+   "Hau": {
+    "greeting": "Guzma used to train with my Tutu, y'know. Let's see if any of it stuck!",
+    "trainerWins": "We won! See, Guzma? Teamwork rocks!",
+    "trainerLoses": "Aw, don't be mad, Guzma! It was fun!"
+   },
+   "Guzma": {
+    "greeting": "The kahuna's grandkid. Great. Just stay out of my way and we'll be fine.",
+    "trainerWins": "Hah! Big bad Guzma and the kid! Who saw that coming?",
+    "trainerLoses": "Fun?! Gah. Your Tutu's gonna hear about this, isn't he?"
+   }
+  },
+  "Hau & Plumeria": {
+   "Hau": {
+    "greeting": "Plumeria's way nicer than she acts. Don't tell her I said that!",
+    "trainerWins": "We won! Told ya she was nice!",
+    "trainerLoses": "Aw, man. Sorry, Plumeria!"
+   },
+   "Plumeria": {
+    "greeting": "I heard that, kid. Just battle, will ya?",
+    "trainerWins": "Fine, you were useful. Happy now?",
+    "trainerLoses": "Whatever. Go get your malasadas or something."
+   }
+  },
+  "Hau & Kiawe": {
+   "Hau": {
+    "greeting": "Kiawe's dance is so cool! Maybe I'll do a victory dance too!",
+    "trainerWins": "Victory dance time! Show me the moves, Kiawe!",
+    "trainerLoses": "Guess the dance floor's closed for today."
+   },
+   "Kiawe": {
+    "greeting": "Hau's energy is like an eruption! Let us dance through this battle!",
+    "trainerWins": "A blazing triumph! Our flames danced as one.",
+    "trainerLoses": "Our fire flickered... but it will burn again, Hau."
+   }
+  },
+  "Hau & Mallow": {
+   "Hau": {
+    "greeting": "Mallow makes the best food on Akala! I'm battling extra hard for a snack!",
+    "trainerWins": "We won! Mallow, what's on the menu?",
+    "trainerLoses": "No snacks for losers, huh? Aw..."
+   },
+   "Mallow": {
+    "greeting": "Hau, you only think about food! ...Me too. Let's win and eat!",
+    "trainerWins": "A victory feast for two! Coming right up!",
+    "trainerLoses": "We'll eat anyway. Losing makes you hungry!"
+   }
+  },
+  "Hau & Lana": {
+   "Hau": {
+    "greeting": "Lana told me there's a fish in Brooklet Hill bigger than my house! Is that true?",
+    "trainerWins": "We won! Now tell me the truth about that fish!",
+    "trainerLoses": "Aw, we lost! Was that fish story fake too?"
+   },
+   "Lana": {
+    "greeting": "Of course it's true. Would I lie to you, Hau? ...Let's battle.",
+    "trainerWins": "We won. The fish story stays a mystery.",
+    "trainerLoses": "We lost. Hau believed me about the fish, though. Small victories."
+   }
+  },
+  "Hau & Olivia": {
+   "Hau": {
+    "greeting": "Kahuna Olivia's super strong! Tutu says she's the toughest kahuna... after him!",
+    "trainerWins": "We won! I'm telling Tutu you're the toughest now!",
+    "trainerLoses": "Aw, we lost! Tutu's gonna tease me about this."
+   },
+   "Olivia": {
+    "greeting": "Your grandpa said that? Ha! Let's show him who's really the toughest, Hau.",
+    "trainerWins": "Hard as rock and twice as shiny. That's how we do it!",
+    "trainerLoses": "Don't worry, Hau. I'll tease your grandpa back for you."
+   }
+  },
+  "Hau & Acerola": {
+   "Hau": {
+    "greeting": "Acerola's ghosts are kinda spooky, but they're on our side, so it's cool!",
+    "trainerWins": "We won! Your ghosts are the best, Acerola!",
+    "trainerLoses": "Aw, we lost! Now I'm a little spooked."
+   },
+   "Acerola": {
+    "greeting": "Hau's not scared of anything! Let's see if the challenger is!",
+    "trainerWins": "Ehehe! The ghosts say thank you, Hau!",
+    "trainerLoses": "Boo hoo... The ghosts want a rematch!"
+   }
+  },
+  "Hau & Kahili": {
+   "Hau": {
+    "greeting": "Kahili hits golf balls super far! I bet she can hit you super far too!",
+    "trainerWins": "We won! Did that count as a hole in one?",
+    "trainerLoses": "Did we lose the ball? I think we lost the ball."
+   },
+   "Kahili": {
+    "greeting": "Hau, that's not how battling works... but I like your spirit.",
+    "trainerWins": "Under par. A good round, Hau.",
+    "trainerLoses": "Out of bounds, I'm afraid. Next tee."
+   }
+  },
+  "Hau & Molayne": {
+   "Hau": {
+    "greeting": "Molayne knows everything about space! Do you think we could battle on the moon?",
+    "trainerWins": "We won! That was out of this world!",
+    "trainerLoses": "Aw, we crashed and burned!"
+   },
+   "Molayne": {
+    "greeting": "Hau, the moon has very little gravity... but we'll win right here, I'm sure.",
+    "trainerWins": "Calculated and confirmed. A fine result.",
+    "trainerLoses": "An unexpected orbit. I'll study what went wrong."
+   }
+  },
+  "Hau & Lusamine": {
+   "Hau": {
+    "greeting": "Lillie's mom? Whoa. Uh, nice to meet you! Let's battle!",
+    "trainerWins": "We won! Wait till Lillie hears about this!",
+    "trainerLoses": "Uh-oh. Sorry, ma'am!"
+   },
+   "Lusamine": {
+    "greeting": "Lillie's little friend. How charming. Do try to keep up.",
+    "trainerWins": "Beautiful. You were almost as lovely as I was.",
+    "trainerLoses": "Such an unlovely result. We shan't speak of it."
+   }
+  },
+  "Hau & Faba": {
+   "Hau": {
+    "greeting": "Faba's kinda grumpy, huh? Don't worry, I'll cheer him up with a win!",
+    "trainerWins": "We won! See? Now you're smiling, Faba!",
+    "trainerLoses": "Aw, don't be grumpy, Faba!"
+   },
+   "Faba": {
+    "greeting": "Cheer me up? I am the Aether Foundation's finest mind, you child!",
+    "trainerWins": "I am not smiling. This is my victory face.",
+    "trainerLoses": "Grumpy?! I am furious! There's a difference!"
+   }
+  },
+  "Mallow & Lana": {
+   "Mallow": {
+    "greeting": "Lana's my best friend, and she's more dangerous than she looks! Right, Lana?",
+    "trainerWins": "We won! Lana, let's make seafood stew to celebrate!",
+    "trainerLoses": "Aww... Lana, hug it out?"
+   },
+   "Lana": {
+    "greeting": "Mallow, you'll scare them. ...Good. Let's battle.",
+    "trainerWins": "Victory and stew. My two favorite things.",
+    "trainerLoses": "Hugs, then a rematch. In that order."
+   }
+  },
+  "Kiawe & Lana": {
+   "Kiawe": {
+    "greeting": "Lana and I are both captains of Akala. Fire and water, together at last!",
+    "trainerWins": "Steam and fury! A magnificent victory!",
+    "trainerLoses": "Even the volcano sleeps sometimes..."
+   },
+   "Lana": {
+    "greeting": "Kiawe gets dramatic. Don't worry, I'll keep his flames from boiling over.",
+    "trainerWins": "See? I kept him cool. Mostly.",
+    "trainerLoses": "We fizzled out. Literally, in Kiawe's case."
+   }
+  },
+  "Lana & Olivia": {
+   "Lana": {
+    "greeting": "Kahuna Olivia oversees the trials on Akala. Battling beside her is a big deal.",
+    "trainerWins": "We won. I'll tell everyone Olivia did most of it. She didn't.",
+    "trainerLoses": "We lost. I'll go fishing until I feel better."
+   },
+   "Olivia": {
+    "greeting": "Lana's my quiet little shark. Never underestimate her, honey.",
+    "trainerWins": "Polished and sparkling! Akala's finest, right here.",
+    "trainerLoses": "Rough waters today. We'll find calmer seas."
+   }
+  },
+  "Lana & Hala": {
+   "Lana": {
+    "greeting": "Kahuna Hala's laugh can be heard from Melemele to Akala. Hopefully it scares you.",
+    "trainerWins": "We won. Kahuna Hala laughed so hard I think the water rippled.",
+    "trainerLoses": "The tide went out on us."
+   },
+   "Hala": {
+    "greeting": "Ho ho! Little Lana, with stories bigger than the ocean! Let's battle!",
+    "trainerWins": "Hoo hah! A splendid catch, Lana!",
+    "trainerLoses": "Ho ho! The sea gives and the sea takes!"
+   }
+  },
+  "Lana & Acerola": {
+   "Lana": {
+    "greeting": "Acerola and I trade ghost stories. Mine are better. Mostly because they're true.",
+    "trainerWins": "We won. That's the scariest story of all, for you.",
+    "trainerLoses": "We lost. That's a story I won't be telling."
+   },
+   "Acerola": {
+    "greeting": "Lana's stories are totally made up! Mine are the real spooky ones!",
+    "trainerWins": "Ehehe! Spooked and soaked! Great teamwork, Lana!",
+    "trainerLoses": "Aww... Let's make up a story where we won!"
+   }
+  },
+  "Lana & Kahili": {
+   "Lana": {
+    "greeting": "Kahili flies all over the world. I asked her to bring me back a fish. She never does.",
+    "trainerWins": "We won. Now will you bring me a fish?",
+    "trainerLoses": "We lost. And still no fish."
+   },
+   "Kahili": {
+    "greeting": "Lana, they won't let fish on planes. Shall we play this round?",
+    "trainerWins": "Straight down the fairway. Nicely played, Lana.",
+    "trainerLoses": "A water hazard. Fitting, with you here."
+   }
+  },
+  "Lana & Molayne": {
+   "Lana": {
+    "greeting": "Molayne says the tides follow the moon. I say the fish follow me.",
+    "trainerWins": "We won. The tide was on our side.",
+    "trainerLoses": "Low tide for us today."
+   },
+   "Molayne": {
+    "greeting": "Lana, that's not how tides work... but let's battle anyway.",
+    "trainerWins": "Exactly as the tide tables predicted. Well done.",
+    "trainerLoses": "A miscalculation. Even the ocean surprises me."
+   }
+  },
+  "Lana & Kukui": {
+   "Lana": {
+    "greeting": "Professor Kukui wrestles in a mask. I wasn't supposed to tell anyone. Oops.",
+    "trainerWins": "We won. Your secret is safe. Mostly.",
+    "trainerLoses": "We lost. Maybe the mask would've helped."
+   },
+   "Kukui": {
+    "greeting": "Wh-what mask? I don't know what you're talking about! Let's battle, yeah!",
+    "trainerWins": "Woo! A splash of a victory, Lana!",
+    "trainerLoses": "Wiped out by the wave, cousin! We'll ride the next one!"
+   }
+  },
+  "Lana & Plumeria": {
+   "Lana": {
+    "greeting": "Team Skull grunts used to make a mess of my trial site. Plumeria owes me.",
+    "trainerWins": "We won. Now we're even, Plumeria.",
+    "trainerLoses": "We lost. Now you owe me twice."
+   },
+   "Plumeria": {
+    "greeting": "I don't owe anybody, kid. But fine, I'll fight with you.",
+    "trainerWins": "Huh. You're tougher than you look, kid.",
+    "trainerLoses": "Ugh, don't keep score, kid."
+   }
+  },
+  "Lana & Guzma": {
+   "Lana": {
+    "greeting": "Guzma never finished the island challenge. I'm a captain. You can guess who's in charge here.",
+    "trainerWins": "We won. Good job following orders, Guzma.",
+    "trainerLoses": "We lost. I blame Guzma."
+   },
+   "Guzma": {
+    "greeting": "Tch. Bossin' me around, kid? Just battle!",
+    "trainerWins": "Hah! Big bad Guzma, winning with a captain! What a world.",
+    "trainerLoses": "Guzma! What is wrong with... no, seriously, what went wrong?!"
+   }
+  },
+  "Lana & Lusamine": {
+   "Lana": {
+    "greeting": "Lusamine's daughter is my friend. So I'll be nice. Probably.",
+    "trainerWins": "We won. Lillie will be happy.",
+    "trainerLoses": "We lost. I'll tell Lillie it was your fault."
+   },
+   "Lusamine": {
+    "greeting": "A captain? How quaint. Very well, show me your beauty.",
+    "trainerWins": "Lovely. I suppose captains can be beautiful too.",
+    "trainerLoses": "Hideous. Let us never repeat this."
+   }
+  },
+  "Lana & Faba": {
+   "Lana": {
+    "greeting": "Faba thinks he's a genius. I think he'd make a good fish story.",
+    "trainerWins": "We won. See, Faba? Even geniuses need captains.",
+    "trainerLoses": "We lost. That's going in my fish stories."
+   },
+   "Faba": {
+    "greeting": "I am the Aether Foundation's greatest scientist! Not a fish story!",
+    "trainerWins": "A triumph of science! And... seawater, apparently.",
+    "trainerLoses": "This defeat will be redacted from all Foundation records!"
+   }
+  },
+  "Misty & Lana": {
+   "Misty": {
+    "greeting": "A fellow water lover! Lana, let's show this challenger the power of the deep!",
+    "trainerWins": "Splash attack! That's how water trainers win!",
+    "trainerLoses": "Ugh, washed out! That's not fair!"
+   },
+   "Lana": {
+    "greeting": "Misty's a Gym Leader from far away. She agreed my fishing stories are true. I like her.",
+    "trainerWins": "We won. Misty, let's go fishing after this.",
+    "trainerLoses": "We lost. The water was cold today."
+   }
+  },
+  "Juan & Lana": {
+   "Juan": {
+    "greeting": "Ah, a young maiden of the sea. Lana, shall we perform a duet of water?",
+    "trainerWins": "Superb! A performance of water and grace!",
+    "trainerLoses": "Alas, our duet ended on a sour note."
+   },
+   "Lana": {
+    "greeting": "Juan talks like a poem. I don't understand it, but I like it.",
+    "trainerWins": "We won. I think that was art.",
+    "trainerLoses": "We lost. That was sad art."
+   }
+  },
+  "Crasher Wake & Lana": {
+   "Crasher Wake": {
+    "greeting": "Wahahaha! The tiny captain and the mighty Crasher Wake! Prepare to be washed away!",
+    "trainerWins": "Wahahaha! A tidal wave of victory!",
+    "trainerLoses": "Gwaah! The tide has turned against us!"
+   },
+   "Lana": {
+    "greeting": "He's very loud. I'll be the quiet one. Let's go.",
+    "trainerWins": "We won. He's still yelling.",
+    "trainerLoses": "We lost. At least it's quieter now."
+   }
+  },
+  "Marlon & Lana": {
+   "Marlon": {
+    "greeting": "Yo, Lana! You fish, I surf. Together we're like the whole ocean, man!",
+    "trainerWins": "Whoa! Totally gnarly win, little dude!",
+    "trainerLoses": "Wiped out! No worries, the waves always come back."
+   },
+   "Lana": {
+    "greeting": "Marlon is so relaxed it's almost suspicious. Let's battle.",
+    "trainerWins": "We won. Marlon didn't even break a sweat.",
+    "trainerLoses": "We lost. Marlon's still smiling. How?"
+   }
+  },
+  "Cress & Lana": {
+   "Cress": {
+    "greeting": "A captain of the waters! Lana, let us serve this challenger a refreshing defeat.",
+    "trainerWins": "Served chilled and garnished with victory. Exquisite.",
+    "trainerLoses": "A spilled glass... How unbecoming of me."
+   },
+   "Lana": {
+    "greeting": "Cress works at a restaurant, like Mallow. But he's fancier.",
+    "trainerWins": "We won. Cress, do you serve fish?",
+    "trainerLoses": "We lost. That dish didn't taste good."
+   }
+  },
+  "Wallace & Lana": {
+   "Wallace": {
+    "greeting": "Lana, your quiet grace is like still water. Let's create something beautiful!",
+    "trainerWins": "Ah, a dazzling victory! Like sunlight on the waves.",
+    "trainerLoses": "Even still water ripples when struck. Beautifully fought."
+   },
+   "Lana": {
+    "greeting": "Wallace is very sparkly. I'll try to keep up.",
+    "trainerWins": "We won. That was very sparkly.",
+    "trainerLoses": "We lost. The sparkles didn't help."
+   }
+  },
+  "Siebold & Lana": {
+   "Siebold": {
+    "greeting": "Lana, I hear you're quite the fisher. A chef appreciates a fine catch. Shall we?",
+    "trainerWins": "A perfectly plated victory. Bon appétit.",
+    "trainerLoses": "An overcooked defeat. How regrettable."
+   },
+   "Lana": {
+    "greeting": "Siebold cooks fish. I catch fish. This is a perfect team.",
+    "trainerWins": "We won. Now cook my catch, Siebold.",
+    "trainerLoses": "We lost. No fish dinner tonight."
+   }
+  },
+  "Cynthia & Marley": {
+   "Cynthia": {
+    "greeting": "Marley rarely speaks, but her team speaks volumes. I'm glad to battle beside her.",
+    "trainerWins": "Beautifully done, Marley. Sinnoh's quiet strength shines.",
+    "trainerLoses": "A loss, but a lesson. Isn't that right, Marley?"
+   },
+   "Marley": {
+    "greeting": "...Cynthia. ...Strong. ...I'll do my best.",
+    "trainerWins": "...We won. ...Cynthia smiled.",
+    "trainerLoses": "...Mm. ...Next time."
+   }
+  },
+  "Roark & Marley": {
+   "Roark": {
+    "greeting": "Marley's as quiet as a mine shaft at night. Don't let that fool you!",
+    "trainerWins": "Struck gold! Great work, Marley!",
+    "trainerLoses": "Cave-in! We'll dig our way back."
+   },
+   "Marley": {
+    "greeting": "...Mines are noisy. ...I'm not.",
+    "trainerWins": "...Shiny. ...Good.",
+    "trainerLoses": "...Buried. ...Hm."
+   }
+  },
+  "Gardenia & Marley": {
+   "Gardenia": {
+    "greeting": "Marley, you're so quiet you'd fit right in at the Old Chateau... Eek, don't remind me!",
+    "trainerWins": "We won! And no ghosts showed up! Perfect!",
+    "trainerLoses": "Wilted! Ugh, I need some sunshine."
+   },
+   "Marley": {
+    "greeting": "...Ghosts are fine. ...Gardenia isn't.",
+    "trainerWins": "...Victory. ...And no screaming.",
+    "trainerLoses": "...She's scared again. ...Of losing."
+   }
+  },
+  "Fantina & Marley": {
+   "Fantina": {
+    "greeting": "Ah, Marley! So mysterieuse! Together we will be magnifique!",
+    "trainerWins": "Magnifique! What a performance, Marley!",
+    "trainerLoses": "Non! This was not très bien at all!"
+   },
+   "Marley": {
+    "greeting": "...She talks a lot. ...I'll battle.",
+    "trainerWins": "...Magni... fique. ...We won.",
+    "trainerLoses": "...Not magnifique."
+   }
+  },
+  "Maylene & Marley": {
+   "Maylene": {
+    "greeting": "Marley! Let's go barefoot and fight with everything we've got!",
+    "trainerWins": "We won! That was a great workout!",
+    "trainerLoses": "We lost... I need to train more!"
+   },
+   "Marley": {
+    "greeting": "...I'll keep my shoes. ...But I'll fight.",
+    "trainerWins": "...Tired. ...Happy.",
+    "trainerLoses": "...Train. ...Together."
+   }
+  },
+  "Crasher Wake & Marley": {
+   "Crasher Wake": {
+    "greeting": "Wahahaha! The silent maiden and the roaring wave! What a tag team!",
+    "trainerWins": "Wahahaha! Crushed like a wave on the rocks!",
+    "trainerLoses": "Gwaaah! Pinned down for the count!"
+   },
+   "Marley": {
+    "greeting": "...Too loud. ...But strong.",
+    "trainerWins": "...Won. ...My ears hurt.",
+    "trainerLoses": "...Quiet now. ...Better."
+   }
+  },
+  "Byron & Marley": {
+   "Byron": {
+    "greeting": "Gahahaha! The quiet girl from the Battle Zone! Let's hammer this out!",
+    "trainerWins": "Gahahaha! A victory as hard as steel!",
+    "trainerLoses": "Gahaha... Even steel bends sometimes."
+   },
+   "Marley": {
+    "greeting": "...Loud. ...Roark's dad. ...Makes sense.",
+    "trainerWins": "...Won. ...He laughs a lot.",
+    "trainerLoses": "...Bent. ...Not broken."
+   }
+  },
+  "Candice & Marley": {
+   "Candice": {
+    "greeting": "Focus, Marley! Let's show 'em the power of a cool head!",
+    "trainerWins": "Yes! Total focus! That's the spirit!",
+    "trainerLoses": "We lost our focus! Ugh, more training!"
+   },
+   "Marley": {
+    "greeting": "...My head is cool. ...Always.",
+    "trainerWins": "...Focused. ...Won.",
+    "trainerLoses": "...Cold. ...Like Snowpoint."
+   }
+  },
+  "Volkner & Marley": {
+   "Volkner": {
+    "greeting": "Marley doesn't waste words. I don't waste energy. Let's get this over with... in a good way.",
+    "trainerWins": "Hm. That actually wasn't boring.",
+    "trainerLoses": "A spark finally... and we lost. Typical."
+   },
+   "Marley": {
+    "greeting": "...He's bored. ...I'm not.",
+    "trainerWins": "...Not boring. ...Good.",
+    "trainerLoses": "...Lost. ...He's excited now?"
+   }
+  },
+  "Aaron & Marley": {
+   "Aaron": {
+    "greeting": "Marley's like a bug hiding in the grass. Quiet, until she strikes!",
+    "trainerWins": "Beautiful! Like a butterfly's wings!",
+    "trainerLoses": "Squashed... That's how it goes sometimes."
+   },
+   "Marley": {
+    "greeting": "...Not a bug. ...But I'll strike.",
+    "trainerWins": "...Fluttered. ...Won.",
+    "trainerLoses": "...Squashed. ...Not fun."
+   }
+  },
+  "Bertha & Marley": {
+   "Bertha": {
+    "greeting": "Well, aren't you a quiet one, dear? Let's show them what we've got.",
+    "trainerWins": "Ahaha! Well done, dear! Have a cookie.",
+    "trainerLoses": "Oh my. Well, no cookies for us today."
+   },
+   "Marley": {
+    "greeting": "...Bertha is nice. ...Like a grandma.",
+    "trainerWins": "...Cookie? ...Yes.",
+    "trainerLoses": "...No cookie. ...Sad."
+   }
+  },
+  "Flint & Marley": {
+   "Flint": {
+    "greeting": "Marley! Let's set this battle on fire! Burn, baby, burn!",
+    "trainerWins": "That's what I'm talking about! We're on fire!",
+    "trainerLoses": "Doused! Man, that stings."
+   },
+   "Marley": {
+    "greeting": "...Hot. ...Too hot. ...Okay.",
+    "trainerWins": "...We burned. ...In a good way.",
+    "trainerLoses": "...Fire out. ...Hm."
+   }
+  },
+  "Lucian & Marley": {
+   "Lucian": {
+    "greeting": "Marley and I both appreciate silence. A quiet mind sees the battle clearly.",
+    "trainerWins": "A satisfying ending, like a good novel.",
+    "trainerLoses": "An unexpected twist. I didn't see it coming."
+   },
+   "Marley": {
+    "greeting": "...He reads. ...I listen.",
+    "trainerWins": "...The end. ...We won.",
+    "trainerLoses": "...Sad ending."
+   }
+  },
+  "Cyrus & Marley": {
+   "Cyrus": {
+    "greeting": "Silence. No wasted emotion. Marley, you'd fit perfectly in a world without spirit.",
+    "trainerWins": "As expected. Emotion is irrelevant.",
+    "trainerLoses": "Meaningless. A defeat changes nothing."
+   },
+   "Marley": {
+    "greeting": "...I have spirit. ...Just quiet.",
+    "trainerWins": "...Won. ...He's still cold.",
+    "trainerLoses": "...Lost. ...He doesn't care."
+   }
+  },
+  "Mars & Marley": {
+   "Mars": {
+    "greeting": "Ugh, why am I stuck with the quiet girl? Fine, just keep up!",
+    "trainerWins": "Ha! That's how Team Galactic does it!",
+    "trainerLoses": "Seriously?! This is so not fair!"
+   },
+   "Marley": {
+    "greeting": "...Mars is mean. ...I'll still win.",
+    "trainerWins": "...Galactic. ...Won anyway.",
+    "trainerLoses": "...Mars is mad. ...Again."
+   }
+  },
+  "Jupiter & Marley": {
+   "Jupiter": {
+    "greeting": "Hmph. A quiet partner. At least you won't bore me with chatter.",
+    "trainerWins": "Excellent. Team Galactic always wins.",
+    "trainerLoses": "Hmph. An annoying setback."
+   },
+   "Marley": {
+    "greeting": "...Jupiter. ...Scary hair.",
+    "trainerWins": "...Won. ...Hair is still scary.",
+    "trainerLoses": "...Setback. ...Hm."
+   }
+  },
+  "Saturn & Marley": {
+   "Saturn": {
+    "greeting": "You're quiet. Good. Let's handle this efficiently.",
+    "trainerWins": "Efficient and precise. Well done.",
+    "trainerLoses": "Inefficient. We'll review the data."
+   },
+   "Marley": {
+    "greeting": "...Efficient. ...Okay.",
+    "trainerWins": "...Precise. ...Done.",
+    "trainerLoses": "...Data. ...Sad data."
+   }
+  },
+  "Charon & Marley": {
+   "Charon": {
+    "greeting": "Kehehe! A silent girl! Perfect for a scientist's assistant!",
+    "trainerWins": "Kehehe! Science triumphs!",
+    "trainerLoses": "Bah! My calculations were flawless!"
+   },
+   "Marley": {
+    "greeting": "...Not an assistant. ...Partner.",
+    "trainerWins": "...Won. ...He giggles.",
+    "trainerLoses": "...Not flawless."
+   }
+  },
+  "Misty & Lillie": {
+   "Misty": {
+    "greeting": "Lillie! You went to Kanto, right? Next time, come swimming in Cerulean with me!",
+    "trainerWins": "Splashed 'em good! Nice work, Lillie!",
+    "trainerLoses": "Grr! We'll get 'em next time, Lillie. Don't you dare cry!"
+   },
+   "Lillie": {
+    "greeting": "Misty is so confident. Battling beside her makes me feel like I can do anything!",
+    "trainerWins": "We won! I think I'm getting as bold as you, Misty.",
+    "trainerLoses": "I won't cry, Misty. I promise! ...Maybe a little."
+   }
+  },
+  "Erika & Lillie": {
+   "Erika": {
+    "greeting": "Ah, Lillie... You smell faintly of Alolan flowers. How lovely. Shall we battle... after a short nap?",
+    "trainerWins": "Oh my, we won? How delightful. I barely had to wake up.",
+    "trainerLoses": "Oh dear... I must have dozed off at the worst moment."
+   },
+   "Lillie": {
+    "greeting": "Erika's garden in Celadon is beautiful. Please don't fall asleep during the battle, Erika!",
+    "trainerWins": "We won! And Erika stayed awake the whole time!",
+    "trainerLoses": "We lost... Erika, are you sleeping? Erika?"
+   }
+  },
+  "Sabrina & Lillie": {
+   "Sabrina": {
+    "greeting": "I foresaw a shy girl from Alola who would find her courage. That girl is you, Lillie.",
+    "trainerWins": "Exactly as I foresaw. Your courage did not waver.",
+    "trainerLoses": "Even I cannot see every ending. Hold your head high, Lillie."
+   },
+   "Lillie": {
+    "greeting": "Sabrina knew my name before I said it. That's a little scary... but also amazing!",
+    "trainerWins": "We won! Did you see that coming too, Sabrina?",
+    "trainerLoses": "Sabrina, why didn't you warn me we'd lose?"
+   }
+  },
+  "Janine & Lillie": {
+   "Janine": {
+    "greeting": "Lillie! I'll teach you ninja tricks! Rule one: never let them see you coming!",
+    "trainerWins": "Ninja victory! You were great, Lillie!",
+    "trainerLoses": "Argh! My father would scold me for that one..."
+   },
+   "Lillie": {
+    "greeting": "Janine says I'd make a good ninja because I'm so quiet. I'll do my best!",
+    "trainerWins": "We did it! Was that ninja-like enough, Janine?",
+    "trainerLoses": "I don't think I'm a very good ninja after all..."
+   }
+  },
+  "Whitney & Lillie": {
+   "Whitney": {
+    "greeting": "Lillie's so cute! Don't you dare make her cry, okay? That's my job! Kidding!",
+    "trainerWins": "Yay! We won! Lillie, let's go shopping in Goldenrod!",
+    "trainerLoses": "Waaah! We lost! Lillie, I'm gonna cry!"
+   },
+   "Lillie": {
+    "greeting": "Whitney is so cheerful! I hope she doesn't cry if we lose...",
+    "trainerWins": "We won! No tears today, Whitney!",
+    "trainerLoses": "Oh no, Whitney's crying... There, there!"
+   }
+  },
+  "Jasmine & Lillie": {
+   "Jasmine": {
+    "greeting": "Um... Lillie and I are both a little shy. But we'll be brave together, okay?",
+    "trainerWins": "We won... I'm so glad. Thank you, Lillie.",
+    "trainerLoses": "Um... I'm sorry, Lillie. We'll try again, okay?"
+   },
+   "Lillie": {
+    "greeting": "Jasmine understands how hard it is to speak up. Let's show them how strong quiet girls can be!",
+    "trainerWins": "We did it, Jasmine! Quiet but strong!",
+    "trainerLoses": "It's okay, Jasmine. We were brave, and that's what matters."
+   }
+  },
+  "Clair & Lillie": {
+   "Clair": {
+    "greeting": "Hmph. Lillie, is it? Show me you're more than a sheltered president's daughter.",
+    "trainerWins": "Not bad. You've earned a little respect, Lillie.",
+    "trainerLoses": "Tch. Don't tell my cousin about this."
+   },
+   "Lillie": {
+    "greeting": "Clair is so proud and strong. I want to show her I can be strong too!",
+    "trainerWins": "We won! Clair, did you see? I'm not so sheltered after all!",
+    "trainerLoses": "I'm sorry, Clair. I'll get stronger, I promise."
+   }
+  },
+  "Roxanne & Lillie": {
+   "Roxanne": {
+    "greeting": "Lillie, you remind me of my best students: curious and diligent! Let's apply what you've learned.",
+    "trainerWins": "Full marks! A textbook victory, Lillie!",
+    "trainerLoses": "Hmm. We'll need to review the material, Lillie."
+   },
+   "Lillie": {
+    "greeting": "Roxanne is a teacher! I brought my notebook, just in case.",
+    "trainerWins": "We won! I'll write down everything you taught me, Roxanne!",
+    "trainerLoses": "I think I'll need to study for a retest..."
+   }
+  },
+  "Flannery & Lillie": {
+   "Flannery": {
+    "greeting": "Lillie! We're both trying to be stronger than we look! Let's turn up the heat!",
+    "trainerWins": "We did it! That was super hot, Lillie!",
+    "trainerLoses": "Ugh! I tried so hard to be cool... I mean hot!"
+   },
+   "Lillie": {
+    "greeting": "Flannery is so passionate. I'm getting fired up just standing beside her!",
+    "trainerWins": "We won! I feel all warm inside, Flannery!",
+    "trainerLoses": "Our flames went out... but we'll light them again!"
+   }
+  },
+  "Winona & Lillie": {
+   "Winona": {
+    "greeting": "Lillie, you've spread your wings at last. Let us soar through this battle together.",
+    "trainerWins": "A beautiful flight. Well done, Lillie.",
+    "trainerLoses": "Our wings were clipped today. We'll fly again."
+   },
+   "Lillie": {
+    "greeting": "Winona is so graceful. I hope I can be that elegant someday.",
+    "trainerWins": "We won! It felt like flying, Winona!",
+    "trainerLoses": "We fell from the sky... but I'm not afraid of heights anymore."
+   }
+  },
+  "Gardenia & Lillie": {
+   "Gardenia": {
+    "greeting": "Lillie loves flowers too! Let's grow a big, beautiful victory together!",
+    "trainerWins": "We won! It's blooming time!",
+    "trainerLoses": "Aww, our garden got trampled..."
+   },
+   "Lillie": {
+    "greeting": "Gardenia knows so much about plants. Maybe she can help the garden at the lab grow!",
+    "trainerWins": "We won! Our victory bloomed so nicely, Gardenia!",
+    "trainerLoses": "We'll plant new seeds and try again, Gardenia!"
+   }
+  },
+  "Maylene & Lillie": {
+   "Maylene": {
+    "greeting": "Lillie! You've got a fighting spirit, I can tell! Let's give it everything!",
+    "trainerWins": "Yes! That was a great workout, Lillie!",
+    "trainerLoses": "We lost... Let's train together, Lillie!"
+   },
+   "Lillie": {
+    "greeting": "Maylene trains barefoot every day. I'm not that brave yet, but I'll fight with my shoes on!",
+    "trainerWins": "We won! I think my legs are shaking, Maylene!",
+    "trainerLoses": "Maybe I should try training barefoot too..."
+   }
+  },
+  "Candice & Lillie": {
+   "Candice": {
+    "greeting": "Lillie, focus! When your mind is clear, nothing can stop you!",
+    "trainerWins": "Total focus! Nice work, Lillie!",
+    "trainerLoses": "We lost our focus... Snowpoint training, here we come!"
+   },
+   "Lillie": {
+    "greeting": "Candice is always so focused! I'll try my hardest to keep up!",
+    "trainerWins": "We won! I stayed focused the whole time, Candice!",
+    "trainerLoses": "I think my focus melted, Candice..."
+   }
+  },
+  "Elesa & Lillie": {
+   "Elesa": {
+    "greeting": "Lillie, your new look is darling. Let's make this battle our runway!",
+    "trainerWins": "A dazzling show! You were radiant, Lillie.",
+    "trainerLoses": "The spotlight faded on us. We'll shine brighter next time."
+   },
+   "Lillie": {
+    "greeting": "Elesa said my new outfit suits me! Let's show everyone how much I've changed!",
+    "trainerWins": "We won! I felt like a model on a runway, Elesa!",
+    "trainerLoses": "I tripped on the runway, didn't I?"
+   }
+  },
+  "Skyla & Lillie": {
+   "Skyla": {
+    "greeting": "Lillie! I can fly you anywhere! Kanto, Unova... but first, let's win this!",
+    "trainerWins": "Smooth landing! Great flying, Lillie!",
+    "trainerLoses": "Turbulence! Buckle up, we'll try again!"
+   },
+   "Lillie": {
+    "greeting": "Skyla is a real pilot! Maybe someday she'll fly me back to Alola.",
+    "trainerWins": "We won! That was a perfect landing, Skyla!",
+    "trainerLoses": "That was a bumpy flight, Skyla..."
+   }
+  },
+  "Roxie & Lillie": {
+   "Roxie": {
+    "greeting": "Lillie, you're too sweet! Let's add some noise to that sweetness! Rock on!",
+    "trainerWins": "Yeah! That's how you rock out, Lillie!",
+    "trainerLoses": "Aw, man! The amp blew out!"
+   },
+   "Lillie": {
+    "greeting": "Roxie is so loud! I'll try to be loud too... Rock on? Is that right?",
+    "trainerWins": "We won! Rock on, Roxie! ...Did I say it right?",
+    "trainerLoses": "I think we played the wrong song, Roxie..."
+   }
+  },
+  "Lillie & Marley": {
+   "Lillie": {
+    "greeting": "Marley doesn't say much, but I understand her. I used to be quiet too.",
+    "trainerWins": "We won, Marley! Quietly and bravely!",
+    "trainerLoses": "It's okay, Marley. We can be quiet about this one."
+   },
+   "Marley": {
+    "greeting": "...Lillie. ...Brave now. ...I like that.",
+    "trainerWins": "...Won. ...Lillie smiled.",
+    "trainerLoses": "...Lost. ...Lillie, don't cry."
+   }
+  },
+  "Erika & Lana": {
+   "Erika": {
+    "greeting": "Lana, your seaside stories always lull me to sleep... in the nicest way. Let us battle.",
+    "trainerWins": "Oh my, how lovely. A victory as gentle as the tide.",
+    "trainerLoses": "Oh dear, the tide went out on us..."
+   },
+   "Lana": {
+    "greeting": "Erika falls asleep during my stories. Rude. But she's strong, so I forgive her.",
+    "trainerWins": "We won. Erika's still asleep. I'll tell her later.",
+    "trainerLoses": "We lost. Erika slept through it, I think."
+   }
+  },
+  "Sabrina & Lana": {
+   "Sabrina": {
+    "greeting": "Lana's tall tales cannot fool me. I see the truth... and the truth is, we'll win.",
+    "trainerWins": "As I predicted. The truth always surfaces.",
+    "trainerLoses": "A future I did not see. Interesting."
+   },
+   "Lana": {
+    "greeting": "Sabrina reads minds. That makes my fish stories way less fun.",
+    "trainerWins": "We won. Sabrina knew. Of course she knew.",
+    "trainerLoses": "We lost. Sabrina, you could've warned me."
+   }
+  },
+  "Janine & Lana": {
+   "Janine": {
+    "greeting": "Lana, you'd make a great ninja! Nobody ever knows what you're thinking!",
+    "trainerWins": "Ninja and fisher, perfect stealth combo!",
+    "trainerLoses": "Ugh, they saw right through our tricks!"
+   },
+   "Lana": {
+    "greeting": "Janine and I both like surprising people. Let's surprise you.",
+    "trainerWins": "We won. Surprise.",
+    "trainerLoses": "We lost. That wasn't the surprise I wanted."
+   }
+  },
+  "Whitney & Lana": {
+   "Whitney": {
+    "greeting": "Lana's so cute and tiny! Let's win so I can buy you something nice in Goldenrod!",
+    "trainerWins": "Yay! We won! Lana, you're the best!",
+    "trainerLoses": "Waaaah! Lana, we lost!"
+   },
+   "Lana": {
+    "greeting": "Whitney cries when she loses. Let's not make her cry.",
+    "trainerWins": "We won. No crying. Mission accomplished.",
+    "trainerLoses": "We lost. She's crying. I'm going fishing."
+   }
+  },
+  "Jasmine & Lana": {
+   "Jasmine": {
+    "greeting": "Lana, the sea by Olivine's lighthouse is lovely. Maybe we can fish there someday?",
+    "trainerWins": "We won... That was nice, Lana.",
+    "trainerLoses": "Um... we lost. That's okay, Lana."
+   },
+   "Lana": {
+    "greeting": "Jasmine is quiet like me. We get along well. ...Let's battle.",
+    "trainerWins": "We won. Quiet girls win quietly.",
+    "trainerLoses": "We lost. Quietly, at least."
+   }
+  },
+  "Clair & Lana": {
+   "Clair": {
+    "greeting": "A water girl, hm? Dragons rule the seas too, Lana. Try to keep up.",
+    "trainerWins": "Of course we won. You did well enough, Lana.",
+    "trainerLoses": "Impossible. Don't speak of this, Lana."
+   },
+   "Lana": {
+    "greeting": "Clair is very proud. I'll fish her a compliment later.",
+    "trainerWins": "We won. Clair almost smiled.",
+    "trainerLoses": "We lost. I'll keep it a secret. Maybe."
+   }
+  },
+  "Roxanne & Lana": {
+   "Roxanne": {
+    "greeting": "Lana, I've read about Alola's captains! I'd love to see your trial knowledge in action!",
+    "trainerWins": "Excellent! That deserves a gold star, Lana!",
+    "trainerLoses": "Hmm. We'll need to revise our strategy."
+   },
+   "Lana": {
+    "greeting": "Roxanne takes notes on everything. Including my fish stories. Uh-oh.",
+    "trainerWins": "We won. Do I get a gold star?",
+    "trainerLoses": "We lost. Don't write that down, Roxanne."
+   }
+  },
+  "Flannery & Lana": {
+   "Flannery": {
+    "greeting": "Lana! Fire and water, that's a hot spring! Let's make this battle steamy!",
+    "trainerWins": "We won! Hot spring victory!",
+    "trainerLoses": "Aww, the hot spring went cold!"
+   },
+   "Lana": {
+    "greeting": "Flannery is from a town with hot springs. I like the water there. Let's go.",
+    "trainerWins": "We won. Time for a soak.",
+    "trainerLoses": "We lost. The water's lukewarm now."
+   }
+  },
+  "Winona & Lana": {
+   "Winona": {
+    "greeting": "Lana, the sky and the sea meet at the horizon. Let us meet this challenge together.",
+    "trainerWins": "A graceful victory, Lana.",
+    "trainerLoses": "A storm caught us. We'll find calmer skies."
+   },
+   "Lana": {
+    "greeting": "Winona talks about the sky a lot. I talk about the sea. Together we cover everything.",
+    "trainerWins": "We won. Sky and sea, undefeated.",
+    "trainerLoses": "We lost. Bad weather."
+   }
+  },
+  "Gardenia & Lana": {
+   "Gardenia": {
+    "greeting": "Lana, plants need water to grow! Let's grow a huge win together!",
+    "trainerWins": "We won! Thanks for the watering, Lana!",
+    "trainerLoses": "Oh no, our garden flooded!"
+   },
+   "Lana": {
+    "greeting": "Gardenia waters her plants. I'm the water. That makes me important.",
+    "trainerWins": "We won. The plants grew.",
+    "trainerLoses": "We lost. Too much water, maybe."
+   }
+  },
+  "Maylene & Lana": {
+   "Maylene": {
+    "greeting": "Lana! Let's train by the sea! Waves make great training partners!",
+    "trainerWins": "Yes! We crushed it! Lana, you're tough!",
+    "trainerLoses": "We lost? More training! Let's go!"
+   },
+   "Lana": {
+    "greeting": "Maylene punched a wave once. The wave won. Don't tell her I said that.",
+    "trainerWins": "We won. Maylene didn't punch any waves this time.",
+    "trainerLoses": "We lost. The wave wins again."
+   }
+  },
+  "Candice & Lana": {
+   "Candice": {
+    "greeting": "Lana! Ice is just water with more focus! Let's go!",
+    "trainerWins": "Focus pays off! Nice, Lana!",
+    "trainerLoses": "Brr, we lost our cool!"
+   },
+   "Lana": {
+    "greeting": "Candice says that a lot. I don't think it's true. But I like her.",
+    "trainerWins": "We won. Frozen solid, like I planned.",
+    "trainerLoses": "We lost. My fishing hole froze over."
+   }
+  },
+  "Elesa & Lana": {
+   "Elesa": {
+    "greeting": "Lana, your style is so natural. Let's make waves on the runway!",
+    "trainerWins": "A dazzling performance! Lana, you sparkled.",
+    "trainerLoses": "The lights dimmed on us today..."
+   },
+   "Lana": {
+    "greeting": "Elesa says I'd be a good model. I said I'd rather fish. She laughed.",
+    "trainerWins": "We won. Can I go fishing now?",
+    "trainerLoses": "We lost. Modeling is harder than fishing."
+   }
+  },
+  "Skyla & Lana": {
+   "Skyla": {
+    "greeting": "Lana! I'll fly you over the ocean so you can spot the biggest fish! After we win!",
+    "trainerWins": "Touchdown! Great work, Lana!",
+    "trainerLoses": "Crash landing! We'll take off again!"
+   },
+   "Lana": {
+    "greeting": "Skyla promised me a ride in her plane. I want to fish from the sky.",
+    "trainerWins": "We won. Now the plane ride.",
+    "trainerLoses": "We lost. No plane ride today."
+   }
+  },
+  "Roxie & Lana": {
+   "Roxie": {
+    "greeting": "Lana! Let's make some noise! Even fish can headbang!",
+    "trainerWins": "Yeah! Encore! You rock, Lana!",
+    "trainerLoses": "Ugh, bad gig!"
+   },
+   "Lana": {
+    "greeting": "Roxie is very loud. The fish don't like her. But I do.",
+    "trainerWins": "We won. The fish are dancing.",
+    "trainerLoses": "We lost. Too much noise scared off the luck."
+   }
+  },
+  "Lana & Marley": {
+   "Lana": {
+    "greeting": "Marley and I don't talk much. We just sit by the water. It's nice.",
+    "trainerWins": "We won. Quietly.",
+    "trainerLoses": "We lost. Back to the water."
+   },
+   "Marley": {
+    "greeting": "...Lana. ...Fishing. ...Quiet. ...Good.",
+    "trainerWins": "...Won. ...Now fishing.",
+    "trainerLoses": "...Lost. ...Still quiet."
+   }
+  },
+  "Misty & Marley": {
+   "Misty": {
+    "greeting": "Marley, you're so quiet! Let's make a big splash so they notice us!",
+    "trainerWins": "Splashed! See, Marley? Big entrance!",
+    "trainerLoses": "Ugh! Soaked and beaten!"
+   },
+   "Marley": {
+    "greeting": "...Misty is loud. ...Like water.",
+    "trainerWins": "...Splashed. ...Fun.",
+    "trainerLoses": "...Wet. ...Lost."
+   }
+  },
+  "Erika & Marley": {
+   "Erika": {
+    "greeting": "Marley, you're as calm as a quiet garden. I find that very soothing... yawn.",
+    "trainerWins": "Oh, we won? How pleasant.",
+    "trainerLoses": "Oh... I must have napped."
+   },
+   "Marley": {
+    "greeting": "...Erika sleeps. ...I guard.",
+    "trainerWins": "...Won. ...Erika woke up.",
+    "trainerLoses": "...Still asleep. ...Lost."
+   }
+  },
+  "Sabrina & Marley": {
+   "Sabrina": {
+    "greeting": "Marley speaks little, but her mind is loud to me. She is ready.",
+    "trainerWins": "Our minds were in harmony. Victory was certain.",
+    "trainerLoses": "Our thoughts were not enough today."
+   },
+   "Marley": {
+    "greeting": "...She hears me. ...Strange.",
+    "trainerWins": "...Harmony. ...Won.",
+    "trainerLoses": "...She knew. ...Didn't say."
+   }
+  },
+  "Janine & Marley": {
+   "Janine": {
+    "greeting": "Marley, you're so quiet you'd be a perfect ninja!",
+    "trainerWins": "Silent strike! Ninja success!",
+    "trainerLoses": "We got spotted... Ugh!"
+   },
+   "Marley": {
+    "greeting": "...Ninja. ...Okay.",
+    "trainerWins": "...Silent. ...Won.",
+    "trainerLoses": "...Spotted. ...Lost."
+   }
+  },
+  "Whitney & Marley": {
+   "Whitney": {
+    "greeting": "Marley! You never smile! Let's win so you'll smile, okay?",
+    "trainerWins": "Yay! Marley, smile! Smile!",
+    "trainerLoses": "Waah! Marley, comfort me!"
+   },
+   "Marley": {
+    "greeting": "...Whitney. ...Very loud. ...Very nice.",
+    "trainerWins": "...Smiling. ...A little.",
+    "trainerLoses": "...There, there. ...Whitney."
+   }
+  },
+  "Jasmine & Marley": {
+   "Jasmine": {
+    "greeting": "Marley and I don't talk much... but that's okay. We understand each other.",
+    "trainerWins": "We won... Thank you, Marley.",
+    "trainerLoses": "Um... next time, Marley."
+   },
+   "Marley": {
+    "greeting": "...Jasmine. ...Kind.",
+    "trainerWins": "...Thank you. ...Too.",
+    "trainerLoses": "...Next time."
+   }
+  },
+  "Clair & Marley": {
+   "Clair": {
+    "greeting": "Marley. Silent, but fierce. I respect that.",
+    "trainerWins": "A dragon's victory. Well done, Marley.",
+    "trainerLoses": "Hmph. Not a word of this, Marley."
+   },
+   "Marley": {
+    "greeting": "...Clair. ...Dragons. ...Cool.",
+    "trainerWins": "...Dragons won. ...Me too.",
+    "trainerLoses": "...Not a word. ...Promise."
+   }
+  },
+  "Roxanne & Marley": {
+   "Roxanne": {
+    "greeting": "Marley, quiet students often learn the most. Let's show what we know!",
+    "trainerWins": "A perfect score! Well done, Marley!",
+    "trainerLoses": "Hmm. A failing grade today."
+   },
+   "Marley": {
+    "greeting": "...Roxanne. ...Teacher. ...Okay.",
+    "trainerWins": "...Perfect. ...Score.",
+    "trainerLoses": "...Failed. ...Study more."
+   }
+  },
+  "Flannery & Marley": {
+   "Flannery": {
+    "greeting": "Marley! Don't be so cool! Get fired up with me!",
+    "trainerWins": "Hot victory! Woo!",
+    "trainerLoses": "Aw, the fire fizzled!"
+   },
+   "Marley": {
+    "greeting": "...Fired up. ...Inside.",
+    "trainerWins": "...Warm. ...Won.",
+    "trainerLoses": "...Fizzled."
+   }
+  },
+  "Winona & Marley": {
+   "Winona": {
+    "greeting": "Marley, quiet as a feather on the wind. Let us fly.",
+    "trainerWins": "A flawless flight, Marley.",
+    "trainerLoses": "Our wings faltered today."
+   },
+   "Marley": {
+    "greeting": "...Winona. ...Pretty. ...Fly.",
+    "trainerWins": "...Flew. ...Won.",
+    "trainerLoses": "...Fell. ...Get up."
+   }
+  },
+  "Elesa & Marley": {
+   "Elesa": {
+    "greeting": "Marley, that mysterious aura of yours is stunning. Let's light up the stage!",
+    "trainerWins": "Electrifying! Marley, you were a star.",
+    "trainerLoses": "The lights went out on us..."
+   },
+   "Marley": {
+    "greeting": "...Elesa. ...Shiny. ...Bright.",
+    "trainerWins": "...Star. ...Me?",
+    "trainerLoses": "...Dark now. ...Lost."
+   }
+  },
+  "Skyla & Marley": {
+   "Skyla": {
+    "greeting": "Marley! Wanna come flying with me after this? It's so peaceful up there!",
+    "trainerWins": "Perfect flight! Great job, Marley!",
+    "trainerLoses": "Engine trouble! We'll get 'em next time!"
+   },
+   "Marley": {
+    "greeting": "...Flying. ...Quiet. ...Yes.",
+    "trainerWins": "...Landed. ...Good.",
+    "trainerLoses": "...Grounded."
+   }
+  },
+  "Roxie & Marley": {
+   "Roxie": {
+    "greeting": "Marley, you're so quiet! Let's crank up the volume together!",
+    "trainerWins": "That's a hit! Encore, Marley!",
+    "trainerLoses": "Ugh, we got booed!"
+   },
+   "Marley": {
+    "greeting": "...Roxie. ...Loud. ...Ears hurt.",
+    "trainerWins": "...Encore. ...No.",
+    "trainerLoses": "...Booed. ...Sad."
+   }
+  },
+  "Mallow & Marley": {
+   "Mallow": {
+    "greeting": "Marley, you look hungry! Let's win, then I'll cook you something amazing!",
+    "trainerWins": "Victory! Now, what would you like to eat, Marley?",
+    "trainerLoses": "We lost, but there's always dessert!"
+   },
+   "Marley": {
+    "greeting": "...Mallow. ...Food. ...Yes.",
+    "trainerWins": "...Food. ...Please.",
+    "trainerLoses": "...Dessert. ...Okay."
    }
   }
  },

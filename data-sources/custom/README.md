@@ -79,16 +79,32 @@ team, ...).
   `EVIL_TEAMS`. `npm test` checks every set.
 - **Lines and pair greetings:** `trainer-quotes.json`, under the same key.
 
-## Regular trainers (Veteran Wren)
+## Regular trainers (Veteran Mildred, the Paradox trainers)
 
 - **Teams:** `regular-trainers.txt`, same format, one section per trainer.
 - **Who and from when:** `regular-trainers.json`: class ("Veteran"), gender, `spriteId` (a Pokémon Showdown
   trainer sprite, e.g. `veteranf-gen6`: see https://play.pokemonshowdown.com/sprites/trainers/) and
   `fromBattle`: from that battle on (over 50), they're in the regular trainers' pool of Super Singles,
-  Super Doubles and Super Multi, as likely as everyone else in it. IV 31 (IV lines are ignored).
+  Super Doubles and Super Multi. IV 31 (IV lines are ignored).
+- **How often:** `weights` at the top of `regular-trainers.json`, by battle, against 1 for each of the game's
+  trainers: 1.1 from battle 100, 1.5 from battle 200. A trainer can have their own `weights` list.
+- **`alwaysParadox: true`** (the 17 Paradox trainers): one of their sets holding a Paradoxorb is on every team
+  they bring, at a random place; the rest come from their other sets. Give them at least one Paradoxorb set and
+  enough others (with different items) to fill a team of 4. No Mega Stones (`npm run data:custom` checks).
+- **Sprites** are bundled: put the PNG in `public/trainers/showdown/<spriteId>.png` (download it from Showdown's
+  trainer sprites) and add the id to `bundled` in `src/data/battle-tree/trainer-sprites.json`.
+  `node scripts/check-trainer-sprites.mjs` checks every one is there.
 - **Opponents' teams** follow Species Clause and Item Clause, so Pokémon holding the same item never
-  battle together (Wren's three Paradoxorb-A beasts: at most one per battle).
+  battle together (Mildred's three Paradoxorb-A beasts: at most one per battle).
 - **Lines:** `trainer-quotes.json` under `"quotes"` → their name, three entries. `npm test` checks them.
+
+## Other special trainers (Lillie, Hau, Lana, Marley)
+
+- **Teams:** `special-trainers.txt`, same format, one section per trainer (eight Pokémon each).
+- **Who:** `special-trainers.json`: class, gender, region (for pair greetings) and weight (7).
+- **Sprites:** `src/data/battle-tree/trainer-sprites.json` (`named`, `masters`, and `bundled` with the PNG in
+  `public/trainers/showdown/`).
+- **Lines and pair greetings:** `trainer-quotes.json`, like the Gym Leaders'.
 
 ## Gym Leaders
 

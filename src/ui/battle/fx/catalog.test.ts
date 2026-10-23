@@ -6,7 +6,7 @@ import { BIG_MOVE_MOTION, BIG_MOVES, FUTURE_HIT } from './big-moves';
 import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION, SIGNATURE_MOVE_FX } from './signature-moves';
 import {
   abilitySpec, ATTACKS, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, IMMUNE_FX, immuneSpec, ITEM_USE_IDS, itemSpec, sashSpec, SOLAR_CHARGE, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, INFATUATED, residualSpec, statusSpec, MEGA_BURST, MEGA_START, moveSpec, SEEDED, SHIELD_COLORS, SUB_END, SUB_HIT, SUB_START, SUBSTITUTE_MOVE, TYPES,
-  futureHitSpec, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
+  CHARGED_MOVES, futureHitSpec, GAIA_FORCE_MS, GAIA_HIT, GIGA_BLASTER_CHARGED_MS, GIGA_BLASTER_MS, MATRIX_THEMES, matrixStart, SIGNATURE_MOVES, STURDY, SIGNATURE_Z_MOVES, signatureZMoveSpec, WARP_START, warpBurst, warpStart, Z_MOVE_MS, Z_POWER, zMoveSpec,
 } from './catalog';
 
 const key = (spec: unknown) => JSON.stringify(spec);
@@ -209,6 +209,49 @@ describe('BlackWarGreymon\'s animations', () => {
     expect(burst.layers.some(l => l.kind === 'particles' && l.shape === 'wisp')).toBe(true);
     expect(burst.layers.find(l => l.kind === 'banner')).toMatchObject({ text: 'BlackWarGreymon!' });
     expect(key(burst)).not.toBe(key(warpBurst('WarGreymon')));
+  });
+
+  it('shows Sturdy: the Pokémon braces behind a stone barrier, rock chips fly, and its name shows (an OHKO move bounces off the same way)', () => {
+    expect(STURDY.layers[0]).toMatchObject({ kind: 'shield' });
+    expect(STURDY.layers.some(l => l.kind === 'particles' && l.shape === 'rock')).toBe(true);
+    expect(STURDY.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Sturdy' });
+    const ohko = abilitySpec('sturdy', 'Sturdy');
+    expect(ohko.layers.some(l => l.kind === 'particles' && l.shape === 'rock')).toBe(true);
+    expect(ohko.layers.find(l => l.kind === 'label')).toMatchObject({ text: 'Sturdy' });
+  });
+
+  it('gives Giga Blaster a storm of lightning, a colossal blast and a slow-burning explosion, and an even bigger one when charged', () => {
+    const normal = SIGNATURE_MOVES.gigablaster, charged = CHARGED_MOVES.gigablaster;
+    expect(moveSpec({ ...classifyMove('Giga Blaster'), charged: true })).toBe(charged);
+    expect(moveSpec(classifyMove('Giga Blaster'))).toBe(normal);
+    expect([SIGNATURE_MS.gigablaster, GIGA_BLASTER_MS, GIGA_BLASTER_CHARGED_MS]).toEqual([2400, 2400, 2800]);
+    const count = (spec: typeof normal, kind: string) => spec.layers.filter(l => l.kind === kind).length;
+    const widest = (spec: typeof normal) => Math.max(...spec.layers.map(l => (l.kind === 'beam' ? l.width : 0)));
+    // Lightning strikes the user as it charges up, then the target as the blast lands.
+    expect(normal.layers.filter(l => l.kind === 'bolt' && l.at === 'user').length).toBeGreaterThanOrEqual(3);
+    expect(count(charged, 'bolt')).toBeGreaterThan(count(normal, 'bolt'));
+    expect(widest(charged)).toBeGreaterThan(widest(normal));
+    expect(count(charged, 'column')).toBeGreaterThan(count(normal, 'column'));
+    for (const [spec, ms] of [[normal, GIGA_BLASTER_MS], [charged, GIGA_BLASTER_CHARGED_MS]] as const) {
+      const hit = spec.layers.find(l => l.kind === 'impact')!.delay ?? 0;
+      expect(ms - hit, 'time for the explosion').toBeGreaterThanOrEqual(1000);
+      for (const l of spec.layers) expect((l.delay ?? 0) + ('dur' in l ? l.dur ?? 0 : 0), l.kind).toBeLessThanOrEqual(ms);
+    }
+  });
+
+  it('hurls Gaia Force: the sun grows above the user, is pulled back over its head and thrown, then explodes and fades out', () => {
+    for (const id of ['gaiaforce', 'darkgaiaforce']) {
+      const spec = SIGNATURE_MOVES[id];
+      const sun = spec.layers.find(l => l.kind === 'orb')!;
+      expect(sun, id).toMatchObject({ windup: true });
+      expect(sun.kind === 'orb' && sun.arc).toBeFalsy();
+      // It lands as the explosion starts, and the explosion has close to a second to burn out before the move ends.
+      expect((sun.delay ?? 0) + (sun.kind === 'orb' ? sun.dur ?? 0 : 0)).toBe(GAIA_HIT);
+      expect(spec.layers.find(l => l.kind === 'impact')!.delay).toBe(GAIA_HIT);
+      expect(SIGNATURE_MS[id] - GAIA_HIT).toBeGreaterThanOrEqual(900);
+      expect(SIGNATURE_MS[id]).toBe(GAIA_FORCE_MS);
+      for (const l of spec.layers) expect((l.delay ?? 0) + ('dur' in l ? l.dur ?? 0 : 0), `${id} ${l.kind}`).toBeLessThanOrEqual(GAIA_FORCE_MS);
+    }
   });
 
   it('has signature animations: Dark Gaia Force is Gaia Force in dark energy; Dramon Breaker parallels Dramon Destroyer', () => {

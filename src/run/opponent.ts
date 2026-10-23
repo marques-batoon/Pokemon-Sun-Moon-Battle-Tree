@@ -52,6 +52,7 @@ export const dexNum = (set: TreeSet) => gen7.species.get(set.species)!.num;
  * any that would repeat a species (National Dex number) or a held item, until
  * the team is full. Pick order is the battle order (first = lead).
  * Source: Smogon Battle Tree guide; uniform weighting assumed (DATA_NOTES.md section 4).
+ * A custom trainer with `alwaysOneOf` (a Paradox trainer) always brings one of those sets, at a random place.
  */
 export function pickTeamSets(trainer: Trainer, size: number, rng: Rng, lead?: TreeSet): TreeSet[] {
   const picked = pickUpTo(trainer, size, rng, lead);
@@ -61,7 +62,8 @@ export function pickTeamSets(trainer: Trainer, size: number, rng: Rng, lead?: Tr
 
 /** Whether a trainer's roster can field `size` Pokémon under the clauses (different species and items). */
 export function canField(trainer: Trainer, size: number): boolean {
-  const sets = trainer.roster.map(id => SETS[id]);
+  const always = trainer.alwaysOneOf ?? [];
+  const sets = trainer.roster.filter(id => !always.includes(id)).map(id => SETS[id]);
   const fits = (start: number, chosen: TreeSet[]): boolean => {
     if (chosen.length >= size) return true;
     for (let i = start; i < sets.length; i++) {
@@ -71,17 +73,29 @@ export function canField(trainer: Trainer, size: number): boolean {
     }
     return false;
   };
-  return fits(0, []);
+  return always.length ? always.some(id => fits(0, [SETS[id]])) : fits(0, []);
 }
 
 /** pickTeamSets, but stops early (with fewer) when no set fits the clauses anymore. `lead`: a set that must lead. */
 export function pickUpTo(trainer: Trainer, size: number, rng: Rng, lead?: TreeSet): TreeSet[] {
-  const picked: TreeSet[] = lead ? [lead] : [];
-  let candidates = trainer.roster.map(id => SETS[id]);
-  while (picked.length < size) {
-    candidates = candidates.filter(c => !picked.some(p => dexNum(p) === dexNum(c) || p.item === c.item));
-    if (!candidates.length) break;
-    picked.push(rng.pick(candidates));
+  const always = trainer.alwaysOneOf;
+  if (always?.length && size > 0) {
+    // One of these is always brought (a Paradox Pokémon), at a random place; the rest come from the other sets.
+    const kept = SETS[rng.pick(always)];
+    const team = fill([kept], trainer.roster.filter(id => !always.includes(id)).map(id => SETS[id]), size, rng).slice(1);
+    team.splice(rng.int(team.length + 1), 0, kept);
+    return team;
   }
-  return picked;
+  return fill(lead ? [lead] : [], trainer.roster.map(id => SETS[id]), size, rng);
+}
+
+/** Adds candidates drawn uniformly to `picked`, skipping any that would repeat a species or a held item, until `size`. */
+function fill(picked: TreeSet[], candidates: TreeSet[], size: number, rng: Rng): TreeSet[] {
+  const team = [...picked];
+  while (team.length < size) {
+    candidates = candidates.filter(c => !team.some(p => dexNum(p) === dexNum(c) || p.item === c.item));
+    if (!candidates.length) break;
+    team.push(rng.pick(candidates));
+  }
+  return team;
 }

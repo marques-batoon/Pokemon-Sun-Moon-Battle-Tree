@@ -4,7 +4,7 @@ import { classifyMove } from '../../client/move-class';
 import { HITMONCHANIUM_Z, POLIWRATHIUM_Z } from '../../data/custom';
 import { WARP_DIGIMON, warpNames } from '../../data/custom/digimon';
 import {
-  ABILITY_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, ITEM_MS, MOVE_RETURN_MS, FRISK_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
+  ABILITY_MS, CHARGED_MOVE_MS, IMMUNE_MS, SKY_DROPPED_MS, SOLAR_CHARGE_MS, BALLOON_IN_MS, BALLOON_POP_MS, SASH_MS, STURDY_MS, ITEM_MS, MOVE_RETURN_MS, FRISK_MS, BERRY_MS, BLOCKED_MS, CANT_MS, CHARGED_MS, CONFUSED_MS, DRAIN_MS, FIELD_MS, MEGA_MS, MEGA_START_MS, FUTURE_HIT_MS, moveDuration, ROOMS, SIGNATURE_MS, SEEDED_MS, SIDE_MS, STATUS_MS, SUB_END_MS, SUB_HIT_MS,
   SUB_START_MS, WARP_MS, WARP_START_MS, type BattleAnimation,
 } from '../../client/playback';
 import { ANIMATION_SPEED_FACTOR } from '../../settings/settings-store';
@@ -135,7 +135,9 @@ function applyStep(f: FieldState, step: Step): FieldState {
 /** `zCategory`: a type Z-Move's category comes from its base move (Physical or Special). */
 function moveSteps(name: string, side: Side, f: FieldState, zCategory: 'Physical' | 'Special' = 'Physical', crit = false): Step[] {
   const classified = classifyMove(name);
-  const fx = zFromBaseMove(name) ? { ...classified, category: zCategory } : classified;
+  const base = zFromBaseMove(name) ? { ...classified, category: zCategory } : classified;
+  // Charged (Charge, Electromorphosis): Giga Blaster's bigger animation, as in battle.
+  const fx = f.charged[side] && CHARGED_MOVE_MS[base.moveId] ? { ...base, charged: true } : base;
   const foe = other(side);
   const target = fx.category === 'Status' && ['powerup', 'protect', 'heal', 'substitute', 'field'].includes(fx.kind) && fx.field !== 'hazard' ? side : foe;
   const steps: Step[] = [];
@@ -315,12 +317,14 @@ export function AnimationPreview() {
             const v = e.target.value;
             e.target.value = '';
             if (v === 'airballoon') play([{ kind: 'balloon-in', side, target: null, durationMs: BALLOON_IN_MS }]);
+            else if (v === 'sturdy') play([{ kind: 'hit', side, target: null, hpDelta: -99, durationMs: 600 }, { kind: 'sturdy', side, target: null, durationMs: STURDY_MS }]);
             else if (v) play([{ kind: 'hit', side, target: null, hpDelta: -99, durationMs: 600 }, { kind: 'sash', side, target: null, condition: v, durationMs: SASH_MS }]);
           }}>
             <option value="">item…</option>
             <option value="airballoon">Comes in with an Air Balloon</option>
             <option value="focussash">Focus Sash</option>
             <option value="focusband">Focus Band</option>
+            <option value="sturdy">Sturdy (Ability)</option>
           </select>
         </label>
         <button disabled={!subSide} onClick={() => subSide && play([{ kind: 'sub-end', side: subSide, target: null, durationMs: SUB_END_MS }])}>Break Substitute</button>

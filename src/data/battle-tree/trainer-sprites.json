@@ -1,13 +1,14 @@
 {
-  "source": "Pokémon Showdown trainer sprites (https://play.pokemonshowdown.com/sprites/trainers/), file list retrieved 2026-10-03. Images are loaded from Showdown's server at runtime, not bundled; © Nintendo / Creatures / GAME FREAK. Sun & Moon ('-gen7') art is used where Showdown has it. Verified to exist with scripts/check-trainer-sprites.mjs. Pokémon Masters sprites ('-masters', by kyledove on Showdown; list retrieved 2026-10-22) are in 'masters', and bundled with the app (public/trainers/masters/, downloaded 2026-10-22 on request) in case Showdown stops serving them. 'mastersPairs': outfits that match (Red and Blue's Sygna Suits, their Champion outfits), checked against Serebii's Pokémon Masters EX art.",
+  "source": "Pokémon Showdown trainer sprites (https://play.pokemonshowdown.com/sprites/trainers/), file list retrieved 2026-10-03. Images are loaded from Showdown's server at runtime, not bundled; © Nintendo / Creatures / GAME FREAK. Sun & Moon ('-gen7') art is used where Showdown has it. Verified to exist with scripts/check-trainer-sprites.mjs. Pokémon Masters sprites ('-masters', by kyledove on Showdown; list retrieved 2026-10-22) are in 'masters', and bundled with the app (public/trainers/masters/, downloaded 2026-10-22 on request) in case Showdown stops serving them. 'mastersPairs': outfits that match (Red and Blue's Sygna Suits, their Champion outfits), checked against Serebii's Pokémon Masters EX art. 'bundled': Showdown sprites downloaded into the app (public/trainers/showdown/, on request, 2026-10-22) and loaded from there.",
   "approximations": [
     "Golfer: Showdown has a single 'golfer' sprite; it is used for both male and female Golfers.",
     "Backpacker: all Battle Tree Backpackers are female (Tree-Sets data); Showdown's 'backpackerf' sprite is not Sun & Moon art.",
     "Office Worker, Rising Star, Sightseer, Youth Athlete, Bellhop, Firefighter, Aether Foundation, Pokémon Center Lady, Wally, Plumeria, Guzma, Kiawe, Mallow, Sina, Dexio: Showdown's default sprite for the class/character (no '-gen7' variant exists).",
     "Gym Leaders (custom): the sprite from their most recent main-series game with 2D sprites, other than Let's Go: Black 2 and White 2 (Pokémon World Tournament designs; '-gen5bw2' / '-pwt' where Showdown keeps Black and White ones as the default), or Omega Ruby and Alpha Sapphire-style '-gen6' sprites for Hoenn where Showdown has them. Brilliant Diamond and Shining Pearl, Ultra Sun and Ultra Moon and Omega Ruby and Alpha Sapphire are 3D, so Showdown has no sprite from them.",
-    "Elite Four and Champions (custom, 2026-10-10): the same rule as the Gym Leaders. Their most recent game with 2D sprites other than Let's Go: FireRed and LeafGreen for Lorelei and Agatha ('-gen3'; Showdown's other sprites are Gen 1 or Let's Go), HeartGold and SoulSilver for Bruno, Lance, Will, Koga and Karen, Omega Ruby and Alpha Sapphire-style '-gen6' sprites where Showdown has them (Phoebe, Steven, Wallace; Drake only has his Gen 3 one), Platinum for Sinnoh, Black 2 and White 2 for Unova (Iris as Champion: '-gen5bw2'), and Showdown's sprites for the X and Y and Sun and Moon characters (no '-gen7' variants exist; Pokémon Masters sprites are never their usual sprite; see 'masters').",
-    "Evil team leaders and admins (custom, 2026-10-11): keyed by their data key where two share a name ('Archie (RSE)', 'Matt (Team Aqua)'). The Ruby / Sapphire / Emerald Archie and Maxie use '-gen3', their Omega Ruby and Alpha Sapphire versions '-gen6'; HeartGold and SoulSilver for the Rocket Executives, Platinum for Team Galactic, Black 2 and White 2 for N and Ghetsis, and Showdown's default for the X and Y and Sun and Moon characters.",
-    "Pokémon Masters sprites (on request, 2026-10-22): a special trainer or Battle Legend Red or Blue with any ('masters') shows one in 30% of battles, each of their outfits ('-masters', '-masters2'...) equally likely; in a Multi Battle, if either opponent shows theirs, both do. Red and Blue together (Super Multi battle 50) wear matching outfits ('mastersPairs': Sygna Suits, or Champion outfits) or neither does. Matched by name: Showdown's 'rika-masters' is Paldea's Rika, not the Digimon Tamer, so she has none. Which outfit is which: red-masters Sygna Suit, red-masters2 Sygna Suit (Thunderbolt), red-masters3 Champion, red-masters4 Anniversary 2025; blue-masters Sygna Suit, blue-masters2 Champion."
+    "Elite Four and Champions (custom, 2026-10-10): the same rule as the Gym Leaders. Their most recent game with 2D sprites other than Let's Go: Let's Go, Pikachu! and Let's Go, Eevee! for Lorelei and Agatha ('-lgpe'; on request, 2026-10-22, to avoid Gen 3 sprites: they were FireRed and LeafGreen's '-gen3'), Gen 3 for Drake (Showdown has no other), HeartGold and SoulSilver for Bruno, Lance, Will, Koga and Karen, Omega Ruby and Alpha Sapphire-style '-gen6' sprites where Showdown has them (Phoebe, Steven, Wallace; Drake only has his Gen 3 one), Platinum for Sinnoh, Black 2 and White 2 for Unova (Iris as Champion: '-gen5bw2'), and Showdown's sprites for the X and Y and Sun and Moon characters (no '-gen7' variants exist; Pokémon Masters sprites are never their usual sprite; see 'masters').",
+    "Evil team leaders and admins (custom, 2026-10-11): keyed by their data key where two share a name ('Archie (RSE)', 'Matt (Team Aqua)'). The Ruby / Sapphire / Emerald Archie uses his Ultra Sun and Ultra Moon sprite ('archie-usum'; on request, 2026-10-22, to avoid Gen 3 sprites) and Maxie '-gen3' (his only other sprite, '-gen6', is his Omega Ruby and Alpha Sapphire version's); those versions use '-gen6'; HeartGold and SoulSilver for the Rocket Executives, Platinum for Team Galactic, Black 2 and White 2 for N and Ghetsis, and Showdown's default for the X and Y and Sun and Moon characters.",
+    "Pokémon Masters sprites (on request, 2026-10-22): a special trainer or Battle Legend Red or Blue with any ('masters') shows one in 30% of battles, each of their outfits ('-masters', '-masters2'...) equally likely; in a Multi Battle, if either opponent shows theirs, both do. Red and Blue together (Super Multi battle 50) wear matching outfits ('mastersPairs': Sygna Suits, or Champion outfits) or neither does. Matched by name: Showdown's 'rika-masters' is Paldea's Rika, not the Digimon Tamer, so she has none. Which outfit is which: red-masters Sygna Suit, red-masters2 Sygna Suit (Thunderbolt), red-masters3 Champion, red-masters4 Anniversary 2025; blue-masters Sygna Suit, blue-masters2 Champion.",
+    "Lillie, Hau, Lana and Marley (special trainers added on request, 2026-10-22): Lillie in her Z-Powered look ('lillie-z', on request), Hau's and Lana's Sun and Moon sprites, Marley's Platinum sprite; all four have Pokémon Masters sprites too."
   ],
   "classes": {
     "Youngster": "youngster-gen7",
@@ -111,9 +112,9 @@
     "Lenora": "lenora",
     "Brycen": "brycen",
     "Bianca": "bianca-pwt",
-    "Lorelei": "lorelei-gen3",
+    "Lorelei": "lorelei-lgpe",
     "Bruno": "bruno",
-    "Agatha": "agatha-gen3",
+    "Agatha": "agatha-lgpe",
     "Lance": "lance",
     "Will": "will",
     "Koga": "koga",
@@ -152,7 +153,7 @@
     "Maxie (ORAS)": "maxie-gen6",
     "Tabitha": "tabitha",
     "Courtney": "courtney",
-    "Archie (RSE)": "archie-gen3",
+    "Archie (RSE)": "archie-usum",
     "Archie (ORAS)": "archie-gen6",
     "Matt (Team Aqua)": "matt",
     "Shelly": "shelly",
@@ -169,7 +170,11 @@
     "Bryony": "bryony",
     "Mable": "mable",
     "Lusamine": "lusamine",
-    "Faba": "faba"
+    "Faba": "faba",
+    "Lillie": "lillie-z",
+    "Hau": "hau",
+    "Lana": "lana",
+    "Marley": "marley"
   },
   "masters": {
     "Grimsley": [
@@ -330,6 +335,23 @@
     "Blue": [
       "blue-masters",
       "blue-masters2"
+    ],
+    "Lillie": [
+      "lillie-masters",
+      "lillie-masters2",
+      "lillie-masters3",
+      "lillie-masters4",
+      "lillie-masters5"
+    ],
+    "Hau": [
+      "hau-masters"
+    ],
+    "Lana": [
+      "lana-masters",
+      "lana-masters2"
+    ],
+    "Marley": [
+      "marley-masters"
     ]
   },
   "mastersPairs": [
@@ -341,5 +363,33 @@
       "red-masters3",
       "blue-masters2"
     ]
+  ],
+  "bundled": [
+    "acetrainerf-gen6",
+    "acetrainerf-gen6xy",
+    "agatha-lgpe",
+    "archie-usum",
+    "aromalady-gen6",
+    "beauty-gen6",
+    "beauty-gen6xy",
+    "blackbelt-gen6",
+    "bugmaniac-gen6",
+    "dragontamer-gen6",
+    "expert-gen6",
+    "guitarist-gen6",
+    "hau",
+    "hexmaniac-gen6",
+    "hiker-gen6",
+    "kindler-gen6",
+    "lana",
+    "lillie-z",
+    "lorelei-lgpe",
+    "marley",
+    "ninjaboy-gen6",
+    "ruinmaniac-gen6",
+    "scientist-gen6",
+    "swimmerf-gen6",
+    "veteranf-gen6",
+    "worker-gen6"
   ]
 }

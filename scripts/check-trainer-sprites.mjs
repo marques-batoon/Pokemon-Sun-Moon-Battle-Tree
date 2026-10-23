@@ -25,7 +25,8 @@ if (missingFiles.length) {
   console.error('Custom sprite files missing from public/:', missingFiles.join(', '));
   process.exitCode = 1;
 }
-const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour, ...evilTeams];
+const specialMore = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'special-trainers.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
+const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour, ...evilTeams, ...specialMore];
 
 const missing = [];
 for (const t of trainers) {
@@ -38,7 +39,7 @@ if (missing.length) {
   process.exitCode = 1;
 }
 
-// Custom regular trainers name their own sprite (Veteran Wren).
+// Custom regular trainers name their own sprite (Veteran Mildred).
 const regularCustom = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'regular-trainers.json'), 'utf8')).trainers;
 // Pokémon Masters sprites ('masters': special trainers, Red and Blue) are bundled in public/trainers/masters/.
 const mastersIds = Object.values(sprites.masters).flat();
@@ -50,7 +51,16 @@ if (unknownMasters.length || missingMasters.length || badPairs.length) {
   process.exitCode = 1;
 }
 console.log(`${mastersIds.length - missingMasters.length}/${mastersIds.length} Pokémon Masters sprites bundled`);
-const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named), ...regularCustom.map(t => t.spriteId)])];
+// Bundled Showdown sprites ('bundled': custom regular trainers' and some named ones) are in public/trainers/showdown/.
+const bundled = new Set(sprites.bundled);
+const unbundledRegular = regularCustom.map(t => t.spriteId).filter(id => !bundled.has(id));
+const missingBundled = [...bundled].filter(id => !existsSync(join(PUBLIC, 'trainers', 'showdown', `${id}.png`)));
+if (unbundledRegular.length || missingBundled.length) {
+  console.error('Custom regular trainers\' sprites not in bundled:', unbundledRegular, '/ bundled but not in public/trainers/showdown/:', missingBundled);
+  process.exitCode = 1;
+}
+console.log(`${bundled.size - missingBundled.length}/${bundled.size} bundled Showdown sprites present`);
+const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named)])].filter(id => !bundled.has(id));
 const results = await Promise.all(ids.map(async id => {
   const res = await fetch(`https://play.pokemonshowdown.com/sprites/trainers/${id}.png`, { method: 'HEAD' });
   return [id, res.status];

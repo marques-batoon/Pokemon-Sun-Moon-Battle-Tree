@@ -43,7 +43,8 @@ describe('Multi Battles: teammates with pair greetings', () => {
       }
     }
     expect(Math.abs(hits / n - expected)).toBeLessThan(4.5 * Math.sqrt((expected * (1 - expected)) / n));
-  });
+    // 8000 draws: about 6 s, more when the whole suite runs at once.
+  }, 30000);
 
   it('knows who each trainer has pair greetings with', () => {
     const named = (name: string) => TRAINERS.find(t => t.kind === 'special' && t.name === name)!.id;

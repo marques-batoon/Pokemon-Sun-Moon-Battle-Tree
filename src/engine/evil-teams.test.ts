@@ -40,7 +40,8 @@ describe('evil team leaders and admins', () => {
       const oras = byKey(`${name} (ORAS)`);
       expect([rse.name, rse.class, oras.name, oras.class]).toEqual([name, older, name, newer]);
       expect(TRAINER_QUOTES[`${name} (RSE)`]).not.toEqual(TRAINER_QUOTES[`${name} (ORAS)`]);
-      expect(trainerSpriteId(rse)).toMatch(/-gen3$/);
+      // The originals: Archie in his Ultra Sun and Ultra Moon look (on request, avoiding Gen 3), Maxie Gen 3 (his only other sprite).
+      expect(trainerSpriteId(rse)).toMatch(name === 'Archie' ? /^archie-usum$/ : /-gen3$/);
       expect(trainerSpriteId(oras)).toMatch(/-gen6$/);
       expect(trainerArt(rse)!.url).toMatch(/Ruby_and_Sapph/);
       expect(trainerArt(oras)!.url).toMatch(/Omega_Ruby/);

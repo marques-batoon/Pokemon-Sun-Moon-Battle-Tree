@@ -16,6 +16,10 @@ interface Props {
   battleKey: string;
   /** Each trainer's sprite for this battle when it isn't their usual one (opponentSpriteIds: a Pokémon Masters sprite). */
   spriteIds?: (string | null)[];
+  /** A duo's team title (the All Star Duo Tournament), above their names. */
+  title?: string;
+  /** The special-battle entrance (default); off where another intro takes its place (the tournament's versus screen). */
+  entrance?: boolean;
 }
 
 /**
@@ -23,7 +27,7 @@ interface Props {
  * special trainers and Battle Legends, and their greetings. Special battles open with the
  * full-screen entrance. Used by the Battle Tree challenge and the online room.
  */
-export function OpponentCard({ trainers, greetings, detail, battleKey, spriteIds }: Props) {
+export function OpponentCard({ trainers, greetings, detail, battleKey, spriteIds, title, entrance = true }: Props) {
   const multi = trainers.length > 1;
   const kind = trainers.some(t => t.kind === 'legend') ? 'legend' : trainers.some(t => t.kind === 'special') ? 'special' : 'regular';
   return (
@@ -32,13 +36,14 @@ export function OpponentCard({ trainers, greetings, detail, battleKey, spriteIds
         <OpponentPortrait
           key={battleKey}
           trainers={trainers}
-          intro={kind !== 'regular' ? battleKey : null}
+          intro={entrance && kind !== 'regular' ? battleKey : null}
           spriteIds={spriteIds}
           captions={trainers.map((t, i) => ({ name: displayName(t), quote: greetings[i] ?? null }))}
         />
       </div>
       <div className="opponent-info">
         <span className="muted small">{detail}</span>
+        {title && <span className="opponent-team-title">{title}</span>}
         <strong className="opponent-name">{trainers.map(displayName).join(' & ')}</strong>
         {KIND_LABEL[kind] && <span className="tag">{multi && kind === 'legend' ? 'Battle Legends battle' : KIND_LABEL[kind]}</span>}
         {trainers.map((t, i) => greetings[i] && (

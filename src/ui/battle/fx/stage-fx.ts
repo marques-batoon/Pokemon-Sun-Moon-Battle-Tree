@@ -2,14 +2,14 @@
 import type { CSSProperties } from 'react';
 import { ABSORB_ABILITIES, type BattleAnimation } from '../../../client/playback';
 import {
-  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
-  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
+  abilitySpec, BALLOON_IN, BALLOON_POP, berrySpec, friskSpec, immuneSpec, itemSpec, sashSpec, SKY_DROP, SKY_DROPPED, SOLAR_CHARGE, STURDY, blockedSpec, cantSpec, chargedSpec, CRIT, CONFUSED, CURE, drainSpec, fieldSpec, INFATUATED, MEGA_BURST, MEGA_START, moveSpec, PARADOX_BURST, PARADOX_START, residualSpec, SEEDED, statusSpec,
+  SUB_END, SUB_HIT, SUB_START, warpBurst, warpStart, WINDUP_THROW, Z_POWER, futureHitSpec, matrixTheme, type FxSpec, type Layer,
 } from './catalog';
 import { BIG_MOVE_MOTION } from './big-moves';
 import { BONEMERANG_CATCH, BONEMERANG_RETURN, SIGNATURE_MOTION } from './signature-moves';
 
-/** How the user of a big or signature attack moves (BIG_MOVE_MOTION, SIGNATURE_MOTION). */
-const MOVE_MOTION: Record<string, string> = { ...BIG_MOVE_MOTION, ...SIGNATURE_MOTION };
+/** How the user of a big or signature attack moves (BIG_MOVE_MOTION, SIGNATURE_MOTION); Gaia Force's user hurls its sun, Giga Blaster's fires from where it stands. */
+const MOVE_MOTION: Record<string, string> = { ...BIG_MOVE_MOTION, ...SIGNATURE_MOTION, gaiaforce: 'hurl', darkgaiaforce: 'hurl', gigablaster: 'cast' };
 import { foeSide, posKey, shakeDelay, type Pos, type Side } from './geometry';
 import { isDarkWarp, isMatrix } from '../../../data/custom/digimon';
 import { typeColor } from '../../types';
@@ -78,9 +78,13 @@ export function spriteVars(side: Side, slot: number, anim: BattleAnimation | nul
   const motion = MOVE_MOTION[anim.fx.moveId];
   if (!motion || motion === 'rampage') return undefined;
   const { layers } = moveSpec(anim.fx);
-  const hit = motion === 'explode'
-    ? firstDelay(layers.filter(l => l.kind === 'impact' && l.at === 'user'))
-    : firstDelay(layers.filter(motion === 'cast' ? sendsOff : hitsTarget));
+  // Hurling (Gaia Force): the lunge comes as the sun, pulled back over the user's head, is thrown.
+  const windup = layers.find((l): l is Extract<Layer, { kind: 'orb' }> => l.kind === 'orb' && !!l.windup);
+  const hit = motion === 'hurl' && windup
+    ? (windup.delay ?? 0) + (windup.dur ?? 500) * WINDUP_THROW
+    : motion === 'explode'
+      ? firstDelay(layers.filter(l => l.kind === 'impact' && l.at === 'user'))
+      : firstDelay(layers.filter(motion === 'cast' ? sendsOff : hitsTarget));
   return { '--hit': `${hit ?? 500}ms` } as CSSProperties;
 }
 
@@ -141,7 +145,7 @@ export function spriteClass(side: Side, slot: number, anim: BattleAnimation | nu
     case 'berry': return `fx-munch-${v}`;
     case 'balloon-pop': return `fx-balloon-drop-${v}`;
     case 'balloon-in': return 'fx-balloon-float';
-    case 'sash': return `fx-brace-${v}`;
+    case 'sash': case 'sturdy': return `fx-brace-${v}`;
     case 'item': return `fx-item-use-${v}`;
     case 'sky-dropped': return `fx-dropped-${side}`;
     case 'solar-charge': return 'fx-solar-charge';
@@ -207,6 +211,7 @@ export function effectSpec(anim: BattleAnimation): FxSpec | null {
     case 'balloon-pop': return BALLOON_POP;
     case 'balloon-in': return BALLOON_IN;
     case 'sash': return sashSpec(anim.condition ?? 'focussash');
+    case 'sturdy': return STURDY;
     case 'item': return anim.label ? itemSpec(anim.label) : null;
     case 'frisk': return anim.label ? friskSpec(anim.label) : null;
     case 'immune': return immuneSpec(anim.condition ?? '');

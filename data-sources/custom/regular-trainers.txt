@@ -1,4 +1,4 @@
-=== [gen7] Wren ===
+=== [gen7] Mildred ===
 
 Articuno-Galar @ Leftovers
 Ability: Competitive
@@ -80,3 +80,2120 @@ Timid Nature
 - Draco Meteor
 - Flamethrower
 - Protect
+
+=== [gen7] Ivor ===
+Donphan @ Paradoxorb-A
+Ability: Sturdy
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Headlong Rush
+- Close Combat
+- Ice Spinner
+- Knock Off
+
+Donphan @ Paradoxorb-A
+Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Bulk Up
+- Headlong Rush
+- Close Combat
+- Stone Edge
+
+Mamoswine @ Choice Band
+Ability: Thick Fat
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Icicle Crash
+- Ice Shard
+- Knock Off
+
+Rhyperior @ Weakness Policy
+Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Earthquake
+- Stone Edge
+- Megahorn
+- Rock Polish
+
+Tyrantrum @ Life Orb
+Ability: Strong Jaw
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Head Smash
+- Dragon Claw
+- Crunch
+- Earthquake
+
+Aerodactyl @ Focus Sash
+Ability: Unnerve
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Stealth Rock
+- Taunt
+- Stone Edge
+- Earthquake
+
+Armaldo @ Leftovers
+Ability: Battle Armor
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Rapid Spin
+- Stone Edge
+- X-Scissor
+- Earthquake
+
+Golurk @ Ghostium Z
+Ability: No Guard
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dynamic Punch
+- Earthquake
+- Shadow Punch
+- Ice Punch
+
+=== [gen7] Axel ===
+Jigglypuff @ Paradoxorb-A
+Ability: Competitive
+EVs: 252 HP / 4 SpD / 252 Spe
+Timid Nature
+- Encore
+- Thunder Wave
+- Wish
+- Dazzling Gleam
+
+Jigglypuff @ Paradoxorb-A
+Ability: Cute Charm
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+- Boomburst
+- Psychic Noise
+- Perish Song
+- Protect
+
+Primarina @ Choice Specs
+Ability: Torrent
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Sparkling Aria
+- Moonblast
+- Psychic
+- Energy Ball
+
+Exploud @ Choice Scarf
+Ability: Scrappy
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Boomburst
+- Fire Blast
+- Focus Blast
+- Surf
+
+Sylveon @ Pixie Plate
+Ability: Pixilate
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Hyper Voice
+- Psyshock
+- Wish
+- Protect
+
+Noivern @ Life Orb
+Ability: Infiltrator
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Boomburst
+- Draco Meteor
+- Flamethrower
+- Hurricane
+
+Clefable @ Leftovers
+Ability: Unaware
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Moonblast
+- Moonlight
+- Calm Mind
+- Flamethrower
+
+Kommo-o @ Kommonium Z
+Ability: Soundproof
+EVs: 252 Atk / 4 SpA / 252 Spe
+Naive Nature
+- Clanging Scales
+- Close Combat
+- Poison Jab
+- Earthquake
+
+=== [gen7] Morella ===
+Amoonguss @ Paradoxorb-A
+Ability: Regenerator
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Spore
+- Seed Bomb
+- Sucker Punch
+- Close Combat
+
+Amoonguss @ Paradoxorb-A
+Ability: Effect Spore
+EVs: 252 HP / 4 Atk / 252 SpD
+Adamant Nature
+- Spore
+- Rage Powder
+- Seed Bomb
+- Crunch
+
+Breloom @ Toxic Orb
+Ability: Poison Heal
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Spore
+- Bullet Seed
+- Mach Punch
+- Rock Tomb
+
+Venusaur @ Black Sludge
+Ability: Overgrow
+EVs: 252 HP / 4 SpA / 252 SpD
+Calm Nature
+- Giga Drain
+- Sludge Bomb
+- Leech Seed
+- Sleep Powder
+
+Victreebel @ Life Orb
+Ability: Chlorophyll
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Leaf Storm
+- Sludge Bomb
+- Sunny Day
+- Weather Ball
+
+Tangrowth @ Assault Vest
+Ability: Regenerator
+EVs: 252 HP / 4 Atk / 252 SpD
+Sassy Nature
+- Giga Drain
+- Knock Off
+- Earthquake
+- Sludge Bomb
+
+Cacturne @ Focus Sash
+Ability: Water Absorb
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Seed Bomb
+- Sucker Punch
+- Drain Punch
+
+Lurantis @ Grassium Z
+Ability: Contrary
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Swords Dance
+- Leaf Blade
+- Superpower
+- Knock Off
+
+=== [gen7] Ophelia ===
+Misdreavus @ Paradoxorb-A
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Moonblast
+- Shadow Ball
+- Mystical Fire
+- Calm Mind
+
+Misdreavus @ Paradoxorb-A
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Moonblast
+- Shadow Ball
+- Thunderbolt
+- Power Gem
+
+Gengar @ Choice Specs
+Ability: Cursed Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Shadow Ball
+- Sludge Wave
+- Focus Blast
+- Thunderbolt
+
+Mismagius @ Life Orb
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Shadow Ball
+- Dazzling Gleam
+- Thunderbolt
+
+Chandelure @ Choice Scarf
+Ability: Flash Fire
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Shadow Ball
+- Fire Blast
+- Energy Ball
+- Trick
+
+Froslass @ Focus Sash
+Ability: Cursed Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Spikes
+- Taunt
+- Destiny Bond
+- Shadow Ball
+
+Mimikyu @ Mimikium Z
+Ability: Disguise
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Play Rough
+- Shadow Sneak
+- Shadow Claw
+
+Sableye @ Leftovers
+Ability: Prankster
+EVs: 252 HP / 4 Atk / 252 SpD
+Careful Nature
+- Will-O-Wisp
+- Recover
+- Knock Off
+- Foul Play
+
+=== [gen7] Darwin ===
+Volcarona @ Paradoxorb-A
+Ability: Flame Body
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- First Impression
+- Close Combat
+- Wild Charge
+- U-turn
+
+Volcarona @ Paradoxorb-A
+Ability: Swarm
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Bulk Up
+- Leech Life
+- Close Combat
+- Morning Sun
+
+Buzzwole @ Choice Band
+Ability: Beast Boost
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Superpower
+- Leech Life
+- Ice Punch
+- Poison Jab
+
+Heracross @ Flame Orb
+Ability: Guts
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Close Combat
+- Megahorn
+- Facade
+- Knock Off
+
+Scizor @ Occa Berry
+Ability: Technician
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Swords Dance
+- Bullet Punch
+- Bug Bite
+- Superpower
+
+Yanmega @ Choice Specs
+Ability: Speed Boost
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Bug Buzz
+- Air Slash
+- Giga Drain
+- U-turn
+
+Golisopod @ Assault Vest
+Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- First Impression
+- Liquidation
+- Aqua Jet
+- Leech Life
+
+Vikavolt @ Buginium Z
+Ability: Levitate
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Thunderbolt
+- Bug Buzz
+- Energy Ball
+- Volt Switch
+
+=== [gen7] Sandor ===
+Magneton @ Paradoxorb-A
+Ability: Sturdy
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Thunderbolt
+- Earth Power
+- Volt Switch
+- Stealth Rock
+
+Magneton @ Paradoxorb-A
+Ability: Analytic
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Thunderbolt
+- Earth Power
+- Power Gem
+- Spikes
+
+Hippowdon @ Leftovers
+Ability: Sand Stream
+EVs: 252 HP / 4 Atk / 252 Def
+Impish Nature
+- Earthquake
+- Slack Off
+- Stealth Rock
+- Whirlwind
+
+Garchomp @ Choice Scarf
+Ability: Rough Skin
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Outrage
+- Stone Edge
+- Fire Fang
+
+Excadrill @ Focus Sash
+Ability: Sand Rush
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Swords Dance
+- Earthquake
+- Iron Head
+- Rapid Spin
+
+Golem-Alola @ Choice Band
+Ability: Galvanize
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Double-Edge
+- Earthquake
+- Stone Edge
+- Explosion
+
+Stunfisk @ Sitrus Berry
+Ability: Static
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Discharge
+- Earth Power
+- Scald
+- Foul Play
+
+Flygon @ Dragonium Z
+Ability: Levitate
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Earthquake
+- Outrage
+- Fire Punch
+
+=== [gen7] Ragnar ===
+Salamence @ Paradoxorb-A
+Ability: Intimidate
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Knock Off
+- Earthquake
+- Roost
+
+Salamence @ Paradoxorb-A
+Ability: Moxie
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Outrage
+- Crunch
+- Iron Head
+- U-turn
+
+Dragonite @ Lum Berry
+Ability: Multiscale
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Outrage
+- Extreme Speed
+- Earthquake
+
+Garchomp @ Groundium Z
+Ability: Rough Skin
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Earthquake
+- Dragon Claw
+- Stone Edge
+
+Hydreigon @ Choice Specs
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Dark Pulse
+- Flash Cannon
+- Fire Blast
+
+Haxorus @ Life Orb
+Ability: Mold Breaker
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Outrage
+- Earthquake
+- Poison Jab
+
+Tyranitar @ Choice Band
+Ability: Sand Stream
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stone Edge
+- Crunch
+- Pursuit
+- Superpower
+
+Druddigon @ Rocky Helmet
+Ability: Rough Skin
+EVs: 252 HP / 4 Atk / 252 Def
+Impish Nature
+- Dragon Tail
+- Glare
+- Stealth Rock
+- Sucker Punch
+
+=== [gen7] Ferris ===
+Donphan @ Paradoxorb-F
+Ability: Sturdy
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Iron Head
+- Rapid Spin
+- Knock Off
+
+Donphan @ Paradoxorb-F
+Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stealth Rock
+- High Horsepower
+- Iron Head
+- Volt Switch
+
+Excadrill @ Choice Scarf
+Ability: Mold Breaker
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Iron Head
+- Rock Slide
+- Rapid Spin
+
+Steelix @ Leftovers
+Ability: Sturdy
+EVs: 252 HP / 4 Atk / 252 Def
+Impish Nature
+- Earthquake
+- Heavy Slam
+- Stealth Rock
+- Roar
+
+Klinklang @ Steelium Z
+Ability: Clear Body
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Shift Gear
+- Gear Grind
+- Wild Charge
+- Return
+
+Magnezone @ Choice Specs
+Ability: Magnet Pull
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Thunderbolt
+- Flash Cannon
+- Volt Switch
+- Signal Beam
+
+Forretress @ Rocky Helmet
+Ability: Sturdy
+EVs: 252 HP / 4 Atk / 252 Def
+Relaxed Nature
+- Spikes
+- Rapid Spin
+- Gyro Ball
+- Volt Switch
+
+Metagross @ Assault Vest
+Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Meteor Mash
+- Zen Headbutt
+- Bullet Punch
+- Earthquake
+
+=== [gen7] Neve ===
+Delibird @ Paradoxorb-F
+Ability: Hustle
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Freeze-Dry
+- Hydro Pump
+- Ice Beam
+- Flip Turn
+
+Delibird @ Paradoxorb-F
+Ability: Vital Spirit
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Freeze-Dry
+- Hydro Pump
+- Encore
+- Protect
+
+Lapras @ Leftovers
+Ability: Water Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Freeze-Dry
+- Hydro Pump
+- Thunderbolt
+- Protect
+
+Cloyster @ White Herb
+Ability: Skill Link
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Shell Smash
+- Icicle Spear
+- Rock Blast
+- Ice Shard
+
+Kingdra @ Choice Specs
+Ability: Swift Swim
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Hydro Pump
+- Draco Meteor
+- Ice Beam
+- Surf
+
+Walrein @ Sitrus Berry
+Ability: Thick Fat
+EVs: 252 HP / 4 SpA / 252 SpD
+Calm Nature
+- Surf
+- Ice Beam
+- Toxic
+- Protect
+
+Empoleon @ Waterium Z
+Ability: Torrent
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Scald
+- Ice Beam
+- Flash Cannon
+- Grass Knot
+
+Starmie @ Life Orb
+Ability: Analytic
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Ice Beam
+- Thunderbolt
+- Psychic
+
+=== [gen7] Takeo ===
+Hariyama @ Paradoxorb-F
+Ability: Thick Fat
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Fake Out
+- Drain Punch
+- Thunder Punch
+- Ice Punch
+
+Hariyama @ Paradoxorb-F
+Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Swords Dance
+- Drain Punch
+- Wild Charge
+- Ice Punch
+
+Conkeldurr @ Flame Orb
+Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Mach Punch
+- Drain Punch
+- Knock Off
+- Ice Punch
+
+Machamp @ Assault Vest
+Ability: No Guard
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Dynamic Punch
+- Stone Edge
+- Bullet Punch
+- Knock Off
+
+Electivire @ Life Orb
+Ability: Motor Drive
+EVs: 252 Atk / 4 SpA / 252 Spe
+Naive Nature
+- Wild Charge
+- Cross Chop
+- Ice Punch
+- Flamethrower
+
+Hitmonchan @ Fightinium Z
+Ability: Iron Fist
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Drain Punch
+- Mach Punch
+- Ice Punch
+- Thunder Punch
+
+Pangoro @ Choice Band
+Ability: Iron Fist
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Hammer Arm
+- Knock Off
+- Bullet Punch
+- Ice Punch
+
+Hawlucha @ Focus Sash
+Ability: Unburden
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- High Jump Kick
+- Acrobatics
+- Poison Jab
+
+=== [gen7] Malcolm ===
+Hydreigon @ Paradoxorb-F
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hurricane
+- Dark Pulse
+- Earth Power
+- Flamethrower
+
+Hydreigon @ Paradoxorb-F
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Dark Pulse
+- Air Slash
+- Hydro Pump
+- Tailwind
+
+Porygon-Z @ Choice Specs
+Ability: Adaptability
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Tri Attack
+- Shadow Ball
+- Ice Beam
+- Thunderbolt
+
+Rotom-Wash @ Leftovers
+Ability: Levitate
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Hydro Pump
+- Volt Switch
+- Will-O-Wisp
+- Pain Split
+
+Honchkrow @ Life Orb
+Ability: Moxie
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Brave Bird
+- Sucker Punch
+- Superpower
+- Pursuit
+
+Mandibuzz @ Rocky Helmet
+Ability: Overcoat
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Foul Play
+- Roost
+- Toxic
+- U-turn
+
+Weavile @ Choice Band
+Ability: Pressure
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Knock Off
+- Icicle Crash
+- Ice Shard
+- Low Kick
+
+Bisharp @ Darkinium Z
+Ability: Defiant
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Swords Dance
+- Sucker Punch
+- Iron Head
+- Knock Off
+
+=== [gen7] Blaise ===
+Volcarona @ Paradoxorb-F
+Ability: Flame Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Fiery Dance
+- Sludge Wave
+- Energy Ball
+- Psychic
+
+Volcarona @ Paradoxorb-F
+Ability: Flame Body
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Flamethrower
+- Sludge Wave
+- Morning Sun
+- Toxic Spikes
+
+Salazzle @ Focus Sash
+Ability: Corrosion
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Fire Blast
+- Sludge Bomb
+- Dragon Pulse
+
+Weezing @ Black Sludge
+Ability: Levitate
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Will-O-Wisp
+- Sludge Bomb
+- Flamethrower
+- Pain Split
+
+Magmortar @ Life Orb
+Ability: Flame Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Fire Blast
+- Thunderbolt
+- Focus Blast
+- Psychic
+
+Houndoom @ Choice Specs
+Ability: Flash Fire
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Fire Blast
+- Dark Pulse
+- Sludge Bomb
+- Overheat
+
+Charizard @ Firium Z
+Ability: Solar Power
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Fire Blast
+- Air Slash
+- Solar Beam
+- Focus Blast
+
+Crobat @ Lum Berry
+Ability: Infiltrator
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Brave Bird
+- Cross Poison
+- U-turn
+- Taunt
+
+=== [gen7] Rex ===
+Tyranitar @ Paradoxorb-F
+Ability: Sand Stream
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Stone Edge
+- Wild Charge
+- Earthquake
+
+Tyranitar @ Paradoxorb-F
+Ability: Unnerve
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stealth Rock
+- Stone Edge
+- Thunder Punch
+- Low Kick
+
+Rhyperior @ Choice Band
+Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Earthquake
+- Stone Edge
+- Megahorn
+- Ice Punch
+
+Aggron @ Assault Vest
+Ability: Rock Head
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Head Smash
+- Heavy Slam
+- Earthquake
+- Ice Punch
+
+Tyrantrum @ Rockium Z
+Ability: Strong Jaw
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Head Smash
+- Earthquake
+- Crunch
+
+Golem-Alola @ Weakness Policy
+Ability: Galvanize
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Double-Edge
+- Earthquake
+- Stone Edge
+- Rock Polish
+
+Electivire @ Expert Belt
+Ability: Motor Drive
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Wild Charge
+- Cross Chop
+- Ice Punch
+- Earthquake
+
+Gigalith @ Leftovers
+Ability: Sand Stream
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stone Edge
+- Earthquake
+- Stealth Rock
+- Explosion
+
+=== [gen7] Hanzo ===
+Terrakion @ Paradoxorb-F
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Mighty Cleave
+- Zen Headbutt
+- Close Combat
+
+Terrakion @ Paradoxorb-F
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Mighty Cleave
+- Psycho Cut
+- Earthquake
+- X-Scissor
+
+Greninja @ Choice Specs
+Ability: Protean
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Dark Pulse
+- Ice Beam
+- Water Shuriken
+
+Lucario @ Life Orb
+Ability: Inner Focus
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Aura Sphere
+- Flash Cannon
+- Vacuum Wave
+
+Lycanroc @ Focus Sash
+Ability: Sand Rush
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Accelerock
+- Stone Edge
+- Drill Run
+
+Bisharp @ Black Glasses
+Ability: Defiant
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Swords Dance
+- Sucker Punch
+- Iron Head
+- Knock Off
+
+Samurott @ Waterium Z
+Ability: Torrent
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Swords Dance
+- Razor Shell
+- Aqua Jet
+- Megahorn
+
+Medicham @ Choice Band
+Ability: Pure Power
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- High Jump Kick
+- Zen Headbutt
+- Ice Punch
+- Bullet Punch
+
+=== [gen7] Gwendolyn ===
+Gardevoir @ Paradoxorb-F
+Ability: Trace
+EVs: 252 Atk / 4 SpA / 252 Spe
+Naive Nature
+- Close Combat
+- Spirit Break
+- Knock Off
+- Shadow Sneak
+
+Gallade @ Paradoxorb-F
+Ability: Justified
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Calm Mind
+- Moonblast
+- Aura Sphere
+- Psyshock
+
+Aegislash @ Leftovers
+Ability: Stance Change
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+- King's Shield
+- Shadow Ball
+- Flash Cannon
+- Sacred Sword
+
+Escavalier @ Choice Band
+Ability: Overcoat
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Megahorn
+- Iron Head
+- Drill Run
+- Knock Off
+
+Togekiss @ Fairium Z
+Ability: Serene Grace
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Dazzling Gleam
+- Air Slash
+- Roost
+
+Mienshao @ Life Orb
+Ability: Regenerator
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- High Jump Kick
+- U-turn
+- Knock Off
+- Fake Out
+
+Azumarill @ Assault Vest
+Ability: Huge Power
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Play Rough
+- Waterfall
+- Aqua Jet
+- Knock Off
+
+Lucario @ Focus Sash
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Swords Dance
+- Close Combat
+- Meteor Mash
+- Extreme Speed
+
+=== [gen7] Sylvie ===
+Virizion @ Paradoxorb-F
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Psyblade
+- Leaf Blade
+- Close Combat
+
+Virizion @ Paradoxorb-F
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Psyblade
+- Leaf Blade
+- Megahorn
+- Sacred Sword
+
+Kartana @ Choice Scarf
+Ability: Beast Boost
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Leaf Blade
+- Sacred Sword
+- Smart Strike
+- Knock Off
+
+Gallade @ Life Orb
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Close Combat
+- Leaf Blade
+- Zen Headbutt
+
+Decidueye @ Decidium Z
+Ability: Overgrow
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Spirit Shackle
+- Leaf Blade
+- Swords Dance
+- Sucker Punch
+
+Cobalion @ Lum Berry
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Close Combat
+- Iron Head
+- Stone Edge
+
+Terrakion @ Choice Band
+Ability: Justified
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Close Combat
+- Stone Edge
+- Earthquake
+- Quick Attack
+
+Leavanny @ Focus Sash
+Ability: Swarm
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Sticky Web
+- Leaf Blade
+- X-Scissor
+- Knock Off
+
+=== [gen7] Regina ===
+Cobalion @ Paradoxorb-F
+Ability: Justified
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Tachyon Cutter
+- Psychic
+- Focus Blast
+- Volt Switch
+
+Cobalion @ Paradoxorb-F
+Ability: Justified
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Calm Mind
+- Tachyon Cutter
+- Psyshock
+- Protect
+
+Slowking @ Leftovers
+Ability: Regenerator
+EVs: 252 HP / 4 SpA / 252 SpD
+Sassy Nature
+- Scald
+- Psychic
+- Slack Off
+- Trick Room
+
+Nidoking @ Life Orb
+Ability: Sheer Force
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Earth Power
+- Sludge Wave
+- Ice Beam
+- Fire Blast
+
+Kingdra @ Choice Specs
+Ability: Sniper
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Draco Meteor
+- Hydro Pump
+- Ice Beam
+- Surf
+
+Empoleon @ Assault Vest
+Ability: Torrent
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Scald
+- Ice Beam
+- Flash Cannon
+- Knock Off
+
+Tsareena @ Choice Band
+Ability: Queenly Majesty
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Trop Kick
+- High Jump Kick
+- U-turn
+- Knock Off
+
+Nidoqueen @ Black Sludge
+Ability: Sheer Force
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Earth Power
+- Sludge Wave
+- Ice Beam
+- Stealth Rock
+
+=== [gen7] Celeste ===
+Metagross @ Metagrossite
+Ability: Clear Body
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Meteor Mash
+- Zen Headbutt
+- Ice Punch
+- Bullet Punch
+
+Tapu Koko @ Choice Specs
+Ability: Electric Surge
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Thunderbolt
+- Dazzling Gleam
+- Volt Switch
+- Grass Knot
+
+Garchomp @ Dragonium Z
+Ability: Rough Skin
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Earthquake
+- Outrage
+- Fire Fang
+
+Kartana @ Choice Scarf
+Ability: Beast Boost
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Leaf Blade
+- Sacred Sword
+- Smart Strike
+- Knock Off
+
+Greninja @ Life Orb
+Ability: Protean
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Dark Pulse
+- Ice Beam
+- Spikes
+
+Volcarona @ Buginium Z
+Ability: Flame Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Quiver Dance
+- Fiery Dance
+- Bug Buzz
+- Giga Drain
+
+Landorus-Therian @ Focus Sash
+Ability: Intimidate
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Stone Edge
+- U-turn
+- Stealth Rock
+
+Mimikyu @ Mimikium Z
+Ability: Disguise
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Play Rough
+- Shadow Claw
+- Shadow Sneak
+
+=== [gen7] Juliet ===
+Porygon2 @ Eviolite
+Ability: Download
+EVs: 252 HP / 252 Def / 4 SpA
+Relaxed Nature
+- Trick Room
+- Recover
+- Ice Beam
+- Tri Attack
+
+Cresselia @ Mental Herb
+Ability: Levitate
+EVs: 252 HP / 252 Def / 4 SpA
+Relaxed Nature
+- Trick Room
+- Moonlight
+- Psychic
+- Ice Beam
+
+Snorlax @ Choice Band
+Ability: Thick Fat
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+- Return
+- Earthquake
+- Crunch
+- Ice Punch
+
+Mawile @ Mawilite
+Ability: Intimidate
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+- Play Rough
+- Iron Head
+- Sucker Punch
+- Fire Fang
+
+Conkeldurr @ Flame Orb
+Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+- Drain Punch
+- Mach Punch
+- Knock Off
+- Ice Punch
+
+Marowak-Alola @ Thick Club
+Ability: Lightning Rod
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+- Flare Blitz
+- Shadow Bone
+- Bonemerang
+- Swords Dance
+
+Rhyperior @ Weakness Policy
+Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+- Earthquake
+- Stone Edge
+- Megahorn
+- Ice Punch
+
+Reuniclus @ Life Orb
+Ability: Magic Guard
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+- Trick Room
+- Psyshock
+- Focus Blast
+- Shadow Ball
+
+=== [gen7] Paige ===
+Pelipper @ Damp Rock
+Ability: Drizzle
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Hurricane
+- U-turn
+- Roost
+
+Kingdra @ Choice Specs
+Ability: Swift Swim
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Hydro Pump
+- Draco Meteor
+- Ice Beam
+- Surf
+
+Ludicolo @ Life Orb
+Ability: Swift Swim
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Hydro Pump
+- Giga Drain
+- Ice Beam
+- Focus Blast
+
+Tapu Fini @ Leftovers
+Ability: Misty Surge
+EVs: 252 HP / 4 Def / 252 SpD
+Calm Nature
+- Moonblast
+- Scald
+- Calm Mind
+- Taunt
+
+Ferrothorn @ Rocky Helmet
+Ability: Iron Barbs
+EVs: 252 HP / 252 Def / 4 SpD
+Relaxed Nature
+- Leech Seed
+- Gyro Ball
+- Spikes
+- Protect
+
+Swampert @ Swampertite
+Ability: Torrent
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Waterfall
+- Earthquake
+- Ice Punch
+- Superpower
+
+Zapdos @ Electrium Z
+Ability: Pressure
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Thunder
+- Roost
+- Heat Wave
+- Volt Switch
+
+Azumarill @ Choice Band
+Ability: Huge Power
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Aqua Jet
+- Waterfall
+- Play Rough
+- Knock Off
+
+=== [gen7] Aurora ===
+Ninetales-Alola @ Light Clay
+Ability: Snow Warning
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Aurora Veil
+- Blizzard
+- Moonblast
+- Freeze-Dry
+
+Mamoswine @ Life Orb
+Ability: Thick Fat
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Icicle Crash
+- Ice Shard
+- Stealth Rock
+
+Cloyster @ Focus Sash
+Ability: Skill Link
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Shell Smash
+- Icicle Spear
+- Rock Blast
+- Ice Shard
+
+Abomasnow @ Abomasite
+Ability: Snow Warning
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+- Blizzard
+- Giga Drain
+- Earthquake
+- Ice Shard
+
+Weavile @ Choice Band
+Ability: Pressure
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Icicle Crash
+- Knock Off
+- Ice Shard
+- Low Kick
+
+Celesteela @ Leftovers
+Ability: Beast Boost
+EVs: 252 HP / 4 Def / 252 SpD
+Careful Nature
+- Heavy Slam
+- Leech Seed
+- Protect
+- Flamethrower
+
+Tapu Lele @ Choice Scarf
+Ability: Psychic Surge
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Psychic
+- Moonblast
+- Focus Blast
+- Shadow Ball
+
+Lapras @ Assault Vest
+Ability: Water Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Freeze-Dry
+- Hydro Pump
+- Thunderbolt
+- Ice Shard
+
+=== [gen7] Vivian ===
+Ninetales @ Heat Rock
+Ability: Drought
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Fire Blast
+- Solar Beam
+- Nasty Plot
+- Will-O-Wisp
+
+Venusaur @ Life Orb
+Ability: Chlorophyll
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Giga Drain
+- Sludge Bomb
+- Growth
+- Synthesis
+
+Charizard @ Charizardite Y
+Ability: Blaze
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Fire Blast
+- Solar Beam
+- Air Slash
+- Focus Blast
+
+Tapu Bulu @ Choice Band
+Ability: Grassy Surge
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Wood Hammer
+- Horn Leech
+- Superpower
+- Stone Edge
+
+Heatran @ Shuca Berry
+Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Magma Storm
+- Earth Power
+- Flash Cannon
+- Stealth Rock
+
+Lilligant @ Grassium Z
+Ability: Own Tempo
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Quiver Dance
+- Petal Dance
+- Giga Drain
+- Sleep Powder
+
+Krookodile @ Choice Scarf
+Ability: Intimidate
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Knock Off
+- Stone Edge
+- Superpower
+
+Clefable @ Leftovers
+Ability: Magic Guard
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Moonblast
+- Soft-Boiled
+- Calm Mind
+- Flamethrower
+
+=== [gen7] Seraphina ===
+Gardevoir @ Gardevoirite
+Ability: Trace
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hyper Voice
+- Psychic
+- Focus Blast
+- Calm Mind
+
+Tapu Lele @ Choice Specs
+Ability: Psychic Surge
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Psychic
+- Moonblast
+- Focus Blast
+- Psyshock
+
+Sylveon @ Leftovers
+Ability: Pixilate
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Hyper Voice
+- Wish
+- Protect
+- Psyshock
+
+Togekiss @ Choice Scarf
+Ability: Serene Grace
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Air Slash
+- Dazzling Gleam
+- Aura Sphere
+- Trick
+
+Mimikyu @ Life Orb
+Ability: Disguise
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Play Rough
+- Shadow Claw
+- Shadow Sneak
+
+Primarina @ Primarium Z
+Ability: Torrent
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Sparkling Aria
+- Moonblast
+- Psychic
+- Energy Ball
+
+Azumarill @ Choice Band
+Ability: Huge Power
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Play Rough
+- Waterfall
+- Aqua Jet
+- Knock Off
+
+Klefki @ Light Clay
+Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Reflect
+- Light Screen
+- Thunder Wave
+- Play Rough
+
+=== [gen7] Delphine ===
+Milotic @ Leftovers
+Ability: Competitive
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Recover
+- Ice Beam
+- Dragon Tail
+
+Gyarados @ Gyaradosite
+Ability: Moxie
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Waterfall
+- Crunch
+- Earthquake
+
+Tapu Fini @ Wiki Berry
+Ability: Misty Surge
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Moonblast
+- Scald
+- Calm Mind
+- Taunt
+
+Starmie @ Life Orb
+Ability: Analytic
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Ice Beam
+- Thunderbolt
+- Psyshock
+
+Toxapex @ Black Sludge
+Ability: Regenerator
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Recover
+- Toxic
+- Haze
+
+Greninja @ Choice Specs
+Ability: Protean
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Dark Pulse
+- Ice Beam
+- U-turn
+
+Suicune @ Chesto Berry
+Ability: Pressure
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Calm Mind
+- Scald
+- Ice Beam
+- Rest
+
+Rotom-Wash @ Choice Scarf
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Volt Switch
+- Thunderbolt
+- Trick
+
+=== [gen7] Esmeralda ===
+Nihilego @ Focus Sash
+Ability: Beast Boost
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Power Gem
+- Sludge Wave
+- Thunderbolt
+- Stealth Rock
+
+Gengar @ Gengarite
+Ability: Cursed Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Shadow Ball
+- Sludge Bomb
+- Focus Blast
+- Destiny Bond
+
+Salazzle @ Firium Z
+Ability: Corrosion
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Fire Blast
+- Sludge Wave
+- Protect
+
+Hydreigon @ Choice Specs
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Draco Meteor
+- Dark Pulse
+- Flash Cannon
+- Fire Blast
+
+Tyranitar @ Assault Vest
+Ability: Sand Stream
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stone Edge
+- Crunch
+- Pursuit
+- Earthquake
+
+Bisharp @ Black Glasses
+Ability: Defiant
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Swords Dance
+- Sucker Punch
+- Iron Head
+- Knock Off
+
+Honchkrow @ Life Orb
+Ability: Moxie
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Brave Bird
+- Sucker Punch
+- Superpower
+- Pursuit
+
+Muk-Alola @ Leftovers
+Ability: Poison Touch
+EVs: 252 HP / 4 Def / 252 SpD
+Careful Nature
+- Knock Off
+- Gunk Shot
+- Shadow Sneak
+- Ice Punch
+
+=== [gen7] Margaux ===
+Celesteela @ Leftovers
+Ability: Beast Boost
+EVs: 252 HP / 4 Def / 252 SpD
+Careful Nature
+- Leech Seed
+- Protect
+- Heavy Slam
+- Flamethrower
+
+Latios @ Latiosite
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Psyshock
+- Ice Beam
+- Recover
+
+Scizor @ Choice Band
+Ability: Technician
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Bullet Punch
+- U-turn
+- Superpower
+- Knock Off
+
+Dragonite @ Lum Berry
+Ability: Multiscale
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Extreme Speed
+- Outrage
+- Earthquake
+
+Aegislash @ Weakness Policy
+Ability: Stance Change
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+- King's Shield
+- Shadow Ball
+- Flash Cannon
+- Sacred Sword
+
+Kommo-o @ Fightinium Z
+Ability: Bulletproof
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Close Combat
+- Poison Jab
+- Dragon Claw
+
+Magnezone @ Choice Specs
+Ability: Magnet Pull
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Thunderbolt
+- Flash Cannon
+- Volt Switch
+- Signal Beam
+
+Excadrill @ Focus Sash
+Ability: Mold Breaker
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Earthquake
+- Iron Head
+- Rapid Spin
+- Rock Slide
+
+=== [gen7] Camille ===
+Alakazam @ Alakazite
+Ability: Magic Guard
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Psyshock
+- Focus Blast
+- Shadow Ball
+- Dazzling Gleam
+
+Gothitelle @ Choice Scarf
+Ability: Shadow Tag
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Psychic
+- Thunderbolt
+- Trick
+- Energy Ball
+
+Chandelure @ Choice Specs
+Ability: Flash Fire
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Shadow Ball
+- Overheat
+- Energy Ball
+- Trick
+
+Decidueye @ Decidium Z
+Ability: Overgrow
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Spirit Shackle
+- Leaf Blade
+- Swords Dance
+- Sucker Punch
+
+Bronzong @ Mental Herb
+Ability: Levitate
+EVs: 252 HP / 252 Def / 4 SpD
+Relaxed Nature
+- Stealth Rock
+- Gyro Ball
+- Earthquake
+- Explosion
+
+Espeon @ Life Orb
+Ability: Magic Bounce
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Psychic
+- Dazzling Gleam
+- Shadow Ball
+- Calm Mind
+
+Sableye @ Sablenite
+Ability: Prankster
+EVs: 252 HP / 4 Def / 252 SpD
+Careful Nature
+- Will-O-Wisp
+- Recover
+- Knock Off
+- Foul Play
+
+Slowbro @ Rocky Helmet
+Ability: Regenerator
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Slack Off
+- Psyshock
+- Thunder Wave
+
+=== [gen7] Isabella ===
+Charizard @ Charizardite X
+Ability: Blaze
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Flare Blitz
+- Dragon Claw
+- Earthquake
+
+Arcanine @ Firium Z
+Ability: Intimidate
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Flare Blitz
+- Extreme Speed
+- Wild Charge
+- Close Combat
+
+Volcarona @ Leftovers
+Ability: Flame Body
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Quiver Dance
+- Fiery Dance
+- Giga Drain
+- Roost
+
+Infernape @ Life Orb
+Ability: Iron Fist
+EVs: 252 Atk / 4 SpA / 252 Spe
+Naive Nature
+- Close Combat
+- Flare Blitz
+- Mach Punch
+- Grass Knot
+
+Salamence @ Choice Specs
+Ability: Intimidate
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Draco Meteor
+- Fire Blast
+- Hydro Pump
+- Dragon Pulse
+
+Rotom-Heat @ Choice Scarf
+Ability: Levitate
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Overheat
+- Volt Switch
+- Thunderbolt
+- Trick
+
+Talonflame @ Choice Band
+Ability: Gale Wings
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Brave Bird
+- Flare Blitz
+- U-turn
+- Steel Wing
+
+Blaziken @ Focus Sash
+Ability: Speed Boost
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Protect
+- Flare Blitz
+- High Jump Kick
+- Knock Off
+
+=== [gen7] Odette ===
+Skarmory @ Rocky Helmet
+Ability: Sturdy
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
+- Brave Bird
+- Roost
+- Spikes
+- Whirlwind
+
+Staraptor @ Choice Band
+Ability: Reckless
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Brave Bird
+- Double-Edge
+- Close Combat
+- U-turn
+
+Altaria @ Altarianite
+Ability: Natural Cure
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Return
+- Earthquake
+- Roost
+
+Tornadus-Therian @ Life Orb
+Ability: Regenerator
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hurricane
+- Heat Wave
+- Focus Blast
+- U-turn
+
+Mandibuzz @ Leftovers
+Ability: Overcoat
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Foul Play
+- Roost
+- Toxic
+- U-turn
+
+Hawlucha @ Sitrus Berry
+Ability: Unburden
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- High Jump Kick
+- Acrobatics
+- Roost
+
+Noivern @ Choice Specs
+Ability: Infiltrator
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Hurricane
+- Flamethrower
+- Boomburst
+
+Gliscor @ Toxic Orb
+Ability: Poison Heal
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
+- Earthquake
+- Toxic
+- Protect
+- Roost

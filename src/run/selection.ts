@@ -47,8 +47,16 @@ export interface TrainerChoice {
   trainer: Trainer;
 }
 
+/** A trainer's chance in a regular pool at battle N: 1, or a custom regular trainer's own (1.1 from battle 100, 1.5 from 200). */
+export function poolWeight(id: number, battle: number): number {
+  const t = TRAINERS[id];
+  if (t.kind !== 'regular' || !t.poolWeights) return 1;
+  return t.poolWeights.filter(w => w.fromBattle <= battle).at(-1)?.weight ?? 1;
+}
+
 /**
- * Draws the opponent trainer for battle N (uniform within pools; special pool by weight).
+ * Draws the opponent trainer for battle N (uniform within the game's pools; custom regular trainers at their weight,
+ * 1.1 from battle 100 and 1.5 from 200; special pool by weight).
  * `exclude`: trainer ids that can't be drawn (Multi: the player's partner and the first opponent).
  * Anabel is always in the special pool (app choice, 2026-10-17: in the game she needs Guzzlord's chapter of the
  * Looker episode; the option to leave her out was removed on request).
@@ -59,7 +67,11 @@ export function chooseTrainer(
   const slot = scheduleSlot(format, course, battle);
   const allowed = (ids: number[]) => ids.filter(id => !exclude.has(id));
   if (slot.type === 'boss') return { trainer: TRAINERS[chooseBoss(slot.bossKey, rng).trainerId] };
-  if (slot.type === 'pool') return { trainer: TRAINERS[rng.pick(allowed(BRACKETS.pools[slot.poolKey].trainerIds))] };
+  if (slot.type === 'pool') {
+    const ids = allowed(BRACKETS.pools[slot.poolKey].trainerIds);
+    const weight = (id: number) => poolWeight(id, battle);
+    return { trainer: TRAINERS[ids.some(id => weight(id) !== 1) ? rng.weighted(ids, weight) : rng.pick(ids)] };
+  }
   return { trainer: rng.weighted(specialPool().filter(t => !exclude.has(t.trainer.id)), t => t.weight).trainer };
 }
 

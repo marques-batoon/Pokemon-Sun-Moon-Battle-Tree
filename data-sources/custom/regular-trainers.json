@@ -1,6 +1,224 @@
 {
-  "note": "Custom regular trainers: they join the regular trainers' pool from battle `fromBattle` on (Super Singles, Super Doubles and Super Multi), drawn with the same chance as everyone else in it. `spriteId`: a Pokémon Showdown trainer sprite (https://play.pokemonshowdown.com/sprites/trainers/<id>.png).",
+  "note": "Custom regular trainers: they join the regular trainers' pool from battle `fromBattle` on (Super Singles, Super Doubles and Super Multi), drawn by weight against 1 for each of the game's trainers in that pool: `weights`, by battle (1.1 from battle 100, 1.5 from battle 200; on request 2026-10-22; a trainer's own `weights` win). `spriteId`: a Pokémon Showdown trainer sprite (https://play.pokemonshowdown.com/sprites/trainers/<id>.png). `alwaysParadox`: one of their Paradoxorb sets is always on their team (at a random place), the rest drawn from their other sets. `block`: 2 for trainers added after Lillie, Hau, Lana and Marley (special-trainers.json): they come after them in the app's data, so no trainer's id moves (saved runs and partners refer to them by id).",
+  "weights": [
+    {
+      "fromBattle": 100,
+      "weight": 1.1
+    },
+    {
+      "fromBattle": 200,
+      "weight": 1.5
+    }
+  ],
   "trainers": {
-    "Wren": { "class": "Veteran", "gender": "F", "spriteId": "veteranf-gen6", "fromBattle": 100 }
+    "Mildred": {
+      "class": "Veteran",
+      "gender": "F",
+      "spriteId": "veteranf-gen6",
+      "fromBattle": 100
+    },
+    "Ivor": {
+      "class": "Ruin Maniac",
+      "gender": "M",
+      "spriteId": "ruinmaniac-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Axel": {
+      "class": "Guitarist",
+      "gender": "M",
+      "spriteId": "guitarist-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Morella": {
+      "class": "Aroma Lady",
+      "gender": "F",
+      "spriteId": "aromalady-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Ophelia": {
+      "class": "Hex Maniac",
+      "gender": "F",
+      "spriteId": "hexmaniac-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Darwin": {
+      "class": "Bug Maniac",
+      "gender": "M",
+      "spriteId": "bugmaniac-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Sandor": {
+      "class": "Hiker",
+      "gender": "M",
+      "spriteId": "hiker-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Ragnar": {
+      "class": "Dragon Tamer",
+      "gender": "M",
+      "spriteId": "dragontamer-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Ferris": {
+      "class": "Worker",
+      "gender": "M",
+      "spriteId": "worker-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Neve": {
+      "class": "Swimmer",
+      "gender": "F",
+      "spriteId": "swimmerf-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Takeo": {
+      "class": "Black Belt",
+      "gender": "M",
+      "spriteId": "blackbelt-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Malcolm": {
+      "class": "Scientist",
+      "gender": "M",
+      "spriteId": "scientist-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Blaise": {
+      "class": "Kindler",
+      "gender": "M",
+      "spriteId": "kindler-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Rex": {
+      "class": "Expert",
+      "gender": "M",
+      "spriteId": "expert-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Hanzo": {
+      "class": "Ninja Boy",
+      "gender": "M",
+      "spriteId": "ninjaboy-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Gwendolyn": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Sylvie": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Regina": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6xy",
+      "fromBattle": 100,
+      "alwaysParadox": true
+    },
+    "Celeste": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Juliet": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Paige": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Aurora": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Vivian": {
+      "class": "Ace Trainer",
+      "gender": "F",
+      "spriteId": "acetrainerf-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Seraphina": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Delphine": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Esmeralda": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Margaux": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Camille": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Isabella": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    },
+    "Odette": {
+      "class": "Beauty",
+      "gender": "F",
+      "spriteId": "beauty-gen6xy",
+      "fromBattle": 100,
+      "block": 2
+    }
   }
 }

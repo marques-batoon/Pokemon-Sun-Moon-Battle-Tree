@@ -12,7 +12,9 @@
 //    other Digimon Tamers as special trainers: own sprite, a Pokémon that always leads, fixed Multi
 //    Battle partners).
 //  - regular-trainers.txt + regular-trainers.json -> src/data/custom/regular-trainers.json (regular trainers who
-//    join the regular trainers' pool from a given battle on: Veteran Wren, from battle 100).
+//    join the regular trainers' pool from a given battle on: Veteran Mildred and the 17 Paradox trainers, from battle 100).
+//  - special-trainers.txt + special-trainers.json -> src/data/custom/special-trainers.json (other special trainers
+//    added on request: Lillie, Hau, Lana, Marley).
 //  - "Brock 1" and "Brock 2" are one trainer (Brock) with all eight Pokémon.
 //  - Abilities, items, natures, EVs, moves and genders come from the export;
 //    IVs don't: like every Battle Tree trainer they use the trainer's IV
@@ -246,11 +248,32 @@ const regular = JSON.parse(readFileSync(new URL('regular-trainers.json', dir), '
 const regularTrainers = parseExports('regular-trainers.txt', name => {
   const info = regular.trainers[name];
   if (!info) { problems.push(`regular-trainers.json: no entry for ${name}`); return {}; }
-  return { class: info.class, classGender: info.gender, spriteId: info.spriteId, fromBattle: info.fromBattle };
+  return {
+    class: info.class, classGender: info.gender, spriteId: info.spriteId, fromBattle: info.fromBattle, weights: info.weights ?? regular.weights,
+    ...(info.alwaysParadox ? { alwaysParadox: true } : {}), ...(info.block ? { block: info.block } : {}),
+  };
 });
 for (const t of regularTrainers) {
+  const w = t.weights ?? [];
+  if (!w.length || w.some((x, i) => !(x.weight > 0) || (i > 0 && x.fromBattle <= w[i - 1].fromBattle))) problems.push(`regular-trainers.json: ${t.name} needs weights (by battle, in order)`);
   if (!(t.fromBattle > 50)) problems.push(`regular-trainers.json: ${t.name}'s fromBattle must be over 50 (the pool for battles 51 and up)`);
   if (GAME_TRAINERS.some(o => o.name === t.name)) problems.push(`${t.name}: the game has a trainer with that name`);
+  const paradox = t.sets.filter(s => /^Paradoxorb-/.test(s.item)).length;
+  if (t.alwaysParadox && (paradox === 0 || paradox === t.sets.length)) problems.push(`regular-trainers.json: ${t.name} always brings a Paradox Pokémon, so needs sets holding a Paradoxorb and others`);
+  if (t.alwaysParadox && t.sets.some(s => /ite( [XYZ])?$/.test(s.item) && !/^(Eviolite|White Herb)$/.test(s.item))) problems.push(`${t.name}: no Mega Stones`);
+}
+
+// --- Other special trainers (Lillie, Hau, Lana, Marley) ---
+const special = JSON.parse(readFileSync(new URL('special-trainers.json', dir), 'utf8'));
+const specialTrainers = parseExports('special-trainers.txt', name => {
+  const info = special.trainers[name];
+  if (!info) { problems.push(`special-trainers.json: no entry for ${name}`); return {}; }
+  return { class: info.class, classGender: info.gender, region: info.region, weight: info.weight };
+});
+const earlierSpecials = new Set([...gymLeaders, ...eliteFour, ...digidestinedTrainers].map(t => t.name).concat(evilTeams.map(t => t.key ?? t.name), [...GAME_SPECIALS]));
+for (const t of specialTrainers) {
+  if (earlierSpecials.has(t.name)) problems.push(`${t.name}: already a special trainer`);
+  if (!(t.weight > 0)) problems.push(`special-trainers.json: ${t.name} needs a weight`);
 }
 
 if (problems.length) {
@@ -308,8 +331,17 @@ save('battle-50.json', {
 save('regular-trainers.json', {
   source: 'Designed for the user (2026-10-22, on request): data-sources/custom/regular-trainers.txt (teams) and regular-trainers.json (who, sprite, from which battle); built by scripts/build-custom-trainers.mjs. Not from any game.',
   notes: [
-    'Regular trainers who join the regular trainers\' pool (battles 51 and up) from battle `fromBattle` on, in Super Singles, Super Doubles and Super Multi, with the same chance as everyone else in it.',
-    '`spriteId`: their Pokémon Showdown trainer sprite. IV 31 like every regular trainer from battle 51; IV lines are ignored.',
+    'Regular trainers who join the regular trainers\' pool (battles 51 and up) from battle `fromBattle` on, in Super Singles, Super Doubles and Super Multi, drawn at `weights` (by battle: 1.1 from 100, 1.5 from 200) against 1 for each of the game\'s trainers there.',
+    '`spriteId`: their Pokémon Showdown trainer sprite (bundled in public/trainers/showdown/, listed in trainer-sprites.json under "bundled"). IV 31 like every regular trainer from battle 51; IV lines are ignored.',
+    '`alwaysParadox`: one of their sets holding a Paradoxorb is on every team they bring, at a random place; the rest come from their other sets.',
   ],
   trainers: regularTrainers,
+});
+save('special-trainers.json', {
+  source: 'Designed for the user (2026-10-22, on request): data-sources/custom/special-trainers.txt (teams) and special-trainers.json (class, gender, region, weight); built by scripts/build-custom-trainers.mjs. Not from any game.',
+  notes: [
+    'Special trainers in Super Singles, Super Doubles and Super Multi (and All Star Mode), at their weight (7 each), buyable as Multi partners once beaten.',
+    'IV 31 like every special trainer; IV lines are ignored. Sprites: trainer-sprites.json (named, masters).',
+  ],
+  trainers: specialTrainers,
 });

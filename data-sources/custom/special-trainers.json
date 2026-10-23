@@ -1,0 +1,9 @@
+{
+  "note": "Other special trainers added on request (2026-10-22), by section title in special-trainers.txt: class, gender, region (for pair greetings) and weight in the special-trainer pool. Their sprites are in src/data/battle-tree/trainer-sprites.json ('named', and 'masters').",
+  "trainers": {
+    "Lillie": { "class": "Pokémon Trainer", "gender": "F", "region": "Alola", "weight": 7 },
+    "Hau": { "class": "Pokémon Trainer", "gender": "M", "region": "Alola", "weight": 7 },
+    "Lana": { "class": "Captain", "gender": "F", "region": "Alola", "weight": 7 },
+    "Marley": { "class": "Pokémon Trainer", "gender": "F", "region": "Sinnoh", "weight": 7 }
+  }
+}

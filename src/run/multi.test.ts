@@ -448,7 +448,7 @@ describe('Debug: choosing the next opponents', () => {
 });
 
 describe('Starting at a later battle (checkpoints)', () => {
-  it('unlocks battle 30 after winning battle 50, and battle 50 after winning battle 100, per course', () => {
+  it('unlocks battle 30 after winning battle 50, and battles 50 and 100 after winning battle 100, per course', () => {
     const { controller, battle, store } = setup();
     controller.debugUnlockSuper('singles');
     const start = (checkpoint: number) => controller.startRun({ course: 'super', team: SINGLES_TEAM, settings: DEFAULT_SETTINGS, seedText: `cp-${checkpoint}`, checkpoint });
@@ -456,6 +456,7 @@ describe('Starting at a later battle (checkpoints)', () => {
     const setBest = (best: number) => store.updateProfile(p => ({ ...p, records: { ...p.records, 'singles-super': { best, last: 0 } } }));
     setBest(50);
     expect(() => start(50)).toThrow(/won battle 100/);
+    expect(() => start(100)).toThrow(/won battle 100/);
     expect(() => start(20)).toThrow(/can't start at battle 20/);
     const run = start(30);
     expect([run.battle, run.wins, run.debug, run.next.battle]).toEqual([30, 29, false, 30]);
@@ -464,8 +465,13 @@ describe('Starting at a later battle (checkpoints)', () => {
     winThrough(controller, battle, 'singles-super', 30);
     expect(controller.run('singles-super')!.wins).toBe(30);
     expect(store.getState().profile.records['singles-super'].best).toBe(50);
+    setBest(99);
+    expect(() => start(100)).toThrow(/won battle 100/);
     setBest(100);
     expect(start(50).next.kind).toBe('legend');
+    // Battle 100: the Battle Legend draw again; the streak starts at 99 and counts.
+    const from100 = start(100);
+    expect([from100.battle, from100.wins, from100.debug, from100.next.battle, from100.next.kind]).toEqual([100, 99, false, 100, 'legend']);
     // Other courses keep their own records.
     controller.debugUnlockSuper('doubles');
     expect(() => controller.startRun({ format: 'doubles', course: 'super', team: { ...SINGLES_TEAM, bring: [0, 1, 2, 3] }, settings: DEFAULT_SETTINGS, checkpoint: 30 })).toThrow(/won battle 50/);

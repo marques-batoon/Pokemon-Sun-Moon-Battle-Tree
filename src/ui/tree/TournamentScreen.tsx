@@ -1,8 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { TRAINERS, trainerQuotes, type Trainer } from '../../data/battle-tree';
+import { duoTitle, TRAINERS, trainerQuotes, type Trainer } from '../../data/battle-tree';
 import { battleName } from '../../online/trainer-name';
 import {
-  champion, duoSpriteKey, matchKey, nextOpponent, roundName, roundPhrase, roundsOf, tournamentBp, tournamentDecided, type TournamentState,
+  champion, duoSpriteKey, matchEntrants, matchKey, nextOpponent, playerMatch, roundName, roundPhrase, roundsOf, tournamentBp, tournamentDecided, type TournamentState,
 } from '../../run/tournament';
 import type { TournamentController } from '../../run/tournament-controller';
 import { bpBalance } from '../../run/types';
@@ -17,6 +17,7 @@ import { revealDuration } from './bracket-timing';
 import { Celebration } from './Celebration';
 import { PartnerCard } from './PartnerCard';
 import { useTournament } from './hooks';
+import { VersusScreen } from './VersusScreen';
 
 interface Props {
   controller: TournamentController;
@@ -42,6 +43,8 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
   const you = trainerName ? battleName(trainerName) : 'You';
   const [celebrated, setCelebrated] = useState(false);
   const [skipping, setSkipping] = useState(false);
+  // The versus screen before your match (Battle!) or a replay (a match clicked on the bracket).
+  const [versus, setVersus] = useState<{ round: number; match: number; mine: boolean } | null>(null);
 
   const out = t?.status === 'lost' || t?.status === 'retired';
   const rounds = t ? roundsOf(t) : 0;
@@ -101,7 +104,7 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
         </dl>
       </header>
 
-      <Bracket t={t} you={you} animating={speed > 0 ? revealing : null} onReplay={onReplay} />
+      <Bracket t={t} you={you} animating={speed > 0 ? revealing : null} onReplay={(round, match) => setVersus({ round, match, mine: false })} />
       {t.logs && t.shown > 0 && <p className="muted small bracket-hint">Click a finished match to watch its replay.</p>}
 
       <div className="tournament-status" role="status">
@@ -152,13 +155,15 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
               detail={`${roundName(t.round, rounds)} · win for ${t.debug ? 0 : tournamentBp(t.round, rounds)} BP${t.debug ? ' (practice)' : ''}`}
               battleKey={`${t.id}:${t.round}`}
               spriteIds={opponentSpriteIds(foes.trainers.map(p => TRAINERS[p.trainerId]), duoSpriteKey(t))}
+              title={duoTitle(TRAINERS[foes.trainers[0].trainerId], TRAINERS[foes.trainers[1].trainerId])}
+              entrance={false}
             />
           )}
           <div className="row-actions">
             <button className="danger" disabled={!foes} onClick={() => { if (confirm('Retire from the tournament? The duo you were to face goes through.')) controller.retire(); }}>Retire</button>
             <span className="spacer" />
             <button onClick={onLeave}>Save &amp; quit</button>
-            <button className="primary" disabled={!canBattle} onClick={onBattle}>Battle!</button>
+            <button className="primary" disabled={!canBattle} onClick={() => setVersus({ round: t.round, match: playerMatch(t, t.round), mine: true })}>Battle!</button>
           </div>
           <div className="run-partner">
             <span className="muted small">Your partner</span>
@@ -191,6 +196,19 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
           </ol>
         </details>
       )}
+
+      {versus && (() => {
+        const pair = matchEntrants(t, versus.round, versus.match);
+        if (!pair) return null;
+        return (
+          <VersusScreen
+            t={t} pair={pair} you={you} detail={roundName(versus.round, rounds)}
+            action={versus.mine ? 'Battle!' : 'Watch the replay'}
+            onContinue={() => { setVersus(null); if (versus.mine) onBattle(); else onReplay(versus.round, versus.match); }}
+            onBack={() => setVersus(null)}
+          />
+        );
+      })()}
 
       {finished && !celebrated && winner && (
         <Celebration

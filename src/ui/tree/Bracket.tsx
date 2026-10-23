@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { TRAINERS, type Trainer } from '../../data/battle-tree';
+import { duoTitle, playerDuoTitle, TRAINERS, type Trainer } from '../../data/battle-tree';
 import { duoSpriteKey, matchCount, playerMatch, roundName, roundsOf, type TournamentEntrant, type TournamentState } from '../../run/tournament';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
@@ -113,10 +113,11 @@ function Entrant({ entrant, t, you, className, order }: { entrant: TournamentEnt
   if (!entrant) return <div className={`b-entrant ${className}`}><span className="b-names muted">—</span></div>;
   const partner = TRAINERS[t.partner.trainerId];
   const names = entrant.kind === 'player' ? `${you} & ${partner.name}` : entrant.trainers.map(p => TRAINERS[p.trainerId].name).join(' & ');
+  const title = entrant.kind === 'player' ? playerDuoTitle(you, partner) : duoTitle(TRAINERS[entrant.trainers[0].trainerId], TRAINERS[entrant.trainers[1].trainerId]);
   const big = className.includes('champion') || className.includes('finalist');
   const size = className.includes('champion') ? 44 : big ? 34 : 24;
   return (
-    <div className={`b-entrant${entrant.kind === 'player' ? ' you' : ''} ${className}`} style={{ '--m': order } as CSSProperties} title={names}>
+    <div className={`b-entrant${entrant.kind === 'player' ? ' you' : ''} ${className}`} style={{ '--m': order } as CSSProperties} title={`${title}: ${names}`}>
       <span className="b-sprites">
         {entrant.kind === 'player'
           ? <><PlayerSprite size={size} label={you} /><TrainerSprite trainer={partner} size={size} /></>

@@ -4,12 +4,14 @@ import bracketsJson from './brackets.json';
 import bossesJson from './bosses.json';
 import rulesJson from './rules.json';
 import quotesJson from './trainer-quotes.json';
+import duoTitlesJson from './duo-titles.json';
 import gymLeadersJson from '../custom/gym-leaders.json';
 import battle50Json from '../custom/battle-50.json';
 import eliteFourJson from '../custom/elite-four.json';
 import evilTeamsJson from '../custom/evil-teams.json';
 import digidestinedJson from '../custom/digidestined.json';
 import regularTrainersJson from '../custom/regular-trainers.json';
+import specialTrainersJson from '../custom/special-trainers.json';
 import type { Boss, BracketsFile, Course, CourseSchedule, Format, LegendTrainer, RegularTrainer, RulesFile, SpecialTrainer, StatTable, Trainer, TrainerQuotes, TreeSet } from './types';
 
 export * from './types';
@@ -164,34 +166,62 @@ const DIGIDESTINED = {
 };
 
 /**
- * Custom regular trainers (Veteran Wren), after the DigiDestined (earlier ids don't move): they join the regular
- * trainers' pool from their `fromBattle` on (REGULAR_FROM), with their own Showdown sprite. IV 31, as every regular
- * trainer from battle 51.
+ * Custom regular trainers (Veteran Mildred, the Paradox trainers), after the DigiDestined (earlier ids don't move): they
+ * join the regular trainers' pool from their `fromBattle` on (REGULAR_FROM) at their weight against the game's trainers'
+ * 1 (1.1 from battle 100, 1.5 from battle 200), with their own Showdown sprite. IV 31, as
+ * every regular trainer from battle 51. A Paradox trainer (`alwaysParadox`) always brings one of their sets holding a
+ * Paradoxorb (`alwaysOneOf`). `block` 2 (the Ace Trainers and Beauties): added after Lillie, Hau, Lana and Marley, so they
+ * come after them.
  */
-function customRegularTrainers(firstSet: number, firstTrainer: number) {
+type CustomRegular = Omit<CustomTrainer, 'region'> & { spriteId: string; fromBattle: number; weights: { fromBattle: number; weight: number }[]; alwaysParadox?: boolean; block?: number };
+const REGULAR_LIST = regularTrainersJson.trainers as CustomRegular[];
+function customRegularTrainers(list: CustomRegular[], firstSet: number, firstTrainer: number) {
   const sets: TreeSet[] = [];
-  const list = regularTrainersJson.trainers as (Omit<CustomTrainer, 'region'> & { spriteId: string; fromBattle: number })[];
   const trainers: RegularTrainer[] = list.map((t, i) => {
     const roster = t.sets.map((s, j) => {
       const id = firstSet + sets.length;
       sets.push({ id, label: `${s.species} (${t.name}${t.sets.length > 1 ? ` ${j + 1}` : ''})`, setNumber: j + 1, ...s });
       return id;
     });
+    const always = t.alwaysParadox ? roster.filter(id => sets[id - firstSet].item.startsWith('Paradoxorb-')) : [];
     return {
       id: firstTrainer + i, name: t.name, class: t.class, classGender: t.classGender, iv: 31, roster, kind: 'regular', number: null,
-      bulbapediaBrackets: [], custom: true, spriteId: t.spriteId, fromBattle: t.fromBattle,
+      bulbapediaBrackets: [], custom: true, spriteId: t.spriteId, fromBattle: t.fromBattle, poolWeights: t.weights, ...(always.length ? { alwaysOneOf: always } : {}),
       source: { sets: 'custom: data-sources/custom/regular-trainers.txt (designed for the user)' },
     };
   });
   return { sets, trainers };
 }
 const REGULAR = customRegularTrainers(
+  REGULAR_LIST.filter(t => (t.block ?? 1) === 1),
   GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length,
   GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length + DIGIDESTINED.trainers.length,
 );
 
-export const SETS: TreeSet[] = [...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets, ...REGULAR.sets];
-export const TRAINERS: Trainer[] = [...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers, ...REGULAR.trainers];
+/** Other special trainers added on request (Lillie, Hau, Lana, Marley), after everyone else (earlier ids don't move): weight 7, IV 31. */
+const MORE_SPECIALS = customTrainers(
+  specialTrainersJson.trainers as CustomTrainer[],
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length + REGULAR.sets.length,
+  GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length + DIGIDESTINED.trainers.length + REGULAR.trainers.length,
+  7, 'special-trainers.txt (designed for the user)',
+);
+
+/** Custom regular trainers added after Lillie, Hau, Lana and Marley (`block` 2: the Ace Trainers and Beauties), after them. */
+const REGULAR_LATER = customRegularTrainers(
+  REGULAR_LIST.filter(t => t.block === 2),
+  GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length + REGULAR.sets.length + MORE_SPECIALS.sets.length,
+  GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length + DIGIDESTINED.trainers.length + REGULAR.trainers.length + MORE_SPECIALS.trainers.length,
+);
+/** Every custom regular trainer (both blocks): the late pools take them all. */
+const CUSTOM_REGULAR = [...REGULAR.trainers, ...REGULAR_LATER.trainers];
+
+export const SETS: TreeSet[] = [
+  ...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets, ...REGULAR.sets, ...MORE_SPECIALS.sets, ...REGULAR_LATER.sets,
+];
+export const TRAINERS: Trainer[] = [
+  ...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers, ...REGULAR.trainers,
+  ...MORE_SPECIALS.trainers, ...REGULAR_LATER.trainers,
+];
 
 /**
  * Trainers who, as opponents in a Multi Battle, always battle alongside one of their partners (Izzy: Tai, Colress or Cheren), who
@@ -226,15 +256,15 @@ function recurringLegends(schedule: CourseSchedule): CourseSchedule {
 
 /** The game's pool for battles 51 and up, which custom regular trainers join from their `fromBattle` on. */
 const LATE_POOL = 'b51+';
-/** The battles from which the late pool grows (100: Veteran Wren), each with its own pool ("b100+"). */
-const REGULAR_FROM = [...new Set(REGULAR.trainers.map(t => t.fromBattle!))].sort((a, b) => a - b);
+/** The battles from which the late pool grows (100: Veteran Mildred), each with its own pool ("b100+"). */
+const REGULAR_FROM = [...new Set(CUSTOM_REGULAR.map(t => t.fromBattle!))].sort((a, b) => a - b);
 const latePoolKey = (from: number) => `b${from}+`;
 /** The late pool from battle `from` on: the game's 100 trainers, and every custom regular trainer who's joined by then. */
 function latePool(from: number): BracketsFile['pools'][string] {
   const pool = GAME_BRACKETS.pools[LATE_POOL];
   return {
     label: `Battles ${from}+`, bulbapediaNumbers: pool.bulbapediaNumbers,
-    trainerIds: [...pool.trainerIds, ...REGULAR.trainers.filter(t => t.fromBattle! <= from).map(t => t.id)],
+    trainerIds: [...pool.trainerIds, ...CUSTOM_REGULAR.filter(t => t.fromBattle! <= from).map(t => t.id)],
   };
 }
 /** Super schedules: from each `fromBattle` on, the late pool with those custom regular trainers in it (rules just before the game's 51+ rule; the latest first). */
@@ -266,7 +296,7 @@ const withModes = <T extends Partial<Record<Course, CourseSchedule>>>(courses: T
 /**
  * brackets.json, with the Gym Leaders, the Elite Four and Champions and the evil teams in the special-trainer pool
  * (Super Singles, Doubles and Multi), the Battle Legends every 50 battles of Super, All Star Mode, and the custom
- * regular trainers in the regular pool from their battle on (Veteran Wren: 100).
+ * regular trainers in the regular pool from their battle on (Veteran Mildred: 100).
  */
 export const BRACKETS: BracketsFile = {
   ...GAME_BRACKETS,
@@ -279,6 +309,7 @@ export const BRACKETS: BracketsFile = {
     trainerIds: [
       ...GAME_BRACKETS.specialTrainerPool.trainerIds, ...CUSTOM.trainers.map(t => t.id), ...ELITE_FOUR.trainers.map(t => t.id),
       ...EVIL_TEAMS.trainers.map(t => t.id), ...DIGIDESTINED.trainers.filter(t => t.kind === 'special').map(t => t.id),
+      ...MORE_SPECIALS.trainers.map(t => t.id),
     ],
   },
 };
@@ -323,6 +354,23 @@ export const TRAINER_PAIR_QUOTES = quotesJson.pairs as Record<string, Record<str
  */
 export const TRAINER_DUO_QUOTES = quotesJson.duos as Record<string, Record<string, TrainerQuotes[]>>;
 const pairKey = (a: string, b: string) => [a, b].sort().join('|');
+/** Each special trainer's and Battle Legend's epithet ("Rock", "Mermaid"), for team titles in the All Star Duo Tournament. */
+const EPITHETS = duoTitlesJson.epithets as Record<string, string>;
+/** Duos with a title of their own ("The Mystic Combination"), by pair. */
+const DUO_TITLES = new Map(Object.entries(duoTitlesJson.titles).map(([label, title]) => {
+  const [a, b] = label.split(' & ');
+  return [pairKey(a, b), title] as const;
+}));
+/** A trainer's epithet for team titles (the name if none). */
+export const trainerEpithet = (t: Trainer): string => EPITHETS[trainerKey(t)] ?? t.name;
+/**
+ * A duo's team title in the All Star Duo Tournament (on request, 2026-10-23): their own if they have one ("The Mystic
+ * Combination"), else "The Rock & the Mermaid" from their epithets, in speaking order.
+ */
+export const duoTitle = (a: Trainer, b: Trainer): string =>
+  DUO_TITLES.get(pairKey(trainerKey(a), trainerKey(b))) ?? `The ${trainerEpithet(a)} & the ${trainerEpithet(b)}`;
+/** Your team's title: "Marques & the Mermaid". */
+export const playerDuoTitle = (you: string, partner: Trainer): string => `${you} & the ${trainerEpithet(partner)}`;
 const PAIR_QUOTES = new Map(Object.values(TRAINER_PAIR_QUOTES).map(entry => {
   const [a, b] = Object.keys(entry);
   return [pairKey(a, b), entry] as const;

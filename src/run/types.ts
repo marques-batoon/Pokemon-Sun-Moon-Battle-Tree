@@ -155,10 +155,14 @@ export interface CourseRecord {
 
 /**
  * Later battles a new challenge may start at (app feature): battle 30 once you've won
- * battle 50 of that course, battle 50 once you've won battle 100. `best` counts wins,
+ * battle 50 of that course, battles 50 and 100 once you've won battle 100. `best` counts wins,
  * so it's the last battle won.
  */
-export const CHECKPOINTS: readonly { start: number; unlockedBy: number }[] = [{ start: 30, unlockedBy: 50 }, { start: 50, unlockedBy: 100 }];
+export const CHECKPOINTS: readonly { start: number; unlockedBy: number }[] = [
+  { start: 30, unlockedBy: 50 }, { start: 50, unlockedBy: 100 },
+  // On request (2026-10-22).
+  { start: 100, unlockedBy: 100 },
+];
 export const checkpointsFor = (record: CourseRecord | undefined): number[] =>
   CHECKPOINTS.filter(c => (record?.best ?? 0) >= c.unlockedBy).map(c => c.start);
 

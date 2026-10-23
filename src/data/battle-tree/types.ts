@@ -47,10 +47,12 @@ interface TrainerBase {
   custom?: boolean;
   /** Custom trainers' own sprite (a path under public/), instead of a Showdown one. */
   sprite?: string;
-  /** Custom trainers: their Pokémon Showdown sprite, instead of their class's (Veteran Wren: veteranf-gen6). */
+  /** Custom trainers: their Pokémon Showdown sprite, instead of their class's (Veteran Mildred: veteranf-gen6). */
   spriteId?: string;
   /** Custom trainers: the set (id) that always leads their team (Tai's Agumon, Matt's Gabumon). */
   leadSetId?: number;
+  /** Custom trainers: one of these sets (ids) is on every team they bring, at a random place (the Paradox trainers' Paradox Pokémon). */
+  alwaysOneOf?: number[];
 }
 
 export interface RegularTrainer extends TrainerBase {
@@ -58,8 +60,10 @@ export interface RegularTrainer extends TrainerBase {
   /** Bulbapedia's 1-based trainer number (001-190); null for custom ones. */
   number: number | null;
   bulbapediaBrackets: string[];
-  /** Custom: in the regular trainers' pool from this battle on (Veteran Wren: 100). */
+  /** Custom: in the regular trainers' pool from this battle on (Veteran Mildred: 100). */
   fromBattle?: number;
+  /** Custom: chance in that pool relative to the game's trainers (1 each), from each battle on: 1.1 from 100, 1.5 from 200 (on request). */
+  poolWeights?: { fromBattle: number; weight: number }[];
 }
 
 export interface SpecialTrainer extends TrainerBase {

@@ -56,6 +56,8 @@ export type AnimationKind =
   | 'balloon-in'
   /** A Focus Sash (or Focus Band: `condition`) lets the Pokémon hang on with 1 HP. */
   | 'sash'
+  /** Sturdy: at full HP, a hit that would have knocked the Pokémon out leaves it with 1 HP ("X endured the hit!"). */
+  | 'sturdy'
   /**
    * Another held item is used up (`label`: its name; `condition`: its id): White Herb, Mental Herb, Power Herb, Weakness
    * Policy, Eject Button, Absorb Bulb, a Seed... For Red Card, `target`/`targetSlot`: the attacker it sends back.
@@ -124,14 +126,15 @@ export interface BattleAnimation {
 }
 
 /**
- * Protocol lines in the order they're shown. The engine announces a Focus Sash ("-enditem") just before the damage
- * it lets the Pokémon survive; as in the games, the hit shows first, then "X hung on using its Focus Sash!".
+ * Protocol lines in the order they're shown. The engine announces a Focus Sash ("-enditem") and Sturdy ("-ability")
+ * just before the damage they let the Pokémon survive; as in the games, the hit shows first, then "X hung on using its
+ * Focus Sash!" or "X endured the hit!".
  */
 export function displayOrder(lines: readonly string[]): string[] {
   const out = [...lines];
   for (let i = 0; i + 1 < out.length; i++) {
-    const sash = /^\|-enditem\|([^|]+)\|Focus Sash(\||$)/.exec(out[i]);
-    if (sash && out[i + 1].startsWith(`|-damage|${sash[1]}|`)) [out[i], out[i + 1]] = [out[i + 1], out[i]];
+    const held = /^\|-enditem\|([^|]+)\|Focus Sash(\||$)/.exec(out[i]) ?? /^\|-ability\|([^|]+)\|Sturdy$/.exec(out[i]);
+    if (held && out[i + 1].startsWith(`|-damage|${held[1]}|`)) [out[i], out[i + 1]] = [out[i + 1], out[i]];
   }
   return out;
 }
@@ -206,8 +209,11 @@ export const SIGNATURE_MOVE_MS: Record<string, number> = {
   floralhealing: 900, instruct: 900, purify: 1300, shoreup: 1350, toxicthread: 1300, spicyextract: 1250, noretreat: 1050, burningbulwark: 900,
 };
 /** Signature moves with their own, longer animation (catalog SIGNATURE_MOVES). */
+/** Moves with a bigger animation while their user is charged (CHARGED_MOVES): Giga Blaster. */
+export const CHARGED_MOVE_MS: Record<string, number> = { gigablaster: 2800 };
+
 export const SIGNATURE_MS: Record<string, number> = {
-  ...BIG_MOVE_MS, ...SIGNATURE_MOVE_MS, solarbeam: 1500, gaiaforce: 1500, cocytuspulse: 1300, darkgaiaforce: 1500, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 1500,
+  ...BIG_MOVE_MS, ...SIGNATURE_MOVE_MS, solarbeam: 1500, gaiaforce: 2400, cocytuspulse: 1300, darkgaiaforce: 2400, dramondestroyer: 1000, dramonbreaker: 1000, gigablaster: 2400,
   pyrofang: 1000, lightningjoust: 1100, shieldofjust: 1300, petittwister: 1200, burstshot: 1400, giantmissile: 1500,
   diamondshuriken: 1000, amethystmandala: 1500,
 };
@@ -231,6 +237,8 @@ export const BERRY_MS = 1000;
 export const BALLOON_POP_MS = 850;
 export const BALLOON_IN_MS = 1100;
 export const SASH_MS = 900;
+/** Sturdy holding a Pokémon on with 1 HP. */
+export const STURDY_MS = 1000;
 export const ITEM_MS = 1000;
 export const IMMUNE_MS = 1100;
 export const SKY_DROP_MS = 900;
@@ -364,6 +372,7 @@ function abilityStep(step: (a: Omit<BattleAnimation, 'id'> | null) => PlannedSte
 /** Move animation length (normal speed) by what the move does. */
 export function moveDuration(fx: MoveFx): number {
   if (fx.kind === 'z') return Z_MOVE_MS;
+  if (fx.charged && CHARGED_MOVE_MS[fx.moveId]) return CHARGED_MOVE_MS[fx.moveId];
   if (SIGNATURE_MS[fx.moveId]) return SIGNATURE_MS[fx.moveId];
   if (fx.kind === 'attack') return fx.category === 'Special' ? 1000 : 900;
   return 800;
@@ -422,6 +431,9 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       const zCategory = zCategories.get(battle);
       if (fx.kind === 'z' && zCategory) fx = { ...fx, category: zCategory };
       zCategories.delete(battle);
+      // Giga Blaster from a charged Pokémon (Charge, Electromorphosis: double power): its bigger animation. The charge
+      // ends after the move, so it's still there now.
+      if (CHARGED_MOVE_MS[fx.moveId] && 'charge' in (battle.getPokemon(args[1] as never)?.volatiles ?? {})) fx = { ...fx, charged: true };
       lastMoveUser.set(battle, { side, slot, type: fx.type, id: toId(args[2]) });
       hitsSinceMove.set(battle, 0);
       pendingCrits.delete(battle);
@@ -577,6 +589,8 @@ export function planLine(args: readonly string[], kwArgs: Record<string, unknown
       // Motor Drive, Lightning Rod, Storm Drain, Sap Sipper take in a move ("-ability|p2a: Raichu|Lightning Rod|boost");
       // the stat rise follows on its own line.
       if (isAbsorb(toId(args[2]))) return [abilityStep(step, battle, args[1], args[2])];
+      // Sturdy: the Pokémon braces and hangs on with 1 HP (an OHKO move it blocks is "-immune ... [from] ability: Sturdy").
+      if (toId(args[2]) === 'sturdy') return [step({ kind: 'sturdy', ...at(args[1]), target: null, durationMs: STURDY_MS })];
       return [step(base > 0 ? { kind: 'text', side: null, target: null, durationMs: base } : null)];
     case '-boost':
     case '-unboost': {

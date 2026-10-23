@@ -38,7 +38,7 @@ describe('schedule', () => {
     expect(() => scheduleSlot('singles', 'normal', 21)).toThrow();
   });
 
-  it('follows the documented Super course: specials every 10th, the Battle Legends at 50 (and, an app change, every 50 after), 51+ forever (with Veteran Wren from 100)', () => {
+  it('follows the documented Super course: specials every 10th, the Battle Legends at 50 (and, an app change, every 50 after), 51+ forever (with Veteran Mildred from 100)', () => {
     const expected: [number, string][] = [
       [1, 'b01-10'], [9, 'b01-10'], [11, 'b11-19'], [21, 'b21-29'], [31, 'b31-39'], [41, 'b41-49'], [49, 'b41-49'], [51, 'b51+'], [99, 'b51+'],
       [101, 'b100+'], [999, 'b100+'],
@@ -61,9 +61,9 @@ describe('schedule', () => {
     }
   });
 
-  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100, and 101 from battle 100 with Veteran Wren)', () => {
+  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100, and 130 from battle 100 with the 30 custom regular trainers)', () => {
     const sizes = Object.fromEntries(Object.entries(BRACKETS.pools).map(([k, p]) => [k, p.trainerIds.length]));
-    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100, 'b100+': 101 });
+    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100, 'b100+': 130 });
   });
 });
 
@@ -83,12 +83,12 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(chiSquare(counts, expected)).toBeLessThan(chiSquareCritical(pool.length - 1));
   });
 
-  it('special trainers from both versions: shared trainers weight 7 (Anabel 3.5), each version exclusive 3.5; Gym Leaders 7 (Giovanni 1), Elite Four and Champions 3.5, evil teams 1 (Courtney 7), Izzy, Kaito and Rika 7 (Takato and Henry are Battle Legends)', () => {
+  it('special trainers from both versions: shared trainers weight 7 (Anabel 3.5), each version exclusive 3.5; Gym Leaders 7 (Giovanni 1), Elite Four and Champions 3.5, evil teams 1 (Courtney 7), Izzy, Kaito and Rika 7 (Takato and Henry are Battle Legends), Lillie, Hau, Lana and Marley 7', () => {
     const pool = specialPool();
-    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 3);
+    expect(pool).toHaveLength(11 + 47 + 33 + 26 + 3 + 4);
     expect(pool.some(p => ['Takato', 'Henry'].includes(p.trainer.name) && p.trainer.custom)).toBe(false);
     const weightOf = (name: string) => pool.find(p => p.trainer.name === name)!.weight;
-    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca', 'Courtney', 'Izzy', 'Kaito', 'Rika']) expect(weightOf(name), name).toBe(7);
+    for (const name of ['Grimsley', 'Wally', 'Colress', 'Cynthia', 'Brock', 'Bianca', 'Courtney', 'Izzy', 'Kaito', 'Rika', 'Lillie', 'Hau', 'Lana', 'Marley']) expect(weightOf(name), name).toBe(7);
     // Anabel 3.5 (on request; the game's 1 is a seventh of the others').
     for (const name of ['Anabel', 'Plumeria', 'Kiawe', 'Sina', 'Guzma', 'Mallow', 'Dexio', 'Lance', 'Lorelei', 'Kukui']) expect(weightOf(name), name).toBe(3.5);
     // The evil team leaders and admins: 1 (Courtney 7).
@@ -96,7 +96,7 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     // Giovanni (a Gym Leader here): 1, on request.
     expect(weightOf('Giovanni')).toBe(1);
     const total = pool.reduce((s, t) => s + t.weight, 0);
-    expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 3 * 7);
+    expect(total).toBe(52.5 + 46 * 7 + 1 + 33 * 3.5 + 25 * 1 + 7 + 3 * 7 + 4 * 7);
 
     const n = 100_000;
     const counts = drawTrainers('super', 30, n, 'special');

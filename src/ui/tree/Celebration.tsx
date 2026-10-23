@@ -1,5 +1,5 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
-import type { Trainer } from '../../data/battle-tree';
+import { duoTitle, playerDuoTitle, type Trainer } from '../../data/battle-tree';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { Trophy } from '../components/Trophy';
@@ -18,9 +18,13 @@ export type Champions =
   | { kind: 'player'; you: string; partner: Trainer }
   | { kind: 'duo'; trainers: [Trainer, Trainer]; quotes: [string | null, string | null]; spriteIds?: (string | null)[] };
 
+/** The champions' team title ("The Rock & the Mermaid"; yours: "Marques & the Mermaid"). */
+const titleOf = (c: Champions) => (c.kind === 'player' ? playerDuoTitle(c.you, c.partner) : duoTitle(c.trainers[0], c.trainers[1]));
+
 /**
- * The tournament's champions celebrate: light rays, confetti, the trophy rising, and the winning pair jumping for joy
- * on the podium (you and your partner, with the BP you earned; or the duo who won, saying their victory lines).
+ * The tournament's champions celebrate: light rays, confetti, the trophy rising, their team title, and the winning pair
+ * jumping for joy on the podium (you and your partner, with the BP you earned; or the duo who won, saying their victory
+ * lines).
  * Closes with Continue (or Escape).
  */
 export function Celebration({ champions, bp = 0, onClose }: { champions: Champions; bp?: number; onClose: () => void }) {
@@ -35,7 +39,7 @@ export function Celebration({ champions, bp = 0, onClose }: { champions: Champio
     ? [<PlayerSprite key="you" size={SPRITE} label={champions.you} />, <TrainerSprite key="partner" trainer={champions.partner} size={SPRITE} />]
     : champions.trainers.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={SPRITE} spriteId={champions.spriteIds?.[i]} />);
   return (
-    <div className={`celebration${you ? '' : ' others'}`} role="dialog" aria-modal="true" aria-label={`${names}: tournament champions`}>
+    <div className={`celebration${you ? '' : ' others'}`} role="dialog" aria-modal="true" aria-label={`${titleOf(champions)}, ${names}: tournament champions`}>
       <div className="celebration-rays" aria-hidden />
       <div className="celebration-confetti" aria-hidden>
         {Array.from({ length: 70 }, (_, i) => (
@@ -48,6 +52,7 @@ export function Celebration({ champions, bp = 0, onClose }: { champions: Champio
       <div className="celebration-body">
         <Trophy size={110} className="celebration-trophy" />
         <h2 className="celebration-title">Tournament Champions!</h2>
+        <p className="celebration-team">{titleOf(champions)}</p>
         <div className="celebration-podium">
           {podium.map((sprite, i) => (
             <div key={i} className={`celebration-champion${i ? ' late' : ''}`}>

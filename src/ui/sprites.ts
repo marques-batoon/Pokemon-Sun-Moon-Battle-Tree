@@ -229,8 +229,12 @@ export function trainerSpriteUrl(trainer: Trainer, spriteId?: string | null): st
   // Custom trainers bring their own sprite, served from public/ with the app.
   if (trainer.sprite) return `${import.meta.env.BASE_URL}${trainer.sprite.replace(/^\//, '')}`;
   const id = trainerSpriteId(trainer);
-  return id ? Sprites.getAvatar(id) : null;
+  return id ? showdownSpriteUrl(id) : null;
 }
+
+const bundled = new Set(spriteData.bundled);
+/** A Showdown trainer sprite: from the app when it's bundled ('bundled' in trainer-sprites.json: public/trainers/showdown/), else from Showdown. */
+const showdownSpriteUrl = (id: string) => (bundled.has(id) ? `${import.meta.env.BASE_URL}trainers/showdown/${id}.png` : Sprites.getAvatar(id));
 
 const masters = spriteData.masters as Record<string, string[]>;
 /** Outfits that match (Red and Blue's Sygna Suits, their Champion outfits): worn together, or not at all. */

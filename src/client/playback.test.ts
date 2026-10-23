@@ -169,7 +169,9 @@ describe('planLine: Z-Moves and signature moves', () => {
   });
 
   it('gives Gaia Force and Cocytus Pulse their longer animations', () => {
-    expect(plan('|move|p1a: Agumon|Gaia Force|p2a: Snorlax')[0].animation?.durationMs).toBe(1500);
+    // Gaia Force: the sun is raised, pulled back and hurled, and its explosion has time to burn out (2026-10-23).
+    expect(plan('|move|p1a: Agumon|Gaia Force|p2a: Snorlax')[0].animation?.durationMs).toBe(2400);
+    expect(plan('|move|p1a: Agumon|Dark Gaia Force|p2a: Snorlax')[0].animation?.durationMs).toBe(2400);
     expect(plan('|move|p1a: Gabumon|Cocytus Pulse|p2a: Snorlax')[0].animation?.durationMs).toBe(1300);
   });
 });
@@ -284,6 +286,23 @@ describe('planLine: moves taken in by an Ability (Water Absorb, Volt Absorb...)'
 describe('planLine: Charge', () => {
   const RAICHU = set('Raichu', 'Static', ['Charge', 'Thunderbolt']);
   const SNORLAX = set('Snorlax', 'Thick Fat', ['Splash']);
+
+  it('gives Giga Blaster its bigger animation when its user is charged (Charge, Electromorphosis), and only then', () => {
+    const client = new ClientBattle(new Generations(Dex));
+    const feed = (line: string) => { const { args, kwArgs } = Protocol.parseBattleLine(line); client.add(args, kwArgs); };
+    const planOne = (line: string) => {
+      const { args, kwArgs } = Protocol.parseBattleLine(line);
+      return planLine(args as readonly string[], kwArgs as Record<string, unknown>, client, true)[0].animation!;
+    };
+    for (const line of ['|player|p1|A|', '|player|p2|B|', '|gametype|singles', '|gen|7', '|start', '|switch|p1a: Raichu|Raichu, L50|100/100', '|switch|p2a: Snorlax|Snorlax, L50|100/100', '|turn|1']) feed(line);
+    const giga = '|move|p1a: Raichu|Giga Blaster|p2a: Snorlax';
+    expect(planOne(giga)).toMatchObject({ durationMs: 2400 });
+    expect(planOne(giga).fx?.charged).toBeFalsy();
+    feed('|-start|p1a: Raichu|Charge|[from] ability: Electromorphosis');
+    expect(planOne(giga)).toMatchObject({ durationMs: 2800, fx: { moveId: 'gigablaster', charged: true } });
+    // Other Electric moves keep their animation.
+    expect(planOne('|move|p1a: Raichu|Thunderbolt|p2a: Snorlax').fx?.charged).toBeFalsy();
+  });
 
   it('charges the user up, and the battle client holds the charge (the lasting glow) until its next move', () => {
     const steps = planBattle(RAICHU, SNORLAX, [['move 1', 'move 1']]);
@@ -452,6 +471,14 @@ describe('planLine: items that show (Air Balloon coming in, Focus Sash, Focus Ba
   it('shows the Focus Sash and Focus Band letting the Pokémon hang on', () => {
     expect(plan('|-enditem|p2a: Alakazam|Focus Sash')).toMatchObject({ kind: 'sash', side: 'p2', condition: 'focussash' });
     expect(plan('|-activate|p1a: Machamp|item: Focus Band')).toMatchObject({ kind: 'sash', side: 'p1', condition: 'focusband' });
+  });
+
+  it('shows Sturdy holding the Pokémon on with 1 HP, after the hit', () => {
+    expect(plan('|-ability|p2b: Magnezone|Sturdy')).toMatchObject({ kind: 'sturdy', side: 'p2', slot: 1 });
+    const lines = ['|move|p1a: Garchomp|Earthquake|p2a: Golem', '|-ability|p2a: Golem|Sturdy', '|-damage|p2a: Golem|1/130'];
+    expect(displayOrder(lines)).toEqual([lines[0], lines[2], lines[1]]);
+    // Another Ability announced before someone's damage stays put.
+    expect(displayOrder(['|-ability|p2a: Golem|Rock Head', '|-damage|p2a: Golem|50/100'])).toEqual(['|-ability|p2a: Golem|Rock Head', '|-damage|p2a: Golem|50/100']);
   });
 
   it('shows other held items being used up (herbs, Weakness Policy, Red Card thrown at the attacker...)', () => {

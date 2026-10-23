@@ -1,0 +1,295 @@
+=== [gen7] Lillie ===
+
+Clefable @ Life Orb
+Ability: Magic Guard
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Calm Mind
+- Moonblast
+- Flamethrower
+- Moonlight
+
+Ninetales-Alola @ Light Clay
+Ability: Snow Warning
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Aurora Veil
+- Blizzard
+- Moonblast
+- Freeze-Dry
+
+Comfey @ Sitrus Berry
+Ability: Triage
+EVs: 252 HP / 4 Def / 252 SpD
+Calm Nature
+- Draining Kiss
+- Giga Drain
+- Calm Mind
+- Synthesis
+
+Ribombee @ Focus Sash
+Ability: Shield Dust
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Sticky Web
+- Moonblast
+- Stun Spore
+- U-turn
+
+Lilligant @ Grassium Z
+Ability: Own Tempo
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Quiver Dance
+- Petal Dance
+- Giga Drain
+- Sleep Powder
+
+Sylveon @ Choice Specs
+Ability: Pixilate
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Hyper Voice
+- Psyshock
+- Shadow Ball
+- Quick Attack
+
+Togekiss @ Choice Scarf
+Ability: Serene Grace
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Air Slash
+- Dazzling Gleam
+- Aura Sphere
+- Trick
+
+Milotic @ Leftovers
+Ability: Competitive
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Scald
+- Recover
+- Ice Beam
+- Haze
+
+=== [gen7] Hau ===
+
+Raichu-Alola @ Aloraichium Z
+Ability: Surge Surfer
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Thunderbolt
+- Psychic
+- Focus Blast
+- Nasty Plot
+
+Komala @ Choice Band
+Ability: Comatose
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Wood Hammer
+- Sucker Punch
+- U-turn
+- Superpower
+
+Crabominable @ Assault Vest
+Ability: Iron Fist
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Ice Hammer
+- Close Combat
+- Earthquake
+- Thunder Punch
+
+Tauros @ Life Orb
+Ability: Sheer Force
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Body Slam
+- Earthquake
+- Rock Slide
+- Zen Headbutt
+
+Noivern @ Choice Specs
+Ability: Infiltrator
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Hurricane
+- Flamethrower
+- Boomburst
+
+Vaporeon @ Leftovers
+Ability: Water Absorb
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Scald
+- Wish
+- Protect
+- Ice Beam
+
+Incineroar @ Sitrus Berry
+Ability: Blaze
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Flare Blitz
+- Darkest Lariat
+- Fake Out
+- U-turn
+
+Decidueye @ Focus Sash
+Ability: Overgrow
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Spirit Shackle
+- Leaf Blade
+- Sucker Punch
+- Swords Dance
+
+=== [gen7] Lana ===
+
+Araquanid @ Leftovers
+Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Liquidation
+- Leech Life
+- Sticky Web
+- Protect
+
+Lanturn @ Assault Vest
+Ability: Volt Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Scald
+- Thunderbolt
+- Ice Beam
+- Volt Switch
+
+Wishiwashi @ Sitrus Berry
+Ability: Schooling
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Waterfall
+- Earthquake
+- Endeavor
+- Protect
+
+Toxapex @ Black Sludge
+Ability: Regenerator
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Recover
+- Toxic Spikes
+- Haze
+
+Golisopod @ Choice Band
+Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- First Impression
+- Liquidation
+- Aqua Jet
+- Leech Life
+
+Bruxish @ Life Orb
+Ability: Strong Jaw
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Psychic Fangs
+- Aqua Jet
+- Crunch
+- Ice Fang
+
+Dhelmise @ Choice Scarf
+Ability: Steelworker
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Anchor Shot
+- Power Whip
+- Shadow Claw
+- Earthquake
+
+Primarina @ Primarium Z
+Ability: Torrent
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Sparkling Aria
+- Moonblast
+- Ice Beam
+- Psychic
+
+=== [gen7] Marley ===
+
+Arcanine @ Life Orb
+Ability: Intimidate
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Flare Blitz
+- Extreme Speed
+- Wild Charge
+- Close Combat
+
+Ambipom @ Silk Scarf
+Ability: Technician
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Fake Out
+- Double Hit
+- U-turn
+- Low Kick
+
+Shuckle @ Mental Herb
+Ability: Sturdy
+EVs: 252 HP / 4 Def / 252 SpD
+Bold Nature
+- Sticky Web
+- Stealth Rock
+- Encore
+- Toxic
+
+Whiscash @ Leftovers
+Ability: Oblivious
+EVs: 252 Atk / 4 Def / 252 Spe
+Adamant Nature
+- Dragon Dance
+- Waterfall
+- Earthquake
+- Stone Edge
+
+Gastrodon @ Sitrus Berry
+Ability: Storm Drain
+EVs: 252 HP / 4 SpA / 252 SpD
+Calm Nature
+- Scald
+- Earth Power
+- Recover
+- Ice Beam
+
+Lopunny @ Choice Scarf
+Ability: Limber
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Return
+- High Jump Kick
+- Ice Punch
+- Healing Wish
+
+Leafeon @ Focus Sash
+Ability: Chlorophyll
+EVs: 252 Atk / 4 Def / 252 Spe
+Jolly Nature
+- Swords Dance
+- Leaf Blade
+- Knock Off
+- X-Scissor
+
+Glaceon @ Choice Specs
+Ability: Ice Body
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Blizzard
+- Ice Beam
+- Shadow Ball
+- Water Pulse
