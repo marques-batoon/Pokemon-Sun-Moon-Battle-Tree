@@ -15,7 +15,7 @@ Then `npm run build` and upload `dist/` as usual. `npm run data:custom` stops wi
 message if something doesn't parse (a misspelled Pokémon or move, a trainer with no
 team, ...).
 
-## Battle-50 trainers (Marques, Thomas, Tai, Matt)
+## Battle-50 trainers (Marques, Thomas, Tai, Matt, and Battle Legends Elio, Kris, Brendan, May, Dawn, Rosa, Gloria)
 
 - **Teams:** `battle-50-trainers.txt`, in Showdown's export format (Team Builder →
   Export, or Pokémon Showdown's teambuilder). Each `=== [format] Name ===` section
@@ -39,14 +39,22 @@ team, ...).
   slot with their Super teams. It can also name a trainer from `digidestined.json` (Tai & Takato), who brings
   their own team. The battle-50 draw also happens at 100, 150, ... In a
   Multi entry the first name is the first opponent (shown on the left).
+- **A brand-new trainer added after others' data exists** gets `"block": N` in `trainers`, so they and their
+  sets come after everyone else in the app's data and no id moves. Block 2 is taken (Elio, Kris, Brendan, May,
+  Dawn, Rosa, Gloria, 2026-10-23). A new block also needs its own line in `src/data/battle-tree/index.ts`,
+  after the last block there (this `block` is separate from the "(block N)" sections in the `.txt`).
 - **Sprites:** PNGs with a transparent background in `public/trainers/` (square works
-  best), named in `battle-50-trainers.json`.
+  best), named in `battle-50-trainers.json`. A trainer with no `sprite` there uses a Pokémon Showdown
+  sprite named in `src/data/battle-tree/trainer-sprites.json` (`named`, with any Pokémon Masters outfits in
+  `masters`; the PNGs bundled in `public/trainers/showdown/` and `public/trainers/masters/`), like Elio.
 - **Lines:** `src/data/battle-tree/trainer-quotes.json`, under `"quotes"` → `"Marques"`
   and `"Thomas"` (Tai and Matt: `"quotes"` for when they battle alone, three each, and
-  `"multi"` for when they battle together, three each in matching order). Each entry is `{ "greeting": "...", "trainerWins": "...",
+  `"multi"` for when they battle together, three each in matching order; the later Battle Legends: `"quotes"`
+  for when they battle alone, three each, and `"duos"` for each Multi pair, e.g. `"Kris & May"`, three each in
+  matching order). Each entry is `{ "greeting": "...", "trainerWins": "...",
   "trainerLoses": "..." }` (at most 120 characters each; "trainerWins" is said when
   they beat you). They're picked at random per battle, the same position for both, so
-  give Marques and Thomas the same number of entries in matching order. No Pokémon
+  give Marques and Thomas the same number of entries in matching order (three each). No Pokémon
   names. No `npm run data:custom` needed for lines; `npm test` checks them.
 
 ## The DigiDestined and Digimon Tamers (Izzy, Kaito, Takato, Henry, Rika)
@@ -94,12 +102,17 @@ team, ...).
   Super Doubles and Super Multi. IV 31 (IV lines are ignored).
 - **How often:** `weights` at the top of `regular-trainers.json`, by battle, against 1 for each of the game's
   trainers: 1.1 from battle 100, 1.5 from battle 200. A trainer can have their own `weights` list.
-- **`alwaysParadox: true`** (the 17 Paradox trainers): one of their sets holding a Paradoxorb is on every team
+- **`alwaysParadox: true`** (the 21 Paradox trainers): one of their sets holding a Paradoxorb is on every team
   they bring, at a random place; the rest come from their other sets. Give them at least one Paradoxorb set and
   enough others (with different items) to fill a team of 4. No Mega Stones (`npm run data:custom` checks).
 - **Sprites** are bundled: put the PNG in `public/trainers/showdown/<spriteId>.png` (download it from Showdown's
   trainer sprites) and add the id to `bundled` in `src/data/battle-tree/trainer-sprites.json`.
-  `node scripts/check-trainer-sprites.mjs` checks every one is there.
+  `node scripts/check-trainer-sprites.mjs` checks every one is there. Bronson's, Ignatius's and Delta's
+  aren't bundled yet: they load from Showdown until they are.
+- **`block`** (2, 3, 4): a trainer added after other data exists comes after it, so no trainer's or set's id
+  moves: 2 after Lillie, Hau, Lana and Marley; 3 after Marques's and Thomas's added Pokémon (Percival); 4 after
+  the later Battle Legends (Bronson, Ignatius, Delta). The next new regular trainer is block 5, which also
+  needs its own line in `src/data/battle-tree/index.ts`, after the last block there.
 - **Opponents' teams** follow Species Clause and Item Clause, so Pokémon holding the same item never
   battle together (Mildred's three Paradoxorb-A beasts: at most one per battle).
 - **Lines:** `trainer-quotes.json` under `"quotes"` → their name, three entries. `npm test` checks them.
@@ -121,7 +134,8 @@ team, ...).
   special trainers who share a region or a type (Brock and Misty, Misty and Juan...)
   are drawn together, each uses their lines from the pair's entry instead of their
   usual ones: a greeting and both closing remarks. Each entry is
-  `"Brock & Misty": { "Brock": { "greeting": "...", "trainerWins": "...", "trainerLoses": "..." }, "Misty": { ... } }`
-  (the label is just for you; the two names inside are what count). To add a pair, add
+  `"Brock & Misty": { "Brock": [ { "greeting": "...", "trainerWins": "...", "trainerLoses": "..." }, {...}, {...} ], "Misty": [ ... ] }`
+  (the label is just for you; the two names inside are what count): three sets each, in matching
+  order (the same set is picked for both, so they answer each other). To add a pair, add
   an entry like that. At most 120 characters each, no Pokémon names (their shared type is
   fine), and no line used twice. `npm test` checks them.

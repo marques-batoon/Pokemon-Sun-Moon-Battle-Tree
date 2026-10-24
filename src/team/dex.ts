@@ -9,6 +9,7 @@ import { DIGIMON_MOVE_IDS, digimonMoves, digimonOverrides } from '../data/custom
 import { isParadoxForm, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxOverrides } from '../data/custom/paradox';
 import { GALAR_BIRD_MOVES, GALAR_BIRD_NEW_MOVE_IDS, galarBirdsOverrides } from '../data/galar-birds';
 import { STARTER_MOVES, STARTER_NEW_MOVE_IDS, startersOverrides } from '../data/starters';
+import { galarOverrides, GALAR_NEW_MOVE_IDS, isOpponentOnly } from '../data/galar';
 import { USUM_ONLY_SPECIES } from '../engine/format-constants';
 
 /**
@@ -18,7 +19,7 @@ import { USUM_ONLY_SPECIES } from '../engine/format-constants';
  */
 const championsDex: ModdedDex = Dex.mod(CHAMPIONS_MOD as ID, {
   Scripts: { inherit: 'gen7' },
-  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true }), digimonOverrides(), galarBirdsOverrides(), startersOverrides()),
+  ...mergeModData(championsOverrides(), customOverrides({ species: Dex.forGen(7).data.Species as never }), paradoxOverrides({ ui: true }), digimonOverrides(), galarBirdsOverrides(), startersOverrides(), galarOverrides()),
 } as never);
 
 export const gens = new Generations({ ...Dex, forGen: (gen: number) => (gen === 7 ? championsDex : Dex.forGen(gen)) } as typeof Dex);
@@ -40,7 +41,8 @@ const bannedExact = new Set(USUM_ONLY_SPECIES.filter(isForme));
  * Paradox forms (reached by Paradox Evolution) aren't team choices.
  */
 export function isEligibleSpecies(s: Specie): boolean {
-  if (s.battleOnly || s.name.endsWith('-Totem') || isParadoxForm(s.name)) return false;
+  // Gloria's Galar Pokémon are opponents only (for now).
+  if (s.battleOnly || s.name.endsWith('-Totem') || isParadoxForm(s.name) || isOpponentOnly(s.name)) return false;
   if (bannedExact.has(s.name)) return false;
   return !bannedBase.has(s.baseSpecies);
 }
@@ -65,7 +67,7 @@ let moveCache: Move[] | null = null;
  */
 export function allMoves(): Move[] {
   moveCache ??= [...gen7.moves]
-    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id) && !DIGIMON_MOVE_IDS.has(m.id) && !GALAR_BIRD_NEW_MOVE_IDS.has(m.id) && !STARTER_NEW_MOVE_IDS.has(m.id))
+    .filter(m => !m.isZ && m.id !== 'struggle' && !NEW_MOVE_IDS.has(m.id) && !PARADOX_MOVE_IDS.has(m.id) && !DIGIMON_MOVE_IDS.has(m.id) && !GALAR_BIRD_NEW_MOVE_IDS.has(m.id) && !STARTER_NEW_MOVE_IDS.has(m.id) && !GALAR_NEW_MOVE_IDS.has(m.id))
     .sort((a, b) => a.name.localeCompare(b.name));
   return moveCache;
 }

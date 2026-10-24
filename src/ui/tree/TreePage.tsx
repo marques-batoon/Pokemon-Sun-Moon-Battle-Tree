@@ -23,6 +23,7 @@ import { duoSpriteKey, matchKey, nextOpponent, roundName, roundPhrase, roundsOf 
 import { ReplayScreen } from './ReplayScreen';
 import { battleName } from '../../online/trainer-name';
 import { useAppSettings } from '../useAppSettings';
+import { PreloadNextBattle, RunImagesGate, TournamentImagesGate } from './preload';
 
 type View =
   | { kind: 'home' }
@@ -79,21 +80,23 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
 
   if (view.kind === 'tournament') {
     return (
-      <TournamentScreen
-        controller={tournaments}
-        onBattle={() => {
-          const t = tournaments.tournament;
-          const foes = t && nextOpponent(t);
-          if (!t || !foes) return;
-          // The duo's lines (greeting, closing remark) are the round's: fixed now, before the result moves the round on.
-          const battleKey = matchKey(t);
-          tournaments.startBattle();
-          setView({ kind: 'tournament-battle', round: t.round, trainerIds: foes.trainers.map(p => p.trainerId), battleKey });
-        }}
-        onLeave={() => setView({ kind: 'home' })}
-        onNew={() => setView({ kind: 'tournament-new' })}
-        onReplay={(round, match) => setView({ kind: 'tournament-replay', round, match })}
-      />
+      <TournamentImagesGate t={tournament.tournament}>
+        <TournamentScreen
+          controller={tournaments}
+          onBattle={() => {
+            const t = tournaments.tournament;
+            const foes = t && nextOpponent(t);
+            if (!t || !foes) return;
+            // The duo's lines (greeting, closing remark) are the round's: fixed now, before the result moves the round on.
+            const battleKey = matchKey(t);
+            tournaments.startBattle();
+            setView({ kind: 'tournament-battle', round: t.round, trainerIds: foes.trainers.map(p => p.trainerId), battleKey });
+          }}
+          onLeave={() => setView({ kind: 'home' })}
+          onNew={() => setView({ kind: 'tournament-new' })}
+          onReplay={(round, match) => setView({ kind: 'tournament-replay', round, match })}
+        />
+      </TournamentImagesGate>
     );
   }
 
@@ -120,8 +123,10 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
   if (view.kind === 'battle') {
     const foes = view.trainerIds.map(id => TRAINERS[id]);
     const spriteIds = opponentSpriteIds(foes, view.seedText);
+    const run = state.runs[view.key];
     return (
       <>
+        {run && <PreloadNextBattle run={run} />}
         <div className="battle-banner">
           {foes.map((t, i) => <TrainerSprite key={t.id} trainer={t} size={44} spriteId={spriteIds[i]} />)}
           <span>{keyLabel(view.key)} · Battle {view.battle} · vs {view.opponent}</span>
@@ -166,18 +171,20 @@ export function TreePage({ controller, tournaments, teamStore }: { controller: R
     }
     if (controller.isInterrupted(key)) return <Interrupted controller={controller} run={run} onBack={() => setView({ kind: 'home' })} />;
     return (
-      <RunScreen
-        controller={controller}
-        run={run}
-        teams={teams}
-        bp={bpBalance(profile)}
-        error={state.error}
-        onBattle={() => {
-          controller.startBattle(key);
-          setView(battleView(run));
-        }}
-        onLeave={() => setView({ kind: 'home' })}
-      />
+      <RunImagesGate run={run}>
+        <RunScreen
+          controller={controller}
+          run={run}
+          teams={teams}
+          bp={bpBalance(profile)}
+          error={state.error}
+          onBattle={() => {
+            controller.startBattle(key);
+            setView(battleView(run));
+          }}
+          onLeave={() => setView({ kind: 'home' })}
+        />
+      </RunImagesGate>
     );
   }
 
@@ -385,7 +392,7 @@ function Interrupted({ controller, run, onBack }: { controller: RunController; r
 
 function RunResult({ run, best, superUnlocked, retryFrom, onRetry, onDone }: {
   run: RunState; best: number; superUnlocked: boolean;
-  /** Just lost after battle 10: start again from this battle (the last multiple of 10 won). */
+  /** Just lost at battle 10 or later: start again from this battle (last multiple of 10). */
   retryFrom: number | null; onRetry: () => void; onDone: () => void;
 }) {
   const last = run.history.at(-1);

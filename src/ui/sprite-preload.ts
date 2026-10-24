@@ -1,12 +1,15 @@
 // Loads every picture a battle can show as soon as it is started ("Battle!"), so the sprites are in the
-// browser's cache by the time the Pokémon come out.
+// browser's cache by the time the Pokémon come out; the screens before a battle load them earlier still
+// (plannedBattleSpriteUrls: the run screen, and during the battle before it).
 import type { PokemonSet } from '@pkmn/data';
 import type { StartOptions } from '../client/battle-client';
 import type { TeamInput } from '../engine/protocol';
 import type { AppSettings } from '../settings/settings-store';
 import { gen7 } from '../team/dex';
 import { statForms } from '../team/sets';
+import type { PlannedTrainer } from '../run/types';
 import { ITEM_USE_IDS } from './battle/fx/catalog';
+import { preloadImages } from './image-preload';
 import { hasBackSprite, itemSheetUrl, spriteCandidates, substituteSprite, type SpriteSide } from './sprites';
 
 type SpriteSettings = Pick<AppSettings, 'sprites' | 'spriteStyle' | 'matchSideSprites'>;
@@ -28,11 +31,22 @@ const formsOf = (set: PokemonSet): string[] => {
  * With "matching sprites on your side", your Pokémon's front pictures too when one of them has no back sprite.
  */
 export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): string[][] {
-  if (!settings.sprites) return [];
-  const sides: [SpriteSide, PokemonSet[]][] = [
+  return sideSpriteUrls([
     ['p1', [...setsOf(opts.player.team), ...(opts.partner?.team ?? [])]],
     ['p2', [opts.opponent, opts.opponent2].flatMap(o => (o?.kind === 'team' ? o.team : []))],
-  ];
+  ], settings);
+}
+
+/**
+ * The same for a battle not started yet: your Pokémon (`player`, with your partner's in Multi) against the planned
+ * opponents' teams.
+ */
+export function plannedBattleSpriteUrls(player: PokemonSet[], foes: readonly PlannedTrainer[], settings: SpriteSettings): string[][] {
+  return sideSpriteUrls([['p1', player], ['p2', foes.flatMap(f => f.team)]], settings);
+}
+
+function sideSpriteUrls(sides: [SpriteSide, PokemonSet[]][], settings: SpriteSettings): string[][] {
+  if (!settings.sprites) return [];
   const style = settings.spriteStyle;
   // Your side shows front sprites (flipped) while one of your Pokémon on the field has no back sprite (BattleStage
   // useFlipFront): then both pictures of your Pokémon may show during the battle.
@@ -58,19 +72,7 @@ export function battleSpriteUrls(opts: StartOptions, settings: SpriteSettings): 
   return [...lists.values()];
 }
 
-/** Images loading, kept referenced until they finish. */
-const loading = new Set<HTMLImageElement>();
-
 /** Loads the first URL of each list that works (moving on to the next one when an image fails, like the stage). */
 export function preloadBattleSprites(opts: StartOptions, settings: SpriteSettings): void {
-  if (typeof Image === 'undefined') return;
-  const load = (urls: string[], i: number) => {
-    if (i >= urls.length) return;
-    const img = new Image();
-    loading.add(img);
-    img.onload = () => { loading.delete(img); };
-    img.onerror = () => { loading.delete(img); load(urls, i + 1); };
-    img.src = urls[i];
-  };
-  for (const urls of battleSpriteUrls(opts, settings)) load(urls, 0);
+  void preloadImages(battleSpriteUrls(opts, settings));
 }

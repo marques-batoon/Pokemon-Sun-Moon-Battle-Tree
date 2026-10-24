@@ -167,11 +167,11 @@ export const checkpointsFor = (record: CourseRecord | undefined): number[] =>
   CHECKPOINTS.filter(c => (record?.best ?? 0) >= c.unlockedBy).map(c => c.start);
 
 /**
- * After losing battle N (after battle 10), a new challenge can start again from the last multiple of 10
- * that was won: lost battle 27: battle 20; lost battle 20: battle 10, not 20 (on request, 2026-10-23;
- * it was 20 before). Null up to battle 10 (no multiple of 10 won).
+ * After losing battle N (10 or later), a new challenge can start again from the last multiple of 10
+ * fought in, won or not (lost battle 27: battle 20; lost battle 30: battle 30). Null below battle 10.
+ * Briefly the last multiple of 10 won on 2026-10-23; changed back the same day on request.
  */
-export const retryStart = (lostBattle: number): number | null => (lostBattle > 10 ? Math.floor((lostBattle - 1) / 10) * 10 : null);
+export const retryStart = (lostBattle: number): number | null => (lostBattle >= 10 ? Math.floor(lostBattle / 10) * 10 : null);
 
 /** Formats with a Normal course whose Battle Legend unlocks Super. */
 export type UnlockFormat = Exclude<Format, 'multi'>;

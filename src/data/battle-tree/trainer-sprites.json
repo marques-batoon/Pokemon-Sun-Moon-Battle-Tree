@@ -174,7 +174,14 @@
     "Lillie": "lillie-z",
     "Hau": "hau",
     "Lana": "lana",
-    "Marley": "marley"
+    "Marley": "marley",
+    "Elio": "elio",
+    "Kris": "kris-masters",
+    "Brendan": "brendan",
+    "May": "may",
+    "Dawn": "dawn-contest",
+    "Rosa": "rosa",
+    "Gloria": "gloria-league"
   },
   "masters": {
     "Grimsley": [
@@ -352,6 +359,39 @@
     ],
     "Marley": [
       "marley-masters"
+    ],
+    "Elio": [
+      "elio-masters"
+    ],
+    "Kris": [
+      "kris-masters",
+      "kris-masters2"
+    ],
+    "Brendan": [
+      "brendan-masters",
+      "brendan-masters2",
+      "brendan-masters3"
+    ],
+    "May": [
+      "may-masters",
+      "may-masters2",
+      "may-masters3",
+      "may-masters4"
+    ],
+    "Dawn": [
+      "dawn-masters",
+      "dawn-masters2",
+      "dawn-masters3"
+    ],
+    "Rosa": [
+      "rosa-masters",
+      "rosa-masters2",
+      "rosa-masters3",
+      "rosa-masters4"
+    ],
+    "Gloria": [
+      "gloria-masters",
+      "gloria-masters2"
     ]
   },
   "mastersPairs": [
@@ -390,6 +430,13 @@
     "scientist-gen6",
     "swimmerf-gen6",
     "veteranf-gen6",
-    "worker-gen6"
+    "worker-gen6",
+    "elio",
+    "brendan",
+    "may",
+    "dawn-contest",
+    "rosa",
+    "gloria-league",
+    "acetrainer-gen6"
   ]
 }

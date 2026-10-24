@@ -46,7 +46,10 @@ describe('Veteran Mildred (custom regular trainer)', () => {
 
   it('joins the regular pool from battle 100 of Super Singles, Doubles and Multi', () => {
     const late = BRACKETS.pools['b100+'].trainerIds;
-    expect(late).toEqual([...BRACKETS.pools['b51+'].trainerIds, MILDRED.id, ...PARADOX_TRAINERS.map(t => t.id), ...GLAM.map(t => t.id)]);
+    const percival = TRAINERS.find(t => t.name === 'Percival')!;
+    const beasts = ['Bronson', 'Ignatius', 'Delta'].map(n => TRAINERS.find(t => t.name === n)!);
+    const first = PARADOX_TRAINERS.filter(t => t !== percival && !beasts.includes(t));
+    expect(late).toEqual([...BRACKETS.pools['b51+'].trainerIds, MILDRED.id, ...first.map(t => t.id), ...GLAM.map(t => t.id), percival.id, ...beasts.map(t => t.id)]);
     expect(BRACKETS.pools['b51+'].trainerIds).not.toContain(MILDRED.id);
     for (const format of ['singles', 'doubles', 'multi'] as const) {
       expect(scheduleSlot(format, 'super', 99)).toEqual({ type: 'pool', poolKey: 'b51+' });
@@ -54,7 +57,7 @@ describe('Veteran Mildred (custom regular trainer)', () => {
       expect(scheduleSlot(format, 'super', 110)).toEqual({ type: 'special' });
       expect(scheduleSlot(format, 'super', 100).type).toBe('boss');
     }
-    // About 1.1 in 133 battles from 101 on, never before 100.
+    // About 1.1 in 137 battles from 101 on, never before 100.
     let seen = 0;
     for (let i = 0; i < 4000; i++) {
       if (planOpponent(`wren-${i}`, 'singles', 'super', 101 + (i % 9)).trainerId === MILDRED.id) seen++;
@@ -66,7 +69,7 @@ describe('Veteran Mildred (custom regular trainer)', () => {
 
   it('comes up 1.1 times as often as each of the game\'s trainers there from battle 100, and 1.5 times from battle 200, as every custom trainer there does', () => {
     const customs = LATE;
-    expect(customs).toHaveLength(30);
+    expect(customs).toHaveLength(34);
     for (const t of customs) {
       expect([poolWeight(t.id, 99), poolWeight(t.id, 101), poolWeight(t.id, 199), poolWeight(t.id, 201), poolWeight(t.id, 999)], t.name).toEqual([1, 1.1, 1.1, 1.5, 1.5]);
     }
@@ -120,11 +123,16 @@ describe('Veteran Mildred (custom regular trainer)', () => {
 describe('the Paradox trainers (custom regular trainers)', () => {
   const formOf = (id: number) => paradoxFormForSet(SETS[id].species, SETS[id].item);
 
-  it('are 17, one for each Paradox Pokémon but the legendary beasts\' forms, from battle 100, each with two sets of it and six others', () => {
-    expect(PARADOX_TRAINERS).toHaveLength(17);
+  it('are 21, one for each Paradox Pokémon and two for Iron Valiant, from battle 100, each with two sets of it and six others', () => {
+    expect(PARADOX_TRAINERS).toHaveLength(21);
     const forms = PARADOX_TRAINERS.map(t => formOf(t.alwaysOneOf![0]));
-    const expected = PARADOX_FORMS.map(f => f.form).filter(f => !['Walking Wake', 'Gouging Fire', 'Raging Bolt'].includes(f));
+    // The legendary beasts' forms came last (Bronson, Ignatius and Delta, on request 2026-10-23); Mildred also has those.
+    const expected = [...PARADOX_FORMS.map(f => f.form), 'Iron Valiant'];
     expect([...forms].sort()).toEqual([...expected].sort());
+    // Iron Valiant twice (on request, 2026-10-23): Gwendolyn's from Gardevoir, Percival's from Gallade.
+    const bases = (name: string) => [...new Set(TRAINERS.find(t => t.name === name)!.alwaysOneOf!.map(id => SETS[id].species))];
+    expect([bases('Gwendolyn'), bases('Percival')]).toEqual([['Gardevoir'], ['Gallade']]);
+    expect(['Bronson', 'Ignatius', 'Delta'].map(bases)).toEqual([['Raikou'], ['Entei'], ['Suicune']]);
     for (const t of PARADOX_TRAINERS) {
       expect(t.kind === 'regular' && t.fromBattle, t.name).toBe(100);
       expect(t.iv).toBe(31);
@@ -140,13 +148,13 @@ describe('the Paradox trainers (custom regular trainers)', () => {
     }
   });
 
-  it('use girl Ace Trainer sprites for three (X and Y for Regina, ORAS style for Gwendolyn and Sylvie), and a different Gen 6 class sprite each for the rest', () => {
+  it('use girl Ace Trainer sprites for three (X and Y for Regina, ORAS style for Gwendolyn and Sylvie), the boy\'s for Percival, and a different Gen 6 class sprite each for the rest', () => {
     const sprites = PARADOX_TRAINERS.map(t => trainerSpriteId(t)!);
     const ace = PARADOX_TRAINERS.filter(t => t.class === 'Ace Trainer').map(t => [t.name, trainerSpriteId(t)]);
-    expect(ace).toEqual([['Gwendolyn', 'acetrainerf-gen6'], ['Sylvie', 'acetrainerf-gen6'], ['Regina', 'acetrainerf-gen6xy']]);
-    const rest = sprites.filter(s => !s.startsWith('acetrainerf-'));
-    expect(rest).toHaveLength(14);
-    expect(new Set(rest).size).toBe(14);
+    expect(ace).toEqual([['Gwendolyn', 'acetrainerf-gen6'], ['Sylvie', 'acetrainerf-gen6'], ['Regina', 'acetrainerf-gen6xy'], ['Percival', 'acetrainer-gen6']]);
+    const rest = sprites.filter(s => !s.startsWith('acetrainer'));
+    expect(rest).toHaveLength(17);
+    expect(new Set(rest).size).toBe(17);
     for (const s of rest) expect(s).toMatch(/^[a-z]+-gen6$/);
   });
 

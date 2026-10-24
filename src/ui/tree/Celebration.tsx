@@ -1,5 +1,5 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
-import { duoTitle, playerDuoTitle, type Trainer } from '../../data/battle-tree';
+import { duoTitle, PLAYER_DUO_TITLE, type Trainer } from '../../data/battle-tree';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
 import { Trophy } from '../components/Trophy';
@@ -19,7 +19,7 @@ export type Champions =
   | { kind: 'duo'; trainers: [Trainer, Trainer]; quotes: [string | null, string | null]; spriteIds?: (string | null)[] };
 
 /** The champions' team title ("The Rock & the Mermaid"; yours: "Marques & the Mermaid"). */
-const titleOf = (c: Champions) => (c.kind === 'player' ? playerDuoTitle(c.you, c.partner) : duoTitle(c.trainers[0], c.trainers[1]));
+const titleOf = (c: Champions) => (c.kind === 'player' ? PLAYER_DUO_TITLE : duoTitle(c.trainers[0], c.trainers[1]));
 
 /**
  * The tournament's champions celebrate: light rays, confetti, the trophy rising, their team title, and the winning pair

@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { duoTitle, TRAINERS, trainerQuotes, type Trainer } from '../../data/battle-tree';
 import { battleName } from '../../online/trainer-name';
 import {
@@ -31,6 +31,21 @@ interface Props {
 const complete = (t: TournamentState, round: number) => t.results[round].every(r => r !== null);
 
 /**
+ * Scrolls the page (at once: the trainers' flight to the card is measured right after) so `el` is in view, its
+ * bottom (the Battle! button) first: all of it if it fits, else its bottom at the bottom of the screen.
+ */
+function scrollIntoSight(el: HTMLElement) {
+  const r = el.getBoundingClientRect();
+  const margin = 12;
+  const bottom = window.innerHeight - margin;
+  const dy = r.height > bottom - margin ? r.bottom - bottom
+    : r.top < margin ? r.top - margin
+    : r.bottom > bottom ? r.bottom - bottom
+    : 0;
+  if (dy) window.scrollBy({ top: dy, behavior: 'instant' });
+}
+
+/**
  * The tournament between matches: the whole bracket, your next opponents, Battle! / Retire / Save & quit. After each
  * of your matches the rest of the round is fought (by the engine) and revealed on the bracket; knocked out, the
  * remaining rounds play out one after another until the champions are crowned. Win it, and you celebrate.
@@ -45,6 +60,8 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
   const [skipping, setSkipping] = useState(false);
   // The versus screen before your match (Battle!) or a replay (a match clicked on the bracket).
   const [versus, setVersus] = useState<{ round: number; match: number; mine: boolean } | null>(null);
+  // Your next opponents' card and the Battle! button under it: their entrance ends with them in view.
+  const nextMatch = useRef<HTMLDivElement>(null);
 
   const out = t?.status === 'lost' || t?.status === 'retired';
   const rounds = t ? roundsOf(t) : 0;
@@ -148,22 +165,24 @@ export function TournamentScreen({ controller, onBattle, onLeave, onNew, onRepla
         </div>
       ) : t.status === 'ready' && (
         <>
-          {foes && t.shown >= t.round && (
-            <OpponentCard
-              trainers={foes.trainers.map(p => TRAINERS[p.trainerId])}
-              greetings={foes.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], matchKey(t), foes.trainers.map(o => TRAINERS[o.trainerId]))?.greeting ?? null)}
-              detail={`${roundName(t.round, rounds)} · win for ${t.debug ? 0 : tournamentBp(t.round, rounds)} BP${t.debug ? ' (practice)' : ''}`}
-              battleKey={`${t.id}:${t.round}`}
-              spriteIds={opponentSpriteIds(foes.trainers.map(p => TRAINERS[p.trainerId]), duoSpriteKey(t))}
-              title={duoTitle(TRAINERS[foes.trainers[0].trainerId], TRAINERS[foes.trainers[1].trainerId])}
-              entrance={false}
-            />
-          )}
-          <div className="row-actions">
-            <button className="danger" disabled={!foes} onClick={() => { if (confirm('Retire from the tournament? The duo you were to face goes through.')) controller.retire(); }}>Retire</button>
-            <span className="spacer" />
-            <button onClick={onLeave}>Save &amp; quit</button>
-            <button className="primary" disabled={!canBattle} onClick={() => setVersus({ round: t.round, match: playerMatch(t, t.round), mine: true })}>Battle!</button>
+          <div ref={nextMatch} className="tournament-next">
+            {foes && t.shown >= t.round && (
+              <OpponentCard
+                trainers={foes.trainers.map(p => TRAINERS[p.trainerId])}
+                greetings={foes.trainers.map(p => trainerQuotes(TRAINERS[p.trainerId], matchKey(t), foes.trainers.map(o => TRAINERS[o.trainerId]))?.greeting ?? null)}
+                detail={`${roundName(t.round, rounds)} · win for ${t.debug ? 0 : tournamentBp(t.round, rounds)} BP${t.debug ? ' (practice)' : ''}`}
+                battleKey={`${t.id}:${t.round}`}
+                spriteIds={opponentSpriteIds(foes.trainers.map(p => TRAINERS[p.trainerId]), duoSpriteKey(t))}
+                title={duoTitle(TRAINERS[foes.trainers[0].trainerId], TRAINERS[foes.trainers[1].trainerId])}
+                onEntranceLeave={() => { if (nextMatch.current) scrollIntoSight(nextMatch.current); }}
+              />
+            )}
+            <div className="row-actions">
+              <button className="danger" disabled={!foes} onClick={() => { if (confirm('Retire from the tournament? The duo you were to face goes through.')) controller.retire(); }}>Retire</button>
+              <span className="spacer" />
+              <button onClick={onLeave}>Save &amp; quit</button>
+              <button className="primary" disabled={!canBattle} onClick={() => setVersus({ round: t.round, match: playerMatch(t, t.round), mine: true })}>Battle!</button>
+            </div>
           </div>
           <div className="run-partner">
             <span className="muted small">Your partner</span>

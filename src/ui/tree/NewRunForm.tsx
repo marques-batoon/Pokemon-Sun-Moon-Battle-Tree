@@ -6,6 +6,8 @@ import {
 } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
+import { usePreloadImages } from '../useImagesReady';
+import { ownedPartnerImages } from './preload-images';
 import { courseLabel, LEGEND, splitKey, useRunState } from './hooks';
 import { PartnerCard } from './PartnerCard';
 import { PartnerPokemonPicker } from './PartnerPokemonPicker';
@@ -39,13 +41,15 @@ export function NewRunForm({ controller, teams, profile, defaults, initialKey, o
   const [seedText, setSeedText] = useState('');
   const [startBattle, setStartBattle] = useState(1);
   const [error, setError] = useState<string | null>(null);
-  const { showDebugTools } = useAppSettings();
+  const { showDebugTools, spriteStyle } = useAppSettings();
+  // Your partners' Pokémon, so choosing a partner shows them at once.
+  usePreloadImages(ownedPartnerImages(profile.partners.owned, spriteStyle));
   const key = runKey(format, course);
   const existing = controller.run(key);
   const length = courseSchedule(format, course).length;
   // Later starting battles unlocked by this course's best streak (battle 30 after winning 50, 50 after 100).
   const checkpoints = checkpointsFor(profile.records[key]);
-  // Just lost this course after battle 10 (this session): it can start again from the last multiple of 10 won.
+  // Just lost this course at battle 10 or later (this session): it can start again from the last multiple of 10.
   const retry = useRunState(controller).retries[key] ?? null;
   const starts = [...new Set([1, ...checkpoints, ...(retry ? [retry.battle] : [])])].sort((a, b) => a - b);
   const [checkpointChoice, setCheckpoint] = useState(1);

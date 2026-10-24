@@ -203,7 +203,7 @@ const battle50 = JSON.parse(readFileSync(new URL('battle-50-trainers.json', dir)
 const battle50Trainers = parseExports('battle-50-trainers.txt', name => {
   const info = battle50.trainers[name];
   if (!info) { problems.push(`battle-50-trainers.json: no entry for ${name}`); return {}; }
-  return { class: info.class, classGender: info.gender, sprite: info.sprite, ...(info.lead ? { lead: info.lead } : {}) };
+  return { class: info.class, classGender: info.gender, ...(info.sprite ? { sprite: info.sprite } : {}), ...(info.lead ? { lead: info.lead } : {}), ...(info.block ? { block: info.block } : {}) };
 }, { blocks: true });
 for (const t of battle50Trainers) {
   if (t.lead && !t.sets.some(s => s.species === t.lead && !s.block)) problems.push(`battle-50-trainers.json: ${t.name}'s lead ${t.lead} isn't on their team (in a section without "(block N)")`);

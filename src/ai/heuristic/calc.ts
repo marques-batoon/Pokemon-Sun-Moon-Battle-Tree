@@ -7,6 +7,7 @@ import { DIGIMON_MOVES } from '../../data/custom/digimon';
 import { PARADOX_FORMS } from '../../data/custom/paradox';
 import { GALAR_BIRDS } from '../../data/galar-birds';
 import { NEW_STARTERS } from '../../data/starters';
+import { GALAR_OPPONENT_ONLY } from '../../data/galar';
 
 const gen = Generations.get(7);
 
@@ -40,7 +41,7 @@ export function calcSpeciesName(name: string, baseSpecies: string, baseForme: st
   return baseSpecies;
 }
 
-const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...PARADOX_FORMS.map(f => f.form), ...GALAR_BIRDS, ...NEW_STARTERS]);
+const CHAMPIONS_NAMES = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...PARADOX_FORMS.map(f => f.form), ...GALAR_BIRDS, ...NEW_STARTERS, ...GALAR_OPPONENT_ONLY]);
 
 /** The calc's Gen 7 data predates the Champions Megas and Gen 8-9 Pokémon; describe them from the simulator's data. */
 function speciesOverrides(species: Pokemon['species'], calcName: string) {

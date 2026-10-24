@@ -13,6 +13,8 @@ interface Props {
   captions?: IntroCaption[];
   /** Each trainer's sprite for this battle when it isn't their usual one (a Pokémon Masters sprite), else null. */
   spriteIds?: (string | null)[];
+  /** Runs when the intro is dismissed, before the trainers fly to the card (it may scroll the page). */
+  onIntroLeave?: () => void;
 }
 
 /**
@@ -25,7 +27,7 @@ interface Props {
  * per key, with `captions` (names and greetings) under the trainers. Remount
  * per battle (key) so state doesn't carry over.
  */
-export function OpponentPortrait({ trainers, intro = null, captions, spriteIds = [] }: Props) {
+export function OpponentPortrait({ trainers, intro = null, captions, spriteIds = [], onIntroLeave }: Props) {
   const { sprites } = useAppSettings();
   // Trainers whose artwork failed to load (they fall back to the sprite).
   const [artFailed, setArtFailed] = useState<number[]>([]);
@@ -38,6 +40,9 @@ export function OpponentPortrait({ trainers, intro = null, captions, spriteIds =
   const [withIntro] = useState(() => !!intro && !introPlayed(intro) && !prefersReducedMotion());
   const box = useRef<HTMLDivElement>(null);
   const captionKey = JSON.stringify(captions ?? []);
+  // The latest callback, read when the intro is dismissed (a new function each render mustn't restart the intro).
+  const leave = useRef(onIntroLeave);
+  useEffect(() => { leave.current = onIntroLeave; });
   const artKey = trainers.map(t => artOf(t)?.url ?? spriteOf(t) ?? t.id).join('|');
 
   useEffect(() => {
@@ -50,7 +55,7 @@ export function OpponentPortrait({ trainers, intro = null, captions, spriteIds =
     const start = () => {
       if (stopped || !imgs.every(img => img.complete && img.naturalWidth)) return;
       stopped = true;
-      cancel = playPortraitIntro(imgs, intro, color, JSON.parse(captionKey) as IntroCaption[]);
+      cancel = playPortraitIntro(imgs, intro, color, JSON.parse(captionKey) as IntroCaption[], () => leave.current?.());
     };
     imgs.forEach(img => img.addEventListener('load', start));
     start();

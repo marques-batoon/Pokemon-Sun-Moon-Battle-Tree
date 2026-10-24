@@ -345,3 +345,584 @@ Timid Nature
 - Flamethrower
 - Focus Blast
 - Sludge Bomb
+
+
+=== [gen7battlespotsingles] Elio ===
+
+Decidueye @ Decidium Z
+Ability: Long Reach
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Swords Dance
+- Spirit Shackle
+- Leaf Blade
+- Sucker Punch
+
+Incineroar @ Sitrus Berry
+Ability: Intimidate
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Fake Out
+- Flare Blitz
+- Darkest Lariat
+- U-turn
+
+Primarina @ Primarium Z
+Ability: Liquid Voice
+Level: 50
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Sparkling Aria
+- Moonblast
+- Psychic
+- Hyper Voice
+
+Kommo-o @ Life Orb
+Ability: Bulletproof
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Close Combat
+- Dragon Claw
+- Poison Jab
+
+Mimikyu @ Mimikium Z
+Ability: Disguise
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Swords Dance
+- Play Rough
+- Shadow Claw
+- Shadow Sneak
+
+Tapu Koko @ Choice Specs
+Ability: Electric Surge
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Thunderbolt
+- Dazzling Gleam
+- Volt Switch
+- U-turn
+
+Toxapex @ Black Sludge
+Ability: Regenerator
+Level: 50
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+- Scald
+- Toxic
+- Recover
+- Haze
+
+Lycanroc @ Choice Band
+Ability: Sand Rush
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Stone Edge
+- Accelerock
+- Crunch
+- Drill Run
+
+
+=== [gen7battlespotsingles] Kris ===
+
+Meganium @ Leftovers
+Ability: Overgrow
+Level: 50
+EVs: 252 HP / 4 Def / 252 SpD
+Calm Nature
+- Giga Drain
+- Leech Seed
+- Synthesis
+- Dragon Tail
+
+Typhlosion @ Choice Specs
+Ability: Flash Fire
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Eruption
+- Fire Blast
+- Focus Blast
+- Extrasensory
+
+Feraligatr @ Life Orb
+Ability: Sheer Force
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Waterfall
+- Crunch
+- Ice Punch
+
+Suicune @ Chesto Berry
+Ability: Pressure
+Level: 50
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Calm Mind
+- Scald
+- Ice Beam
+- Rest
+
+Ampharos @ Ampharosite
+Ability: Static
+Level: 50
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Thunderbolt
+- Dragon Pulse
+- Focus Blast
+- Volt Switch
+
+Scizor @ Choice Band
+Ability: Technician
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Bullet Punch
+- U-turn
+- Superpower
+- Knock Off
+
+Tyranitar @ Assault Vest
+Ability: Sand Stream
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Stone Edge
+- Crunch
+- Earthquake
+- Pursuit
+
+Togekiss @ Sitrus Berry
+Ability: Serene Grace
+Level: 50
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+- Air Slash
+- Dazzling Gleam
+- Thunder Wave
+- Roost
+
+
+=== [gen7battlespotsingles] Brendan ===
+
+Swampert @ Swampertite
+Ability: Torrent
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Waterfall
+- Earthquake
+- Ice Punch
+- Superpower
+
+Sceptile @ Life Orb
+Ability: Overgrow
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Leaf Storm
+- Giga Drain
+- Focus Blast
+- Dragon Pulse
+
+Blaziken @ Focus Sash
+Ability: Speed Boost
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Swords Dance
+- Protect
+- Flare Blitz
+- High Jump Kick
+
+Latios @ Choice Specs
+Ability: Levitate
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Psychic
+- Surf
+- Thunderbolt
+
+Metagross @ Assault Vest
+Ability: Clear Body
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Meteor Mash
+- Zen Headbutt
+- Bullet Punch
+- Earthquake
+
+Salamence @ Dragonium Z
+Ability: Moxie
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Dragon Dance
+- Outrage
+- Earthquake
+- Fire Fang
+
+Aggron @ Aggronite
+Ability: Rock Head
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Heavy Slam
+- Stone Edge
+- Earthquake
+- Ice Punch
+
+Milotic @ Leftovers
+Ability: Competitive
+Level: 50
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Scald
+- Ice Beam
+- Recover
+- Haze
+
+
+=== [gen7battlespotsingles] May ===
+
+Blaziken @ Blazikenite
+Ability: Speed Boost
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Protect
+- Flare Blitz
+- High Jump Kick
+- Knock Off
+
+Sceptile @ Sceptilite
+Ability: Overgrow
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Swords Dance
+- Leaf Blade
+- Dragon Claw
+- Earthquake
+
+Swampert @ Leftovers
+Ability: Torrent
+Level: 50
+EVs: 252 HP / 4 Atk / 252 Def
+Relaxed Nature
+- Scald
+- Earthquake
+- Stealth Rock
+- Roar
+
+Latias @ Soul Dew
+Ability: Levitate
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Calm Mind
+- Psyshock
+- Draco Meteor
+- Recover
+
+Gardevoir @ Choice Scarf
+Ability: Trace
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Moonblast
+- Psychic
+- Shadow Ball
+- Trick
+
+Altaria @ Altarianite
+Ability: Natural Cure
+Level: 50
+EVs: 248 HP / 252 Atk / 8 Spe
+Adamant Nature
+- Dragon Dance
+- Return
+- Earthquake
+- Roost
+
+Breloom @ Focus Sash
+Ability: Technician
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Spore
+- Bullet Seed
+- Mach Punch
+- Rock Tomb
+
+Swellow @ Flame Orb
+Ability: Guts
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Facade
+- Brave Bird
+- U-turn
+- Quick Attack
+
+
+=== [gen7battlespotsingles] Dawn ===
+
+Torterra @ Yache Berry
+Ability: Overgrow
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Rock Polish
+- Wood Hammer
+- Earthquake
+- Stone Edge
+
+Infernape @ Life Orb
+Ability: Iron Fist
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Close Combat
+- Flare Blitz
+- Mach Punch
+- U-turn
+
+Empoleon @ Assault Vest
+Ability: Torrent
+Level: 50
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Scald
+- Flash Cannon
+- Ice Beam
+- Grass Knot
+
+Togekiss @ Leftovers
+Ability: Serene Grace
+Level: 50
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+- Nasty Plot
+- Air Slash
+- Dazzling Gleam
+- Roost
+
+Lopunny @ Lopunnite
+Ability: Limber
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Fake Out
+- Return
+- High Jump Kick
+- Ice Punch
+
+Garchomp @ Choice Scarf
+Ability: Rough Skin
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Earthquake
+- Outrage
+- Stone Edge
+- Fire Fang
+
+Rotom-Wash @ Sitrus Berry
+Ability: Levitate
+Level: 50
+EVs: 252 HP / 252 Def / 4 SpA
+Bold Nature
+- Hydro Pump
+- Thunderbolt
+- Volt Switch
+- Will-O-Wisp
+
+Froslass @ Focus Sash
+Ability: Cursed Body
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Spikes
+- Ice Beam
+- Shadow Ball
+- Destiny Bond
+
+
+=== [gen7battlespotsingles] Rosa ===
+
+Serperior @ Leftovers
+Ability: Contrary
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Leaf Storm
+- Dragon Pulse
+- Glare
+- Substitute
+
+Emboar @ Choice Band
+Ability: Reckless
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Flare Blitz
+- Head Smash
+- Wild Charge
+- Superpower
+
+Samurott @ Mystic Water
+Ability: Torrent
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Adamant Nature
+- Swords Dance
+- Waterfall
+- Aqua Jet
+- Megahorn
+
+Hydreigon @ Choice Specs
+Ability: Levitate
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Draco Meteor
+- Dark Pulse
+- Flash Cannon
+- Fire Blast
+
+Volcarona @ Focus Sash
+Ability: Flame Body
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Quiver Dance
+- Fiery Dance
+- Bug Buzz
+- Giga Drain
+
+Excadrill @ Choice Scarf
+Ability: Mold Breaker
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Earthquake
+- Iron Head
+- Rock Slide
+- Rapid Spin
+
+Chandelure @ Ghostium Z
+Ability: Flash Fire
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Calm Mind
+- Shadow Ball
+- Fire Blast
+- Energy Ball
+
+Reuniclus @ Life Orb
+Ability: Magic Guard
+Level: 50
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+- Psyshock
+- Focus Blast
+- Shadow Ball
+- Recover
+
+
+=== [gen7battlespotsingles] Gloria ===
+
+Rillaboom @ Choice Band
+Ability: Grassy Surge
+Level: 50
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
+- Wood Hammer
+- Grassy Glide
+- Knock Off
+- U-turn
+
+Cinderace @ Life Orb
+Ability: Libero
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Pyro Ball
+- High Jump Kick
+- U-turn
+- Sucker Punch
+
+Inteleon @ Choice Specs
+Ability: Sniper
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Timid Nature
+- Hydro Pump
+- Snipe Shot
+- Ice Beam
+- Dark Pulse
+
+Corviknight @ Leftovers
+Ability: Mirror Armor
+Level: 50
+EVs: 252 HP / 4 Atk / 252 Def
+Impish Nature
+- Bulk Up
+- Brave Bird
+- Body Press
+- Roost
+
+Dragapult @ Choice Scarf
+Ability: Clear Body
+Level: 50
+EVs: 4 HP / 252 Atk / 252 Spe
+Jolly Nature
+- Dragon Darts
+- Phantom Force
+- U-turn
+- Sucker Punch
+
+Toxtricity @ Expert Belt
+Ability: Punk Rock
+Level: 50
+EVs: 4 HP / 252 SpA / 252 Spe
+Modest Nature
+- Overdrive
+- Boomburst
+- Sludge Bomb
+- Volt Switch
+
+Grimmsnarl @ Light Clay
+Ability: Prankster
+Level: 50
+EVs: 252 HP / 4 Atk / 252 SpD
+Careful Nature
+- Spirit Break
+- Thunder Wave
+- Reflect
+- Light Screen
+
+Hatterene @ Sitrus Berry
+Ability: Magic Bounce
+Level: 50
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+- Trick Room
+- Dazzling Gleam
+- Psychic
+- Mystical Fire

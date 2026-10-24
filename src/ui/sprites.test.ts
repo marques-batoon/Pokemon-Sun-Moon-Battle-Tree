@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CHAMPIONS_MEGAS, CHAMPIONS_SPRITES, NEW_BASE_SPECIES } from '../data/champions';
 import { warpStageScale } from '../data/custom/digimon';
 import { DEFAULT_APP_SETTINGS } from '../settings/settings-store';
-import { animatedSprite, animatedSpriteBoost, artworkSprite, hasBackSprite, hasSkyBattleAnimation, isAnimatedSprite, spriteCandidates, spriteFeet, staticSprite, WING_FLAPPERS } from './sprites';
+import { animatedSprite, animatedSpriteBoost, artworkSprite, hasBackSprite, hasSkyBattleAnimation, isAnimatedSprite, playerSpriteUrl, spriteCandidates, spriteFacesRight, spriteFeet, staticSprite, WING_FLAPPERS } from './sprites';
 
 describe('Pokémon Champions sprites', () => {
   it('has a front image for every Champions Mega and new Pokémon', () => {
@@ -30,6 +30,15 @@ describe('Pokémon Champions sprites', () => {
 
   it('leaves other Pokémon to @pkmn/img', () => {
     expect(animatedSprite('Garchomp', 'p2').url).toBe('https://play.pokemonshowdown.com/sprites/ani/garchomp.gif');
+  });
+});
+
+describe('which way trainer sprites face', () => {
+  it('knows the user\'s own art for Marques, Thomas, Izzy and Rika faces right; everything else faces left', () => {
+    expect(['marques', 'thomas'].map(id => spriteFacesRight(playerSpriteUrl(id)))).toEqual([true, true]);
+    expect(['izzy', 'rika', 'kaito'].map(f => spriteFacesRight(`/trainers/${f}.png`))).toEqual([true, true, false]);
+    // Showdown's (the other player sprites too) and Pokémon Masters' face left.
+    expect([spriteFacesRight(playerSpriteUrl('ethan')), spriteFacesRight('/trainers/masters/cynthia-masters.png'), spriteFacesRight(null)]).toEqual([false, false, false]);
   });
 });
 

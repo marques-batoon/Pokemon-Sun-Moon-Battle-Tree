@@ -61,9 +61,9 @@ describe('schedule', () => {
     }
   });
 
-  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100, and 130 from battle 100 with the 30 custom regular trainers)', () => {
+  it('uses pool sizes matching DATA_NOTES (50 / 40 / 40 / 40 / 40 / 100, and 134 from battle 100 with the 34 custom regular trainers)', () => {
     const sizes = Object.fromEntries(Object.entries(BRACKETS.pools).map(([k, p]) => [k, p.trainerIds.length]));
-    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100, 'b100+': 130 });
+    expect(sizes).toEqual({ 'b01-10': 50, 'b11-19': 40, 'b21-29': 40, 'b31-39': 40, 'b41-49': 40, 'b51+': 100, 'b100+': 134 });
   });
 });
 
@@ -126,13 +126,13 @@ describe('trainer selection (Monte Carlo vs documented odds)', () => {
     expect(Math.abs(anabel - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
   });
 
-  it('always picks a Battle Legend at the boss battles (battle 50 of Super: Red or Blue, or Tai, Matt, Takato or Henry)', () => {
+  it('always picks a Battle Legend at the boss battles (battle 50 of Super: Red or Blue, Tai, Matt, Takato or Henry, or Elio, Kris, Brendan, May, Dawn, Rosa or Gloria)', () => {
     const rng = new Rng('boss');
     expect(chooseTrainer('singles', 'normal', 20, rng).trainer.id).toBe(203);
     for (let i = 0; i < 30; i++) {
       const t = chooseTrainer('singles', 'super', 50, rng).trainer;
       expect(t.kind).toBe('legend');
-      expect([190, 191].includes(t.id) || ['Tai', 'Matt', 'Takato', 'Henry'].includes(t.name)).toBe(true);
+      expect([190, 191].includes(t.id) || ['Tai', 'Matt', 'Takato', 'Henry', 'Elio', 'Kris', 'Brendan', 'May', 'Dawn', 'Rosa', 'Gloria'].includes(t.name)).toBe(true);
     }
   });
 });

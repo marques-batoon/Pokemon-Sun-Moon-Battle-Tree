@@ -1,28 +1,44 @@
 import { useEffect, type ReactNode } from 'react';
-import { duoTitle, playerDuoTitle, TRAINERS } from '../../data/battle-tree';
+import { duoTitle, PLAYER_DUO_TITLE, TRAINERS } from '../../data/battle-tree';
 import { duoSpriteKey, type TournamentEntrant, type TournamentState } from '../../run/tournament';
 import { PlayerSprite } from '../components/PlayerSprite';
 import { TrainerSprite } from '../components/TrainerSprite';
-import { opponentSpriteIds } from '../sprites';
+import { opponentSpriteIds, playerSpriteUrl, spriteFacesRight, trainerSpriteUrl } from '../sprites';
+import { useAppSettings } from '../useAppSettings';
 
 const SPRITE = 160;
 
 interface Side { title: string; names: string; sprites: ReactNode }
+type Place = 'left' | 'right';
 
-/** One team as it stands on the versus screen: its title, its two names and its two sprites (a duo's for the tournament). */
-function side(e: TournamentEntrant, t: TournamentState, you: string): Side {
+/**
+ * The teams face each other (on request, 2026-10-23): a sprite is turned around when it faces away from the other
+ * team (on the left, one that faces left; on the right, one that faces right). Most face left (spriteFacesRight).
+ */
+const spriteClass = (url: string | null, place: Place) => `versus-sprite${spriteFacesRight(url) !== (place === 'left') ? ' turned' : ''}`;
+
+/**
+ * One team as it stands on the versus screen: its title, its two names and its two sprites (a duo's for the
+ * tournament), facing the other team. `playerSprite`: the sprite that stands for you (Settings).
+ */
+function side(e: TournamentEntrant, t: TournamentState, you: string, place: Place, playerSprite: string): Side {
   if (e.kind === 'player') {
     const partner = TRAINERS[t.partner.trainerId];
     return {
-      title: playerDuoTitle(you, partner), names: `${you} & ${partner.name}`,
-      sprites: <><PlayerSprite size={SPRITE} label={you} className="versus-sprite" /><TrainerSprite trainer={partner} size={SPRITE} className="versus-sprite" /></>,
+      title: PLAYER_DUO_TITLE, names: `${you} & ${partner.name}`,
+      sprites: <>
+        <PlayerSprite size={SPRITE} label={you} className={spriteClass(playerSpriteUrl(playerSprite), place)} />
+        <TrainerSprite trainer={partner} size={SPRITE} className={spriteClass(trainerSpriteUrl(partner), place)} />
+      </>,
     };
   }
   const trainers = e.trainers.map(p => TRAINERS[p.trainerId]);
   const spriteIds = opponentSpriteIds(trainers, duoSpriteKey(t));
   return {
     title: duoTitle(trainers[0], trainers[1]), names: trainers.map(x => x.name).join(' & '),
-    sprites: trainers.map((x, i) => <TrainerSprite key={x.id} trainer={x} size={SPRITE} spriteId={spriteIds[i]} className="versus-sprite" />),
+    sprites: trainers.map((x, i) => (
+      <TrainerSprite key={x.id} trainer={x} size={SPRITE} spriteId={spriteIds[i]} className={spriteClass(trainerSpriteUrl(x, spriteIds[i]), place)} />
+    )),
   };
 }
 
@@ -45,8 +61,10 @@ interface Props {
  * tap, Enter or Space goes on to the battle (or its replay); Escape or Back returns to the bracket.
  */
 export function VersusScreen({ t, pair, you, detail, action, onContinue, onBack }: Props) {
+  const { trainerSprite } = useAppSettings();
   const [a, b] = pair.map(i => t.entrants[i]);
-  const [left, right] = (b.kind === 'player' ? [b, a] : [a, b]).map(e => side(e, t, you));
+  const [first, second] = b.kind === 'player' ? [b, a] : [a, b];
+  const [left, right] = [side(first, t, you, 'left', trainerSprite), side(second, t, you, 'right', trainerSprite)];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

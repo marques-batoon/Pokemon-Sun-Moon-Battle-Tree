@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BattleClient, BattleSnapshot, StartOptions } from '../client/battle-client';
 import { BattleClient as RealBattleClient } from '../client/battle-client';
-import { multiPartners, trainerKey, TRAINERS } from '../data/battle-tree';
+import { BOSSES, multiPartners, trainerKey, TRAINERS } from '../data/battle-tree';
 import { TEST_PLAYER_TEAM_TEXT } from '../engine/fixtures-data';
 import { createInProcessTransport } from '../engine/in-process-transport';
 import { memoryStore, type KeyValueStore } from '../storage/kv';
@@ -73,52 +73,94 @@ describe('Multi: planning opponents', () => {
     expect(planOpponent('multi-plan', 'multi', 'super', 7, SINA)).toEqual(planOpponent('multi-plan', 'multi', 'super', 7, SINA));
   });
 
-  it('draws battle 50 between Red & Blue (weight 7), Tai & Matt, Tai & Takato and Takato & Henry (3.5 each) and Marques & Thomas (1), first trainer always first', () => {
+  /** Battle-50 entries of Super `format`: names (first trainer first) and weight. */
+  const entries50 = (format: string) => Object.values(BOSSES).filter(b => b.format === format && b.course === 'super' && b.battle === 50)
+    .map(b => ({ names: [TRAINERS[b.trainerId].name, ...(b.partnerTrainerId === undefined ? [] : [TRAINERS[b.partnerTrainerId].name])], weight: b.weight ?? 7 }));
+  const near = (count: number, n: number, p: number) => expect(Math.abs(count - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
+
+  it('pairs the Battle Legends at battle 50 of Super Multi as asked (2026-10-18 and 2026-10-23)', () => {
+    const multi = entries50('multi');
+    /** How often `name`'s partner is each of the others, when `name` is drawn. */
+    const partners = (name: string) => {
+      const mine = multi.filter(e => e.names.includes(name));
+      const total = mine.reduce((s, e) => s + e.weight, 0);
+      return Object.fromEntries(mine.map(e => [e.names.find(n => n !== name)!, e.weight / total]));
+    };
+    const close = (a: number, b: number) => expect(Math.abs(a - b)).toBeLessThan(1e-3);
+    // Red: Blue half the time, otherwise Elio, Brendan or Kris equally.
+    const red = partners('Red');
+    expect(Object.keys(red).sort()).toEqual(['Blue', 'Brendan', 'Elio', 'Kris']);
+    close(red.Blue, 1 / 2);
+    for (const n of ['Elio', 'Brendan', 'Kris']) close(red[n], 1 / 6);
+    // Brendan: Elio, Red or May, equally.
+    const brendan = partners('Brendan');
+    expect(Object.keys(brendan).sort()).toEqual(['Elio', 'May', 'Red']);
+    for (const n of ['Elio', 'Red', 'May']) close(brendan[n], 1 / 3);
+    // The girls team up with each other equally, and with Elio half as often as with any one of them. May also with
+    // Brendan (as often as a girl), Kris also with Red (as often as a girl).
+    const girls = ['Kris', 'May', 'Dawn', 'Rosa', 'Gloria'];
+    for (const g of girls) {
+      const p = partners(g);
+      const others = girls.filter(o => o !== g);
+      const extra = g === 'May' ? ['Brendan'] : g === 'Kris' ? ['Red'] : [];
+      expect(Object.keys(p).sort(), g).toEqual([...others, ...extra, 'Elio'].sort());
+      for (const o of [...others, ...extra]) close(p[o], p[others[0]]);
+      close(p.Elio, p[others[0]] / 2);
+    }
+    // Elio: any of them, Blue as often as Red.
+    const elio = partners('Elio');
+    expect(Object.keys(elio).sort()).toEqual(['Blue', 'Brendan', 'Dawn', 'Gloria', 'Kris', 'May', 'Red', 'Rosa']);
+    close(elio.Blue, elio.Red);
+    // The others as before: Red & Blue 7, Tai & Matt, Tai & Takato and Takato & Henry 3.5, Marques & Thomas 1.
+    expect(multi).toEqual(expect.arrayContaining([
+      { names: ['Red', 'Blue'], weight: 7 }, { names: ['Tai', 'Matt'], weight: 3.5 }, { names: ['Tai', 'Takato'], weight: 3.5 },
+      { names: ['Takato', 'Henry'], weight: 3.5 }, { names: ['Marques', 'Thomas'], weight: 1 },
+    ]));
+    expect(multi).toHaveLength(26);
+  });
+
+  it('draws battle 50 of Super Multi by those weights, first trainer always first', () => {
+    const multi = entries50('multi');
+    const total = multi.reduce((s, e) => s + e.weight, 0);
     const pairs = new Map<string, number>();
-    const n = 4000;
+    const n = 6000;
     for (let i = 0; i < n; i++) {
       const plan = planOpponent(`b50-${i}`, 'multi', 'super', 50, SINA);
-      const names = `${plan.displayName} & ${plan.second!.displayName}`;
+      const names = `${TRAINERS[plan.trainerId].name} & ${TRAINERS[plan.second!.trainerId].name}`;
       pairs.set(names, (pairs.get(names) ?? 0) + 1);
       expect([plan.team.length, plan.second!.team.length]).toEqual([2, 2]);
       expect(plan.kind).toBe('legend');
     }
-    expect([...pairs.keys()].sort()).toEqual(['Battle Legend Red & Battle Legend Blue', 'Battle Legend Tai & Battle Legend Matt', 'Battle Legend Tai & Battle Legend Takato', 'Battle Legend Takato & Battle Legend Henry', 'Pokémon Trainer Marques & Pokémon Trainer Thomas']);
-    // 7 : 3.5 : 3.5 : 3.5 : 1 (on request, 2026-10-18), out of 18.5.
-    const near = (count: number, p: number) => expect(Math.abs(count - n * p)).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
-    near(pairs.get('Battle Legend Red & Battle Legend Blue')!, 7 / 18.5);
-    near(pairs.get('Battle Legend Tai & Battle Legend Matt')!, 3.5 / 18.5);
-    near(pairs.get('Battle Legend Tai & Battle Legend Takato')!, 3.5 / 18.5);
-    near(pairs.get('Battle Legend Takato & Battle Legend Henry')!, 3.5 / 18.5);
-    near(pairs.get('Pokémon Trainer Marques & Pokémon Trainer Thomas')!, 1 / 18.5);
+    expect([...pairs.keys()].sort()).toEqual(multi.map(e => e.names.join(' & ')).sort());
+    for (const e of multi) near(pairs.get(e.names.join(' & '))!, n, e.weight / total);
     // Their teams come from their own sets, with their own moves.
-    const plan = [...Array(600).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
+    const plan = [...Array(1500).keys()].map(i => planOpponent(`mt-${i}`, 'multi', 'super', 50, SINA)).find(p => p.displayName.endsWith('Marques'))!;
     expect(plan.team.every(s => ['Venusaur', 'Poliwrath', 'Alakazam', 'Charizard', 'Porygon2', 'Espeon', 'Greninja', 'Hitmonchan'].includes(s.species))).toBe(true);
     expect(plan.second!.team.every(s => ['Ampharos', 'Infernape', 'Drampa', 'Typhlosion', 'Dragonite', 'Primarina', 'Umbreon', 'Meowscarada', 'Heracross'].includes(s.species))).toBe(true);
     const venusaur = SETS.find(s => s.label === 'Venusaur (Marques 1)')!;
     expect(venusaur.moves).toContain('Hidden Power Fire');
-  });
+  }, 60000);
 
-  it('draws battle 50 of Super Singles and Super Doubles between Red and Blue (7 each), Tai, Matt, Takato and Henry (3.5 each)', () => {
-    const n = 4800;
+  it('draws battle 50 of Super Singles and Super Doubles between Red and Blue (7 each), and Tai, Matt, Takato, Henry, Elio, Kris, Brendan, May, Dawn, Rosa and Gloria (3.5 each)', () => {
+    const n = 6000;
+    const legends = ['Red', 'Blue', 'Tai', 'Matt', 'Takato', 'Henry', 'Elio', 'Kris', 'Brendan', 'May', 'Dawn', 'Rosa', 'Gloria'];
+    const total = 7 * 2 + 3.5 * 11;
     for (const format of ['singles', 'doubles'] as const) {
       const seen = new Map<string, number>();
       for (let i = 0; i < n; i++) {
         const plan = planOpponent(`${format}50-${i}`, format, 'super', 50);
-        seen.set(plan.displayName, (seen.get(plan.displayName) ?? 0) + 1);
+        seen.set(TRAINERS[plan.trainerId].name, (seen.get(TRAINERS[plan.trainerId].name) ?? 0) + 1);
         expect(plan.team).toHaveLength(format === 'singles' ? 3 : 4);
       }
-      expect([...seen.keys()].sort()).toEqual(['Battle Legend Blue', 'Battle Legend Henry', 'Battle Legend Matt', 'Battle Legend Red', 'Battle Legend Tai', 'Battle Legend Takato']);
-      for (const [name, p] of [['Red', 7 / 28], ['Blue', 7 / 28], ['Tai', 3.5 / 28], ['Matt', 3.5 / 28], ['Takato', 3.5 / 28], ['Henry', 3.5 / 28]] as const) {
-        expect(Math.abs(seen.get(`Battle Legend ${name}`)! - n * p), `${format} ${name}`).toBeLessThan(4.5 * Math.sqrt(n * p * (1 - p)));
-      }
+      expect([...seen.keys()].sort()).toEqual([...legends].sort());
+      for (const name of legends) near(seen.get(name)!, n, (name === 'Red' || name === 'Blue' ? 7 : 3.5) / total);
     }
     // Battle 100, 150... draw the same way.
     expect(planOpponent('b100', 'singles', 'super', 100).kind).toBe('legend');
     expect(planOpponent('b150', 'multi', 'super', 150, SINA).second!.kind).toBe('legend');
     // Normal courses keep their Battle Legend alone.
     expect(planOpponent('n20', 'singles', 'normal', 20).displayName).toBe('Battle Legend Red');
-  });
+  }, 60000);
 
   it('has Tai lead with his Agumon and Matt with his Gabumon, in every format', () => {
     const species = (plan: { team: { species: string }[] }) => plan.team.map(s => s.species);

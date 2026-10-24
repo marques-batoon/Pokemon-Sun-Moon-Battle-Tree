@@ -17,16 +17,18 @@ const eliteFour = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'elite-four
 const evilTeams = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'evil-teams.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
 /** A trainer's data key: its `key` when two trainers share a name (the two Archies). */
 const keyOf = t => t.key ?? t.name;
-// Custom battle-50 trainers bring their own sprite file (public/...): check it's there.
+// Custom battle-50 trainers bring their own sprite file (public/...): check it's there. Those without one (the later
+// Battle Legends: Elio, Kris...) use a Showdown sprite from trainer-sprites.json, checked with the special trainers.
 const battle50 = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'battle-50.json'), 'utf8')).trainers;
+const battle50Named = battle50.filter(t => !t.sprite).map(t => ({ ...t, kind: 'special' }));
 const PUBLIC = join(DATA, '..', '..', '..', 'public');
-const missingFiles = battle50.filter(t => !existsSync(join(PUBLIC, t.sprite))).map(t => `${t.name} (${t.sprite})`);
+const missingFiles = battle50.filter(t => t.sprite && !existsSync(join(PUBLIC, t.sprite))).map(t => `${t.name} (${t.sprite})`);
 if (missingFiles.length) {
   console.error('Custom sprite files missing from public/:', missingFiles.join(', '));
   process.exitCode = 1;
 }
 const specialMore = JSON.parse(readFileSync(join(DATA, '..', 'custom', 'special-trainers.json'), 'utf8')).trainers.map(t => ({ ...t, kind: 'special' }));
-const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour, ...evilTeams, ...specialMore];
+const trainers = [...gameTrainers, ...gymLeaders, ...eliteFour, ...evilTeams, ...specialMore, ...battle50Named];
 
 const missing = [];
 for (const t of trainers) {
@@ -53,14 +55,18 @@ if (unknownMasters.length || missingMasters.length || badPairs.length) {
 console.log(`${mastersIds.length - missingMasters.length}/${mastersIds.length} Pokémon Masters sprites bundled`);
 // Bundled Showdown sprites ('bundled': custom regular trainers' and some named ones) are in public/trainers/showdown/.
 const bundled = new Set(sprites.bundled);
+// Custom regular trainers' sprites not bundled yet (Bronson, Ignatius, Delta) load from Showdown: checked there below.
 const unbundledRegular = regularCustom.map(t => t.spriteId).filter(id => !bundled.has(id));
+if (unbundledRegular.length) console.log('Custom regular trainers\' sprites loaded from Showdown (not bundled):', unbundledRegular.join(', '));
 const missingBundled = [...bundled].filter(id => !existsSync(join(PUBLIC, 'trainers', 'showdown', `${id}.png`)));
-if (unbundledRegular.length || missingBundled.length) {
-  console.error('Custom regular trainers\' sprites not in bundled:', unbundledRegular, '/ bundled but not in public/trainers/showdown/:', missingBundled);
+if (missingBundled.length) {
+  console.error('Bundled but not in public/trainers/showdown/:', missingBundled);
   process.exitCode = 1;
 }
 console.log(`${bundled.size - missingBundled.length}/${bundled.size} bundled Showdown sprites present`);
-const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named)])].filter(id => !bundled.has(id));
+// Masters ids used as a usual sprite (Kris: kris-masters) are bundled with the Masters ones.
+const ids = [...new Set([...Object.values(sprites.classes), ...Object.values(sprites.named), ...unbundledRegular])]
+  .filter(id => !bundled.has(id) && !mastersIds.includes(id));
 const results = await Promise.all(ids.map(async id => {
   const res = await fetch(`https://play.pokemonshowdown.com/sprites/trainers/${id}.png`, { method: 'HEAD' });
   return [id, res.status];

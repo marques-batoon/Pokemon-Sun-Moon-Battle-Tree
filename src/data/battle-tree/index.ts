@@ -104,10 +104,11 @@ interface Battle50Entry { format: Format; course: Course; battle: number; traine
  * (Takato), a special trainer who comes later. Pokémon added to a trainer's team later (`block` 2: Thomas's and
  * Marques's, 2026-10-23) get their sets after everyone else's (laterSets), so no other set's id moves.
  */
-function battle50Trainers(firstSet: number, firstTrainer: number) {
+/** The battle-50 trainers (battle-50.json), with `block` 2 for the Battle Legends added later (Elio, Kris...). */
+const BATTLE_50_LIST = battle50Json.trainers as (CustomTrainer & { sprite?: string; lead?: string; block?: number })[];
+function battle50Trainers(list: typeof BATTLE_50_LIST, firstSet: number, firstTrainer: number) {
   const sets: TreeSet[] = [];
   const later: { block: number; roster: number[]; label: string; setNumber: number; set: Omit<CustomSet, 'block'> }[] = [];
-  const list = battle50Json.trainers as (CustomTrainer & { sprite?: string; lead?: string })[];
   const entries = battle50Json.battles as Battle50Entry[];
   const bossKey = (e: Battle50Entry) => `${e.trainers.map(n => n.toLowerCase()).join('-')}-${e.format}-${e.course}`;
   const trainers: LegendTrainer[] = list.map((t, i) => {
@@ -143,13 +144,13 @@ function battle50Trainers(firstSet: number, firstTrainer: number) {
  * Doubles...), or a Digimon Tamer (Takato, alongside Tai), by name.
  */
 function battle50Bosses(tamers: Trainer[]): Record<string, Boss> {
-  const idOf = (name: string) => (BATTLE_50.trainers.find(t => t.name === name) ?? gameLegend(name) ?? tamers.find(t => t.name === name))!.id;
+  const idOf = (name: string) => ([...BATTLE_50.trainers, ...LEGENDS_LATER.trainers].find(t => t.name === name) ?? gameLegend(name) ?? tamers.find(t => t.name === name))!.id;
   return Object.fromEntries(BATTLE_50.entries.map(e => [BATTLE_50.bossKey(e), {
     trainerId: idOf(e.trainers[0]), ...(e.trainers[1] ? { partnerTrainerId: idOf(e.trainers[1]) } : {}),
     format: e.format, course: e.course, battle: e.battle, bp: 50, teamSize: e.format === 'multi' ? 2 : e.format === 'doubles' ? 4 : 3, iv: 31, weight: e.weight,
   } satisfies Boss]));
 }
-const BATTLE_50 = battle50Trainers(GAME_SETS.length + CUSTOM.sets.length, GAME_TRAINERS.length + CUSTOM.trainers.length);
+const BATTLE_50 = battle50Trainers(BATTLE_50_LIST.filter(t => (t.block ?? 1) === 1), GAME_SETS.length + CUSTOM.sets.length, GAME_TRAINERS.length + CUSTOM.trainers.length);
 /** The Elite Four and Champions of Generations 1-7, after everything else (earlier ids, kept in saved runs, don't move). */
 const ELITE_FOUR = customTrainers(
   eliteFourJson.trainers as CustomTrainer[],
@@ -236,20 +237,37 @@ const REGULAR_LATER = customRegularTrainers(
   GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length + REGULAR.sets.length + MORE_SPECIALS.sets.length,
   GAME_TRAINERS.length + CUSTOM.trainers.length + BATTLE_50.trainers.length + ELITE_FOUR.trainers.length + EVIL_TEAMS.trainers.length + DIGIDESTINED.trainers.length + REGULAR.trainers.length + MORE_SPECIALS.trainers.length,
 );
-/** Every custom regular trainer (both blocks): the late pools take them all. */
-const CUSTOM_REGULAR = [...REGULAR.trainers, ...REGULAR_LATER.trainers];
 /** Pokémon added to the battle-50 trainers' teams later (Thomas's and Marques's, 2026-10-23), after every other set. */
 const BATTLE_50_LATER = BATTLE_50.laterSets(
   GAME_SETS.length + CUSTOM.sets.length + BATTLE_50.sets.length + ELITE_FOUR.sets.length + EVIL_TEAMS.sets.length + DIGIDESTINED.sets.length + REGULAR.sets.length + MORE_SPECIALS.sets.length + REGULAR_LATER.sets.length,
 );
+/**
+ * Everything added since is appended in the order it came, so no earlier trainer's or set's id moves: each group starts
+ * where the one before it ends.
+ */
+const after = (groups: { sets: unknown[]; trainers: unknown[] }[], earlierSets: number, earlierTrainers: number) => [
+  earlierSets + groups.reduce((n, g) => n + g.sets.length, 0), earlierTrainers + groups.reduce((n, g) => n + g.trainers.length, 0),
+] as const;
+const [SETS_SO_FAR, TRAINERS_SO_FAR] = after(
+  [CUSTOM, BATTLE_50, ELITE_FOUR, EVIL_TEAMS, DIGIDESTINED, REGULAR, MORE_SPECIALS, REGULAR_LATER, { sets: BATTLE_50_LATER, trainers: [] }],
+  GAME_SETS.length, GAME_TRAINERS.length,
+);
+/** Custom regular trainers added after that (`block` 3: Percival, 2026-10-23). */
+const REGULAR_BLOCK3 = customRegularTrainers(REGULAR_LIST.filter(t => t.block === 3), SETS_SO_FAR, TRAINERS_SO_FAR);
+/** Battle Legends added after that (`block` 2 in battle-50.json: Elio, Kris, Brendan, May, Dawn, Rosa, Gloria; 2026-10-23). */
+const LEGENDS_LATER = battle50Trainers(BATTLE_50_LIST.filter(t => t.block === 2), ...after([REGULAR_BLOCK3], SETS_SO_FAR, TRAINERS_SO_FAR));
+/** Custom regular trainers added after that (`block` 4: Bronson, Ignatius, Delta; 2026-10-23). */
+const REGULAR_BLOCK4 = customRegularTrainers(REGULAR_LIST.filter(t => t.block === 4), ...after([REGULAR_BLOCK3, LEGENDS_LATER], SETS_SO_FAR, TRAINERS_SO_FAR));
+/** Every custom regular trainer (all blocks): the late pools take them all. */
+const CUSTOM_REGULAR = [...REGULAR.trainers, ...REGULAR_LATER.trainers, ...REGULAR_BLOCK3.trainers, ...REGULAR_BLOCK4.trainers];
 
 export const SETS: TreeSet[] = [
   ...GAME_SETS, ...CUSTOM.sets, ...BATTLE_50.sets, ...ELITE_FOUR.sets, ...EVIL_TEAMS.sets, ...DIGIDESTINED.sets, ...REGULAR.sets, ...MORE_SPECIALS.sets, ...REGULAR_LATER.sets,
-  ...BATTLE_50_LATER,
+  ...BATTLE_50_LATER, ...REGULAR_BLOCK3.sets, ...LEGENDS_LATER.sets, ...REGULAR_BLOCK4.sets,
 ];
 export const TRAINERS: Trainer[] = [
   ...GAME_TRAINERS, ...CUSTOM.trainers, ...BATTLE_50.trainers, ...ELITE_FOUR.trainers, ...EVIL_TEAMS.trainers, ...DIGIDESTINED.trainers, ...REGULAR.trainers,
-  ...MORE_SPECIALS.trainers, ...REGULAR_LATER.trainers,
+  ...MORE_SPECIALS.trainers, ...REGULAR_LATER.trainers, ...REGULAR_BLOCK3.trainers, ...LEGENDS_LATER.trainers, ...REGULAR_BLOCK4.trainers,
 ];
 
 /**
@@ -376,30 +394,26 @@ export const TRAINER_MULTI_QUOTES = quotesJson.multi as Record<string, TrainerQu
  * Lines for two special trainers drawn together in a Multi Battle who share a region or a type
  * (written for this app): each entry holds one set per trainer, by name (a greeting and both closing remarks).
  */
-export const TRAINER_PAIR_QUOTES = quotesJson.pairs as Record<string, Record<string, TrainerQuotes>>;
+export const TRAINER_PAIR_QUOTES = quotesJson.pairs as Record<string, Record<string, TrainerQuotes[]>>;
 /**
  * Team-up lines for a trainer and their Multi Battle partner (Izzy with Tai), three sets each in matching order,
  * by the two names: used whenever those two battle together (written for this app).
  */
 export const TRAINER_DUO_QUOTES = quotesJson.duos as Record<string, Record<string, TrainerQuotes[]>>;
 const pairKey = (a: string, b: string) => [a, b].sort().join('|');
-/** Each special trainer's and Battle Legend's epithet ("Rock", "Mermaid"), for team titles in the All Star Duo Tournament. */
-const EPITHETS = duoTitlesJson.epithets as Record<string, string>;
-/** Duos with a title of their own ("The Mystic Combination"), by pair. */
+/** Each duo's team title in the All Star Duo Tournament ("The Mystic Combination"), by pair. */
 const DUO_TITLES = new Map(Object.entries(duoTitlesJson.titles).map(([label, title]) => {
   const [a, b] = label.split(' & ');
   return [pairKey(a, b), title] as const;
 }));
-/** A trainer's epithet for team titles (the name if none). */
-export const trainerEpithet = (t: Trainer): string => EPITHETS[trainerKey(t)] ?? t.name;
 /**
- * A duo's team title in the All Star Duo Tournament (on request, 2026-10-23): their own if they have one ("The Mystic
- * Combination"), else "The Rock & the Mermaid" from their epithets, in speaking order.
+ * A duo's team title in the All Star Duo Tournament: the title of that pair, whichever speaks first (on request,
+ * 2026-10-23: one for each pair, not built from each trainer's own). Every pair a tournament can draw has one
+ * (tested); any other pair is just their names.
  */
-export const duoTitle = (a: Trainer, b: Trainer): string =>
-  DUO_TITLES.get(pairKey(trainerKey(a), trainerKey(b))) ?? `The ${trainerEpithet(a)} & the ${trainerEpithet(b)}`;
-/** Your team's title: "Marques & the Mermaid". */
-export const playerDuoTitle = (you: string, partner: Trainer): string => `${you} & the ${trainerEpithet(partner)}`;
+export const duoTitle = (a: Trainer, b: Trainer): string => DUO_TITLES.get(pairKey(trainerKey(a), trainerKey(b))) ?? `${a.name} & ${b.name}`;
+/** Your team's title, with any partner (on request, 2026-10-23). */
+export const PLAYER_DUO_TITLE = 'Rising Champions';
 const PAIR_QUOTES = new Map(Object.values(TRAINER_PAIR_QUOTES).map(entry => {
   const [a, b] = Object.keys(entry);
   return [pairKey(a, b), entry] as const;
@@ -451,15 +465,19 @@ export function pairGreetingPartners(trainerId: number): number[] {
     .filter((id): id is number => id !== undefined && !samePerson(TRAINERS[id], TRAINERS[trainerId]));
 }
 
-/** What `trainer` says when battling alongside `other`: greeting and closing remarks (null: no lines for this pair). */
-export function pairQuotes(trainer: Trainer, other: Trainer): TrainerQuotes | null {
+/**
+ * What `trainer` says when battling alongside `other`: greeting and closing remarks (null: no lines for this pair).
+ * `pick` (a quote pick) chooses one of their sets; both use the same one, so they answer each other.
+ */
+export function pairQuotes(trainer: Trainer, other: Trainer, pick = 0): TrainerQuotes | null {
   if (samePerson(trainer, other)) return null;
-  return PAIR_QUOTES.get(pairKey(trainerKey(trainer), trainerKey(other)))?.[trainerKey(trainer)] ?? null;
+  const sets = PAIR_QUOTES.get(pairKey(trainerKey(trainer), trainerKey(other)))?.[trainerKey(trainer)];
+  return sets?.length ? sets[pick % sets.length] : null;
 }
 
 /** What `trainer` says to greet you when battling alongside `other` (null: no special greeting for this pair). */
-export function pairGreeting(trainer: Trainer, other: Trainer): string | null {
-  return pairQuotes(trainer, other)?.greeting ?? null;
+export function pairGreeting(trainer: Trainer, other: Trainer, pick = 0): string | null {
+  return pairQuotes(trainer, other, pick)?.greeting ?? null;
 }
 
 /** Number of distinct quote picks: divisible by every list length up to 10, so each line is equally likely. */
@@ -500,7 +518,7 @@ export function trainerQuotes(trainer: Trainer, battleKey: string | number, alon
   const lines = sets[pick % sets.length];
   if (duo || together || trainer.kind !== 'special') return lines;
   const other = alongside.find(t => t.id !== trainer.id && t.kind === 'special');
-  return (other && pairQuotes(trainer, other)) || lines;
+  return (other && pairQuotes(trainer, other, pick)) || lines;
 }
 
 /** A trainer's line, said in the battle log. */

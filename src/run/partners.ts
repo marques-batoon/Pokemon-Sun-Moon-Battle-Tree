@@ -1,5 +1,6 @@
 import { SETS, TRAINERS, trainerKey, type LegendTrainer, type SpecialTrainer, type TreeSet } from '../data/battle-tree';
 import { isDigimon } from '../data/custom/digimon';
+import { isOpponentOnly } from '../data/galar';
 import type { PokemonSet } from '../team/types';
 import { dexNum, pickUpTo, treeSetToPokemonSet } from './opponent';
 import { Rng } from './rng';
@@ -35,7 +36,9 @@ function digimonSet(trainer: PartnerTrainer): TreeSet | undefined {
  */
 export function rollOffer(name: string, rng: Rng): number[] {
   const trainer = partnerTrainer(name);
-  return pickUpTo(trainer, PARTNER_OFFER_SIZE, rng, digimonSet(trainer)).map(s => s.id);
+  // Opponents-only Pokémon (Gloria's Galar Pokémon) aren't offered.
+  const offerable = { ...trainer, roster: trainer.roster.filter(id => !isOpponentOnly(SETS[id].species)) };
+  return pickUpTo(offerable, PARTNER_OFFER_SIZE, rng, digimonSet(trainer)).map(s => s.id);
 }
 
 /**

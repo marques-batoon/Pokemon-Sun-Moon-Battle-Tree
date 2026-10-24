@@ -46,6 +46,8 @@ export interface HeuristicConfig {
     trickRoom: number;
     phaze: number;
     haze: number;
+    /** Haze while the foes have stat rises and our side (the user or its partner) has drops: it fixes both. */
+    hazeRescue: number;
     hazard: number;
     screen: number;
     auroraVeil: number;
@@ -94,6 +96,7 @@ export const DEFAULT_CONFIG: HeuristicConfig = {
     trickRoom: 0.9,
     phaze: 0.95,
     haze: 0.8,
+    hazeRescue: 1.1,
     hazard: 0.55,
     screen: 0.55,
     auroraVeil: 0.8,

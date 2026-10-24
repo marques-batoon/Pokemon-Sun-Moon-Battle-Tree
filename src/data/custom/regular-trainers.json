@@ -2764,9 +2764,9 @@
      ]
     },
     {
-     "species": "Gallade",
+     "species": "Gardevoir",
      "item": "Paradoxorb-F",
-     "ability": "Justified",
+     "ability": "Trace",
      "nature": "Timid",
      "evs": {
       "hp": 4,
@@ -5421,6 +5421,730 @@
       "Toxic",
       "Protect",
       "Roost"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Percival",
+   "class": "Ace Trainer",
+   "classGender": "M",
+   "spriteId": "acetrainer-gen6",
+   "fromBattle": 100,
+   "weights": [
+    {
+     "fromBattle": 100,
+     "weight": 1.1
+    },
+    {
+     "fromBattle": 200,
+     "weight": 1.5
+    }
+   ],
+   "alwaysParadox": true,
+   "block": 3,
+   "sets": [
+    {
+     "species": "Gallade",
+     "item": "Paradoxorb-F",
+     "ability": "Justified",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Close Combat",
+      "Spirit Break",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Gallade",
+     "item": "Paradoxorb-F",
+     "ability": "Justified",
+     "nature": "Naive",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 4,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Close Combat",
+      "Moonblast",
+      "Shadow Ball",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Bisharp",
+     "item": "Black Glasses",
+     "ability": "Defiant",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Iron Head",
+      "Sucker Punch",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Kartana",
+     "item": "Choice Scarf",
+     "ability": "Beast Boost",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Leaf Blade",
+      "Smart Strike",
+      "Sacred Sword",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Samurott",
+     "item": "Life Orb",
+     "ability": "Torrent",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Waterfall",
+      "Aqua Jet",
+      "Megahorn"
+     ]
+    },
+    {
+     "species": "Scizor",
+     "item": "Choice Band",
+     "ability": "Technician",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Bullet Punch",
+      "U-turn",
+      "Superpower",
+      "Knock Off"
+     ]
+    },
+    {
+     "species": "Golisopod",
+     "item": "Assault Vest",
+     "ability": "Emergency Exit",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "First Impression",
+      "Liquidation",
+      "Leech Life",
+      "Aqua Jet"
+     ]
+    },
+    {
+     "species": "Skarmory",
+     "item": "Leftovers",
+     "ability": "Sturdy",
+     "nature": "Impish",
+     "evs": {
+      "hp": 252,
+      "atk": 4,
+      "def": 252,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Brave Bird",
+      "Roost",
+      "Spikes",
+      "Whirlwind"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Bronson",
+   "class": "Pokémon Ranger",
+   "classGender": "M",
+   "spriteId": "pokemonranger-gen6",
+   "fromBattle": 100,
+   "weights": [
+    {
+     "fromBattle": 100,
+     "weight": 1.1
+    },
+    {
+     "fromBattle": 200,
+     "weight": 1.5
+    }
+   ],
+   "alwaysParadox": true,
+   "block": 4,
+   "sets": [
+    {
+     "species": "Raikou",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Thunderclap",
+      "Draco Meteor",
+      "Thunderbolt",
+      "Volt Switch"
+     ]
+    },
+    {
+     "species": "Raikou",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Modest",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Calm Mind",
+      "Rising Voltage",
+      "Dragon Pulse",
+      "Protect"
+     ]
+    },
+    {
+     "species": "Tapu Koko",
+     "item": "Choice Specs",
+     "ability": "Electric Surge",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Thunderbolt",
+      "Dazzling Gleam",
+      "Volt Switch",
+      "Grass Knot"
+     ]
+    },
+    {
+     "species": "Kommo-o",
+     "item": "Kommonium Z",
+     "ability": "Soundproof",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Clanging Scales",
+      "Focus Blast",
+      "Flamethrower",
+      "Flash Cannon"
+     ]
+    },
+    {
+     "species": "Tyrantrum",
+     "item": "Choice Band",
+     "ability": "Rock Head",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Head Smash",
+      "Outrage",
+      "Earthquake",
+      "Crunch"
+     ]
+    },
+    {
+     "species": "Zapdos",
+     "item": "Leftovers",
+     "ability": "Pressure",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Discharge",
+      "Heat Wave",
+      "Roost",
+      "Volt Switch"
+     ]
+    },
+    {
+     "species": "Thundurus-Therian",
+     "item": "Life Orb",
+     "ability": "Volt Absorb",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Nasty Plot",
+      "Thunderbolt",
+      "Focus Blast",
+      "Grass Knot"
+     ]
+    },
+    {
+     "species": "Aerodactyl",
+     "item": "Rockium Z",
+     "ability": "Unnerve",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Stone Edge",
+      "Earthquake",
+      "Ice Fang",
+      "Roost"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Ignatius",
+   "class": "Rising Star",
+   "classGender": "M",
+   "spriteId": "risingstar-gen6",
+   "fromBattle": 100,
+   "weights": [
+    {
+     "fromBattle": 100,
+     "weight": 1.1
+    },
+    {
+     "fromBattle": 200,
+     "weight": 1.5
+    }
+   ],
+   "alwaysParadox": true,
+   "block": 4,
+   "sets": [
+    {
+     "species": "Entei",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Raging Fury",
+      "Outrage",
+      "Earthquake",
+      "Iron Head"
+     ]
+    },
+    {
+     "species": "Entei",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Jolly",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Dragon Dance",
+      "Heat Crash",
+      "Scale Shot",
+      "Morning Sun"
+     ]
+    },
+    {
+     "species": "Torkoal",
+     "item": "Heat Rock",
+     "ability": "Drought",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 4,
+      "spd": 0,
+      "spe": 0
+     },
+     "moves": [
+      "Stealth Rock",
+      "Lava Plume",
+      "Rapid Spin",
+      "Yawn"
+     ]
+    },
+    {
+     "species": "Charizard",
+     "item": "Life Orb",
+     "ability": "Solar Power",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Fire Blast",
+      "Solar Beam",
+      "Air Slash",
+      "Focus Blast"
+     ]
+    },
+    {
+     "species": "Mamoswine",
+     "item": "Choice Band",
+     "ability": "Thick Fat",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Earthquake",
+      "Icicle Crash",
+      "Ice Shard",
+      "Stone Edge"
+     ]
+    },
+    {
+     "species": "Turtonator",
+     "item": "White Herb",
+     "ability": "Shell Armor",
+     "nature": "Modest",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Shell Smash",
+      "Fire Blast",
+      "Dragon Pulse",
+      "Focus Blast"
+     ]
+    },
+    {
+     "species": "Heatran",
+     "item": "Choice Scarf",
+     "ability": "Flash Fire",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Heat Wave",
+      "Earth Power",
+      "Flash Cannon",
+      "Dragon Pulse"
+     ]
+    },
+    {
+     "species": "Arcanine",
+     "item": "Sitrus Berry",
+     "ability": "Intimidate",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Flare Blitz",
+      "Extreme Speed",
+      "Wild Charge",
+      "Morning Sun"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Delta",
+   "class": "Parasol Lady",
+   "classGender": "F",
+   "spriteId": "parasollady-gen6",
+   "fromBattle": 100,
+   "weights": [
+    {
+     "fromBattle": 100,
+     "weight": 1.1
+    },
+    {
+     "fromBattle": 200,
+     "weight": 1.5
+    }
+   ],
+   "alwaysParadox": true,
+   "block": 4,
+   "sets": [
+    {
+     "species": "Suicune",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Timid",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Hydro Steam",
+      "Draco Meteor",
+      "Hurricane",
+      "Flip Turn"
+     ]
+    },
+    {
+     "species": "Suicune",
+     "item": "Paradoxorb-A",
+     "ability": "Pressure",
+     "nature": "Modest",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Agility",
+      "Hydro Pump",
+      "Dragon Pulse",
+      "Flamethrower"
+     ]
+    },
+    {
+     "species": "Pelipper",
+     "item": "Damp Rock",
+     "ability": "Drizzle",
+     "nature": "Bold",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 252,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Scald",
+      "Hurricane",
+      "U-turn",
+      "Roost"
+     ]
+    },
+    {
+     "species": "Kingdra",
+     "item": "Choice Specs",
+     "ability": "Swift Swim",
+     "nature": "Modest",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Draco Meteor",
+      "Hydro Pump",
+      "Ice Beam",
+      "Dragon Pulse"
+     ]
+    },
+    {
+     "species": "Kabutops",
+     "item": "Focus Sash",
+     "ability": "Swift Swim",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 0,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 252
+     },
+     "moves": [
+      "Swords Dance",
+      "Waterfall",
+      "Stone Edge",
+      "Aqua Jet"
+     ]
+    },
+    {
+     "species": "Relicanth",
+     "item": "Choice Band",
+     "ability": "Rock Head",
+     "nature": "Adamant",
+     "evs": {
+      "hp": 252,
+      "atk": 252,
+      "def": 0,
+      "spa": 0,
+      "spd": 4,
+      "spe": 0
+     },
+     "moves": [
+      "Head Smash",
+      "Waterfall",
+      "Earthquake",
+      "Double-Edge"
+     ]
+    },
+    {
+     "species": "Milotic",
+     "item": "Leftovers",
+     "ability": "Competitive",
+     "nature": "Calm",
+     "evs": {
+      "hp": 252,
+      "atk": 0,
+      "def": 4,
+      "spa": 0,
+      "spd": 252,
+      "spe": 0
+     },
+     "moves": [
+      "Scald",
+      "Recover",
+      "Ice Beam",
+      "Haze"
+     ]
+    },
+    {
+     "species": "Ludicolo",
+     "item": "Life Orb",
+     "ability": "Swift Swim",
+     "nature": "Modest",
+     "evs": {
+      "hp": 4,
+      "atk": 0,
+      "def": 0,
+      "spa": 252,
+      "spd": 0,
+      "spe": 252
+     },
+     "moves": [
+      "Hydro Pump",
+      "Giga Drain",
+      "Ice Beam",
+      "Focus Blast"
      ]
     }
    ]

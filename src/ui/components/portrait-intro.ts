@@ -39,10 +39,11 @@ const px = (r: DOMRect) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${
  * Plays the intro for `targets` (images already laid out in their final spots;
  * two in a Multi Battle). The targets are hidden while fixed-position copies
  * fill the screen's height side by side; a click, tap, Enter, Space or Escape
- * sends each to its target's spot (a second one skips the flight). Returns a
+ * sends each to its target's spot (a second one skips the flight). `beforeFlight`
+ * runs first (it may scroll the page: the spots are measured after it). Returns a
  * cancel function (also restores the targets). Marked as played once they land.
  */
-export function playPortraitIntro(targets: HTMLImageElement[], key: string, color: string, captions: IntroCaption[] = []): () => void {
+export function playPortraitIntro(targets: HTMLImageElement[], key: string, color: string, captions: IntroCaption[] = [], beforeFlight?: () => void): () => void {
   if (!targets.length || typeof targets[0].animate !== 'function') return () => {};
 
   const overlay = document.createElement('div');
@@ -108,6 +109,7 @@ export function playPortraitIntro(targets: HTMLImageElement[], key: string, colo
     if (phase !== 'waiting') return;
     phase = 'leaving';
     enter.forEach(a => a.finish());
+    beforeFlight?.();
     // Measured now, so a resize while waiting doesn't matter.
     const flights = copies.map((copy, i) => {
       const from = px(copy.getBoundingClientRect());

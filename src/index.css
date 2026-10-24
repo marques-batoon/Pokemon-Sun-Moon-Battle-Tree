@@ -2191,6 +2191,9 @@ select { max-width: 100%; text-overflow: ellipsis; }
   .replay-bar button { padding-inline: 8px; }
 }
 
+/* The tournament's next opponents and the Battle! button under them, spaced as the panel's other parts. */
+.tournament-next { display: flex; flex-direction: column; gap: 12px; }
+
 /* ---------- Tournament versus screen (VersusScreen.tsx) ---------- */
 /* The two teams face off: yours (or the first duo) from the left on blue, the other from the right on red, split on a
    slant, and "VS" crashing down between them with a flash. */
@@ -2208,8 +2211,9 @@ select { max-width: 100%; text-overflow: ellipsis; }
 @keyframes versus-left { from { transform: translateX(-70vw); } }
 @keyframes versus-right { from { transform: translateX(70vw); } }
 .versus-sprites { display: flex; justify-content: center; filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.45)); }
-/* The other team faces yours: each sprite turned around, in the same order as the title. */
-.versus-side.right .versus-sprite { transform: scaleX(-1); }
+/* The teams face each other (on request, 2026-10-23): a sprite facing away from the other team is turned around
+   (VersusScreen.tsx: most face left, so the left team's are, except the ones that face right), in the title's order. */
+.versus-sprite.turned { transform: scaleX(-1); }
 .versus-sprite { width: clamp(96px, 16vw, 160px); height: auto; image-rendering: pixelated; }
 .versus-title { font-size: clamp(1.05rem, 2.6vw, 1.6rem); line-height: 1.2; text-shadow: 0 2px 0 rgb(0 0 0 / 0.45); overflow-wrap: anywhere; }
 .versus-names { font-size: 0.9rem; opacity: 0.85; }
@@ -2226,3 +2230,8 @@ select { max-width: 100%; text-overflow: ellipsis; }
 /* A duo's team title on its trainer card and in the celebration. */
 .opponent-team-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
 .celebration-team { margin: 0; font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 800; color: #ffe27a; text-shadow: 0 2px 0 rgb(0 0 0 / 0.4); }
+
+/* A screen waiting (briefly) for its pictures (ImageGate): "Loading…" only shows if it takes a moment. */
+.image-gate { min-height: 220px; display: grid; place-items: center; }
+.image-gate > span { animation: image-gate-hint 0.2s 0.5s both; }
+@keyframes image-gate-hint { from { opacity: 0; } to { opacity: 1; } }

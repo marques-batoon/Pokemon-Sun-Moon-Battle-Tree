@@ -4,6 +4,8 @@ import type { TournamentController } from '../../run/tournament-controller';
 import { BRING, DEFAULT_SETTINGS, PARTNER_BRING, type RunSettings } from '../../run/types';
 import type { SavedTeam } from '../../team/types';
 import { useAppSettings } from '../useAppSettings';
+import { usePreloadImages } from '../useImagesReady';
+import { ownedPartnerImages } from './preload-images';
 import { useTournament } from './hooks';
 import { PartnerCard } from './PartnerCard';
 import { PartnerPokemonPicker } from './PartnerPokemonPicker';
@@ -19,7 +21,9 @@ export function TournamentForm({ controller, teams, onStarted, onCancel }: { con
   const [settings, setSettings] = useState<RunSettings>({ ...DEFAULT_SETTINGS, ...profile.settings });
   const [seedText, setSeedText] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { showDebugTools } = useAppSettings();
+  const { showDebugTools, spriteStyle } = useAppSettings();
+  // Your partners' Pokémon, so choosing a partner shows them at once.
+  usePreloadImages(ownedPartnerImages(profile.partners.owned, spriteStyle));
   const partnerReady = !!partner && picks.length === PARTNER_BRING;
   const unfinished = tournament && (tournament.status === 'ready' || tournament.status === 'in-battle');
 

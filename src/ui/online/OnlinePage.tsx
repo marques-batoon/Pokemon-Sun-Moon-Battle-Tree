@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import { TRAINERS, trainerQuotes } from '../../data/battle-tree';
-import { opponentSpriteIds } from '../sprites';
+import { opponentSpriteIds, trainerImageUrls } from '../sprites';
+import { useImagesReady } from '../useImagesReady';
 import type { OnlineReward, OnlineRoom } from '../../online/link-room';
 import { RELAY_URL } from '../../online/relay-client';
 import { newRoomCode, ROOM_CODE } from '../../online/relay-protocol';
@@ -131,6 +132,9 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
   const greetings = nextFoes.map(t => (lobby.quotePick === null ? null : trainerQuotes(t, lobby.quotePick, nextFoes)?.greeting ?? null));
   // One key per upcoming battle, the same for both players: the special-battle entrance plays once each.
   const nextKey = `online:${snap.code}:${lobby.battle}:${lobby.next.join('-')}:${lobby.quotePick ?? ''}`;
+  const nextSprites = opponentSpriteIds(nextFoes, lobby.quotePick);
+  // The card appears with its pictures in place (loaded first, at most IMAGE_WAIT_MS).
+  const cardReady = useImagesReady(trainerImageUrls(nextFoes, nextSprites));
   const [copied, setCopied] = useState(false);
   const invite = `${location.origin}${location.pathname}#/online?room=${snap.code}`;
   // The battle screen and the lobby each open at the top of the page.
@@ -200,9 +204,9 @@ function RoomView({ room, teamStore }: { room: OnlineRoom; teamStore: TeamStore 
         <li>{partnerName ? <><strong>{partnerName}</strong>{(host ? lobby.guestReady : lobby.hostReady) ? ' · ready' : ' · choosing Pokémon'}</> : <span className="muted">Waiting for your friend to join…</span>}</li>
       </ul>
 
-      {lobby.next.length > 0 && (
+      {lobby.next.length > 0 && cardReady && (
         <OpponentCard
-          trainers={nextFoes} greetings={greetings} battleKey={nextKey} spriteIds={opponentSpriteIds(nextFoes, lobby.quotePick)}
+          trainers={nextFoes} greetings={greetings} battleKey={nextKey} spriteIds={nextSprites}
           detail={`${lobby.course === 'allstar' ? 'All Star Mode · ' : ''}Battle ${lobby.battle} · streak ${lobby.streak}${lobby.rewards ? ` · win for ${bpForWin('allstar', lobby.battle)} BP each` : ''}`}
         />
       )}

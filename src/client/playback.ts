@@ -210,6 +210,7 @@ export const SIGNATURE_MOVE_MS: Record<string, number> = {
   sparklingaria: 1350, spectralthief: 1300, spiritshackle: 1200, tropkick: 1200, zingzap: 950, sunsteelstrike: 1200, moongeistbeam: 1400, firstimpression: 1000, naturesmadness: 1150,
   mortalspin: 1150, psyblade: 1050, mightycleave: 1100, tachyoncutter: 1050, thunderclap: 900, hydrosteam: 1300, lovelykiss: 1250, softboiled: 1300, transform: 900,
   freezingglare: 1100, thunderouskick: 1000, fierywrath: 1200, drumbeating: 1150, snipeshot: 1050, flowertrick: 1150, torchsong: 1250, aquastep: 1100,
+  dragondarts: 950, overdrive: 1100, spiritbreak: 1050,
   splash: 900, kinesis: 1100, spore: 1200, milkdrink: 1200, sketch: 950, spiderweb: 1250, camouflage: 900, slackoff: 1150, tailglow: 1050,
   floralhealing: 900, instruct: 900, purify: 1300, shoreup: 1350, toxicthread: 1300, spicyextract: 1250, noretreat: 1050, burningbulwark: 900,
 };

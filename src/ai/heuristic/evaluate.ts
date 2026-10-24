@@ -129,6 +129,25 @@ function terrainGain(battle: Battle, user: Pokemon, other: Pokemon, terrain: str
 const terrainFit = ({ battle, me, foe }: Situation, terrain: string) => terrainGain(battle, me, foe, terrain) - terrainGain(battle, foe, me, terrain);
 
 const positiveBoosts = (p: Pokemon) => Object.values(p.boosts).reduce((s, v) => s + Math.max(0, v), 0);
+const negativeBoosts = (p: Pokemon) => Object.values(p.boosts).reduce((s, v) => s + Math.max(0, -v), 0);
+const total = (ps: Pokemon[], count: (p: Pokemon) => number) => ps.reduce((s, p) => s + count(p), 0);
+
+/**
+ * Haze resets every Pokémon's stat changes, both sides' (on request, 2026-10-23, for Multi Battles): weighed over
+ * everyone on the field, not just the target. What it takes away from the foes (their rises) and gives our side (the
+ * user's and its partner's drops cleared), against what it costs our side (its rises) and gives the foes (their drops
+ * cleared). Never when it would only cost us (no foe rises, only our side's, say the partner's); most urgent when the
+ * foes have rises and our side has drops.
+ */
+function hazeScore(me: Pokemon, sc: HeuristicConfig['scores']): [number, string] {
+  const foes = me.foes(), ours = me.alliesAndSelf();
+  const foeRises = total(foes, positiveBoosts), foeDrops = total(foes, negativeBoosts);
+  const ourRises = total(ours, positiveBoosts), ourDrops = total(ours, negativeBoosts);
+  if (!foeRises && !ourDrops && !ourRises && !foeDrops) return [0.02, 'nothing to haze'];
+  if (foeRises + ourDrops <= ourRises + foeDrops) return [RULED_OUT, 'haze would cost our side more'];
+  if (foeRises && ourDrops) return [sc.hazeRescue, 'haze: foes boosted, our side lowered'];
+  return [sc.haze, 'haze boosts'];
+}
 const isPhysical = (p: Pokemon) => p.getStat('atk', false, true) >= p.getStat('spa', false, true);
 const aliveBench = (side: Side) => side.pokemon.filter(p => !p.isActive && p.hp > 0).length;
 
@@ -245,13 +264,18 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
   if (move.sideCondition) {
     const cond = move.sideCondition;
     if (cond === 'tailwind') return me.side.sideConditions.tailwind ? out(0, 'tailwind up') : s.trickRoom ? out(0.02, 'Trick Room up') : out(sc.tailwind, 'tailwind');
+    // Never while our side's screens still cover it (on request, 2026-10-23): the same screen, or Aurora Veil (it
+    // already halves both kinds of damage); Aurora Veil while it's up, or while Reflect and Light Screen both are.
+    // A Multi Battle partner's screens count: allies share them (the simulator keeps one set for both).
+    const up = me.side.sideConditions;
     if (cond === 'reflect' || cond === 'lightscreen') {
-      if (me.side.sideConditions[cond]) return out(0, 'screen up');
+      if (up[cond] || up.auroraveil) return out(RULED_OUT, 'screen already up');
       const fits = cond === 'reflect' ? isPhysical(foe) : !isPhysical(foe);
       return out(fits ? sc.screen : sc.screen * 0.4, cond);
     }
     if (cond === 'auroraveil') {
-      return battle.field.effectiveWeather() === 'hail' && !me.side.sideConditions.auroraveil ? out(sc.auroraVeil, 'aurora veil') : out(0, 'veil fails');
+      if (up.auroraveil || (up.reflect && up.lightscreen)) return out(RULED_OUT, 'screens already up');
+      return battle.field.effectiveWeather() === 'hail' ? out(sc.auroraVeil, 'aurora veil') : out(RULED_OUT, 'veil fails without hail');
     }
     if (cond in HAZARD_MAX) {
       const layers = (foe.side.sideConditions[cond]?.layers as number | undefined) ?? (foe.side.sideConditions[cond] ? 1 : 0);
@@ -264,7 +288,7 @@ export function scoreStatus(s: Situation, moveId: string, koAvailable: boolean):
     if (aliveBench(foe.side) === 0) return out(0, 'nothing to phaze into');
     return positiveBoosts(foe) > 0 ? out(sc.phaze, 'phaze boosted foe') : out(sc.other * 0.5, 'phaze');
   }
-  if (move.id === 'haze') return positiveBoosts(foe) > 0 ? out(sc.haze, 'haze boosts') : out(0.02, 'nothing to haze');
+  if (move.id === 'haze') return out(...hazeScore(me, sc));
 
   if (move.id === 'bellydrum') {
     if (me.boosts.atk >= 6 || hpFrac <= 0.5) return out(0, 'belly drum fails');

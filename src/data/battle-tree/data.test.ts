@@ -31,8 +31,8 @@ function maxClauseTeam(roster: number[], cap: number): number {
 }
 
 describe('sets.json', () => {
-  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets, 40 Digimon Tamer sets (Izzy, Kaito, Takato, Henry, Rika) Veteran Mildred\'s 9, the 17 Paradox trainers\' 8 each Lillie, Hau, Lana and Marley\'s 8 each, the 12 Ace Trainers and Beauties\' 8 each and Marques and Thomas\'s 11 added later, with sequential ids', () => {
-    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 40 + 9 + 17 * 8 + 4 * 8 + 12 * 8 + 11);
+  it('has the 996 Sun/Moon sets, then the 292 Gym Leader sets, 22 battle-50 sets, 264 Elite Four and Champion sets, 208 evil team sets, 40 Digimon Tamer sets (Izzy, Kaito, Takato, Henry, Rika) Veteran Mildred\'s 9, the 17 Paradox trainers\' 8 each Lillie, Hau, Lana and Marley\'s 8 each, the 12 Ace Trainers and Beauties\' 8 each, Marques and Thomas\'s 11 added later, Percival\'s 8, the 7 later Battle Legends\' 8 each and Bronson, Ignatius and Delta\'s 8 each, with sequential ids', () => {
+    expect(SETS).toHaveLength(996 + 292 + 22 + 264 + 208 + 40 + 9 + 17 * 8 + 4 * 8 + 12 * 8 + 11 + 8 + 7 * 8 + 3 * 8);
     // Labels name the trainer by key, so the two Archies' sets stay apart.
     expect(new Set(SETS.map(s => s.label)).size).toBe(SETS.length);
     SETS.forEach((s, i) => expect(s.id).toBe(i));
@@ -41,11 +41,14 @@ describe('sets.json', () => {
     expect(SETS.slice(996).every(s => s.ability)).toBe(true);
   });
 
-  it('puts the Pokémon added to Marques\'s and Thomas\'s teams later after every other set, so no earlier id moves', () => {
-    expect(SETS.slice(-11).map(s => s.label)).toEqual([
+  it('puts each later addition after everything before it (Marques\'s and Thomas\'s Pokémon, then Percival, then the later Battle Legends, then Bronson, Ignatius and Delta), so no earlier id moves', () => {
+    const late = SETS.length - 3 * 8 - 7 * 8 - 8;
+    expect(SETS.slice(late - 11, late).map(s => s.label)).toEqual([
       'Charizard (Marques 4)', 'Porygon2 (Marques 5)', 'Espeon (Marques 6)', 'Greninja (Marques 7)', 'Hitmonchan (Marques 8)',
       'Typhlosion (Thomas 4)', 'Dragonite (Thomas 5)', 'Primarina (Thomas 6)', 'Umbreon (Thomas 7)', 'Meowscarada (Thomas 8)', 'Heracross (Thomas 9)',
     ]);
+    expect(SETS.slice(late, late + 8).every(s => s.label.includes('(Percival'))).toBe(true);
+    expect([...new Set(SETS.slice(late + 8).map(s => s.label.replace(/^.* \((\w+) \d+\)$/, '$1')))]).toEqual(['Elio', 'Kris', 'Brendan', 'May', 'Dawn', 'Rosa', 'Gloria', 'Bronson', 'Ignatius', 'Delta']);
     // The first Elite Four set still comes right after the battle-50 trainers' first 22.
     expect(SETS[996 + 292 + 22].label).toMatch(/^Lapras \(Lorelei 1\)$/);
     const roster = (name: string) => TRAINERS.find(t => t.kind === 'legend' && t.name === name)!.roster.map(id => SETS[id].species);
@@ -83,17 +86,23 @@ describe('sets.json', () => {
 });
 
 describe('trainers.json', () => {
-  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, the DigiDestined and Digimon Tamers (Izzy, Kaito, Takato, Henry, Rika), Veteran Mildred, the 17 Paradox trainers, Lillie, Hau, Lana and Marley, then 12 Ace Trainers and Beauties', () => {
+  it('has 190 regular, 11 special and 4 legend trainers from the game, then 47 custom Gym Leaders, 4 battle-50 trainers, 33 Elite Four and Champions, 26 evil team leaders and admins, the DigiDestined and Digimon Tamers (Izzy, Kaito, Takato, Henry, Rika), Veteran Mildred, the 17 Paradox trainers, Lillie, Hau, Lana and Marley, then 12 Ace Trainers and Beauties, Percival, the 7 later Battle Legends and Bronson, Ignatius and Delta', () => {
     const count = (k: Trainer['kind']) => TRAINERS.filter(t => t.kind === k).length;
-    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 5 + 1 + 17 + 4 + 12);
+    expect(TRAINERS).toHaveLength(205 + 47 + 4 + 33 + 26 + 5 + 1 + 17 + 4 + 12 + 1 + 7 + 3);
     // Takato and Henry are Battle Legends (since 2026-10-18), kept in the Tamers' file so ids don't move.
-    expect([count('regular'), count('special'), count('legend')]).toEqual([190 + 1 + 17 + 12, 11 + 47 + 33 + 26 + 3 + 4, 4 + 4 + 2]);
+    expect([count('regular'), count('special'), count('legend')]).toEqual([190 + 1 + 17 + 12 + 1 + 3, 11 + 47 + 33 + 26 + 3 + 4, 4 + 4 + 2 + 7]);
+    // Percival, then the later Battle Legends, then Bronson, Ignatius and Delta (2026-10-23), after everyone else.
+    expect(TRAINERS.slice(354).map(t => [t.name, t.class, t.kind])).toEqual([
+      ['Percival', 'Ace Trainer', 'regular'],
+      ...['Elio', 'Kris', 'Brendan', 'May', 'Dawn', 'Rosa', 'Gloria'].map(n => [n, 'Battle Legend', 'legend']),
+      ['Bronson', 'Pokémon Ranger', 'regular'], ['Ignatius', 'Rising Star', 'regular'], ['Delta', 'Parasol Lady', 'regular'],
+    ]);
     // Then Veteran Mildred (a custom regular trainer, from battle 100), the Paradox trainers after her, and the last special trainers.
     expect(TRAINERS.slice(338, 342).map(t => [t.name, t.class, t.kind])).toEqual([
       ['Lillie', 'Pokémon Trainer', 'special'], ['Hau', 'Pokémon Trainer', 'special'], ['Lana', 'Captain', 'special'], ['Marley', 'Pokémon Trainer', 'special'],
     ]);
     // The Ace Trainers and Beauties (custom regular trainers from battle 100) come after them, so no earlier id moved.
-    expect(TRAINERS.slice(342).map(t => [t.class, t.kind])).toEqual([...Array(5).fill(['Ace Trainer', 'regular']), ...Array(7).fill(['Beauty', 'regular'])]);
+    expect(TRAINERS.slice(342, 354).map(t => [t.class, t.kind])).toEqual([...Array(5).fill(['Ace Trainer', 'regular']), ...Array(7).fill(['Beauty', 'regular'])]);
     expect([TRAINERS[320].name, TRAINERS[320].class, TRAINERS[320].kind]).toEqual(['Mildred', 'Veteran', 'regular']);
     // Izzy comes last (earlier ids don't move): a special trainer at 7 with his own sprite, leading with Tentomon.
     const izzy = TRAINERS[315] as SpecialTrainer;
@@ -147,7 +156,10 @@ describe('trainers.json', () => {
     expect(at50('singles')).toEqual(expect.arrayContaining([['Red', null, 7], ['Blue', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5], ['Takato', null, 3.5], ['Henry', null, 3.5]]));
     expect(at50('doubles')).toEqual(expect.arrayContaining([['Blue', null, 7], ['Red', null, 7], ['Tai', null, 3.5], ['Matt', null, 3.5], ['Takato', null, 3.5], ['Henry', null, 3.5]]));
     expect(at50('multi')).toEqual(expect.arrayContaining([['Red', 'Blue', 7], ['Marques', 'Thomas', 1], ['Tai', 'Matt', 3.5], ['Tai', 'Takato', 3.5], ['Takato', 'Henry', 3.5]]));
-    expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([6, 6, 5]);
+    // The later Battle Legends (2026-10-23): 3.5 each in Super Singles and Doubles; 21 pairs in Super Multi (multi.test.ts).
+    const later = ['Elio', 'Kris', 'Brendan', 'May', 'Dawn', 'Rosa', 'Gloria'];
+    for (const f of ['singles', 'doubles']) expect(at50(f)).toEqual(expect.arrayContaining(later.map(n => [n, null, 3.5])));
+    expect([at50('singles').length, at50('doubles').length, at50('multi').length]).toEqual([13, 13, 26]);
   });
 
   it("lets every Gym Leader, Elite Four member and Champion field 4 Pokémon under the clauses (Doubles)", () => {
@@ -309,7 +321,7 @@ describe('trainer-quotes.json', () => {
     }
   });
 
-  it('has pair lines for special trainers who share a region or a type: a greeting and both closing remarks per trainer, no Pokémon named', async () => {
+  it('has pair lines for special trainers who share a region or a type: three greetings and matching closing remarks per trainer, no Pokémon named', async () => {
     const { TRAINER_DUO_QUOTES, TRAINER_MULTI_QUOTES, TRAINER_PAIR_QUOTES, TRAINER_QUOTES } = await import('./index');
     const special = new Set(TRAINERS.filter(t => t.kind === 'special').map(trainerKey));
     const names = [...new Set([...Dex.species.all()].map(s => s.baseSpecies))].filter(n => n.length > 2);
@@ -328,7 +340,9 @@ describe('trainer-quotes.json', () => {
       const key = [...who].sort().join('|');
       expect(seen.has(key), label).toBe(false);
       seen.add(key);
-      for (const q of Object.values(entry)) lines.push(q.greeting, q.trainerWins, q.trainerLoses);
+      // Three sets each, in matching order (on request, 2026-10-23: three greetings with matching closings per pair).
+      for (const [name, sets] of Object.entries(entry)) expect(sets, `${label}: ${name}`).toHaveLength(3);
+      for (const q of Object.values(entry).flat()) lines.push(q.greeting, q.trainerWins, q.trainerLoses);
     }
     // 317 + 486 + 404 + 99 written by 2026-10-18; since then Mallow's 14 added and Courtney's 15 with male characters removed.
     expect(seen.size).toBeGreaterThanOrEqual(1300);
@@ -361,44 +375,51 @@ describe('trainer-quotes.json', () => {
   });
 
   it('lists the greetings a battle opens with and the closing remarks it ends with, in speaking order, with the opponent card\'s lines', async () => {
-    const { closingsOf, greetingsOf, TRAINER_PAIR_QUOTES } = await import('./index');
+    const { closingsOf, greetingsOf, quotePick, TRAINER_PAIR_QUOTES } = await import('./index');
     const [brock, misty] = ['Brock', 'Misty'].map(byName);
-    const pair = TRAINER_PAIR_QUOTES['Brock & Misty'];
+    const set = (name: 'Brock' | 'Misty') => { const sets = TRAINER_PAIR_QUOTES['Brock & Misty'][name]; return sets[quotePick('run-9|battle-10') % sets.length]; };
     expect(greetingsOf([brock, misty], 'run-9|battle-10')).toEqual([
-      { trainer: brock, line: pair.Brock.greeting },
-      { trainer: misty, line: pair.Misty.greeting },
+      { trainer: brock, line: set('Brock').greeting },
+      { trainer: misty, line: set('Misty').greeting },
     ]);
-    expect(closingsOf([brock, misty], 'run-9|battle-10', true).map(c => c.line)).toEqual([pair.Brock.trainerWins, pair.Misty.trainerWins]);
-    expect(closingsOf([brock, misty], 'run-9|battle-10', false).map(c => c.line)).toEqual([pair.Brock.trainerLoses, pair.Misty.trainerLoses]);
+    expect(closingsOf([brock, misty], 'run-9|battle-10', true).map(c => c.line)).toEqual([set('Brock').trainerWins, set('Misty').trainerWins]);
+    expect(closingsOf([brock, misty], 'run-9|battle-10', false).map(c => c.line)).toEqual([set('Brock').trainerLoses, set('Misty').trainerLoses]);
     expect(greetingsOf([misty], 5).map(g => g.trainer)).toEqual([misty]);
     expect(greetingsOf([], 'run-9|battle-10')).toEqual([]);
   });
 
   it('greets you with pair lines when two such special trainers battle together, and closes with matching remarks', async () => {
-    const { trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
+    const { pairGreeting, quotePick, trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
     const [brock, misty, surge, cynthia, florian] = ['Brock', 'Misty', 'Lt. Surge', 'Cynthia', 'Florian'].map(byName);
     const key = 'run-9|battle-10';
     const together = trainerQuotes(brock, key, [brock, misty])!;
     const alone = trainerQuotes(brock, key)!;
-    expect(together).toEqual(TRAINER_PAIR_QUOTES['Brock & Misty'].Brock);
-    expect(trainerQuotes(misty, key, [brock, misty])).toEqual(TRAINER_PAIR_QUOTES['Brock & Misty'].Misty);
-    // The same lines whichever set the battle picks, and whichever of the two is listed first.
-    expect(trainerQuotes(brock, 'run-2|battle-30', [misty, brock])).toEqual(together);
+    const pair = TRAINER_PAIR_QUOTES['Brock & Misty'];
+    const pick = quotePick(key) % pair.Brock.length;
+    expect(together).toEqual(pair.Brock[pick]);
+    // The same set for both, so they answer each other.
+    expect(trainerQuotes(misty, key, [brock, misty])).toEqual(pair.Misty[pick]);
+    // Whichever of the two is listed first.
+    expect(trainerQuotes(brock, key, [misty, brock])).toEqual(together);
     expect(together.trainerWins).not.toBe(alone.trainerWins);
     expect(together.trainerLoses).not.toBe(alone.trainerLoses);
     // Same type, different regions.
-    expect(trainerQuotes(surge, key, [surge, byName('Volkner')])!.greeting).toMatch(/Volkner/);
+    expect(pairGreeting(surge, byName('Volkner'), 0)).toMatch(/Volkner/);
     // Nothing in common (Kanto Leader and Sinnoh's Champion), or a regular trainer: their usual lines.
     expect(trainerQuotes(brock, key, [brock, cynthia])).toBe(alone);
     expect(trainerQuotes(brock, key, [brock, florian])).toBe(alone);
   });
 
   it('gives the Elite Four and Champions pair lines with relatives, mentors, fellow Champions and their region or type', async () => {
-    const { trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
+    const { pairGreeting, quotePick, trainerQuotes, TRAINER_PAIR_QUOTES } = await import('./index');
     const key = 'run-3|battle-7';
-    const line = (a: string, b: string) => trainerQuotes(byName(a), key, [byName(a), byName(b)])!.greeting;
-    expect(line('Koga', 'Janine')).toBe(TRAINER_PAIR_QUOTES['Koga & Janine'].Koga.greeting);
-    expect(line('Janine', 'Koga')).toBe(TRAINER_PAIR_QUOTES['Koga & Janine'].Janine.greeting);
+    const pick = (sets: unknown[]) => quotePick(key) % sets.length;
+    const together = (a: string, b: string) => trainerQuotes(byName(a), key, [byName(a), byName(b)])!.greeting;
+    const kj = TRAINER_PAIR_QUOTES['Koga & Janine'];
+    expect(together('Koga', 'Janine')).toBe(kj.Koga[pick(kj.Koga)].greeting);
+    expect(together('Janine', 'Koga')).toBe(kj.Janine[pick(kj.Janine)].greeting);
+    // Their first set says how they're related.
+    const line = (a: string, b: string) => pairGreeting(byName(a), byName(b), 0);
     expect(line('Lance', 'Clair')).toMatch(/cousin/i);
     expect(line('Wallace', 'Juan')).toMatch(/teacher/i);
     expect(line('Flint', 'Volkner')).toMatch(/Volkner/);

@@ -1,7 +1,14 @@
 import type { Battle } from '@pkmn/client';
 import type { ArgType, KWArgType, PokemonIdent } from '@pkmn/protocol';
 import { LogFormatter } from '@pkmn/view';
-import { isWarpForm, WARP_DIGIMON } from '../data/custom/digimon';
+import { WARP_DIGIMON } from '../data/custom/digimon';
+import { PARADOX_FORMS } from '../data/custom/paradox';
+
+/** Forms a Pokémon changes into for good during a battle, by the names it had before: Warp Digivolution, Paradox Evolution. */
+const RENAMING_FORMS = new Map<string, string[]>([
+  ...WARP_DIGIMON.map(d => [d.warp.name, [d.base.name]] as [string, string[]]),
+  ...PARADOX_FORMS.map(f => [f.form, f.bases] as [string, string[]]),
+]);
 
 /**
  * LogFormatter that counts the player's Multi Battle partner as their own side.
@@ -19,8 +26,9 @@ export class TreeLogFormatter extends LogFormatter {
   }
 
   /**
-   * After Warp Digivolution, the Pokémon goes by its new form's name ("BlackWarGreymon used Dramon Destroyer!",
-   * on request), unless it has a nickname of its own. (Mega Evolved Pokémon keep their name, as in the games.)
+   * After Warp Digivolution or Paradox Evolution, the Pokémon goes by its new form's name ("BlackWarGreymon used
+   * Dramon Destroyer!", "Great Tusk used Headlong Rush!"; on request), unless it has a nickname of its own. (Mega
+   * Evolved Pokémon keep their name, as in the games.)
    */
   override pokemonName(pokemon: PokemonIdent): string {
     const name = super.pokemonName(pokemon);
@@ -28,7 +36,7 @@ export class TreeLogFormatter extends LogFormatter {
     let mon: ReturnType<Battle['getPokemon']> = null;
     try { mon = this.battle.getPokemon(pokemon); } catch { return name; }
     const form = mon?.speciesForme;
-    return form && isWarpForm(form) && mon!.name === WARP_DIGIMON.find(d => d.warp.name === form)?.base.name ? form : name;
+    return form && RENAMING_FORMS.get(form)?.includes(mon!.name) ? form : name;
   }
 
   /** Multi: "Battle started between Player & Sina and Darla & Alwyn!" (the base names only p1 and p2). */

@@ -244,11 +244,19 @@ export function trainerSpriteUrl(trainer: Trainer, spriteId?: string | null): st
   return id ? showdownSpriteUrl(id) : null;
 }
 
+/** A Pokémon Masters sprite: bundled with the app (public/trainers/masters/), downloaded from Showdown. */
+const mastersSpriteUrl = (id: string) => `${import.meta.env.BASE_URL}trainers/masters/${id}.png`;
 const bundled = new Set(spriteData.bundled);
-/** A Showdown trainer sprite: from the app when it's bundled ('bundled' in trainer-sprites.json: public/trainers/showdown/), else from Showdown. */
-const showdownSpriteUrl = (id: string) => (bundled.has(id) ? `${import.meta.env.BASE_URL}trainers/showdown/${id}.png` : Sprites.getAvatar(id));
-
 const masters = spriteData.masters as Record<string, string[]>;
+/** Every bundled Pokémon Masters sprite: a trainer's usual sprite can be one too (Kris: kris-masters). */
+const bundledMasters = new Set(Object.values(masters).flat());
+/**
+ * A Showdown trainer sprite: from the app when it's bundled ('bundled' in trainer-sprites.json: public/trainers/showdown/,
+ * or a Pokémon Masters one: public/trainers/masters/), else from Showdown.
+ */
+const showdownSpriteUrl = (id: string) => (bundled.has(id) ? `${import.meta.env.BASE_URL}trainers/showdown/${id}.png`
+  : bundledMasters.has(id) ? mastersSpriteUrl(id) : Sprites.getAvatar(id));
+
 /** Outfits that match (Red and Blue's Sygna Suits, their Champion outfits): worn together, or not at all. */
 const mastersPairs = spriteData.mastersPairs as [string, string][];
 /** How often a trainer who has Pokémon Masters sprites shows one in a battle (on request, 2026-10-22). */
@@ -258,8 +266,7 @@ export const MASTERS_CHANCE = 0.3;
  * Battle Legend Red or Blue, if any. Regular trainers have none.
  */
 export const mastersSpriteIds = (trainer: Trainer): readonly string[] => (trainer.kind === 'regular' ? [] : masters[trainerKey(trainer)] ?? []);
-/** A Pokémon Masters sprite: bundled with the app (public/trainers/masters/), downloaded from Showdown. */
-const mastersSpriteUrl = (id: string) => `${import.meta.env.BASE_URL}trainers/masters/${id}.png`;
+
 
 /** Two trainers' matching outfits (first trainer's, second's): Red and Blue's. */
 function matchingOutfits(a: Trainer, b: Trainer): [string, string][] {
@@ -322,10 +329,21 @@ export const PLAYER_SPRITES: readonly { id: string; name: string; game: string; 
 ];
 export const DEFAULT_PLAYER_SPRITE = 'marques';
 
+/**
+ * Trainer sprites whose figure faces right (checked by eye, 2026-10-23): the user's own pixel art for Marques, Thomas,
+ * Izzy and Rika. Every other one faces left: Pokémon Showdown's and Pokémon Masters' trainer sprites are drawn as
+ * opponents, turned towards the player (as is the user's Kaito). For screens that turn sprites to face someone (the
+ * tournament's versus screen).
+ */
+const FACING_RIGHT = new Set(['trainers/marques.png', 'trainers/thomas.png', 'trainers/izzy.png', 'trainers/rika.png']);
+/** Whether the sprite at this URL (trainerSpriteUrl, playerSpriteUrl) faces right. */
+export const spriteFacesRight = (url: string | null): boolean =>
+  !!url && url.startsWith(import.meta.env.BASE_URL) && FACING_RIGHT.has(url.slice(import.meta.env.BASE_URL.length));
+
 /** The picture for a player sprite id (an unknown id: the default). */
 export function playerSpriteUrl(id: string): string {
   const entry = PLAYER_SPRITES.find(p => p.id === id) ?? PLAYER_SPRITES.find(p => p.id === DEFAULT_PLAYER_SPRITE)!;
-  return entry.file ? `${import.meta.env.BASE_URL}${entry.file}` : Sprites.getAvatar(entry.id);
+  return entry.file ? `${import.meta.env.BASE_URL}${entry.file}` : showdownSpriteUrl(entry.id);
 }
 
 export interface TrainerArt { url: string; width: number; height: number }
@@ -337,4 +355,19 @@ const art = artData.named as Record<string, TrainerArt>;
  */
 export function trainerArt(trainer: Trainer): TrainerArt | null {
   return trainer.kind === 'regular' ? null : art[trainerKey(trainer)] ?? null;
+}
+
+/**
+ * The pictures to load before showing these opposing trainers (image-preload), as TrainerSprite and OpponentPortrait
+ * show them: each one's sprite (`spriteIds`: a Pokémon Masters one for this battle, falling back to their usual one),
+ * and their artwork when the opponent card shows it (every trainer has some and none shows a Masters sprite).
+ * `art: false`: sprites only (screens without the card).
+ */
+export function trainerImageUrls(trainers: readonly Trainer[], spriteIds: readonly (string | null)[] = [], { art = true } = {}): string[][] {
+  const withArt = art && trainers.every((t, i) => !spriteIds[i] && trainerArt(t));
+  return trainers.flatMap((t, i) => {
+    const sprite = [...new Set([trainerSpriteUrl(t, spriteIds[i]), trainerSpriteUrl(t)])].filter((u): u is string => !!u);
+    const artUrl = withArt ? trainerArt(t)?.url : undefined;
+    return [sprite, ...(artUrl ? [[artUrl]] : [])].filter(urls => urls.length);
+  });
 }

@@ -53,12 +53,13 @@ Non-damaging scores are on the same scale (0–1+). Values come from `config.sco
 | Trick Room | 0.9 when the foe is faster; 0.27 to undo it when it helps the foe | guide |
 | Speed-lowering attack (Icy Wind etc.) | +0.15 when the foe is faster | guide: Icy Wind "is generally spammed" |
 | Phazing (Roar, Whirlwind, Dragon Tail) | 0.95 when the foe has stat boosts and something to switch in | guide: "high priority for the AI if your Pokemon have boosts active" |
+| Haze | Weighed over everyone on the field (both foes, the user and its partner), not just the target: what it takes from the foes (their stat rises) and gives our side (the user's and partner's drops cleared), against what it costs our side (its rises) and gives the foes (their drops cleared). Never used when that comes out even or worse (e.g. foes unchanged, only the partner boosted); 1.1 when the foes have rises and our side has drops; 0.8 otherwise (`hazeRescue`, `haze`). On request, 2026-10-23 | app rule |
 | Setup (Swords Dance, Dragon Dance, Calm Mind...) | 0.8 while safe (foe's best hit < 45% of our HP, foe can't KO first); 0.25× when unsafe. Stops once the stat reaches +2 or the breakpoint is met (outspeeds for Speed boosts; can KO for Attack / Sp. Atk) | guide: boosts "until a certain breakpoint ... outspeeding your Pokemon or being able to OHKO them" |
 | Stockpile | until 2 stacks | guide: Stockpile users "attempt to reach 2 stacks and then heal" |
 | Recovery | 1.0 × missing HP fraction; less if we won't survive the next hit; never above 85% HP | general |
 | Rest | when below 70% HP or statused; never under Misty or Electric Terrain | guide: never Rests "if affected by Misty Terrain (as well as by Electric Terrain)" |
 | Protect | 0.12 normally; 0.45 while the foe takes passive damage (poison, burn, Leech Seed); never twice in a row | guide: stall sets "alternate the damage over time move to Protect" |
-| Hazards / screens / Aurora Veil | 0.55 / 0.55 (matching the foe's attacking side) / 0.8 in hail | general |
+| Hazards / screens / Aurora Veil | 0.55 / 0.55 (matching the foe's attacking side) / 0.8 in hail. Never a screen our side already has (fixed 2026-10-23: they scored 0, so with nothing better a Meganium could keep re-setting Reflect): not Reflect or Light Screen while that screen or Aurora Veil is up, not Aurora Veil while it's up, while Reflect and Light Screen both are, or without hail. In Multi Battles the partner's screens count: allies share one set of screens (the simulator's) | general |
 | Counter / Metal Burst | 0.9 at full HP with Sturdy or a Focus Sash | guide: Sturdy / Sash + Metal Burst sets |
 | Self-KO moves (Explosion) | 0.3× unless they KO or we're below 25% HP | guide: Explosion use "is generally inconsistent" |
 

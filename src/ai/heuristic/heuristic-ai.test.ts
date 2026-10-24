@@ -160,6 +160,25 @@ describe('HeuristicAI move choice', () => {
     expect(share(decide(b), 'move 1')).toBeGreaterThan(0.6);
   });
 
+  it("never puts up a screen its side already has: Reflect, Light Screen, or Aurora Veil (which covers both)", () => {
+    // Meganium can barely scratch Heatran, so the screens are its best options until they're up.
+    const MEGANIUM = `Meganium @ Light Clay\nAbility: Overgrow\nEVs: 252 HP / 252 Def\nBold Nature\n- Reflect\n- Light Screen\n- Giga Drain\n- Synthesis`;
+    const screens = (conds: string[]) => decide(scenario(HEATRAN, MEGANIUM, b => { for (const c of conds) b.p2.addSideCondition(c, 'debug'); }));
+    expect((screens([])['move 1'] ?? 0) + (screens([])['move 2'] ?? 0)).toBeGreaterThan(0);
+    expect(screens(['reflect'])['move 1'] ?? 0).toBe(0);
+    const both = screens(['reflect', 'lightscreen']);
+    expect([both['move 1'] ?? 0, both['move 2'] ?? 0]).toEqual([0, 0]);
+    expect(Object.keys(screens(['auroraveil'])).filter(c => c === 'move 1' || c === 'move 2')).toEqual([]);
+    // Aurora Veil: not while it's up, nor while Reflect and Light Screen both are, nor without hail.
+    const VEIL = `Ninetales-Alola @ Light Clay\nAbility: Snow Warning\nEVs: 252 HP / 252 SpD\nCalm Nature\n- Aurora Veil\n- Moonblast\n- Freeze-Dry`;
+    const veil = (conds: string[], hail = true) => decide(scenario(CHANSEY, VEIL, b => {
+      if (!hail) b.field.clearWeather();
+      for (const c of conds) b.p2.addSideCondition(c, 'debug');
+    }))['move 1'] ?? 0;
+    expect(veil([])).toBeGreaterThan(0);
+    expect([veil(['auroraveil']), veil(['reflect', 'lightscreen']), veil([], false)]).toEqual([0, 0, 0]);
+  });
+
   it('Mega Evolves whenever it can and prefers a plain KO over spending the Z-Move', () => {
     const zard = scenario(CHANSEY, `Charizard @ Charizardite X\nAbility: Blaze\nEVs: 252 Atk / 252 Spe\nJolly Nature\n- Flare Blitz\n- Dragon Claw\n- Dragon Dance\n- Roost`);
     for (const choice of Object.keys(decide(zard))) expect(choice).toMatch(/ mega$/);
@@ -271,7 +290,8 @@ describe('calc bridge', () => {
     const { CUSTOM_SPECIES } = await import('../../data/custom');
     const { GALAR_BIRDS } = await import('../../data/galar-birds');
     const { NEW_STARTERS } = await import('../../data/starters');
-    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...GALAR_BIRDS, ...NEW_STARTERS]);
+    const { GALAR_OPPONENT_ONLY } = await import('../../data/galar');
+    const described = new Set([...CHAMPIONS_MEGAS.map(m => m.species), ...NEW_BASE_SPECIES, ...CUSTOM_SPECIES, ...GALAR_BIRDS, ...NEW_STARTERS, ...GALAR_OPPONENT_ONLY]);
     // Galarian Articuno is described as itself (Psychic / Flying), not as Articuno.
     expect(calcSpeciesName('Articuno-Galar', 'Articuno', 'Galar')).toBe('Articuno-Galar');
     const missing = [...names].filter(n => {
@@ -485,6 +505,47 @@ describe('HeuristicAI in Multi Battles', () => {
   it("lets your partner's AI aim at the second opponent (on the right)", () => {
     const counts = choicesFor(multi(BULKY, BULKY, GENGAR, FRAIL), 'p3');
     expect((counts['move 1 2'] ?? 0) / 120).toBeGreaterThan(0.8);
+  });
+
+  it("weighs Haze over everyone on the field: never just to undo its partner's rises, first when the foes are boosted and its side lowered", () => {
+    const weezing = (other: string) => mon(`Weezing @ Black Sludge\nAbility: Levitate\nEVs: 252 HP / 252 Def\nBold Nature\n- Haze\n- ${other}\n- Protect`);
+    const hazes = (setup: (b: Battle) => void, other = 'Sludge Bomb') => {
+      const battle = multi(BULKY, weezing(other), BULKY, BULKY);
+      setup(battle);
+      return (choicesFor(battle, 'p2')['move 1'] ?? 0) / 120;
+    };
+    // The foes (the player and their partner) have no stat changes; only the AI's partner (p4) has rises.
+    expect(hazes(b => { b.p4!.active[0].boosts.atk = 2; })).toBe(0);
+    // A foe has a small rise, the partner bigger ones: Haze would cost more than it takes away.
+    expect(hazes(b => { b.p1.active[0].boosts.def = 1; b.p4!.active[0].boosts.atk = 2; b.p4!.active[0].boosts.spe = 2; })).toBe(0);
+    // The foes are boosted: Haze is an option; with the partner's (or its own) stats lowered too, it comes first.
+    const foesBoosted = (b: Battle) => { b.p1.active[0].boosts.atk = 2; b.p3!.active[0].boosts.spa = 2; };
+    expect(hazes(foesBoosted)).toBeGreaterThan(0);
+    expect(hazes(b => { foesBoosted(b); b.p4!.active[0].boosts.def = -2; })).toBeGreaterThan(0.8);
+    expect(hazes(b => { foesBoosted(b); b.p2.active[0].boosts.spd = -2; })).toBeGreaterThan(0.8);
+    // Burning the foes' Snorlax usually beats a plain Haze, but not one that also clears its side's drops.
+    expect(hazes(foesBoosted, 'Will-O-Wisp')).toBeLessThan(0.5);
+    expect(hazes(b => { foesBoosted(b); b.p4!.active[0].boosts.def = -2; }, 'Will-O-Wisp')).toBeGreaterThan(0.8);
+  });
+
+  it("shares screens with its partner: no Reflect while the partner's is up", () => {
+    const meganium = mon('Meganium @ Light Clay\nAbility: Overgrow\nEVs: 252 HP / 252 Def\nBold Nature\n- Reflect\n- Light Screen\n- Synthesis');
+    const battle = multi(BULKY, meganium, BULKY, BULKY);
+    battle.p4!.addSideCondition('reflect', 'debug');
+    // One set of screens for both allies.
+    expect(battle.p2.sideConditions.reflect).toBeDefined();
+    const counts = choicesFor(battle, 'p2');
+    expect(counts['move 1'] ?? 0).toBe(0);
+    expect(counts['move 2'] ?? 0).toBeGreaterThan(0);
+    // With both screens up and nothing else worth doing (Leech Seed can't seed Grass types), it still never re-sets
+    // one: before, the useless options tied at 0 and Reflect came up about a third of the time.
+    const FERROTHORN = mon('Ferrothorn @ Leftovers\nAbility: Iron Barbs\nEVs: 252 HP\n- Protect');
+    const seeder = mon('Meganium @ Light Clay\nAbility: Overgrow\nEVs: 252 HP / 252 Def\nBold Nature\n- Reflect\n- Light Screen\n- Leech Seed');
+    const stuck = multi(FERROTHORN, seeder, FERROTHORN, BULKY);
+    stuck.p4!.addSideCondition('reflect', 'debug');
+    stuck.p2.addSideCondition('lightscreen', 'debug');
+    const stuckCounts = choicesFor(stuck, 'p2');
+    expect(Object.keys(stuckCounts).filter(c => c.startsWith('move 1') || c.startsWith('move 2'))).toEqual([]);
   });
 
   it('aims a status move at the foe it works on', () => {

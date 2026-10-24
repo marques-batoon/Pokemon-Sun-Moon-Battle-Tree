@@ -6,6 +6,7 @@ import { DIGIMON_MOVE_IDS, digimonCanLearn, digimonOverrides, isWarpItem, warpNa
 import { canHoldItem, paradoxOverrides, PARADOX_LABELS, PARADOX_MOVE_IDS, paradoxFormForSet, paradoxKindOfItem } from '../data/custom/paradox';
 import { galarBirdCanLearn, galarBirdsOverrides, GALAR_BIRD_NEW_MOVE_IDS } from '../data/galar-birds';
 import { starterCanLearn, starterDebutGame, startersOverrides, STARTER_NEW_MOVE_IDS } from '../data/starters';
+import { galarOverrides, GALAR_NEW_MOVE_IDS, GALAR_OPPONENT_ONLY } from '../data/galar';
 import { addCustomBattleLogic, CUSTOM_ACTIONS, CUSTOM_POKEMON, CUSTOM_SIDE } from './custom';
 import { USUM_ONLY_SPECIES } from './format-constants';
 
@@ -39,7 +40,7 @@ let registered = false;
  */
 function registerChampionsMod(): void {
   const gen7 = Dex.mod('gen7').data;
-  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false }), digimonOverrides(), galarBirdsOverrides(), startersOverrides()) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
+  const data = mergeModData(championsOverrides(), customOverrides({ species: gen7.Pokedex as never }), paradoxOverrides({ ui: false }), digimonOverrides(), galarBirdsOverrides(), startersOverrides(), galarOverrides()) as ReturnType<typeof championsOverrides> & Record<string, Record<string, Record<string, unknown>>>;
   addCustomBattleLogic(data as never, { Conditions: gen7.Conditions as never, Moves: gen7.Moves as never });
   Object.assign(data.Abilities[AURA_GUARD.id], {
     onSourceModifyDamage(this: Battle, _damage: number, source: Pokemon, target: Pokemon, move: ActiveMove) {
@@ -81,7 +82,7 @@ function checkCanLearn(this: TeamValidator, move: Move, species: Species, setSou
     const learnset = Dex.species.getLearnsetData(id).learnset ?? {};
     return move.id in learnset ? null : ` can't learn ${move.name}.`;
   }
-  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id) || DIGIMON_MOVE_IDS.has(move.id) || GALAR_BIRD_NEW_MOVE_IDS.has(move.id) || STARTER_NEW_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
+  if (NEW_MOVE_IDS.has(move.id) || PARADOX_MOVE_IDS.has(move.id) || DIGIMON_MOVE_IDS.has(move.id) || GALAR_BIRD_NEW_MOVE_IDS.has(move.id) || STARTER_NEW_MOVE_IDS.has(move.id) || GALAR_NEW_MOVE_IDS.has(move.id)) return ` can't learn ${move.name}.`;
   return this.checkCanLearn(move, species, setSources, set);
 }
 
@@ -139,7 +140,8 @@ export function registerBattleTreeFormats(): void {
     'Obtainable',
     'Species Clause',
   ];
-  const banlist = [...new Set([...RULES.bannedSpecies.species, ...USUM_ONLY_SPECIES])];
+  // Gloria's Galar Pokémon are opponents only (for now): banned from your team.
+  const banlist = [...new Set([...RULES.bannedSpecies.species, ...USUM_ONLY_SPECIES, ...GALAR_OPPONENT_ONLY])];
   Dex.formats.extend([
     { section: 'Battle Tree (Sun/Moon)' },
     {

@@ -1,7 +1,8 @@
 // Signature moves have their own animation (on request, 2026-10-21): every move that was one Pokémon's (or one
 // evolution line's) own when it came out, still is or not (Bonemerang, Shadow Bone, Sacred Fire, Spore...), that the
 // battles can use and that had no animation of its own yet (the moves over 100 power have theirs in big-moves.ts), the
-// Galarian legendary birds' (2026-10-22) and the Generation 8 and 9 starters' (2026-10-23; Pyro Ball is over 100 power).
+// Galarian legendary birds' (2026-10-22), the Generation 8 and 9 starters' (2026-10-23; Pyro Ball is over 100 power) and
+// Gloria's Galar Pokémon's (2026-10-23).
 // Each is tailored to the move: what it is in the games, drawn with the stage's shapes (approximations, not the
 // games' animations). How long each plays: SIGNATURE_MOVE_MS in client/playback.ts. How the user of an attack moves:
 // SIGNATURE_MOTION (as BIG_MOVE_MOTION: a user that charges in makes contact at about 43% of the move's length; a move
@@ -899,6 +900,33 @@ const GEN_7: Record<string, FxSpec> = {
     pt('target', 'flame', 'burst', '#ff5a1a', '#ffd23f', 16, 16, 120, 730, 400),
     up('user', 850, '#ff7a1a'),
   ] },
+  // Dragon Darts (Dragapult): it launches the two little dragons it carries in its horns, one after the other, like
+  // darts; each strikes (both foes in Doubles when there are two).
+  dragondarts: { layers: [
+    orb(120, '#7c5cff', 20, 'shard', 230, { count: 2, gap: 150, spin: true, color2: '#9ad0ff' }),
+    hit(350, '#d0c0ff', 160), hit(500, '#d0c0ff', 180),
+    pt('target', 'spark', 'burst', '#7c5cff', '#ffffff', 10, 11, 90, 510, 350),
+  ] },
+  // Overdrive (Toxtricity): it strums the spikes on its chest like a guitar, and the shockwaves of sound and electricity
+  // hit the foes.
+  overdrive: { shake: 'light', layers: [
+    pt('user', 'note', 'rise', '#c86bff', '#ffe14d', 10, 14, 80, 0, 450),
+    ring('user', 150, '#ffe14d', 3, 200, 450),
+    { kind: 'bolt', color: '#c86bff', delay: 450 },
+    ring('target', 480, '#c86bff', 3, 220, 400),
+    hit(520, '#fff6b0', 220),
+    pt('target', 'spark', 'burst', '#ffe14d', '#c86bff', 14, 12, 110, 530, 400),
+  ] },
+  // Spirit Break (Grimmsnarl): its hair-muscled fist slams down with fairy power that breaks the target's spirit
+  // (lowering its Sp. Atk).
+  spiritbreak: { shake: 'strong', layers: [
+    aura('user', 0, '#ff6ab0', 180, 380),
+    pt('user', 'star', 'converge', '#ff9ad8', '#ffffff', 10, 12, 90, 0, 380),
+    hit(430, '#ffd0e8', 260),
+    { kind: 'impact', color: '#ff4a9a', size: 170, star: true, delay: 450 },
+    pt('target', 'heart', 'burst', '#ff6ab0', '#ffffff', 12, 13, 110, 460, 400),
+    down('target', 600, '#ff6ab0'),
+  ] },
   // Aqua Step (Quaquaval): light, fluid dance steps on a trail of water, then a kick; its Speed rises.
   aquastep: { shake: 'light', layers: [
     pt('user', 'drop', 'swirl', '#5aa2ff', '#cfe8ff', 12, 10, 80, 0, 400),
@@ -985,8 +1013,8 @@ export const SIGNATURE_MOTION: Record<string, 'charge' | 'cast' | 'leap' | 'dive
   watershuriken: 'cast', anchorshot: 'cast', coreenforcer: 'cast', photongeyser: 'cast', pollenpuff: 'cast', revelationdance: 'cast',
   sparklingaria: 'cast', spiritshackle: 'cast', moongeistbeam: 'cast', naturesmadness: 'cast', mortalspin: 'cast', tachyoncutter: 'cast',
   thunderclap: 'cast', hydrosteam: 'cast', freezingglare: 'cast', fierywrath: 'cast', drumbeating: 'cast', snipeshot: 'cast', flowertrick: 'cast',
-  torchsong: 'cast',
-  thunderouskick: 'charge', aquastep: 'charge',
+  torchsong: 'cast', dragondarts: 'cast', overdrive: 'cast',
+  thunderouskick: 'charge', aquastep: 'charge', spiritbreak: 'charge',
 };
 
 /**
