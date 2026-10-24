@@ -59,7 +59,7 @@ export function calcPokemon(p: Pokemon, forme: Forme = {}): CalcPokemon {
   const set = p.set;
   const species = forme.species ? p.battle.dex.species.get(forme.species) : p.species;
   const name = calcSpeciesName(species.name, species.baseSpecies, species.baseForme);
-  // Protosynthesis / Quark Drive (this app's always-on version): the stat it boosts, so the calc applies 1.3x.
+  // Protosynthesis / Quark Drive (this app's version, once per battle until it switches out): the stat it boosts, so the calc applies 1.3x.
   const paradox = p.volatiles.paradoxboost as { bestStat?: string } | undefined;
   return new CalcPokemon(gen, name, {
     ...(paradox?.bestStat && !forme.species ? { boostedStat: paradox.bestStat as never } : {}),

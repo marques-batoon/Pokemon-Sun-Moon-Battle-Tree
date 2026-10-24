@@ -265,8 +265,10 @@ function addDigimonLogic(data: Record<string, Record<string, Entry>>, parent: { 
 
 /**
  * Paradox Evolution: the Paradoxorbs can't be taken away, and Protosynthesis /
- * Quark Drive (as this app defines them) boost the highest stat while the
- * Pokémon is on the field, with no weather, terrain or Booster Energy needed.
+ * Quark Drive (as this app defines them) boost the highest stat, with no
+ * weather, terrain or Booster Energy needed: once per battle, from the first
+ * time the Pokémon comes in until it leaves the field (on request, 2026-10-23;
+ * before, it came back on every switch-in).
  */
 function addParadoxLogic(data: Record<string, Record<string, Entry>>) {
   for (const item of Object.values(PARADOX_ITEMS)) Object.assign(data.Items[toId(item)], { onTakeItem: false });
@@ -274,7 +276,8 @@ function addParadoxLogic(data: Record<string, Record<string, Entry>>) {
     Object.assign(data.Abilities[toId(ability)], {
       onStart(this: Battle, pokemon: Pokemon) {
         // Mid-Paradox-Evolution the boost waits for the switch-in, after the evolution message.
-        if (pokemon.m.paradoxEvolving) return;
+        // Once per battle: after switching out (or losing the Ability), it doesn't start again.
+        if (pokemon.m.paradoxEvolving || pokemon.m.paradoxBoosted) return;
         pokemon.addVolatile('paradoxboost', pokemon, this.effect);
       },
       onEnd(pokemon: Pokemon) {
@@ -285,7 +288,8 @@ function addParadoxLogic(data: Record<string, Record<string, Entry>>) {
   /**
    * The boost itself: a flat 1.3x (Speed: 1.5x) on the stat that's highest when
    * it starts (stat stages counted, like the games; ties go Atk > Def > SpA >
-   * SpD > Spe). A volatile, so switching out ends it and Haze can't touch it.
+   * SpD > Spe). A volatile, so switching out ends it (for good: `paradoxBoosted`)
+   * and Haze can't touch it.
    */
   const boost = (stat: string, factor: number | [number, number]) => function (this: Battle, _value: number, pokemon: Pokemon) {
     if ((this.effectState as { bestStat?: string }).bestStat !== stat || pokemon.ignoringAbility()) return;
@@ -299,6 +303,7 @@ function addParadoxLogic(data: Record<string, Record<string, Entry>>) {
       const state = this.effectState as { bestStat?: string; ability?: string };
       state.bestStat = pokemon.getBestStat(false, true);
       state.ability = ability.name;
+      pokemon.m.paradoxBoosted = true;
       this.add('-start', pokemon, `${ability.id}${state.bestStat}`);
     },
     onModifyAtkPriority: 5,

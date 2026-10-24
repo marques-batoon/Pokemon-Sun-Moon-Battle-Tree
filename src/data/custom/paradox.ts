@@ -57,7 +57,7 @@ export function canHoldItem(species: string, item: string): boolean {
   return (!kind || !!paradoxFormOf(species, kind)) && canHoldWarpItem(species, item) && canHoldCustomItem(species, item);
 }
 
-const ABILITY_DESC = 'Raises this Pokemon\'s highest stat (not HP) by 1.3x, or Speed by 1.5x, while it is on the field. Ties go Atk > Def > SpA > SpD > Spe. Not a stat stage; no weather or terrain needed.';
+const ABILITY_DESC = 'Once per battle, from the first time this Pokemon comes in until it switches out: raises its highest stat (not HP) by 1.3x, or Speed by 1.5x. Ties go Atk > Def > SpA > SpD > Spe. Not a stat stage; no weather or terrain needed.';
 
 /**
  * Data layered on the Gen 7 mod data: the two Paradoxorbs, the custom

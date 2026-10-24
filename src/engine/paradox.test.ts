@@ -95,7 +95,7 @@ describe('Paradox Evolution in battle', () => {
     expect(Math.abs(ib.getStat('spe') - ib.getStat('spe', false, true) * 1.5)).toBeLessThanOrEqual(1);
   });
 
-  it("isn't removed by Haze, ends on switching out, comes back on switching in, and the form stays", () => {
+  it("isn't removed by Haze, ends on switching out and only once per battle (not again on switching back in); the form stays", () => {
     const b = battle([GREAT_TUSK, CHANSEY, SNORLAX], [mon('Weezing', 'Black Sludge', 'Levitate', ['Haze']), SNORLAX, CHANSEY]);
     b.makeChoices('move 3', 'move 1'); // Rapid Spin / Haze
     expect(b.p1.active[0].volatiles.paradoxboost).toBeTruthy();
@@ -104,12 +104,26 @@ describe('Paradox Evolution in battle', () => {
     expect(tusk.isActive).toBe(false);
     expect(tusk.volatiles.paradoxboost).toBeUndefined();
     b.makeChoices('switch 2', 'move 1');
-    expect(b.p1.active[0].species.name).toBe('Great Tusk');
-    expect(b.p1.active[0].volatiles.paradoxboost).toBeTruthy();
-    // Evolved once; the boost restarted.
+    const back = b.p1.active[0];
+    expect(back.species.name).toBe('Great Tusk');
+    // Back in: no boost (on request, 2026-10-23: once per battle, from its first switch-in).
+    expect(back.volatiles.paradoxboost).toBeUndefined();
+    expect(back.getStat('atk')).toBe(back.getStat('atk', false, true));
+    b.makeChoices('switch 3', 'move 1');
+    b.makeChoices('switch 3', 'move 1');
+    expect(b.p1.active[0].volatiles.paradoxboost).toBeUndefined();
+    // Evolved once; boosted once, and it wore off once.
     const log = b.log.join('\n');
     expect(log.match(/Paradox Evolved into/g)).toHaveLength(1);
-    expect(log.match(/\|-start\|p1a: Donphan\|protosynthesisatk/g)).toHaveLength(2);
+    expect(log.match(/\|-start\|p1a: Donphan\|protosynthesisatk/g)).toHaveLength(1);
+    expect(log.match(/\|-end\|p1a: Donphan\|Protosynthesis/g)).toHaveLength(1);
+  });
+
+  it("boosts each Paradox Pokémon once: another one's first switch-in still boosts it", () => {
+    const b = battle([GREAT_TUSK, mon('Delibird', 'Paradoxorb-F', 'Hustle', ['Freeze-Dry']), CHANSEY], [SNORLAX, CHANSEY, mon('Blissey', 'Sitrus Berry', 'Natural Cure', ['Soft-Boiled'])]);
+    b.makeChoices('switch 2', 'move 1');
+    expect(b.p1.active[0].species.name).toBe('Iron Bundle');
+    expect(b.p1.active[0].volatiles.paradoxboost).toBeTruthy();
   });
 
   it('skips the original Ability (no Intimidate from Salamence) and allows several Paradox Evolutions per battle', () => {

@@ -269,11 +269,11 @@ Designed by the user and added on request (2026-10-03). Data in `src/data/custom
   - **New moves:** 37 Gen 8-9 moves were added for these forms, and only Paradoxorb holders can use them (Smeargle can't Sketch them either).
   - **Orb restrictions:** an orb only goes on Pokémon with that kind of form, and it can't be knocked off or swapped away.
   - **The form isn't a team pick:** "Great Tusk" can't be registered directly.
-  - **Protosynthesis and Quark Drive** (every Ancient / Future form) are redefined. While the Pokémon is on the field, its highest stat (not HP) is multiplied by 1.3, or Speed by 1.5.
+  - **Protosynthesis and Quark Drive** (every Ancient / Future form) are redefined. The first time the Pokémon comes in, its highest stat (not HP) is multiplied by 1.3, or Speed by 1.5, until it leaves the field.
     - **Highest stat:** stat stages count, as in the games. Ties go Attack, then Defense, Sp. Atk, Sp. Def, Speed.
     - **Not a stat stage:** it doesn't show as "+1", and Haze or Clear Smog can't remove it. The battle screen shows it as its own chip (e.g. "⬢ Atk ×1.3").
     - **No conditions:** no sunlight, Electric Terrain or Booster Energy is involved.
-    - **Switching:** it ends when the Pokémon switches out and starts again when it comes back.
+    - **Once per battle** (2026-10-23, on request): it ends when the Pokémon switches out (or loses its Ability) and doesn't start again when it comes back; the boost is gone for the rest of the battle. Each Paradox Pokémon gets its own once. Before, it started again on every switch-in. `paradoxBoosted` in `src/engine/custom.ts`.
     - **Animation** (2026-10-23, on request): when the boost starts ("X's Attack was heightened!"), the stage dims and pieces gather into the Pokémon: stone shards and rock for Protosynthesis, circuit sparks and gems for Quark Drive. The Pokémon then swells and glows, with an aura, rings, up-arrows and rising pieces. The Ability's name pops up, then the stat and its boost (e.g. "Speed ×1.5").
       - **Colour by stat:** everything is drawn in the boosted stat's colour, based on Bulbapedia's stat colours: Attack red-orange, Defense gold, Sp. Atk blue, Sp. Def green, Speed pink.
       - **Each stat's own flourish:** Attack bursts with rays of power, Defense raises a shield, Sp. Atk swirls with stars, Sp. Def forms a barrier sphere, Speed sends the air rushing past.
